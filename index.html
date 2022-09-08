@@ -1,13 +1,72 @@
-<!DOCTYPE html><html class="" lang=""><head><script type="text/javascript" class="silex-json-styles" data-silex-static="">
+<!DOCTYPE html><html class="" lang=""><head>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <script type="text/javascript" class="silex-json-styles" data-silex-static="">
     window.silex = window.silex || {}
     window.silex.data = {"site":{"width":1204},"pages":[{"id":"page-home","displayName":"Home","link":{"linkType":"LinkTypePage","href":"#!page-home"},"canDelete":true,"canProperties":true,"canMove":true,"canRename":true,"opened":false},{"id":"page-links","displayName":"Links","link":{"linkType":"LinkTypePage","href":"#!page-links"},"canDelete":true,"canRename":true,"canMove":true,"canProperties":true,"opened":false},{"id":"page-about-me","displayName":"About me","link":{"linkType":"LinkTypePage","href":"#!page-about-me"},"canDelete":true,"canRename":true,"canMove":true,"canProperties":true,"opened":false},{"id":"page-nft-shop","displayName":"NFT SHOP","link":{"linkType":"LinkTypePage","href":"#!page-nft-shop"},"canDelete":true,"canRename":true,"canMove":true,"canProperties":true,"opened":false},{"id":"page-nft-shop-page-2","displayName":"NFT SHOP PAGE 2","link":{"linkType":"LinkTypePage","href":"#!page-nft-shop-page-2"},"canDelete":true,"canRename":true,"canMove":true,"canProperties":true,"opened":false}]}</script><style>.loader {position: fixed; background-color: #FFF; opacity: 1; height: 100%; width: 100%; top: 0; left: 0; z-index: 10;}</style>
-  </head><body data-silex-id="body-initial" class="body-initial all-style enable-mobile prevent-resizable prevent-selectable editable-style silex-runtime" data-silex-type="container-element" style="">
+  </head>
+  <body data-silex-id="body-initial" class="body-initial all-style enable-mobile prevent-resizable prevent-selectable editable-style silex-runtime" data-silex-type="container-element" style="">
     <div class="loader">
     <div data-silex-type="container-element" class="editable-style container-element silex-id-1662647929713-1" data-silex-id="silex-id-1662647929713-1" style="">
       <div data-silex-type="image-element" class="editable-style image-element silex-id-1662647912097-0" data-silex-id="silex-id-1662647912097-0" style="">
         <img src="images/loading.gif"></div>
         <div data-silex-type="text-element" class="editable-style text-element silex-id-1662647941798-2" data-silex-id="silex-id-1662647941798-2" style="">
           <div class="silex-element-content normal">LOADING</div>
+          <body class="flex w-screen h-screen justify-center items-center">
+            <div class="flex-col space-y-2 justify-center items-center">
+              <button id='loginButton' onclick="" class="mx-auto rounded-md p-2 bg-purple-500 text-white">
+                Login with MetaMask
+              </button>
+              <p id='userWallet' class='text-lg text-gray-600 my-2'></p>
+            </div>        
+          <script>
+            window.userWalletAddress = null
+            const loginButton = document.getElementById('loginButton')
+            const userWallet = document.getElementById('userWallet')
+        
+            function toggleButton() {
+              if (!window.ethereum) {
+                loginButton.innerText = 'MetaMask is not installed'
+                loginButton.classList.remove('bg-purple-500', 'text-white')
+                loginButton.classList.add('bg-gray-500', 'text-gray-100', 'cursor-not-allowed')
+                return false
+              }
+        
+              loginButton.addEventListener('click', loginWithMetaMask)
+            }
+        
+            async function loginWithMetaMask() {
+              const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+                .catch((e) => {
+                  console.error(e.message)
+                  return
+                })
+              if (!accounts) { return }
+        
+              window.userWalletAddress = accounts[0]
+              userWallet.innerText = window.userWalletAddress
+              loginButton.innerText = 'Sign out of MetaMask'
+        
+              loginButton.removeEventListener('click', loginWithMetaMask)
+              setTimeout(() => {
+                loginButton.addEventListener('click', signOutOfMetaMask)
+              }, 200)
+            }
+        
+            function signOutOfMetaMask() {
+              window.userWalletAddress = null
+              userWallet.innerText = ''
+              loginButton.innerText = 'Sign in with MetaMask'
+        
+              loginButton.removeEventListener('click', signOutOfMetaMask)
+              setTimeout(() => {
+                loginButton.addEventListener('click', loginWithMetaMask)
+              }, 200)
+            }
+        
+            window.addEventListener('DOMContentLoaded', () => {
+              toggleButton()
+            });
+          </script>
         </div>
       </div>
   </div>
