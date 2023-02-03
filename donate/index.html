@@ -64,35 +64,43 @@
 ];
         const contract = new web3.eth.Contract(abi, contractAddress);
 
-        web3.eth.getAccounts().then((accounts) => {
-          const account = accounts[0];
-          document.getElementById('account-address').innerText = account;
-          document.getElementById("connect-wallet-button").style.display = "none";
+    web3.eth.getAccounts().then((accounts) => {
+      const account = accounts[0];
+      if (account) {
+        document.getElementById('account-address').innerText = account;
+        document.getElementById('connect-wallet-button').style.display = 'none';
+      } else {
+        document.getElementById('connect-wallet-button').style.display = 'block';
+      }
 
-          document.getElementById('donate-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const amount = document.getElementById('donate-amount').value;
-            contract.methods.fund(amount).send({ from: account });
-          });
-
-          document.getElementById("donate-10-button").addEventListener("click", async () => {
-            contract.methods.fund(10).send({ from: account });
-          });
-
-          document.getElementById("donate-20-button").addEventListener("click", async () => {
-            contract.methods.fund(20).send({ from: account });
-          });
-
-          document.getElementById("donate-50-button").addEventListener("click", async () => {
-            contract.methods.fund(50).send({ from: account });
-          });
-
-          document.getElementById("donate-100-button").addEventListener("click", async () => {
-            contract.methods.fund(100).send({ from: account });
-          });
-        });
+      document.getElementById('donate-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const amount = document.getElementById('donate-amount').value;
+        contract.methods.fund(amount).send({ from: account });
       });
-    </script>
+      
+      document.getElementById('donate-10-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        contract.methods.fund(10).send({ from: account });
+      });
+      
+      document.getElementById('donate-20-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        contract.methods.fund(20).send({ from: account });
+      });
+      
+      document.getElementById('donate-50-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        contract.methods.fund(50).send({ from: account });
+      });
+      
+      document.getElementById('donate-100-button').addEventListener('click', async (event) => {
+        event.preventDefault();
+        contract.methods.fund(100).send({ from: account });
+      });
+    });
+  });
+</script>
   </head>
   <body>
     <div id="connect-wallet-button" onclick="ethereum.enable()">Connect Wallet</div>
