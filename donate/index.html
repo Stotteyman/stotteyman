@@ -62,7 +62,7 @@
     var contract = new web3.eth.Contract(abi, contractAddress);
 
     // Function to donate with a specified amount
-    function donate(amount) {
+    function fund(amount) {
       contract.methods.donate(amount).send({ from: web3.eth.defaultAccount })
         .then(function (receipt) {
           console.log("Donation successful:", receipt);
