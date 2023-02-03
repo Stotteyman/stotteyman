@@ -130,24 +130,22 @@
     </script>
   </head>
   <body>
-  <body>
-	<div id="body-box" style="width: 500px; margin: 0 auto;">
-	  <h3 style="text-align: center;">Make a Donation</h3>
-	  <div id="account-address-box">
-		<h4>Your Address:</h4>
-		<div id="account-address"></div>
+	<div style="background-color: #FFA500; padding: 20px; text-align: center; width: 400px; margin: 20px auto; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+	  <h2>Make a Donation</h2>
+	  <div id="account-address" style="color: #fff; font-weight: bold;">
+		<p>Your Address</p>
 	  </div>
-	  <form id="donate-form">
-		<h4>Custom Amount:</h4>
-		<input type="number" id="donate-amount">
-		<input type="submit" value="Donate">
-		<h4>Quick Pay:</h4>
-		<button id="donate-10-button" value="10">Donate 10</button>
-		<button id="donate-20-button" value="20">Donate 20</button>
-		<button id="donate-50-button" value="50">Donate 50</button>
-		<button id="donate-100-button" value="100">Donate 100</button>
+	  <button id="connect-wallet-button" style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold; display: none;">Connect Wallet</button>
+	  <form id="donate-form" style="margin-top: 40px;">
+		<p style="color: #fff;">Custom Amount</p>
+		<input type="text" id="donate-amount" style="background-color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px;">
+		<input type="submit" value="Donate" style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold;">
 	  </form>
-	  <button id="connect-wallet-button" style="display:none;" onclick="ethereum.enable()">Connect Wallet</button>
+	  <h3 style="color: #fff; margin-top: 40px;">Quick Pay</h3>
+	  <button style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold;">Donate 10 USDC</button>
+	  <button style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold;">Donate 20 USDC</button>
+	  <button style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold;">Donate 50 USDC</button>
+	  <button style="background-color: #333; color: #fff; padding: 10px 20px; margin-top: 20px; border-radius: 10px; font-weight: bold;">Donate 100 USDC</button>
 	</div>
   </body>
   
