@@ -1,89 +1,61 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
-    <style>
-      body {
-        background-image: url('https://www.youtube.com/watch?v=RHycI27FelE');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center center;
-      }
-    </style>
-    <script>
-      window.addEventListener('load', async () => {
-        if (typeof web3 !== 'undefined') {
-          web3 = new Web3(web3.currentProvider);
-        } else {
-          alert('Please install a Web3 provider such as Metamask or Brave.');
-        }
+<head>
+  <title>Donation Page</title>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.0.0-beta.37/dist/web3.min.js"></script>
+</head>
+<body>
+  <h1>Donate with USDC</h1>
+  <p>Choose an amount to donate:</p>
+  <button id="donate1">$1</button>
+  <button id="donate10">$10</button>
+  <button id="donate100">$100</button>
+  <p>or enter a custom amount:</p>
+  <input type="text" id="customAmount">
+  <button id="donateCustom">Donate</button>
+  <script>
+    if (typeof web3 !== 'undefined') {
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      alert("Please install MetaMask and refresh the page");
+    }
 
-        const contractAddress = '0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e';
-        const abi = [
-          {
-            "inputs": [
-              {
-                "internalType": "address",
-                "name": "usdcContractAddress",
-                "type": "address"
-              }
-            ],
-            "payable": false,
-            "stateMutability": "nonpayable",
-            "type": "constructor"
-          },
-          {
-            "anonymous": false,
-            "inputs": [
-              {
-                "indexed": true,
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-              },
-              {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-              }
-            ],
-            "name": "Donation",
-            "type": "event"
-          },
-          {
-            "constant": false,
-            "inputs": [
-              {
-                "internalType": "uint256",
-                "name": "USDC",
-                "type": "uint256"
-              }
-            ],
-            "name": "fund",
-            "outputs": [],
-            "payable": true,
-            "stateMutability": "payable",
-            "type": "function"
-          }
-        ];
-        const contract = new web3.eth.Contract(abi, contractAddress);
+    const usdcAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+    const donationsAddress = "0x...";
+    const usdcContract = new web3.eth.Contract(USDC_ABI, usdcAddress);
+    const donationsContract = new web3.eth.Contract(Donations_ABI, donationsAddress);
 
-        web3.eth.getAccounts().then((accounts) => {
-          const account = accounts[0];
-          document.getElementById('account-address').innerText = account;
+    $("#donate1").click(function() {
+      donate(1);
+    });
 
-          document.getElementById('donate-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const amount = document.getElementById('donate-amount').value;
-            contract.methods.fund(amount).send({ from: account });
-          });
+    $("#donate10").click(function() {
+      donate(10);
+    });
+
+    $("#donate100").click(function() {
+      donate(100);
+    });
+
+    $("#donateCustom").click(function() {
+      donate($("#customAmount").val());
+    });
+
+    async function donate(amount) {
+      const USDCAmount = amount * 10 ** 6;
+      const accounts = await web3.eth.getAccounts();
+      const spender = accounts[0];
+      const allowance = await usdcContract.methods.allowance(spender, donationsAddress).call();
+      if (allowance < USDCAmount) {
+        await usdcContract.methods.approve(donationsAddress, USDCAmount).send({
+          from: spender
         });
+      }
+      donationsContract.methods.donate(amount).send({
+        from: spender
       });
-    </script>
-  </head>
-  <body>
-    <div id="account-address"></div>
-    <form id="donate-form">
-      <input type="text" id="donate-amount"/>
-      <input type="submit" value="Donate"/>
-    </form>
+    }
+  </script>
+</body>
+</html>
