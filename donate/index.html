@@ -75,7 +75,7 @@
 });
 
 function fund(amount) {
-  contract.methods.donate(amount).send({ from: web3.eth.defaultAccount })
+  contract.methods.fund(amount).send({ from: web3.eth.defaultAccount })
     .then(function (receipt) {
       console.log("Donation successful:", receipt);
     })
