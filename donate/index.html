@@ -55,19 +55,22 @@
 		"type": "function"
 	}
 ];
-    var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
-    var contract = new web3.eth.Contract(abi, contractAddress);
+var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
+var contract = new web3.eth.Contract(abi, contractAddress);
 
-    function fund(amount) {
-      var fromAddress = web3.eth.defaultAccount;
-      contract.methods.fund(amount).send({ from: fromAddress })
-        .then(function (receipt) {
-          console.log("Donation successful:", receipt);
-        })
-        .catch(function (error) {
-          console.error("Error making donation:", error);
-        });
-    }
+function fund(amount) {
+  web3.eth.getAccounts().then(function(accounts) {
+    var defaultAddress = accounts[0];
+    contract.methods.donate(amount).send({ from: defaultAddress })
+      .then(function (receipt) {
+        console.log("Donation successful:", receipt);
+      })
+      .catch(function (error) {
+        console.error("Error making donation:", error);
+      });
+  });
+}
+
   </script>
 </head>
 <body>
