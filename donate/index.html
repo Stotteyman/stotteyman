@@ -1,61 +1,112 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Donation Page</title>
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.0.0-beta.37/dist/web3.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Donation Page</title>
 </head>
+
 <body>
-  <h1>Donate with USDC</h1>
-  <p>Choose an amount to donate:</p>
-  <button id="donate1">$1</button>
-  <button id="donate10">$10</button>
-  <button id="donate100">$100</button>
-  <p>or enter a custom amount:</p>
-  <input type="text" id="customAmount">
-  <button id="donateCustom">Donate</button>
-  <script>
-    if (typeof web3 !== 'undefined') {
-      web3 = new Web3(web3.currentProvider);
-    } else {
-      alert("Please install MetaMask and refresh the page");
-    }
+    <h1>Donate to our cause</h1>
+    <p>Choose a donation amount:</p>
+    <button id="donate1">$1</button>
+    <button id="donate10">$10</button>
+    <button id="donate100">$100</button>
+    <p>Or enter a custom amount:</p>
+    <input type="text" id="donateCustom">
+    <button id="donateCustomButton">Donate</button>
 
-    const usdcAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
-    const donationsAddress = "0x...";
-    const usdcContract = new web3.eth.Contract(USDC_ABI, usdcAddress);
-    const donationsContract = new web3.eth.Contract(Donations_ABI, donationsAddress);
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.0.0-beta.55/dist/web3.min.js"></script>
+    <script>
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+        var contractInstance = new web3.eth.Contract([
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "usdcContractAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "USDC",
+				"type": "uint256"
+			}
+		],
+		"name": "donate",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "usdc",
+		"outputs": [
+			{
+				"internalType": "contract USDC",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+], "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e");
 
-    $("#donate1").click(function() {
-      donate(1);
-    });
-
-    $("#donate10").click(function() {
-      donate(10);
-    });
-
-    $("#donate100").click(function() {
-      donate(100);
-    });
-
-    $("#donateCustom").click(function() {
-      donate($("#customAmount").val());
-    });
-
-    async function donate(amount) {
-      const USDCAmount = amount * 10 ** 6;
-      const accounts = await web3.eth.getAccounts();
-      const spender = accounts[0];
-      const allowance = await usdcContract.methods.allowance(spender, donationsAddress).call();
-      if (allowance < USDCAmount) {
-        await usdcContract.methods.approve(donationsAddress, USDCAmount).send({
-          from: spender
+        document.getElementById("donate1").addEventListener("click", function() {
+            contractInstance.methods.donate(1).send({
+                from: web3.eth.defaultAccount,
+                value: web3.utils.toWei("1", "ether"),
+                gas: 2000000
+            });
         });
-      }
-      donationsContract.methods.donate(amount).send({
-        from: spender
-      });
-    }
-  </script>
+        document.getElementById("donate10").addEventListener("click", function() {
+            contractInstance.methods.donate(10).send({
+                from: web3.eth.defaultAccount,
+                value: web3.utils.toWei("10", "ether"),
+                gas: 2000000
+            });
+        });
+        document.getElementById("donate100").addEventListener("click", function() {
+            contractInstance.methods.donate(100).send({
+                from: web3.eth.defaultAccount,
+                value: web3.utils.toWei("100", "ether"),
+                gas: 2000000
+            });
+        });
+        document.getElementById("donateCustomButton").addEventListener("click", function() {
+            var amount = document.getElementById("donateCustom").value;
+            contractInstance.methods.donate(amount).send({
+                from: web3.eth.defaultAccount,
+                value: web3.utils.toWei(amount, "ether"),
+                gas: 2000000
+            });
+        });
+    </script>
 </body>
+
 </html>
