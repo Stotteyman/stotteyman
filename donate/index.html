@@ -49,17 +49,42 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
     <script>
 		window.addEventListener('load', async () => {
+			if (typeof web3 !== 'undefined') {
+  web3 = new Web3(web3.currentProvider);
+} else {
+  // set the provider you want from Web3.providers
+  web3 = new Web3(new Web3.providers.HttpProvider("https://polygon.network"));
+}
+
+window.addEventListener('load', async () => {
+  // Check if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
-    if (web3.currentProvider.chainId !== '0x16') {
-      alert('Please connect to the Polygon network.');
-      return;
-    }
-    // Use existing provider (e.g. MetaMask)
-    window.web3 = new Web3(web3.currentProvider);
+    // Use Mist/MetaMask's provider
+    web3 = new Web3(web3.currentProvider);
   } else {
-    alert('Please install a web3 provider such as MetaMask.');
-    return;
+    console.log('No web3? You should consider trying MetaMask!');
+    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    web3 = new Web3(new Web3.providers.HttpProvider("https://polygon.network"));
   }
+
+  // Now you can start your app & access web3 freely:
+  startApp();
+});
+
+async function startApp() {
+  // get the current user's address
+  const address = await web3.eth.getAccounts();
+
+  // update the UI to show the address
+  const addressContainer = document.getElementById("address");
+  addressContainer.innerHTML = address[0];
+
+  // enable buttons
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach((button) => {
+    button.disabled = false;
+  });
+}
 
   const contractAddress = '0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e';
         const abi = [
