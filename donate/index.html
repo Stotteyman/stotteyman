@@ -64,18 +64,18 @@
 ];
         const contract = new web3.eth.Contract(abi, contractAddress);
 
-        web3.eth.getAccounts().then((accounts) => {
-          const account = accounts[0];
-          document.getElementById('account-address').innerText = account;
+    web3.eth.getAccounts().then((accounts) => {
+      const account = accounts[0];
+      document.getElementById('account-address').innerText = account;
 
-          document.getElementById('donate-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const amount = document.getElementById('donate-amount').value;
-            contract.methods.fund(amount).send({ from: account });
-          });
-        });
+      document.getElementById('donate-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const amount = document.getElementById('donate-amount').value;
+        contract.methods.fund(amount).send({ from: account });
       });
-    </script>
+    });
+  });
+</script>
   </head>
   <body>
     <div id="account-address"></div>
@@ -83,13 +83,11 @@
       <input type="text" id="donate-amount">
       <input type="submit" value="Donate">
     </form>
-    <button id="donate-10-usdc-button">Donate 10 USDC</button>
+    <button id="donate-10-button" onclick="document.getElementById('donate-amount').value = 10; document.getElementById('donate-form').submit()">Donate 10 USDC</button>
     <button id="connect-wallet-button" onclick="ethereum.enable()">Connect Wallet</button>
   </body>
-  <script>
-    document.getElementById("donate-10-usdc-button").addEventListener("click", function() {
-      document.getElementById("donate-amount").value = "10";
-      document.getElementById("donate-form").submit();
-    });
-  </script>
 </html>
+
+
+
+
