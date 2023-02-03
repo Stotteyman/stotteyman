@@ -57,20 +57,37 @@
 	}
 ];
 
-    // Connect to the contract
-    var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
-    var contract = new web3.eth.Contract(abi, contractAddress);
+var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
+var contract = new web3.eth.Contract(abi, contractAddress);
 
-    // Function to donate with a specified amount
-    function fund(amount) {
-      contract.methods.donate(amount).send({ from: web3.eth.defaultAccount })
-        .then(function (receipt) {
-          console.log("Donation successful:", receipt);
-        })
-        .catch(function (error) {
-          console.error("Error making donation:", error);
-        });
+function fund(amount) {
+  contract.methods.donate(amount).send({ from: web3.eth.defaultAccount })
+    .then(function (receipt) {
+      console.log("Donation successful:", receipt);
+    })
+    .catch(function (error) {
+      console.error("Error making donation:", error);
+    });
+}
+
+window.addEventListener('load', async () => {
+  if (window.ethereum) {
+    window.web3 = new Web3(ethereum);
+    try {
+      await ethereum.enable();
+      web3.eth.defaultAccount = (await web3.eth.getAccounts())[0];
+    } catch (error) {
+      console.error("User denied web3 access");
     }
+  }
+  else if (window.web3) {
+    window.web3 = new Web3(web3.currentProvider);
+    web3.eth.defaultAccount = web3.eth.accounts[0];
+  }
+  else {
+    console.error("Non-Ethereum browser detected. You should consider trying MetaMask!");
+  }
+});
   </script>
 </head>
 <body>
