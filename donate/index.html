@@ -75,14 +75,12 @@
 </head>
 <body>
   <!-- Donation buttons -->
-  <button onclick="donate(1)">Donate 1 USDC</button>
-  <button onclick="donate(20)">Donate 20 USDC</button>
-  <button onclick="donate(50)">Donate 50 USDC</button>
-  <button onclick="donate(100)">Donate 100 USDC</button>
-  
-  <!-- Custom amount field -->
-  <br><br>
-  <input id="amount" type="text">
-  <button onclick="donate(document.getElementById('amount').value)">Donate Custom Amount</button>
+  <form>
+    <button type="submit" value=“10” onclick="contract.fund(10)"></button>
+    <button type="submit" value=“25” onclick="contract.fund(25)"></button>
+    <button type="submit" value=“50” onclick="contract.fund(50)"></button>
+    <button type="submit" value=“100” onclick="contract.fund(100)"></button><br>
+    <input type="number" onchange="contract.fund(this.value)">
+    </form>
 </body>
 </html>
