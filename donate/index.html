@@ -12,14 +12,20 @@
 	  </style>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
     <script>
-      window.addEventListener('load', async () => {
-        if (typeof web3 !== 'undefined') {
-          web3 = new Web3(web3.currentProvider);
-        } else {
-          alert('Please install a Web3 provider such as Metamask or Brave.');
-        }
-
-        const contractAddress = '0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e';
+		window.addEventListener('load', async () => {
+		  if (typeof web3 !== 'undefined') {
+			web3 = new Web3(web3.currentProvider);
+		  } else {
+			alert('Please install a Web3 provider such as Metamask or Brave.');
+		  }
+  
+		  const networkId = await web3.eth.net.getId();
+		  if (networkId !== PolygonNetworkId) {
+			alert('Please switch to the Polygon network in your Web3 provider.');
+			return;
+		  }
+  
+		  const contractAddress = '0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e';
         const abi = [
 	{
 		"inputs": [
