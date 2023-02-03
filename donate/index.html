@@ -3,84 +3,29 @@
 <head>
   <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
   <script>
-    var abi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "usdcContractAddress",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "USDC",
-				"type": "uint256"
-			}
-		],
-		"name": "fund",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "usdc",
-		"outputs": [
-			{
-				"internalType": "contract USDC",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
-var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
-  var contract = new web3.eth.Contract(abi, contractAddress);
-  
-  function fund(amount) {
-    web3.eth.getAccounts().then(function(accounts) {
-      contract.methods.fund(amount).send({ from: accounts[0] })
+    var abi = [];
+    var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
+    var contract = new web3.eth.Contract(abi, contractAddress);
+
+    function fund(amount) {
+      var fromAddress = web3.eth.defaultAccount;
+      contract.methods.fund(amount).send({ from: fromAddress })
         .then(function (receipt) {
           console.log("Donation successful:", receipt);
         })
         .catch(function (error) {
           console.error("Error making donation:", error);
         });
-    });
-  }
-</script>
+    }
+  </script>
 </head>
 <body>
-  <!-- Donation buttons -->
   <button onclick="fund(10)">Donate 10 USDC</button>
   <button onclick="fund(25)">Donate 25 USDC</button>
   <button onclick="fund(50)">Donate 50 USDC</button>
   <button onclick="fund(100)">Donate 100 USDC</button>
-  <!-- Custom amount field -->
-<br><br>
-<input id="amount" type="number">
-<button onclick="fund(document.getElementById('amount').value)">Donate Custom Amount</button>
-
+  <br><br>
+  <input id="amount" type="number">
+  <button onclick="fund(document.getElementById('amount').value)">Donate Custom Amount</button>
 </body>
 </html>
