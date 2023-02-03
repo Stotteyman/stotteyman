@@ -140,7 +140,27 @@ async function startApp() {
 		"type": "function"
 	}
 ];
-        const contract = new web3.eth.Contract(abi, contractAddress);
+const contract = new web3.eth.Contract(abi, contractAddress);
+const usdcContract = new web3.eth.Contract(usdcAbi, usdcContractAddress);
+
+async function fund() {
+  const USDC = document.getElementById("USDC").value;
+  const usdcBalance = await usdcContract.methods.balanceOf(address[0]).call();
+
+  // check if the user has enough USDC
+  if (usdcBalance < USDC) {
+    alert("Not enough USDC");
+    return;
+  }
+
+  // approve the contract to use USDC on behalf of the user
+  await usdcContract.methods.approve(contractAddress, USDC).send({ from: address[0] });
+
+  // call the fund method on the contract
+  await contract.methods.fund(USDC).send({ from: address[0] });
+
+  alert("Transaction complete!");
+}
 
         web3.eth.getAccounts().then((accounts) => {
           const account = accounts[0];
