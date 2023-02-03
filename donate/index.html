@@ -1,5 +1,15 @@
 <html>
   <head>
+	<style>
+		.container {
+		  width: 500px;
+		  height: 500px;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  border: 1px solid black;
+		}
+	  </style>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
     <script>
       window.addEventListener('load', async () => {
@@ -103,15 +113,20 @@
 </script>
   </head>
   <body>
-    <div id="connect-wallet-button" onclick="ethereum.enable()">Connect Wallet</div>
-    <div id="account-address"></div>
-    <form id="donate-form">
-      <input type="text" id="donate-amount">
-      <input type="submit" value="Donate">
-    </form>
-    <button id="donate-10-button">Donate 10</button>
-    <button id="donate-20-button">Donate 20</button>
-    <button id="donate-50-button">Donate 50</button>
-    <button id="donate-100-button">Donate 100</button>
+	<div style="display:flex; justify-content:center; align-items:center; height:100vh">
+	  <div style="border:1px solid black; padding:20px; width:400px">
+		<div id="account-address" style="text-align:center"></div>
+		<button id="connect-wallet-button" style="display:none; margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none" onclick="ethereum.enable()">Connect Wallet</button>
+		<form id="donate-form">
+		  <input type="text" id="donate-amount" style="margin:10px auto; width:150px; height:30px; padding:5px">
+		  <input type="submit" value="Donate" style="margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none">
+		</form>
+		<button id="donate-10-button" style="margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none">Donate 10</button>
+		<button id="donate-20-button" style="margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none">Donate 20</button>
+		<button id="donate-50-button" style="margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none">Donate 50</button>
+		<button id="donate-100-button" style="margin:10px auto; width:150px; height:30px; background-color:blue; color:white; border:none">Donate 100</button>
+	  </div>
+	</div>
   </body>
+  
 </html>
