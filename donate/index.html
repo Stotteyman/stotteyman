@@ -4,58 +4,7 @@
   <script src="https://cdn.jsdelivr.net/npm/web3@1.0.0-beta.37/dist/web3.min.js"></script>
   <script>
     // Add your ABI here
-    var abi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "usdcContractAddress",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "USDC",
-				"type": "uint256"
-			}
-		],
-		"name": "fund",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "usdc",
-		"outputs": [
-			{
-				"internalType": "contract USDC",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
+    var abi = [];
 
 var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
 var contract = new web3.eth.Contract(abi, contractAddress);
