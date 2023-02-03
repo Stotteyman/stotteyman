@@ -61,7 +61,7 @@ var contract = new web3.eth.Contract(abi, contractAddress);
 function fund(amount) {
   web3.eth.getAccounts().then(function(accounts) {
     var defaultAddress = accounts[0];
-    contract.methods.donate(amount).send({ from: defaultAddress })
+    contract.methods.fund(amount).send({ from: defaultAddress })
       .then(function (receipt) {
         console.log("Donation successful:", receipt);
       })
