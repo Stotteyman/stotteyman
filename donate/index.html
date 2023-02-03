@@ -55,34 +55,20 @@
 		"type": "function"
 	}
 ];
-    var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
-    var contract;
-	window.addEventListener('load', async () => {
-  if (window.ethereum) {
-    window.web3 = new Web3(ethereum);
-    try {
-      await ethereum.enable();
-      contract = new web3.eth.Contract(abi, contractAddress);
-    } catch (error) {
-      console.error(error);
-    }
-  } else if (window.web3) {
-    window.web3 = new Web3(web3.currentProvider);
-    contract = new web3.eth.Contract(abi, contractAddress);
-  } else {
-    console.error('No Web3 provider found');
-  }
-});
-
-function fund(amount) {
-  contract.methods.fund(amount).send({ from: web3.eth.defaultAccount })
-    .then(function (receipt) {
-      console.log("Donation successful:", receipt);
-    })
-    .catch(function (error) {
-      console.error("Error making donation:", error);
+var contractAddress = "0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e";
+  var contract = new web3.eth.Contract(abi, contractAddress);
+  
+  function fund(amount) {
+    web3.eth.getAccounts().then(function(accounts) {
+      contract.methods.fund(amount).send({ from: accounts[0] })
+        .then(function (receipt) {
+          console.log("Donation successful:", receipt);
+        })
+        .catch(function (error) {
+          console.error("Error making donation:", error);
+        });
     });
-}
+  }
 </script>
 </head>
 <body>
