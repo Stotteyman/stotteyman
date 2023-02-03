@@ -49,14 +49,6 @@
     <script src="https://cdn.jsdelivr.net/npm/web3@1.3.0/dist/web3.min.js"></script>
     <script>
 		window.addEventListener('load', async () => {
-			if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider);
-} else {
-  // set the provider you want from Web3.providers
-  web3 = new Web3(new Web3.providers.HttpProvider("https://polygon.network"));
-}
-
-window.addEventListener('load', async () => {
   if (typeof web3 !== 'undefined') {
     web3 = new Web3(web3.currentProvider);
   } else {
@@ -84,7 +76,6 @@ async function startApp() {
     button.disabled = false;
   });
 }
-
 
   const contractAddress = '0xD04449B411bAF44383BC1B021A65c1dcfb3CFe5e';
         const abi = [
@@ -176,7 +167,6 @@ async function startApp() {
             contract.methods.fund(100).send({ from: account });
           });
         });
-      });
     </script>
   </head>
   <body>
