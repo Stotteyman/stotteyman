@@ -25,20 +25,24 @@
       <div id="discord-chat">
         Loading chat...
       </div>
-
-      <script>
-        const discordChatContainer = document.getElementById("discord-chat");
-
-        fetch("https://discordapp.com/api/channels/1056805526383632486/messages")
-          .then(response => response.json())
-          .then(messages => {
-            let chatContent = "";
-            messages.forEach(message => {
-              chatContent += `<p><strong>${message.author.username}:</strong> ${message.content}</p>`;
-            });
-            discordChatContainer.innerHTML = chatContent;
-          });
-      </script>
     </div>
+
+    <script>
+      const discordChatContainer = document.getElementById("discord-chat");
+
+      fetch("https://discordapp.com/api/channels/1071779794146033787/messages", {
+        headers: {
+          "Authorization": "Bot 1071776470042685500"
+        }
+      })
+        .then(response => response.json())
+        .then(messages => {
+          let chatContent = "";
+          messages.forEach(message => {
+            chatContent += `<p><strong>${message.author.username}:</strong> ${message.content}</p>`;
+          });
+          discordChatContainer.innerHTML = chatContent;
+        });
+    </script>
   </body>
 </html>
