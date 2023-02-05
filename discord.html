@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .overlay {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 350px;
+        height: 500px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 10px;
+        overflow: scroll;
+      }
+
+      .overlay p {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay">
+      <div id="discord-chat">
+        Loading chat...
+    </div>
+
+    <script>
+      const discordChatContainer = document.getElementById("discord-chat");
+  
+      fetch("https://discordapp.com/api/channels/1056805526383632486/messages")
+        .then(response => response.json())
+        .then(messages => {
+          let chatContent = "";
+          messages.forEach(message => {
+            chatContent += `<p><strong>${message.author.username}:</strong> ${message.content}</p>`;
+          });
+          discordChatContainer.innerHTML = chatContent;
+        });
+    </script>
+  </div>
+</body>
+</html>
