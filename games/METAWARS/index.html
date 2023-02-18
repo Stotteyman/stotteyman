@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
     <title>METAWARS</title>
   </head>
   <body>
-    <canvas id="game-canvas" width="800" height="600"></canvas>
-    <!-- Load Web3 library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.5.2/web3.min.js"></script>
-    <!-- Load Ethers library -->
-    <script src="https://cdn.ethers.io/lib/ethers-5.4.umd.min.js"></script>
-    <!-- Load app script -->
+    <h1>METAWARS</h1>
+    <div id="scores"></div>
+    <button id="addPlayerButton">Add Player</button>
+    <div>
+      <label for="scoreInput">Your Score:</label>
+      <input type="text" id="scoreInput">
+      <button id="setScoreButton">Set Score</button>
+    </div>
+    <div>
+      <label for="winnerInput">Set Winner:</label>
+      <input type="text" id="winnerInput">
+      <button id="setWinnerButton">Set Winner</button>
+    </div>
+    <script src="https://cdn.ethers.io/lib/ethers-5.5.1.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
