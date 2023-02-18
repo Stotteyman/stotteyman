@@ -158,11 +158,9 @@ async function setWinner() {
   await contract.setWinner(winner);
 }
 
-// Fix for the addEventListener error:
-window.addEventListener("DOMContentLoaded", function () {
+window.addEventListener("load", () => {
   document.getElementById("addPlayerButton").addEventListener("click", addPlayer);
   document.getElementById("setScoreButton").addEventListener("click", setScore);
   document.getElementById("setWinnerButton").addEventListener("click", setWinner);
-
   getScores();
 });
