@@ -12,8 +12,10 @@
     <!-- Load app script -->
     <script src="app.js"></script>
     <script>
-      // Initialize the app
-      initApp();
+      // Call the initApp function once the page has finished loading
+      window.addEventListener("load", function() {
+        initApp();
+      });
     </script>
   </body>
 </html>
