@@ -9,7 +9,6 @@
 .progress-bar-container {
   width: 50%;
   height: 30px;
-  background-color: black;
   margin: 0 auto;
   position: relative;
 }
@@ -22,10 +21,11 @@
   transition: width 1s ease-in-out;
 }
 
-/* Center the entire container on the page */
+/* Center the entire container on the page and make the background transparent */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
+  background-color: transparent;
 }
