@@ -3,6 +3,11 @@
   color: #FFA500;
   font-size: 24px;
   text-align: center;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* Set up the progress bar container */
@@ -11,6 +16,7 @@
   height: 30px;
   background-color: black;
   margin: 0 auto;
+  position: relative;
 }
 
 /* Set up the progress bar fill */
