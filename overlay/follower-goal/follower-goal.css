@@ -1,31 +1,36 @@
-/* Set the color and font properties for the progress text */
-.progress-text {
-  color: #FFA500;
-  font-size: 24px;
-  text-align: center;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
-/* Set up the progress bar container */
-.progress-bar-container {
-  width: 50%;
-  height: 30px;
-  margin: 0 auto;
-  position: relative;
-}
-
-/* Set up the progress bar fill */
-.progress-bar {
-  height: 100%;
-  background-color: #FFC04D;
-  /* Use CSS transition to animate the progress bar fill */
-  transition: width 1s ease-in-out;
-}
-
-/* Center the entire container on the page and make the background transparent */
 .container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: 100vh;
   background-color: transparent;
+}
+
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  height: 30px;
+  background-color: black;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 50%;
+  height: 100%;
+  background-color: darkorange;
+}
+
+.progress-text {
+  color: white;
+  font-size: 18px;
+  margin: 0 10px;
 }

@@ -1,18 +1,60 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Follower Goal</title>
-    <link rel="stylesheet" type="text/css" href="follower-goal.css">
-  </head>
-  <body>
-    <div class="container">
-      <div class="progress-bar-container">
-        <div class="progress-bar" id="progress-bar" style="width: 48%;">
-          <div class="progress-text" id="progress-text">Follower Goal: <span id="follower-count"></span> / 75</div>
-        </div>
-      </div>
-    </div>
-    <script src="follower-goal.js"></script>
-  </body>
+<head>
+	<meta charset="UTF-8">
+	<title>Follower Goal Progress Bar</title>
+	<style>
+		.container {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+		}
+
+		.progress-bar-container {
+			position: relative;
+			display: inline-block;
+			height: 30px;
+			width: 400px;
+			border-radius: 15px;
+			background-color: black;
+			overflow: hidden;
+		}
+
+		.progress-bar {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: calc((var(--followers) / 75) * 100%);
+			background-color: #FF8C00;
+			color: white;
+			text-align: center;
+			line-height: 30px;
+			transition: width 0.5s ease-in-out;
+		}
+	</style>
+</head>
+<body style="background-color: transparent;">
+	<div class="container">
+		<div class="progress-bar-container">
+			<div class="progress-bar" style="--followers: 36;">
+				Follower Goal: 36 / 75
+			</div>
+		</div>
+	</div>
+
+	<script>
+		function updateProgressBar() {
+			const followers = document.querySelector("p.stream-title").innerText;
+			const followersCount = parseInt(followers.replace(/\D/g, ""));
+			const progressBar = document.querySelector(".progress-bar");
+			progressBar.style.setProperty("--followers", followersCount);
+			progressBar.innerText = `Follower Goal: ${followersCount} / 75`;
+		}
+
+		setInterval(updateProgressBar, 1000);
+	</script>
+</body>
 </html>

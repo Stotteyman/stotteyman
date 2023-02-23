@@ -1,16 +1,16 @@
-// Find the follower count element on the channel page
-const followerCountElement = document.querySelector('p.stream-title');
+const followerGoal = 75;
 
-// Get the current follower count from the follower count element
-const currentFollowers = parseInt(followerCountElement.textContent);
+function updateProgressBar() {
+  const followerCountElement = document.querySelector('.p.stream-title');
+  const followerCount = parseInt(followerCountElement.innerText);
 
-// Calculate the progress as a percentage of the goal
-const progress = (currentFollowers / 75) * 100;
+  const progressBar = document.querySelector('.progress-bar');
+  const progressText = document.querySelector('.progress-text');
 
-// Find the progress bar and set its width to the calculated progress
-const progressBar = document.getElementById('progress-bar');
-progressBar.style.width = progress + '%';
+  const percentage = Math.min((followerCount / followerGoal) * 100, 100);
+  progressBar.style.width = `${percentage}%`;
+  progressText.innerText = `Follower Goal: ${followerCount} / ${followerGoal}`;
+}
 
-// Update the follower count text
-const followerCountText = document.getElementById('follower-count');
-followerCountText.textContent = currentFollowers;
+updateProgressBar();
+setInterval(updateProgressBar, 1000);
