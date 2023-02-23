@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Follower Goal Progress Bar</title>
-  <link rel="stylesheet" type="text/css" href="follower-goal.css">
-</head>
-<body>
-  <div class="center">
+  <head>
+    <meta charset="UTF-8">
+    <title>Follower Goal</title>
+    <link rel="stylesheet" type="text/css" href="follower-goal.css">
+  </head>
+  <body>
     <div class="progress-bar-container">
-      <div class="progress-bar"></div>
-      <span class="progress-bar-text">Follower Goal: 36 / 75</span>
+      <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+      <div class="progress-text" id="progress-text">Follower Goal: <span id="follower-count"></span> / 75</div>
     </div>
-  </div>
-  <script src="follower-goal.js"></script>
-</body>
+    <script src="follower-goal.js"></script>
+  </body>
 </html>

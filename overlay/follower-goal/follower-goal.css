@@ -1,27 +1,16 @@
-body {
-  background-color: transparent;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+/* Set the color and font properties for the progress text */
+.progress-text {
+  color: #FFA500;
+  font-size: 24px;
+  text-align: center;
 }
 
 /* Set up the progress bar container */
 .progress-bar-container {
-  display: flex;
-  align-items: center;
-  width: 80%;
-  height: 50px;
-  position: relative;
-  background-color: #000;
-  color: #FFA500;
-  font-size: 24px;
-  text-align: center;
-  border-radius: 25px;
-  overflow: hidden;
+  width: 100%;
+  height: 30px;
+  background-color: black;
+  margin: 0 auto;
 }
 
 /* Set up the progress bar fill */
@@ -30,17 +19,4 @@ body {
   color: #FFC04D;
   /* Use CSS transition to animate the progress bar fill */
   transition: width 1s ease-in-out;
-}
-
-/* Set up the progress bar text */
-.progress-bar-text {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2;
-  /* Use a darker orange text color */
-  color: #FF8C00;
 }
