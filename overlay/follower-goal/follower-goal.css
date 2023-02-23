@@ -3,16 +3,11 @@
   color: #FFA500;
   font-size: 24px;
   text-align: center;
-  margin: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 /* Set up the progress bar container */
 .progress-bar-container {
-  width: 100%;
+  width: 50%;
   height: 30px;
   background-color: black;
   margin: 0 auto;
@@ -22,7 +17,15 @@
 /* Set up the progress bar fill */
 .progress-bar {
   height: 100%;
-  color: #FFC04D;
+  background-color: #FFC04D;
   /* Use CSS transition to animate the progress bar fill */
   transition: width 1s ease-in-out;
+}
+
+/* Center the entire container on the page */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
