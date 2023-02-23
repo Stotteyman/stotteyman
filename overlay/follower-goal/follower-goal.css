@@ -9,6 +9,7 @@ body {
   height: 100vh;
 }
 
+/* Set up the progress bar container */
 .progress-bar-container {
   display: flex;
   align-items: center;
@@ -23,12 +24,15 @@ body {
   overflow: hidden;
 }
 
+/* Set up the progress bar fill */
 .progress-bar {
   height: 100%;
   background-color: #FFC04D;
+  /* Use CSS transition to animate the progress bar fill */
   transition: width 1s ease-in-out;
 }
 
+/* Set up the progress bar text */
 .progress-bar-text {
   position: absolute;
   width: 100%;
@@ -37,5 +41,6 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 2;
+  /* Use a darker orange text color */
   color: #FF8C00;
 }
