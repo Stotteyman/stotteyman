@@ -1,0 +1,34 @@
+body {
+    background-color: transparent;
+  }
+  
+  .progress-bar-container {
+    width: 100%;
+    height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+  }
+  
+  .progress-bar {
+    width: 0;
+    height: 100%;
+    background-color: #000;
+    color: #FFA500;
+    font-size: 24px;
+    text-align: center;
+    transition: width 1s ease-in-out;
+  }
+  
+  .progress-bar-text {
+    display: inline-block;
+    padding: 10px;
+  }
+  
+  .progress-bar-filled {
+    height: 100%;
+    background-color: #FFA500;
+    border-radius: 10px;
+  }
+  
