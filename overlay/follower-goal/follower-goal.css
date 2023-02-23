@@ -27,7 +27,7 @@ body {
 /* Set up the progress bar fill */
 .progress-bar {
   height: 100%;
-  background-color: #FFC04D;
+  color: #FFC04D;
   /* Use CSS transition to animate the progress bar fill */
   transition: width 1s ease-in-out;
 }
