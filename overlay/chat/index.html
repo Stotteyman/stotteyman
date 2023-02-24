@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>Chat Overlay</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+        iframe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+        }
         /* Transparent background. */
         .h-full {
             background-color: transparent !important;
@@ -67,6 +81,6 @@
     </style>
 </head>
 <body>
-    <iframe src="https://kick.com/stotteyman/chatroom" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe>
+    <iframe src="https://kick.com/stotteyman/chatroom"></iframe>
 </body>
 </html>
