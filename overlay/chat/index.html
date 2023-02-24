@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Chat Room Iframe</title>
+	<title>Chat Room Overlay</title>
 	<style>
-		body {
-			background-color: #f2f2f2;
-			font-family: Arial, sans-serif;
-			font-size: 14px;
-		}
-		iframe {
+		.overlay-container {
+			position: fixed;
+			top: 0;
+			left: 0;
 			width: 100%;
-			height: 600px;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.7);
+			z-index: 999;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.overlay-container iframe {
+			width: 80%;
+			height: 80%;
 			border: none;
 		}
 	</style>
 </head>
 <body>
-	<iframe id="chatroom-iframe" src="https://kick.com/stotteyman/chatroom"></iframe>
+	<div class="overlay-container">
+		<iframe id="chatroom-iframe" src="https://kick.com/stotteyman/chatroom"></iframe>
+	</div>
 
 	<script>
 		// Wait for iframe to load
