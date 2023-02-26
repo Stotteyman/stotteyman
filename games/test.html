@@ -1,37 +1,28 @@
+<!DOCTYPE html>
 <html>
 <head>
-<script type="text/javascript" src="//libs.polygon.io/web3-polygon/1.2.0/web3-polygon.min.js"></script>
-<script>
-window.addEventListener('load', async () => {
-// Network Connect
-let web3;
-
-if (window.ethereum) {
-web3 = new Web3(window.ethereum);
-
-try {
-// Request account access
-await window.ethereum.enable();
-} catch (error) {
-// User denied account access...
-}
-} else if (window.web3) {
-web3 = new Web3(window.web3.currentProvider);
-} else {
-// You could also fallback to a local webs3 object
-web3 = await Web3Polygon.create({
-network: 'kovan', // optional if you want to connect to an external network
-region: 'usa' // optional (defaults to 'asia')
-});
-}
-
-// now the web3 variable here will be the network provider
-});
-</script>
+	<title>Keyboard Navigation</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<div>
-<p>Welcome user, please connect to the web3 provider to interact with our token gated website!</p>
-</div>
+	<header>
+		<h1>Keyboard Navigation Example</h1>
+	</header>
+	<nav>
+		<ul>
+			<li><a href="#">Home</a></li>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Contact Us</a></li>
+		</ul>
+	</nav>
+	<main>
+		<h2>Welcome to our website</h2>
+		<p>This is an example website that you can navigate using your keyboard arrow keys.</p>
+	</main>
+	<footer>
+		<p>&copy; 2023 Keyboard Navigation Example</p>
+	</footer>
+	<script src="script.js"></script>
 </body>
 </html>
