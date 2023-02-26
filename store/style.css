@@ -1,151 +1,114 @@
-/* Global styles */
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
   }
   
   body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
   }
   
-  /* Header */
-  header {
-    background-color: #333;
-    color: white;
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
     padding: 20px;
-    text-align: center;
   }
   
-  header h1 {
-    margin: 0;
-  }
-  
-  /* Main content */
-  main {
-    margin: 20px auto;
-    max-width: 1000px;
-    text-align: center;
-  }
-  
-  h2 {
-    font-size: 2em;
-    margin-bottom: 20px;
-  }
-  
-  /* Slideshow */
-  .slideshow {
+  .category {
+    margin: 20px;
     display: inline-block;
     position: relative;
-    width: 300px;
-    height: 200px;
-    margin: 20px;
-    overflow: hidden;
-    border: 1px solid black;
-    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.5s;
+    cursor: pointer;
   }
   
-  /* Slides */
-  .slides {
+  .category:hover .overlay {
+    opacity: 0.5;
+  }
+  
+  .category .overlay {
+    background-color: #000000;
+    opacity: 0;
+    transition: opacity 0.5s;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
-    transition: opacity 1s;
   }
   
-  /* Caption */
-  .caption {
+  .category img {
+    max-width: 100%;
+  }
+  
+  .slideshow-container {
+    max-width: 100%;
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .slideshow-container .prev,
+  .slideshow-container .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px;
+    margin-right: 5px;
+    border-radius: 0 3px 3px 0;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  .slideshow-container .next {
+    margin-right: 0;
+    margin-left: 5px;
+    border-radius: 3px 0 0 3px;
+    right: 0;
+  }
+  
+  .slideshow-container .prev:hover,
+  .slideshow-container .next:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .slideshow-container .slides {
+    display: none;
+  }
+  
+  .slideshow-container .slides:first-child {
+    display: block;
+  }
+  
+  .slideshow-container img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .slideshow-container .caption {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
+    right: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    font-size: 1.5em;
-    text-align: center;
-    padding: 5px;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 18px;
   }
   
-  /* Show first slide */
-  .slides:first-child {
-    opacity: 1;
+  @media only screen and (min-width: 768px) {
+    .category {
+      width: 48%;
+    }
   }
   
-  /* Show caption on hover */
-  .slideshow:hover .caption {
-    visibility: visible;
-    opacity: 1;
+  @media only screen and (min-width: 1200px) {
+    .category {
+      width: 31.33%;
+    }
   }
-  
-  /* Show next slide on hover */
-  .slideshow:hover .slides:first-child {
-    opacity: 0.4;
-  }
-  .slideshow:hover .slides:nth-child(2) {
-    opacity: 0.6;
-  }
-  .slideshow:hover .slides:nth-child(3) {
-    opacity: 0.8;
-  }
-  .slideshow:hover .slides:last-child {
-    opacity: 1;
-  }
-  
-  /* Category buttons */
-  .btn {
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 20px;
-    cursor: pointer;
-    transition: background-color 0.5s;
-  }
-  
-  .btn:hover {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Glass category */
-  .glass {
-    background-color: #f2f2f2;
-  }
-  
-  .glass .caption {
-    background-color: rgba(51, 51, 51, 0.5);
-  }
-  
-  /* Paper category */
-  .paper {
-    background-color: #f2f2f2;
-  }
-  
-  .paper .caption {
-    background-color: rgba(51, 51, 51, 0.5);
-  }
-  
-  /* Blunts category */
-  .blunts {
-    background-color: #f2f2f2;
-  }
-  
-  .blunts .caption {
-    background-color: rgba(51, 51, 51, 0.5);
-  }
-  
-  /* Tools category */
-  .tools {
-    background-color: #f2f2f2;
-  }
-  
-  .tools .caption {
-    background-color: rgba(51, 51
-  
