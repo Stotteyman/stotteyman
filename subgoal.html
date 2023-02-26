@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Twitch Sub Goal Overlay</title>
+  </head>
+  <body>
+    <div id="subGoalContainer">
+      <p id="subGoalNumber">0</p>
+      <p id="subGoalText">subs until next goal</p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tweenjs/tween.js@17.0.0"></script>
+    <script src="https://api.twitch.tv/helix/subscriptions?broadcaster_id=stotteyman&first=100"></script>
+    <script>
+      const subGoalNumber = document.getElementById("subGoalNumber");
+      const subGoalText = document.getElementById("subGoalText");
+      const subGoalContainer = document.getElementById("subGoalContainer");
+
+      let subCount = 0;
+
+      // Fetch the current subscriber count from the Twitch API
+      fetch("https://api.twitch.tv/helix/subscriptions?broadcaster_id=stotteyman&first=100", {
+        headers: {
+          "Client-ID": "svp61t7gvl6hqfegpbf05alp5by375"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          subCount = data.total;
+          subGoalNumber.innerText = subCount;
+        });
+
+      // Tween the sub count to animate the change when new subs come in
+      const subTween = new TWEEN.Tween(subCount)
+        .to({ subCount: subCount + 1 }, 1000)
+        .onUpdate(function() {
+          subGoalNumber.innerText = Math.floor(this.subCount);
+        })
+        .start();
+
+      // Animate the sub goal number and text
+      function animate() {
+        requestAnimationFrame(animate);
+        TWEEN.update();
+      }
+      animate();
+    </script>
+    <style>
+      #subGoalContainer {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+        font-size: 20px;
+        text-align: center;
+      }
+    </style>
+  </body>
+</html>

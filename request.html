@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>HOME - Stotteyman</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content=""> 
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="https://stotteyman.eth.limo/images/favicon.ico" type="image/gif">
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- owl stylesheets --> 
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+    </head>
+    <body>
+        <!-- header section start -->
+        <div class="header_section">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="logo"><a href="/"><img src="images/logo.gif"></a></div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                  <a class="nav-link" href="/">HOME</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="services">SERVICES</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="shop">SHOP</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="live">LIVE</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="about">ABOUT ME</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="contact">CONTACT ME</a>
+                </li>
+              </ul>                                          
+              <form class="form-inline my-2 my-lg-0">
+                <div class="twitter-icon"><a href="https://twitter.com/stotteyman"><img src="https://stotteyman.eth.limo/images/twitter-icon.png"></a></div>
+              </form>
+            </div>
+          </nav>
+        </div>
+        <!-- header section end -->
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfvy9vhYbx_vAGSJMAEbZ_0uyYtXwh2WAAgfrwLNC_MV_pvxA/viewform?embedded=true" width="640" height="2499" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        <!-- footer section start -->
+<div class="footer_section layout_padding">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 col-lg-4">
+          <h1 class="adderss_text">Address</h1>
+          <div class="map_icon"><img src="images/map-icon.png"><span class="paddlin_left_0">Los Angeles, California United States of America</span></div>
+          <div class="map_icon_1"><img src="images/call-icon.png"><span class="paddlin_left_0"><a href="tel:+1213-441-2475">+1213-441-2475</a></span></div>
+          <div class="map_icon"><img src="images/mail-icon.png"><span class="paddlin_left_0"><a href="mailto:stotteyman.eth@mmail.ink" class="tm-link-white">stotteyman.eth@mmail.ink</a></span></div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <h1 class="adderss_text">Typical Day (PST)</h1>
+          <div class="hiphop_text_1">Morning Sesh   :<span style="text-align: right; float: right;"><a href="https://discord.gg/mindsetfamily"> 07:00am - 09:00am</a></span></div>
+          <div class="hiphop_text_1">Content :        <span style="text-align: right; float: right;"><a href="https://discord.gg/mindsetfamily"> 09:00am - 12:00pm</a></span></div>
+          <div class="hiphop_text_1">Lunch Sesh :   <span style="text-align: right; float: right;"><a href="https://discord.gg/mindsetfamily"> 12:00pm - 02:00pm</a></span></div>
+          <div class="hiphop_text_1">Content :         <span style="text-align: right; float: right;"><a href="https://discord.gg/mindsetfamily"> 02:00pm - 06:00pm</a></span></div>
+          <div class="hiphop_text_1">Dinner Sesh :   <span style="text-align: right; float: right;"><a href="https://discord.gg/mindsetfamily"> 06:00pm - 10:00pm</a></span></div>
+        </div>
+        <div class="col-sm-6 col-lg-4">
+          <form onsubmit="sendContact(event)">
+          <input type="name" class="form-control" placeholder="Name" id="nameInput">
+          <input type="email" class="form-control" placeholder="Email Address" id="emailInput">
+          <textarea class="form-control" placeholder="Your Message" id="messageInput" rows="3"></textarea>
+          <button type="submit" class="btn btn-primary">Send</button>
+          </form>
+        <script>
+          async function sendContact(ev) {
+            ev.preventDefault();
+    
+            const senderName = document
+              .getElementById('nameInput').value;
+            const senderEmail = document
+              .getElementById('emailInput').value;
+            const senderMessage = document
+              .getElementById('messageInput').value;
+    
+            const webhookBody = {
+              embeds: [{
+                title: 'NEW MESSAGE',
+                fields: [
+                  { name: 'Name', value: senderName },
+                  { name: 'Email', value: senderEmail },
+                  { name: 'Message', value: senderMessage }
+                ]
+              }],
+            };
+    
+            const webhookUrl = 'https://discord.com/api/webhooks/1057792817453355058/zTfcyq9z3KrU3Kkf3a8m-3hGAlritmJtBoKyqBaiNyVWWFQ_nGVKJ_crvr0CthMwlIzX';
+    
+            const response = await fetch(webhookUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(webhookBody),
+            });
+    
+            if (response.ok) {
+              alert('Your message has been sent!');
+            } else {
+              alert('Message not sent! Try again later!');
+            }
+          }
+        </script>
+          <div class="social_icon">
+            <ul>            
+              <li><a href="https://twitter.com/stotteyman"><img src="https://stotteyman.eth.limo/images/twitter-icon.png"></a></li>
+              <li><a href="https://twitch.tv/stotteyman"><img src="https://stotteyman.eth.limo/images/twitch-icon.png"></a></li>
+              <li><a href="https://youtube.com/stotteyman"><img src="https://stotteyman.eth.limo/images/yt-icon.png"></a></li>
+              <li><a href="https://instagram.com/stotteyman"><img src="https://stotteyman.eth.limo/images/instagram-icon.png"></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- footer section end -->
+  <!-- copyright section start -->
+  <div class="copyright_section">
+    <div class="container">
+      <p class="copyright_text">2023 All Rights Reserved. Design by <a href="https://stotteyman.eth.limo/donate">stotteyman</a></p>
+    </div>
+  </div>
+  <!-- copyright section end -->
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfvy9vhYbx_vAGSJMAEbZ_0uyYtXwh2WAAgfrwLNC_MV_pvxA/viewform?embedded=true" width="640" height="2499" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+  <!-- Javascript files-->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script src="js/jquery-3.0.0.min.js"></script>
+  <script src="js/plugin.js"></script>
+  <!-- sidebar -->
+  <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+  <script src="js/custom.js"></script>
+  <!-- javascript --> 
+  <script src="js/owl.carousel.js"></script>
+  <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>    
+  </body></html>
