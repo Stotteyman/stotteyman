@@ -1,4 +1,4 @@
-const apiEndpoint = 'https://kick.com/api/v1/channels/deanza';
+const apiEndpoint = 'https://kick.com/api/v1/channels/stotteyman';
 const followerGoal = 200;
 
 function updateFollowerCount() {
