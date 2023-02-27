@@ -1,20 +1,36 @@
-body {
-	background-color: transparent;
+html, body {
+	height: 100%;
 }
 
-.follower-goal {
-	width: 200px;
-	height: 200px;
-	background-color: orange;
-	margin: 0 auto;
+.container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	height: 100%;
+	background-color: black;
 }
 
-#goal {
-	font-size: 72px;
+.progress {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 200px;
+	height: 200px;
+	background-color: black;
+	border: 2px solid orange;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.progress-text {
+	margin-top: 30px;
+	font-size: 24px;
 	font-weight: bold;
 	color: white;
-	margin: 0;
+}
+
+.progress-bar {
+	width: 0%;
+	height: 20px;
+	background-color: orange;
 }
