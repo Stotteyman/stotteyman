@@ -1,18 +1,18 @@
-let goal = document.querySelector(".progress-text");
-let progressBar = document.querySelector(".progress-bar");
+const apiEndpoint = 'https://kick.com/api/v1/channels/stotteyman';
+const followerGoal = 200;
 
 function updateFollowerCount() {
-    fetch("https://kick.com/api/v1/channels/stotteyman")
+  fetch(apiEndpoint)
     .then(response => response.json())
     .then(data => {
-        let currentFollowers = data.followersCount;
-        let percentComplete = currentFollowers / 2;
-        goal.innerHTML = currentFollowers + "/200 (" + percentComplete + "%)";
-        progressBar.style.width = percentComplete + "%";
+      const currentFollowers = data.followersCount;
+      const goalPercentage = Math.floor((currentFollowers / followerGoal) * 100);
+      document.getElementById('currentFollowers').textContent = currentFollowers;
+      document.getElementById('goalPercentage').textContent = goalPercentage;
+      document.querySelector('.progress-fill').style.width = `${goalPercentage}%`;
     })
-    .catch(error => console.log(error));
+    .catch(error => console.error('Error fetching follower count:', error));
 }
 
-// Fetch data initially and then every 10 seconds
 updateFollowerCount();
-setInterval(updateFollowerCount, 10000);
+setInterval(updateFollowerCount, 60000); // Update every minute
