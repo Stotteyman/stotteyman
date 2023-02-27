@@ -1,16 +1,15 @@
-const followerGoal = 75;
+let goal = document.getElementById("goal");
 
-function updateProgressBar() {
-  const followerCountElement = document.querySelector('.p.stream-title');
-  const followerCount = parseInt(followerCountElement.innerText);
-
-  const progressBar = document.querySelector('.progress-bar');
-  const progressText = document.querySelector('.progress-text');
-
-  const percentage = Math.min((followerCount / followerGoal) * 100, 100);
-  progressBar.style.width = `${percentage}%`;
-  progressText.innerText = `Follower Goal: ${followerCount} / ${followerGoal}`;
+function updateFollowerCount() {
+    fetch("https://api.example.com/follower-count") // replace with the actual URL
+    .then(response => response.json())
+    .then(data => {
+        let currentFollowers = data.followersCount;
+        goal.innerHTML = currentFollowers + "/200";
+    })
+    .catch(error => console.log(error));
 }
 
-updateProgressBar();
-setInterval(updateProgressBar, 1000);
+// Fetch data initially and then every 10 seconds
+updateFollowerCount();
+setInterval(updateFollowerCount, 10000);
