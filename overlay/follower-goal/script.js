@@ -8,7 +8,7 @@ function updateFollowerCount() {
       const currentFollowers = data.followersCount;
       const goalPercentage = Math.floor((currentFollowers / followerGoal) * 100);
       document.getElementById('currentFollowers').textContent = currentFollowers;
-      document.getElementById('goalPercentage').textContent = goalPercentage;
+      document.getElementById('followerGoal').textContent = followerGoal;
       document.querySelector('.progress-fill').style.width = `${goalPercentage}%`;
     })
     .catch(error => console.error('Error fetching follower count:', error));
