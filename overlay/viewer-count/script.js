@@ -1,7 +1,9 @@
+const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 const viewerCountUrl = 'https://www.kick.com/polyanmon';
 
 const xhr = new XMLHttpRequest();
-xhr.open('GET', viewerCountUrl);
+xhr.open('GET', proxyUrl + viewerCountUrl);
+xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 xhr.onload = () => {
   if (xhr.status === 200) {
     const responseHtml = xhr.response;
