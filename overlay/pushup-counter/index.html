@@ -2,55 +2,62 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Pushups for Followers</title>
+    <title>Pushup Counter</title>
     <style>
       body {
-        background-color: #000;
+        background-color: #1c1c1c;
         color: #fff;
-        font-size: 36px;
+        font-family: Arial, sans-serif;
         text-align: center;
-        padding-top: 100px;
       }
-
+      h1 {
+        margin-top: 50px;
+      }
       #pushup-counter {
-        font-size: 72px;
+        font-size: 48px;
         margin-top: 50px;
       }
     </style>
   </head>
   <body>
-    <div>Pushups to do: <span id="pushup-counter">0</span></div>
+    <h1>Pushup Counter</h1>
+    <p>Pushups to do: <span id="pushup-counter">0</span></p>
     <script>
       const apiEndpoint = 'https://kick.com/api/v1/channels/stotteyman';
-      const pushupsPerFollower = 10;
-      const resetTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-      let followersCount = 0;
+      let currentFollowers = 0;
       let pushupCounter = 0;
-      let lastResetTime = Date.now();
 
-      function updatePushupCounter() {
+      function updatePushupCounter(newFollowers) {
+        const pushupsToAdd = newFollowers - currentFollowers;
+        pushupCounter += pushupsToAdd * 10;
+        document.getElementById('pushup-counter').textContent = pushupCounter;
+        currentFollowers = newFollowers;
+      }
+
+      function resetPushupCounter() {
+        const now = new Date();
+        const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+        const secondsUntilMidnight = (midnight.getTime() - now.getTime()) / 1000;
+        setTimeout(() => {
+          pushupCounter = 0;
+          document.getElementById('pushup-counter').textContent = pushupCounter;
+          resetPushupCounter();
+        }, secondsUntilMidnight * 1000);
+      }
+
+      function fetchFollowers() {
         fetch(apiEndpoint)
           .then(response => response.json())
           .then(data => {
-            const currentFollowers = data.followersCount;
-            if (currentFollowers > followersCount) {
-              const newFollowers = currentFollowers - followersCount;
-              pushupCounter += newFollowers * pushupsPerFollower;
-              followersCount = currentFollowers;
-            }
-            const timeSinceLastReset = Date.now() - lastResetTime;
-            if (timeSinceLastReset > resetTime) {
-              pushupCounter = 0;
-              lastResetTime = Date.now();
-            }
-            document.getElementById('pushup-counter').textContent = pushupCounter;
+            const newFollowers = data.followersCount;
+            updatePushupCounter(newFollowers);
           })
           .catch(error => console.error('Error fetching follower count:', error));
       }
 
-      updatePushupCounter();
-      setInterval(updatePushupCounter, 60000); // Update every minute
+      fetchFollowers();
+      resetPushupCounter();
+      setInterval(fetchFollowers, 60000); // Update every minute
     </script>
   </body>
 </html>
