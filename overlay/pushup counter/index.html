@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Pushups for Followers</title>
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        font-size: 36px;
+        text-align: center;
+        padding-top: 100px;
+      }
+
+      #pushup-counter {
+        font-size: 72px;
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Pushups to do: <span id="pushup-counter">0</span></div>
+    <script>
+      const apiEndpoint = 'https://kick.com/api/v1/channels/stotteyman';
+      const pushupsPerFollower = 10;
+      const resetTime = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+      let followersCount = 0;
+      let pushupCounter = 0;
+      let lastResetTime = Date.now();
+
+      function updatePushupCounter() {
+        fetch(apiEndpoint)
+          .then(response => response.json())
+          .then(data => {
+            const currentFollowers = data.followersCount;
+            if (currentFollowers > followersCount) {
+              const newFollowers = currentFollowers - followersCount;
+              pushupCounter += newFollowers * pushupsPerFollower;
+              followersCount = currentFollowers;
+            }
+            const timeSinceLastReset = Date.now() - lastResetTime;
+            if (timeSinceLastReset > resetTime) {
+              pushupCounter = 0;
+              lastResetTime = Date.now();
+            }
+            document.getElementById('pushup-counter').textContent = pushupCounter;
+          })
+          .catch(error => console.error('Error fetching follower count:', error));
+      }
+
+      updatePushupCounter();
+      setInterval(updatePushupCounter, 60000); // Update every minute
+    </script>
+  </body>
+</html>
