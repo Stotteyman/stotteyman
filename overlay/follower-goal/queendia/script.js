@@ -1,5 +1,5 @@
 const apiEndpoint = 'https://kick.com/api/v1/channels/queendia';
-const followerGoal = 75;
+const followerGoal = 150;
 
 function updateFollowerCount() {
   fetch(apiEndpoint)
