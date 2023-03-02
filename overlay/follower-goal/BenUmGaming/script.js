@@ -1,5 +1,5 @@
 const apiEndpoint = 'https://kick.com/api/v1/channels/benumgaming';
-const followerGoal = 75;
+const followerGoal = 100;
 
 function updateFollowerCount() {
   fetch(apiEndpoint)
