@@ -1,69 +1,96 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body {
+    background: #000000;
 }
 
 .container {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    background-color: #000000;
-}
-
-.bg-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url("https://pbs.twimg.com/profile_banners/1300215616494882816/1598832439/1500x500") no-repeat center center fixed;
-    background-size: cover;
-    z-index: -1;
-}
-
-.content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: white;
-}
-
-.profile-pic img {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    border: 5px solid #ffffff;
-    margin-bottom: 20px;
-}
-
-.profile-name h1 {
-    font-size: 48px;
-    margin-bottom: 20px;
-}
-
-.button-container {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.box {
+    text-align: center;
+    margin: 20px;
+    font-size: 1.5rem;
+    background-color: #EE2E31;
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-button {
-    padding: 20px 40px;
-    border: none;
-    background-color: transparent;
-    color: #ffffff;
-    font-size: 24px;
-    font-weight: bold;
-    margin: 10px 0;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-    border-radius: 20px;
+a {
+    text-decoration: none;
+    color: #FFFFFF;
 }
 
-button:hover {
-    background-color: #ffffff;
-    color: #000000;
+a:hover {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+i {
+    margin-bottom: 10px;
+}
+
+.fa-envelope {
+    color: #FFFFFF;
+    background-color: #3488C1;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.fa-folder-open {
+    color: #FFFFFF;
+    background-color: #28A645;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.fa-twitter {
+    color: #FFFFFF;
+    background-color: #1DA1F2;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.fa-discord {
+    color: #FFFFFF;
+    background-color: #7289DA;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .box {
+        width: 200px;
+        height: 120px;
+    }
+
+    i {
+        font-size: 2rem;
+    }
+
+    a {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .box {
+        width: 150px;
+        height: 100px;
+    }
+
+    i {
+        font-size: 1.5rem;
+    }
+
+    a {
+        font-size: 0.8rem;
+    }
 }
