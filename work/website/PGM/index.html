@@ -1,50 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- basic -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- mobile metas -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-
-  <!-- Primary Meta Tags -->
-  <title>PGM | Home</title>
-  <meta name="title" content="PGM">
-  <meta name="description" content="Personal website of PGM.">
-  <!-- End of meta tags -->
-
-  <!-- favicon -->
-  <link rel="icon" href="pgm.ico">
-
-  <!-- social media image -->
-  <meta property="og:image" content="https://pbs.twimg.com/profile_images/1616338889819492354/Ozu50whN_400x400.jpg">
-
-  <!-- CSS styles -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div id="main">
-    <a href="mailto:pgm@example.com" class="button">Contact Me</a>
-    <a href="https://example.com/portfolio" class="button">Portfolio</a>
-    <button>Discord</button>
-    <button>Twitter</button>
-  </div>
-
-  <script>
-    document.querySelectorAll("button").forEach(function(button) {
-      button.addEventListener("click", function() {
-        switch (button.innerHTML) {
-          case "Discord":
-            window.location.href = "https://discord.gg/cryptocrew";
-            break;
-          case "Twitter":
-            window.location.href = "https://twitter.com/Pgm__x";
-            break;
-        }
-      });
-    });
-  </script>
-</body>
+<html>
+  <head>
+    <title>PGM</title>
+    <link rel="icon" href="pgm.ico" type="image/x-icon">
+    <meta property="og:image" content="https://pbs.twimg.com/profile_images/1616338889819492354/Ozu50whN_400x400.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="box">
+        <a href="#" class="btn">Contact Me</a>
+      </div>
+      <div class="box">
+        <a href="#" class="btn">Portfolio</a>
+      </div>
+      <div class="box">
+        <a href="https://twitter.com/Pgm__x" target="_blank" class="btn"><i class="fab fa-twitter"></i> Twitter</a>
+      </div>
+      <div class="box">
+        <a href="#" class="btn"><i class="fab fa-discord"></i> Crypto Crew</a>
+      </div>
+    </div>
+  </body>
 </html>
