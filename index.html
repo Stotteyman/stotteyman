@@ -1,89 +1,35 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-  <!-- basic -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- mobile metas -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <!-- Primary Meta Tags -->
-    <title>Welcome! | stotteyman.eth</title>
-    <meta name="title" content="stotteyman.eth">
-    <meta name="description" content="web3 stotteyman : stotteyman.eth">
-    <!-- End of meta tags -->
-    
-          <link rel="icon" type="image/x-icon" href="images/favicon.ico"> 
-<style type="text/css">
-/* CSS for the orange theme */
-body {
-font-family: Arial, sans-serif;
-background: #fbe90a;
-}
-button {
-display: block;
-width: 100%;
-margin-bottom: 10px;
-padding: 8px 10px;
-border: 3px solid #fb5600;
-border-radius: 5px;
-box-shadow: 2px 2px 2px #fb5600;
-color: #000099;
-font-size: 1.2rem;
-background-color: #e69a00;
-text-align: center;
-text-decoration: none;
-}
-button:hover {
-background-color: #ffca28;
-}
-#main {
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-text-align: center;
-}
-</style>
-<script type="text/javascript">
-// background music
-window.onload = function() {
-var audio = new Audio('js/music.mp3');
-audio.play();
-}
-</script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>stotteyman.eth</title>
+    <meta name="description" content="web3 stotteyman: stotteyman.eth">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="https://pbs.twimg.com/profile_images/1616338889819492354/Ozu50whN_400x400.jpg">
+    <meta property="og:title" content="stotteyman.eth">
+    <meta property="og:description" content="web3 stotteyman: stotteyman.eth">
+    <meta property="og:image" content="https://pbs.twimg.com/profile_images/1616338889819492354/Ozu50whN_400x400.jpg">
 </head>
 <body>
-<div id="main">
-<button>CONTRIBUTE TO CONTENT</button>
-<button>KICK</button>
-<button>Discord</button>
-<button>Link3</button>
-<button>W.A.G.E. Society</button>
-</div>
-<script>
-    document.querySelectorAll("button").forEach(function(button) {
-      button.addEventListener("click", function() {
-        switch (button.innerHTML) {
-          case "CONTRIBUTE TO CONTENT":
-            window.location.href = "https://www.amazon.com/hz/wishlist/ls/1Z3R02QIC3N9N?ref_=wl_share";
-            break;
-          case "KICK":
-            window.location.href = "https://kick.com/stotteyman";
-            break;
-          case "Discord":
-            window.location.href = "https://discord.gg/7r8XQSP9sk";
-            break;
-          case "Link3":
-            window.location.href = "https://link3.to/stotteyman";
-            break;
-          case "W.A.G.E. Society":
-            window.location.href = "https://discord.gg/ma5qZSGdVA";
-            break;
-        }
-      });
-    });
-    </script>
-    
+    <div class="container">
+        <div class="bg-img"></div>
+        <div class="content">
+            <div class="profile-pic">
+                <img src="https://pbs.twimg.com/profile_images/1616338889819492354/Ozu50whN_400x400.jpg" alt="Profile Picture">
+            </div>
+            <div class="profile-name">
+                <h1>stotteyman.eth</h1>
+            </div>
+            <div class="button-container">
+                <a href="https://www.amazon.com/hz/wishlist/ls/1Z3R02QIC3N9N?ref_=wl_share" target="_blank"><button><i class="fas fa-shopping-cart"></i> Contribute to Content</button></a>
+                <a href="https://kick.com/stotteyman" target="_blank"><button><i class="fas fa-bomb"></i> Kick</button></a>
+                <a href="https://discord.gg/7r8XQSP9sk" target="_blank"><button><i class="fab fa-discord"></i> Discord</button></a>
+                <a href="https://link3.to/stotteyman" target="_blank"><button><i class="fas fa-link"></i> Link3</button></a>
+                <a href="https://discord.gg/ma5qZSGdVA" target="_blank"><button><i class="fas fa-users"></i> W.A.G.E. Society</button></a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
