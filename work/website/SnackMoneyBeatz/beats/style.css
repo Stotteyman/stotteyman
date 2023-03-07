@@ -1,53 +1,29 @@
+body {
+    background-color: #0d0d0d;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
 .container {
     width: 40%;
     margin: 0 auto;
-    display: flex;
-    align-items: center;
-  }
-  
-  .arrow {
-    width: 30px;
-    height: 30px;
-    background: #292929;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .arrow:hover {
-    background: #2196f3;
-  }
-  
-  .arrow-left {
-    left: 0;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
-  
-  .arrow-right {
-    right: 0;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-  }
-  
-  .beat-container {
+}
+
+.beat-container {
     margin-top: 30px;
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-  }
-  
-  .beat-list {
+}
+
+.beat-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .beat {
+}
+
+.beat {
     width: 25%;
     margin-bottom: 30px;
     background-color: #292929;
@@ -56,34 +32,34 @@
     position: relative;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-  }
-  
-  .beat:hover {
+}
+
+.beat:hover {
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-  }
-  
-  .beat.active {
+}
+
+.beat.active {
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
-  }
-  
-  .beat img {
+}
+
+.beat img {
     width: 100%;
     height: auto;
     border-radius: 5px;
-  }
-  
-  .beat-info {
+}
+
+.beat-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
-  }
-  
-  .beat-info h3 {
+}
+
+.beat-info h3 {
     margin: 0;
-  }
-  
-  .buy-btn {
+}
+
+.buy-btn {
     background-color: #2196f3;
     color: #ffffff;
     border: none;
@@ -93,9 +69,8 @@
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-  }
-  
-  .buy-btn:hover {
+}
+
+.buy-btn:hover {
     background-color: #1565c0;
-  }
-  
+}
