@@ -1,59 +1,52 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Beat Shop</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="popout.css">
-  </head>
-  <body>
-    <h1>Beat Shop</h1>
-    <div class="container">
-      <div class="beat-container">
-        <div class="beat-list">
-          <div class="beat">
-            <img src="beat1.jpg" class="play-pause" data-audio="beat1.mp3">
-            <div class="beat-info">
-              <h3>Beat 1</h3>
-              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
-            </div>
-          </div>
-          <div class="beat">
-            <img src="beat2.jpg" class="play-pause" data-audio="beat2.mp3">
-            <div class="beat-info">
-              <h3>Beat 2</h3>
-              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
-            </div>
-          </div>
-          <div class="beat">
-            <img src="beat3.jpg" class="play-pause" data-audio="beat3.mp3">
-            <div class="beat-info">
-              <h3>Beat 3</h3>
-              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
-            </div>
-          </div>
-          <div class="beat">
-            <img src="beat4.jpg" class="play-pause" data-audio="beat4.mp3">
-            <div class="beat-info">
-              <h3>Beat 4</h3>
-              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
-            </div>
-          </div>
+
+<head>
+  <title>Beat Store</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script src="popout.js"></script>
+  <script src="playpause.js"></script>
+  <script src="buy.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Beat Store</h1>
+  </header>
+  <main>
+    <div class="beat">
+      <img class="beat__img" src="https://picsum.photos/id/237/400/400" alt="Beat Image" data-src="beat.mp3">
+      <div class="beat__info">
+        <h2 class="beat__name">Beat Name</h2>
+        <div class="media-bar">
+          <button class="playpause-button">Play/Pause</button>
+          <progress class="progress-bar" value="0" max="100"></progress>
+          <span class="time-display">0:00</span>
         </div>
+        <button class="info-button">Info</button>
+        <button class="buy-button" data-link="https://www.google.com/search?q=Beat+Name">Buy Now</button>
       </div>
     </div>
+  </main>
+  <footer>
+    <p>&copy; 2023 Beat Store</p>
+  </footer>
 
-    <div class="popup">
-      <audio id="audio-player" controls></audio>
-      <button id="close-btn">Close</button>
-      <div class="buy-info">
-        <img src="" class="buy-image">
-        <h3 class="buy-title"></h3>
-        <button class="buy-now">Buy Now</button>
+  <div class="popout" style="display: none;">
+    <button class="close-button">×</button>
+    <div class="popout__content">
+      <img class="popout__img" src="https://picsum.photos/id/237/400/400" alt="Beat Image">
+      <div class="popout__info">
+        <h2 class="popout__name">Beat Name</h2>
+        <div class="media-bar">
+          <button class="playpause-button">Play/Pause</button>
+          <progress class="progress-bar" value="0" max="100"></progress>
+          <span class="time-display">0:00</span>
+        </div>
+        <button class="buy-button" data-link="https://www.google.com/search?q=Beat+Name">Buy Now</button>
       </div>
     </div>
+  </div>
+</body>
 
-    <script type="text/javascript" src="playpause.js"></script>
-    <script type="text/javascript" src="popout.js"></script>
-    <script type="text/javascript" src="buy.js"></script>
-  </body>
 </html>
