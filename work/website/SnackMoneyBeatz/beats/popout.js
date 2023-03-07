@@ -1,77 +1,44 @@
-const playPauseButtons = document.querySelectorAll('.play-pause');
-const popupPlayPauseButton = document.querySelector('.popup-play-pause');
-const popupBox = document.querySelector('.popup');
-const closePopupButton = document.querySelector('#close-btn');
-const popupAudioPlayer = document.querySelector('#audio-player');
-const buyButtons = document.querySelectorAll('.buy-btn');
+// Get the popup and close button elements
+const popup = document.querySelector('.popup');
+const closeBtn = document.querySelector('#close-btn');
 
-let currentAudio;
+// Get the popup media elements
+const popupImg = document.querySelector('.popup-play-pause');
+const popupAudio = document.querySelector('#audio-player');
 
-// Play/pause buttons
-playPauseButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const audioSrc = button.getAttribute('data-audio');
-    if (currentAudio && currentAudio.src.includes(audioSrc)) {
-      if (currentAudio.paused) {
-        currentAudio.play();
-        button.src = 'pause.png';
-      } else {
-        currentAudio.pause();
-        button.src = 'play.png';
-      }
-    } else {
-      if (currentAudio) {
-        currentAudio.pause();
-        document.querySelectorAll('.play-pause').forEach(button => button.src = 'play.png');
-      }
-      currentAudio = new Audio(audioSrc);
-      currentAudio.play();
-      button.src = 'pause.png';
-    }
+// Get the popup info and buy now button elements
+const popupInfo = document.querySelector('.popup-beat-info');
+const popupBuyBtn = document.querySelector('.popup-buy-info .buy-btn');
+
+// Add click event listeners to all info buttons
+const infoBtns = document.querySelectorAll('.beat-info .buy-btn');
+infoBtns.forEach(function(infoBtn) {
+  infoBtn.addEventListener('click', function() {
+    // Get the beat info elements for the clicked button
+    const beat = infoBtn.closest('.beat');
+    const beatImg = beat.querySelector('.play-pause');
+    const beatAudioSrc = beatImg.getAttribute('data-audio');
+    const beatTitle = beat.querySelector('h3').textContent;
+
+    // Update the popup media and info elements with the clicked beat info
+    popupImg.setAttribute('src', beatImg.getAttribute('src'));
+    popupAudio.setAttribute('src', beatAudioSrc);
+    popupInfo.querySelector('h3').textContent = beatTitle;
+
+    // Show the popup
+    popup.style.display = 'block';
   });
 });
 
-// Popup play/pause button
-popupPlayPauseButton.addEventListener('click', () => {
-  if (currentAudio.paused) {
-    currentAudio.play();
-    popupPlayPauseButton.src = 'popup-pause.png';
-  } else {
-    currentAudio.pause();
-    popupPlayPauseButton.src = 'popup-play.png';
-  }
+// Add click event listener to close button
+closeBtn.addEventListener('click', function() {
+  // Pause the audio and hide the popup
+  popupAudio.pause();
+  popup.style.display = 'none';
 });
 
-// Buy buttons
-buyButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const beatName = button.parentElement.querySelector('h3').innerText;
-    const beatSrc = button.parentElement.parentElement.querySelector('.play-pause').getAttribute('data-audio');
-    popupBox.querySelector('h3').innerText = beatName;
-    popupAudioPlayer.src = beatSrc;
-    currentAudio.pause();
-    popupPlayPauseButton.src = 'popup-play.png';
-    popupBox.style.display = 'flex';
-  });
-});
-
-// Close popup button
-closePopupButton.addEventListener('click', () => {
-  popupBox.style.display = 'none';
-});
-
-// Audio event listeners
-currentAudio?.addEventListener('ended', () => {
-  document.querySelectorAll('.play-pause').forEach(button => button.src = 'play.png');
-  popupPlayPauseButton.src = 'popup-play.png';
-});
-
-popupAudioPlayer.addEventListener('play', () => {
-  currentAudio.pause();
-  popupPlayPauseButton.src = 'popup-pause.png';
-});
-
-popupAudioPlayer.addEventListener('pause', () => {
-  currentAudio.play();
-  popupPlayPauseButton.src = 'popup-play.png';
+// Add click event listener to buy now button
+popupBuyBtn.addEventListener('click', function() {
+  // Redirect to stotteyman.com
+  window.location.href = 'https://stotteyman.com';
 });
