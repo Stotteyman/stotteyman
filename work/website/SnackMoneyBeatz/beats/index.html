@@ -3,7 +3,7 @@
   <head>
     <title>Beat Shop</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <link rel="stylesheet" type="text/css" href="popup.css">
+    <link rel="stylesheet" type="text/css" href="popout.css">
   </head>
   <body>
     <h1>Beat Shop</h1>
@@ -41,12 +41,13 @@
         </div>
       </div>
     </div>
+
     <div class="popup">
-      <div class="popup-content">
-        <audio controls class="popup-audio"></audio>
-        <button class="close-btn">Close</button>
-      </div>
+      <audio id="audio-player" controls></audio>
+      <button id="close-btn">Close</button>
     </div>
+
     <script type="text/javascript" src="playpause.js"></script>
+    <script type="text/javascript" src="popout.js"></script>
   </body>
 </html>
