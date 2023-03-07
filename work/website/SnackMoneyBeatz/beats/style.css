@@ -1,53 +1,80 @@
+/* set background and font styles */
 body {
+    background-color: #f2f2f2;
     font-family: Arial, sans-serif;
-    background: #06090f;
-    color: #ffffff;
-}
-
-.container {
-    height: 100vh;
+  }
+  
+  /* style for the main container */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* style for the header */
+  .header {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* style for the beat container */
+  .beat-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  /* style for the beat box */
+  .beat-box {
+    background-color: #ffffff;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px #888888;
+    text-align: center;
+  }
+  
+  /* style for the beat image */
+  .beat-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  /* style for the beat title */
+  .beat-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* style for the beat player */
+  .beat-player {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.bg-img {
-    background-image: url("https://i.imgur.com/5xaYZWP.jpeg");
-    background-size: cover;
-    background-position: center;
-    filter: blur(10px);
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.content {
-    position: relative;
-    z-index: 1;
-    padding: 20px;
-    max-width: 400px;
-    text-align: center;
-}
-
-button {
-    background-color: #f26b1d;
-    border: none;
-    color: #ffffff;
-    padding: 10px 20px;
-    margin-right: 10px;
     margin-bottom: 10px;
+  }
+  
+  /* style for the buy button */
+  .buy-button {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: #ffffff;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
     border-radius: 5px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #cf950d;
-}
-
-button i {
-    margin-right: 10px;
-}
+    text-decoration: none;
+    margin-bottom: 10px;
+  }
+  
+  /* style for the buy button hover */
+  .buy-button:hover {
+    background-color: #3e8e41;
+  }
+  
