@@ -1,17 +1,22 @@
-window.addEventListener('load', function() {
-    var beats = document.getElementsByClassName('beat');
-    for (var i = 0; i < beats.length; i++) {
-      var playPauseButton = beats[i].getElementsByClassName('play-pause')[0];
-      var audioElement = new Audio(playPauseButton.getAttribute('data-audio'));
-      playPauseButton.addEventListener('click', function() {
-        if (audioElement.paused) {
-          audioElement.play();
-          beats[i].classList.add('popup');
+window.addEventListener("load", function () {
+    const audioElements = document.querySelectorAll("audio");
+  
+    audioElements.forEach(function (audio) {
+      const playPauseButtons = audio.previousElementSibling;
+  
+      playPauseButtons.addEventListener("click", function () {
+        if (audio.paused) {
+          audio.play();
+          playPauseButtons.classList.add("playing");
         } else {
-          audioElement.pause();
-          beats[i].classList.remove('popup');
+          audio.pause();
+          playPauseButtons.classList.remove("playing");
         }
       });
-    }
+  
+      audio.addEventListener("ended", function () {
+        playPauseButtons.classList.remove("playing");
+      });
+    });
   });
   
