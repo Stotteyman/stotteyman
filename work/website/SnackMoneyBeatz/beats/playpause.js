@@ -1,20 +1,18 @@
-window.addEventListener('load', function() {
-    const playPauseButtons = document.querySelectorAll('.play-pause');
-  
-    playPauseButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const audio = document.getElementById('audio-player');
-        const src = this.getAttribute('data-audio');
-  
-        if (audio.paused) {
-          audio.src = src;
-          audio.play();
-          this.classList.add('playing');
-        } else {
-          audio.pause();
-          this.classList.remove('playing');
-        }
-      });
-    });
+const playPauseButtons = document.querySelectorAll('.play-pause');
+const audioPlayer = document.getElementById('audio-player');
+
+playPauseButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const audioSrc = button.getAttribute('data-audio');
+    if (audioPlayer.getAttribute('src') !== audioSrc) {
+      audioPlayer.setAttribute('src', audioSrc);
+    }
+    if (audioPlayer.paused) {
+      audioPlayer.play();
+      button.setAttribute('src', 'pause.png');
+    } else {
+      audioPlayer.pause();
+      button.setAttribute('src', 'play.png');
+    }
   });
-  
+});
