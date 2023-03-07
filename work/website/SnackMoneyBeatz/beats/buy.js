@@ -1,52 +1,43 @@
-const buyButtons = document.querySelectorAll('.buy-btn');
-const popup = document.querySelector('.popup');
-const closeButton = document.getElementById('close-btn');
-const beatImage = document.getElementById('beat-image');
-const beatName = document.getElementById('beat-name');
-const mediaBar = document.getElementById('media-bar');
-const buyNowButton = document.getElementById('buy-now-btn');
-const infoButton = document.getElementById('info-btn');
+const buyButtons = document.querySelectorAll(".buy-button");
 
-buyButtons.forEach((button) => {
-  button.addEventListener('click', () => {
-    const beatInfo = button.parentNode.parentNode;
-    const beatSrc = beatInfo.querySelector('.play-pause').getAttribute('data-audio');
-    const beatTitle = beatInfo.querySelector('h3').textContent;
-    const buyLink = 'https://www.google.com/search?q=' + encodeURIComponent(beatTitle);
+buyButtons.forEach(function (buyButton) {
+  buyButton.addEventListener("click", function () {
+    const beatBox = this.parentNode.parentNode;
+    const beatName = beatBox.querySelector(".beat-name").textContent;
+    const beatImageSrc = beatBox.querySelector(".beat-image").src;
 
-    beatImage.setAttribute('src', beatInfo.querySelector('img').getAttribute('src'));
-    beatName.textContent = beatTitle;
-    mediaBar.innerHTML = '<audio controls src="' + beatSrc + '"></audio>';
-    buyNowButton.setAttribute('href', buyLink);
+    const popout = document.createElement("div");
+    popout.classList.add("popout");
 
-    popup.style.display = 'flex';
-    document.body.classList.add('popup-active');
+    const closeButton = document.createElement("button");
+    closeButton.classList.add("close-button");
+    closeButton.innerHTML = "&times;";
+    closeButton.addEventListener("click", function () {
+      document.body.removeChild(popout);
+    });
+
+    const popoutContent = document.createElement("div");
+    popoutContent.classList.add("popout-content");
+
+    const beatImage = document.createElement("img");
+    beatImage.classList.add("beat-image-popout");
+    beatImage.src = beatImageSrc;
+
+    const beatNamePopout = document.createElement("h3");
+    beatNamePopout.classList.add("beat-name-popout");
+    beatNamePopout.textContent = beatName;
+
+    const buyButtonPopout = document.createElement("a");
+    buyButtonPopout.classList.add("buy-button-popout");
+    buyButtonPopout.textContent = "Buy Now";
+    buyButtonPopout.href = "#"; // Add the placeholder link for the buy button
+
+    popoutContent.appendChild(beatImage);
+    popoutContent.appendChild(beatNamePopout);
+    popoutContent.appendChild(buyButtonPopout);
+    popout.appendChild(closeButton);
+    popout.appendChild(popoutContent);
+
+    document.body.appendChild(popout);
   });
-});
-
-closeButton.addEventListener('click', () => {
-  popup.style.display = 'none';
-  document.body.classList.remove('popup-active');
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && popup.style.display === 'flex') {
-    popup.style.display = 'none';
-    document.body.classList.remove('popup-active');
-  }
-});
-
-infoButton.addEventListener('click', () => {
-  const beatInfo = infoButton.parentNode.parentNode;
-  const beatSrc = beatInfo.querySelector('.play-pause').getAttribute('data-audio');
-  const beatTitle = beatInfo.querySelector('h3').textContent;
-  const buyLink = 'https://www.google.com/search?q=' + encodeURIComponent(beatTitle);
-
-  beatImage.setAttribute('src', beatInfo.querySelector('img').getAttribute('src'));
-  beatName.textContent = beatTitle;
-  mediaBar.innerHTML = '<audio controls src="' + beatSrc + '"></audio>';
-  buyNowButton.setAttribute('href', buyLink);
-
-  popup.style.display = 'flex';
-  document.body.classList.add('popup-active');
 });
