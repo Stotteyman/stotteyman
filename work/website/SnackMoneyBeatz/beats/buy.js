@@ -1,29 +1,28 @@
-function buy() {
-    const buyBtns = document.querySelectorAll(".buy-btn");
-  
-    buyBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const audioSrc = btn.parentElement.previousElementSibling.getAttribute(
-          "data-audio"
-        );
-        const audioPlayer = document.getElementById("audio-player");
-        const audioName = btn.parentElement.querySelector("h3").textContent;
-        const popout = document.querySelector(".popup");
-  
-        audioPlayer.src = audioSrc;
-        audioPlayer.play();
-        popout.classList.add("active");
-        popout.querySelector("h2").textContent = audioName;
-  
-        const closeBtn = document.querySelector("#close-btn");
-        closeBtn.addEventListener("click", () => {
-          audioPlayer.pause();
-          audioPlayer.currentTime = 0;
-          popout.classList.remove("active");
-        });
-      });
+const buyButtons = document.querySelectorAll('.buy-btn');
+
+buyButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const beatName = button.parentElement.querySelector('h3').textContent;
+    const audioSrc = button.parentElement.parentElement.querySelector('img').getAttribute('data-audio');
+    const audioPlayer = document.querySelector('#audio-player');
+    const popup = document.querySelector('.popup');
+    const closeBtn = document.querySelector('#close-btn');
+    const buyLink = button.getAttribute('data-buy');
+
+    audioPlayer.src = audioSrc;
+    audioPlayer.play();
+
+    popup.style.display = 'block';
+
+    const popupBeatName = popup.querySelector('h3');
+    popupBeatName.textContent = beatName;
+
+    const buyBtn = popup.querySelector('.buy-btn');
+    buyBtn.setAttribute('href', buyLink);
+
+    closeBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+      audioPlayer.pause();
     });
-  }
-  
-  buy();
-  
+  });
+});
