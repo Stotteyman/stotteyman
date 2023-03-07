@@ -1,21 +1,19 @@
-window.addEventListener("load", function() {
-    let audioElements = document.querySelectorAll("audio");
+window.addEventListener('load', function() {
+    const playPauseButtons = document.querySelectorAll('.play-pause');
   
-    audioElements.forEach(function(audio) {
-      let playPauseButton = audio.previousElementSibling;
+    playPauseButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const audio = document.getElementById('audio-player');
+        const src = this.getAttribute('data-audio');
   
-      playPauseButton.addEventListener("click", function() {
         if (audio.paused) {
+          audio.src = src;
           audio.play();
-          playPauseButton.classList.add("playing");
+          this.classList.add('playing');
         } else {
           audio.pause();
-          playPauseButton.classList.remove("playing");
+          this.classList.remove('playing');
         }
-      });
-  
-      audio.addEventListener("ended", function() {
-        playPauseButton.classList.remove("playing");
       });
     });
   });
