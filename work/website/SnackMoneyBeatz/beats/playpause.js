@@ -1,20 +1,16 @@
 const playPauseButtons = document.querySelectorAll('.play-pause');
 
 playPauseButtons.forEach(button => {
-  const audioFile = button.getAttribute('data-audio');
-  const audio = new Audio(audioFile);
+  button.addEventListener('click', function() {
+    const audio = new Audio(this.dataset.audio);
+    const isPlaying = !audio.paused;
 
-  button.addEventListener('click', () => {
-    if (audio.paused) {
-      audio.play();
-      button.src = 'pause.png';
-    } else {
+    if (isPlaying) {
       audio.pause();
-      button.src = 'play.png';
+    } else {
+      audio.play();
     }
-  });
 
-  audio.addEventListener('ended', () => {
-    button.src = 'play.png';
+    this.classList.toggle('playing', !isPlaying);
   });
 });
