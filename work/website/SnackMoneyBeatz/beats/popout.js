@@ -39,5 +39,7 @@ closeBtn.addEventListener('click', function() {
 
 // Add click event listener to buy now button
 popupBuyBtn.addEventListener('click', function() {
-  // Add code to handle buy now button click event
+  // Redirect to snackmoneybeatz.page.link/(beat name)
+  const beatTitle = popupInfo.querySelector('h3').textContent;
+  window.location.href = `https://snackmoneybeatz.page.link/${beatTitle}`;
 });
