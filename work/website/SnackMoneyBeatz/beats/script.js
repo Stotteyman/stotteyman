@@ -25,33 +25,15 @@ const beats = [
     }
   ];
   
-  const audioPlayers = document.querySelectorAll('.audio');
+  const audioPlayers = document.querySelectorAll('.audio-player');
   const beatContainers = document.querySelectorAll('.beat');
   
   beatContainers.forEach((beatContainer, index) => {
     const audioPlayer = audioPlayers[index];
     const beatImage = beatContainer.querySelector('img');
     const beatInfo = beatContainer.querySelector('.beat-info');
-    const buyNowButton = beatContainer.querySelector('.buy-btn');
-  
-    beatImage.addEventListener('click', () => {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        beatContainer.classList.add('active');
-      } else {
-        audioPlayer.pause();
-        beatContainer.classList.remove('active');
-      }
-    });
-  
-    audioPlayer.addEventListener('ended', () => {
-      beatContainer.classList.remove('active');
-    });
-  
-    buyNowButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
-  });
-  
-  let currentIndex = 0;
+    const buyNowButton = beatContainer.querySelector('.buy-now-btn');
+    const playPauseButton = document.createElement('button');
+    playPauseButton.innerHTML = '<i class="fas fa-play"></i><i class="fas fa-pause"></i>';
+   
   
