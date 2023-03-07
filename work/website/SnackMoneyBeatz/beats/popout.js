@@ -1,34 +1,35 @@
-const playPauseButtons = document.querySelectorAll('.play-pause');
-const audioPlayer = document.querySelector('#audio-player');
-const popup = document.querySelector('.popup');
-const popupBox = document.querySelector('.popup-box');
-const closeBtn = document.querySelector('#close-btn');
+const playButtons = document.querySelectorAll(".play-pause");
+const audioPlayer = document.querySelector("#audio-player");
+const popup = document.querySelector(".popup");
+const popupImage = document.querySelector(".popup-img");
+const popupTitle = document.querySelector(".popup-title");
+const popupBuyBtn = document.querySelector(".popup-buy-btn");
+const closeBtn = document.querySelector("#close-btn");
 
-playPauseButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const audioSrc = button.getAttribute('data-audio');
-    const beatName = button.nextElementSibling.firstElementChild.innerText;
+playButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const audioFile = button.getAttribute("data-audio");
+    audioPlayer.setAttribute("src", audioFile);
 
-    audioPlayer.setAttribute('src', audioSrc);
+    popupImage.setAttribute("src", button.getAttribute("src"));
+    popupTitle.textContent = button.nextElementSibling.querySelector("h3").textContent;
+    popupBuyBtn.setAttribute("href", button.nextElementSibling.querySelector(".buy-btn").getAttribute("data-buy-link"));
 
-    popup.style.display = 'block';
-    popupBox.style.display = 'block';
-    document.querySelector('body').style.overflow = 'hidden';
-
-    const beatNameDiv = document.createElement('div');
-    beatNameDiv.innerText = beatName;
-
-    popupBox.insertBefore(beatNameDiv, audioPlayer);
+    popup.classList.add("open");
+    audioPlayer.play();
   });
 });
 
-closeBtn.addEventListener('click', () => {
-  popup.style.display = 'none';
-  popupBox.style.display = 'none';
-  document.querySelector('body').style.overflow = 'auto';
-
-  const beatNameDiv = popupBox.firstElementChild;
-  popupBox.removeChild(beatNameDiv);
+closeBtn.addEventListener("click", () => {
+  popup.classList.remove("open");
   audioPlayer.pause();
   audioPlayer.currentTime = 0;
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    popup.classList.remove("open");
+    audioPlayer.pause();
+    audioPlayer.currentTime = 0;
+  }
 });
