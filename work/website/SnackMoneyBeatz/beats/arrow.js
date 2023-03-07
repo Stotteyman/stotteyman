@@ -1,52 +1,27 @@
+const leftArrow = document.querySelector('.left-arrow');
+const rightArrow = document.querySelector('.right-arrow');
+const beatContainer = document.querySelector('.beat-list');
 const beats = document.querySelectorAll('.beat');
-const audioElements = document.querySelectorAll('audio');
-let currentBeat = 0;
+const containerWidth = beatContainer.offsetWidth;
 
-function playBeat(beatIndex) {
-  const audio = audioElements[beatIndex];
-  const beat = beats[beatIndex];
-  if (audio.paused) {
-    audio.currentTime = 0;
-    audio.play();
-    beat.classList.add('playing');
-  } else {
-    audio.pause();
-    beat.classList.remove('playing');
-  }
-}
-
-function stopAllBeats() {
-  audioElements.forEach(audio => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
-  beats.forEach(beat => beat.classList.remove('playing'));
-}
+let currentPosition = 0;
 
 function cycleBeats(direction) {
-  currentBeat += direction;
-  if (currentBeat < 0) {
-    currentBeat = beats.length - 1;
-  } else if (currentBeat >= beats.length) {
-    currentBeat = 0;
+  currentPosition += direction * containerWidth;
+
+  if (currentPosition > 0) {
+    currentPosition = -(containerWidth * (beats.length - 1));
+  } else if (currentPosition < -(containerWidth * (beats.length - 1))) {
+    currentPosition = 0;
   }
-  stopAllBeats();
-  playBeat(currentBeat);
+
+  beatContainer.style.transform = `translateX(${currentPosition}px)`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  beats.forEach((beat, index) => {
-    beat.addEventListener('click', () => {
-      stopAllBeats();
-      playBeat(index);
-    });
-  });
+leftArrow.addEventListener('click', () => {
+  cycleBeats(1);
+});
 
-  document.querySelector('.left-arrow').addEventListener('click', () => {
-    cycleBeats(-1);
-  });
-
-  document.querySelector('.right-arrow').addEventListener('click', () => {
-    cycleBeats(1);
-  });
+rightArrow.addEventListener('click', () => {
+  cycleBeats(-1);
 });
