@@ -7,8 +7,7 @@ beats.forEach((beat) => {
 
   beatImg.addEventListener('click', () => {
     if (!isPlaying) {
-      // Pause any currently playing audio
-      stopAllAudio();
+      stopAllBeats();
       audio = new Audio(beat.dataset.audio);
       audio.play();
       beat.classList.add('active');
@@ -21,12 +20,11 @@ beats.forEach((beat) => {
   });
 });
 
-function stopAllAudio() {
+function stopAllBeats() {
   beats.forEach((beat) => {
-    const audio = beat.querySelector('audio');
-    const beatImg = beat.querySelector('img');
-    beatImg.classList.remove('active');
-    if (audio) {
+    const audio = new Audio(beat.dataset.audio);
+    if (beat.classList.contains('active')) {
+      beat.classList.remove('active');
       audio.pause();
       audio.currentTime = 0;
     }
