@@ -1,3 +1,22 @@
+const audioElements = document.querySelectorAll('audio');
+
+audioElements.forEach(audio => {
+  const playPauseBtn = audio.nextElementSibling;
+  const playPauseIcon = playPauseBtn.querySelector('i');
+
+  playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playPauseIcon.classList.remove('fa-play');
+      playPauseIcon.classList.add('fa-pause');
+    } else {
+      audio.pause();
+      playPauseIcon.classList.remove('fa-pause');
+      playPauseIcon.classList.add('fa-play');
+    }
+  });
+});
+
 const popout = document.querySelector('.popout');
 const popoutMedia = document.querySelector('.popout-media');
 const popoutTitle = document.querySelector('.popout-title');
@@ -6,7 +25,6 @@ const popoutCloseBtn = document.querySelector('.popout-close');
 const beats = document.querySelectorAll('.beat');
 const infoButtons = document.querySelectorAll('.info');
 
-// function to open the popout
 function openPopout(beat) {
   const beatMedia = beat.querySelector('.beat-media');
   const beatTitle = beat.querySelector('.beat-title');
@@ -18,7 +36,6 @@ function openPopout(beat) {
   document.body.classList.add('no-scroll');
 }
 
-// function to close the popout
 function closePopout() {
   popoutMedia.src = '';
   popoutTitle.textContent = '';
@@ -26,7 +43,6 @@ function closePopout() {
   document.body.classList.remove('no-scroll');
 }
 
-// play/pause functionality
 beats.forEach((beat) => {
   const playPauseBtn = beat.querySelector('.playpause');
 
@@ -46,7 +62,6 @@ beats.forEach((beat) => {
   });
 });
 
-// open popout when info button is clicked
 infoButtons.forEach((infoButton) => {
   infoButton.addEventListener('click', (event) => {
     event.stopPropagation();
@@ -55,22 +70,24 @@ infoButtons.forEach((infoButton) => {
   });
 });
 
-// close popout when close button is clicked
 popoutCloseBtn.addEventListener('click', () => {
   closePopout();
 });
 
-// close popout when escape key is pressed
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && popout.classList.contains('open')) {
     closePopout();
   }
 });
 
-// redirect to purchase page when buy button is clicked in popout
 const buyBtn = document.querySelector('.popout-buy');
+const buyLinks = {
+  "beat1": "https://www.example.com/beat1",
+  "beat2": "https://www.example.com/beat2",
+  "beat3": "https://www.example.com/beat3"
+};
 
 buyBtn.addEventListener('click', () => {
-  window.location.href = 'https://www.google.com';
+  const popoutTitleText = popoutTitle.textContent.toLowerCase().replace(/\s/g, '');
+  window.location.href = buyLinks[popoutTitleText];
 });
-
