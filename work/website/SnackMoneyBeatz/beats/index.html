@@ -1,74 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Beats for Sale!</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-  </head>
-  <body>
-    <header>
-      <h1>Beats for Sale</h1>
-    </header>
+</head>
+<body>
     <div class="container">
-      <ul class="beat-list">
-        <li class="beat">
-          <img src="beat1.jpg" alt="Beat 1">
-          <audio class="audio-player">
-            <source src="beat1.mp3" type="audio/mp3">
-          </audio>
-          <button class="play-pause-btn">Play</button>
-          <div class="beat-info">
-            <h3>Beat 1</h3>
-            <a href="https://google.com"><button>Buy Now</button></a>
-          </div>
-        </li>
-        <li class="beat">
-          <img src="beat2.jpg" alt="Beat 2">
-          <audio class="audio-player">
-            <source src="beat2.mp3" type="audio/mp3">
-          </audio>
-          <button class="play-pause-btn">Play</button>
-          <div class="beat-info">
-            <h3>Beat 2</h3>
-            <a href="https://google.com"><button>Buy Now</button></a>
-          </div>
-        </li>
-        <li class="beat">
-          <img src="beat3.jpg" alt="Beat 3">
-          <audio class="audio-player">
-            <source src="beat3.mp3" type="audio/mp3">
-          </audio>
-          <button class="play-pause-btn">Play</button>
-          <div class="beat-info">
-            <h3>Beat 3</h3>
-            <a href="https://google.com"><button>Buy Now</button></a>
-          </div>
-        </li>
-        <li class="beat">
-          <img src="beat4.jpg" alt="Beat 4">
-          <audio class="audio-player">
-            <source src="beat4.mp3" type="audio/mp3">
-          </audio>
-          <button class="play-pause-btn">Play</button>
-          <div class="beat-info">
-            <h3>Beat 4</h3>
-            <a href="https://google.com"><button>Buy Now</button></a>
-          </div>
-        </li>
-        <li class="beat">
-          <img src="beat5.jpg" alt="Beat 5">
-          <audio class="audio-player">
-            <source src="beat5.mp3" type="audio/mp3">
-          </audio>
-          <button class="play-pause-btn">Play</button>
-          <div class="beat-info">
-            <h3>Beat 5</h3>
-            <a href="https://google.com"><button>Buy Now</button></a>
-          </div>
-        </li>
-      </ul>
+        <h1>Beats for Sale!</h1>
+        <div class="beat-container">
+            <div class="beat-list">
+                <div class="beat">
+                    <button class="play-btn"><img src="beat1.jpg" alt="Beat 1"></button>
+                    <audio class="audio" src="beat1.mp3"></audio>
+                    <div class="beat-info">
+                        <h3>Beat 1</h3>
+                        <button class="buy-btn"><a href="https://www.google.com">Buy Now</a></button>
+                    </div>
+                </div>
+                <div class="beat">
+                    <button class="play-btn"><img src="beat2.jpg" alt="Beat 2"></button>
+                    <audio class="audio" src="beat2.mp3"></audio>
+                    <div class="beat-info">
+                        <h3>Beat 2</h3>
+                        <button class="buy-btn"><a href="https://www.google.com">Buy Now</a></button>
+                    </div>
+                </div>
+                <div class="beat">
+                    <button class="play-btn"><img src="beat3.jpg" alt="Beat 3"></button>
+                    <audio class="audio" src="beat3.mp3"></audio>
+                    <div class="beat-info">
+                        <h3>Beat 3</h3>
+                        <button class="buy-btn"><a href="https://www.google.com">Buy Now</a></button>
+                    </div>
+                </div>
+                <div class="beat">
+                    <button class="play-btn"><img src="beat4.jpg" alt="Beat 4"></button>
+                    <audio class="audio" src="beat4.mp3"></audio>
+                    <div class="beat-info">
+                        <h3>Beat 4</h3>
+                        <button class="buy-btn"><a href="https://www.google.com">Buy Now</a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
-  </body>
+</body>
 </html>

@@ -1,10 +1,101 @@
-* {
-    box-sizing: border-box;
+body {
+    background-color: black;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    color: white;
     margin: 0;
-    padding: 0;
   }
   
-  body {
-    background-color: #f8f8f8;
-    font-family: Arial, sans
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .beat-container {
+    background-color: #333333;
+    padding: 20px;
+  }
+  
+  .beat-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .beat {
+    margin: 10px;
+    width: 200px;
+  }
+  
+  .beat img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+  }
+  
+  .beat-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  .buy-now-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #f44336;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .buy-now-btn:hover {
+    background-color: #ff6666;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  #prev-btn,
+  #next-btn {
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: #f44336;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  #prev-btn:hover,
+  #next-btn:hover {
+    background-color: #ff6666;
+  }
+  
+  .audio-player {
+    display: none;
+  }
+  
+  .active .audio-player {
+    display: block;
+  }
+  
+  .active img {
+    opacity: 0.5;
+  }
+  
+  .active .beat-info {
+    display: none;
+  }
   
