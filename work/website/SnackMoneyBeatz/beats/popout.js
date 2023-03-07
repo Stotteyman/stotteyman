@@ -1,30 +1,44 @@
-const beats = document.querySelectorAll(".beat");
+// Get the popup and close button elements
+const popup = document.querySelector('.popup');
+const closeBtn = document.querySelector('#close-btn');
 
-beats.forEach((beat) => {
-  const popup = document.querySelector(".popup");
-  const popupBox = document.querySelector(".popup-box");
-  const closeBtn = document.querySelector("#close-btn");
-  const popupPlayPause = document.querySelector(".popup-play-pause");
-  const popupAudioPlayer = document.querySelector("#audio-player");
-  const popupBuyBtn = document.querySelector(".popup-buy-btn");
-  const popupBeatInfo = document.querySelector(".popup-beat-info");
+// Get the popup media elements
+const popupImg = document.querySelector('.popup-play-pause');
+const popupAudio = document.querySelector('#audio-player');
 
-  beat.addEventListener("click", () => {
-    popup.classList.add("show");
-    popupPlayPause.setAttribute("src", beat.querySelector(".play-pause").getAttribute("src"));
-    popupAudioPlayer.setAttribute("src", beat.querySelector(".play-pause").getAttribute("data-audio"));
-    popupBeatInfo.querySelector("h3").innerHTML = beat.querySelector("h3").innerHTML;
-    popupBox.style.backgroundImage = `url(${beat.querySelector("img").getAttribute("src")})`;
+// Get the popup info and buy now button elements
+const popupInfo = document.querySelector('.popup-beat-info');
+const popupBuyBtn = document.querySelector('.popup-buy-info .buy-btn');
+
+// Add click event listeners to all info buttons
+const infoBtns = document.querySelectorAll('.beat-info .buy-btn');
+infoBtns.forEach(function(infoBtn) {
+  infoBtn.addEventListener('click', function() {
+    // Get the beat info elements for the clicked button
+    const beat = infoBtn.closest('.beat');
+    const beatImg = beat.querySelector('.play-pause');
+    const beatAudioSrc = beatImg.getAttribute('data-audio');
+    const beatTitle = beat.querySelector('h3').textContent;
+
+    // Update the popup media and info elements with the clicked beat info
+    popupImg.setAttribute('src', beatImg.getAttribute('src'));
+    popupAudio.setAttribute('src', beatAudioSrc);
+    popupInfo.querySelector('h3').textContent = beatTitle;
+
+    // Show the popup
+    popup.style.display = 'block';
   });
+});
 
-  closeBtn.addEventListener("click", () => {
-    popup.classList.remove("show");
-    popupAudioPlayer.pause();
-    popupAudioPlayer.currentTime = 0;
-  });
+// Add click event listener to close button
+closeBtn.addEventListener('click', function() {
+  // Pause the audio and hide the popup
+  popupAudio.pause();
+  popup.style.display = 'none';
+});
 
-  popupBuyBtn.addEventListener("click", () => {
-    const beatNumber = popupBeatInfo.querySelector("h3").innerHTML.split(" ")[1];
-    window.location.href = `https://placeholder${beatNumber}.com`;
-  });
+// Add click event listener to buy now button
+popupBuyBtn.addEventListener('click', function() {
+  // Redirect to stotteyman.com
+  window.location.href = 'https://stotteyman.com';
 });
