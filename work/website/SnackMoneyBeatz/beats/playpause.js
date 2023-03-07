@@ -13,6 +13,7 @@ beats.forEach((beat) => {
       isPlaying = true;
     } else {
       audio.pause();
+      audio.currentTime = 0;
       beat.classList.remove('active');
       isPlaying = false;
     }
