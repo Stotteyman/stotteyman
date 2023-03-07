@@ -52,41 +52,19 @@ const beats = [
       event.stopPropagation();
     });
   });
+  const arrowLeft = document.querySelector('.arrow-left');
+  const arrowRight = document.querySelector('.arrow-right');
+  const beatList = document.querySelector('.beat-list');
   
-  let currentIndex = 0;
-  // Get container element and all its children
-const container = document.querySelector('.container');
-const beats = container.querySelectorAll('.beat');
-
-// Set initial variables
-let currentIndex = 0;
-const step = container.offsetWidth / 4;
-
-// Function to move container left or right by a specified number of pixels
-function moveContainer(distance) {
-  container.scrollLeft += distance;
-}
-
-// Event listener for left arrow click
-document.querySelector('.arrow-left').addEventListener('click', () => {
-  // Move container left by one step
-  currentIndex--;
-  moveContainer(-step);
-  // Loop around to the end of the beats if we reach the beginning
-  if (currentIndex < 0) {
-    currentIndex = beats.length - 1;
-    moveContainer(step * beats.length);
-  }
-});
-
-// Event listener for right arrow click
-document.querySelector('.arrow-right').addEventListener('click', () => {
-  // Move container right by one step
-  currentIndex++;
-  moveContainer(step);
-  // Loop around to the beginning of the beats if we reach the end
-  if (currentIndex >= beats.length) {
-    currentIndex = 0;
-    moveContainer(-step * beats.length);
-  }
-});
+  let scrollAmount = 0;
+  
+  arrowLeft.addEventListener('click', () => {
+    scrollAmount -= 300;
+    beatList.style.transform = `translateX(${scrollAmount}px)`;
+  });
+  
+  arrowRight.addEventListener('click', () => {
+    scrollAmount += 300;
+    beatList.style.transform = `translateX(${scrollAmount}px)`;
+  });
+  
