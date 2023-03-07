@@ -1,59 +1,10 @@
-.container {
-    max-width: 800px;
-    margin: 0 auto;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
   
-  #beats-container {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  
-  #beats-container::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .beat {
-    flex-shrink: 0;
-    width: 200px;
-    height: 300px;
-    margin-right: 20px;
-    scroll-snap-align: start;
-  }
-  
-  .beat img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    cursor: pointer;
-  }
-  
-  .beat audio {
-    display: none;
-  }
-  
-  .beat:hover audio {
-    display: block;
-    width: 100%;
-  }
-  
-  .beat-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-  }
-  
-  .beat-info button {
-    padding: 10px 20px;
-    background-color: #f99b1d;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+  body {
+    background-color: #f8f8f8;
+    font-family: Arial, sans
   
