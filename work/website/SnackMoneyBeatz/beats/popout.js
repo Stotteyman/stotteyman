@@ -1,31 +1,30 @@
-// Get the popup and close button elements
-const popup = document.querySelector('.popup');
-const closeBtn = document.getElementById('close-btn');
+const beats = document.querySelectorAll(".beat");
 
-// Get all the "Info" buttons
-const infoBtns = document.querySelectorAll('.buy-btn');
+beats.forEach((beat) => {
+  const popup = document.querySelector(".popup");
+  const popupBox = document.querySelector(".popup-box");
+  const closeBtn = document.querySelector("#close-btn");
+  const popupPlayPause = document.querySelector(".popup-play-pause");
+  const popupAudioPlayer = document.querySelector("#audio-player");
+  const popupBuyBtn = document.querySelector(".popup-buy-btn");
+  const popupBeatInfo = document.querySelector(".popup-beat-info");
 
-// Function to show the popup
-function showPopup() {
-  popup.style.display = 'block';
-}
+  beat.addEventListener("click", () => {
+    popup.classList.add("show");
+    popupPlayPause.setAttribute("src", beat.querySelector(".play-pause").getAttribute("src"));
+    popupAudioPlayer.setAttribute("src", beat.querySelector(".play-pause").getAttribute("data-audio"));
+    popupBeatInfo.querySelector("h3").innerHTML = beat.querySelector("h3").innerHTML;
+    popupBox.style.backgroundImage = `url(${beat.querySelector("img").getAttribute("src")})`;
+  });
 
-// Function to hide the popup
-function hidePopup() {
-  popup.style.display = 'none';
-}
+  closeBtn.addEventListener("click", () => {
+    popup.classList.remove("show");
+    popupAudioPlayer.pause();
+    popupAudioPlayer.currentTime = 0;
+  });
 
-// Add click event listeners to all "Info" buttons
-infoBtns.forEach((btn) => {
-  btn.addEventListener('click', showPopup);
-});
-
-// Add click event listener to the close button
-closeBtn.addEventListener('click', hidePopup);
-
-// Hide the popup when the user clicks anywhere outside of it
-window.addEventListener('click', (e) => {
-  if (e.target === popup) {
-    hidePopup();
-  }
+  popupBuyBtn.addEventListener("click", () => {
+    const beatNumber = popupBeatInfo.querySelector("h3").innerHTML.split(" ")[1];
+    window.location.href = `https://placeholder${beatNumber}.com`;
+  });
 });
