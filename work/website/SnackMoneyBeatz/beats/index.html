@@ -11,31 +11,31 @@
       <div class="beat-container">
         <div class="beat-list">
           <div class="beat">
-            <img src="beat1.jpg" class="play-pause" data-audio="beat1.mp3" data-name="Beat 1" data-link="https://www.google.com">
+            <img src="beat1.jpg" class="play-pause" data-audio="beat1.mp3">
             <div class="beat-info">
               <h3>Beat 1</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
             </div>
           </div>
           <div class="beat">
-            <img src="beat2.jpg" class="play-pause" data-audio="beat2.mp3" data-name="Beat 2" data-link="https://www.google.com">
+            <img src="beat2.jpg" class="play-pause" data-audio="beat2.mp3">
             <div class="beat-info">
               <h3>Beat 2</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
             </div>
           </div>
           <div class="beat">
-            <img src="beat3.jpg" class="play-pause" data-audio="beat3.mp3" data-name="Beat 3" data-link="https://www.google.com">
+            <img src="beat3.jpg" class="play-pause" data-audio="beat3.mp3">
             <div class="beat-info">
               <h3>Beat 3</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
             </div>
           </div>
           <div class="beat">
-            <img src="beat4.jpg" class="play-pause" data-audio="beat4.mp3" data-name="Beat 4" data-link="https://www.google.com">
+            <img src="beat4.jpg" class="play-pause" data-audio="beat4.mp3">
             <div class="beat-info">
               <h3>Beat 4</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com">Buy</button>
             </div>
           </div>
         </div>
@@ -44,11 +44,12 @@
 
     <div class="popup">
       <audio id="audio-player" controls></audio>
-      <div class="beat-info">
-        <h3 id="beat-name"></h3>
-        <a id="buy-link" href="#" target="_blank">Buy Now</a>
-      </div>
       <button id="close-btn">Close</button>
+      <div class="buy-info">
+        <img src="" class="buy-image">
+        <h3 class="buy-title"></h3>
+        <button class="buy-now">Buy Now</button>
+      </div>
     </div>
 
     <script type="text/javascript" src="playpause.js"></script>
