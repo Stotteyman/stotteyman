@@ -1,8 +1,8 @@
-const buyBtns = document.querySelectorAll(".buy-btn");
+const buyButtons = document.querySelectorAll('.popup-buy-btn');
 
-buyBtns.forEach((buyBtn) => {
-  buyBtn.addEventListener("click", () => {
-    const beatNumber = buyBtn.parentElement.querySelector("h3").innerHTML.split(" ")[1];
-    window.location.href = `https://placeholder${beatNumber}.com`;
+buyButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    const beatName = button.parentElement.parentElement.querySelector('h3').innerText;
+    window.location.href = `/buy/${beatName}`;
   });
 });
