@@ -1,66 +1,114 @@
-// define an array of beats with their properties
 const beats = [
     {
-      title: "Beat 1",
-      image: "beat1.jpg",
-      audio: "beat1.mp3",
-      price: "$20",
-      link: "https://www.google.com"
+      name: 'Beat 1',
+      imageSrc: 'beat1.jpg',
+      audioSrc: 'beat1.mp3',
+      buyLink: 'https://www.google.com'
     },
     {
-      title: "Beat 2",
-      image: "beat2.jpg",
-      audio: "beat2.mp3",
-      price: "$25",
-      link: "https://www.google.com"
+      name: 'Beat 2',
+      imageSrc: 'beat2.jpg',
+      audioSrc: 'beat2.mp3',
+      buyLink: 'https://www.google.com'
     },
     {
-      title: "Beat 3",
-      image: "beat3.jpg",
-      audio: "beat3.mp3",
-      price: "$30",
-      link: "https://www.google.com"
+      name: 'Beat 3',
+      imageSrc: 'beat3.jpg',
+      audioSrc: 'beat3.mp3',
+      buyLink: 'https://www.google.com'
+    },
+    {
+      name: 'Beat 4',
+      imageSrc: 'beat4.jpg',
+      audioSrc: 'beat4.mp3',
+      buyLink: 'https://www.google.com'
     }
   ];
   
-  // get the beat container element
-  const beatContainer = document.querySelector('.beat-container');
+  const audioPlayers = document.querySelectorAll('.audio-player');
+  const beatContainers = document.querySelectorAll('.beat');
   
-  // loop through the beats array and create the beat boxes
-  beats.forEach((beat) => {
-    // create the beat box element
-    const beatBox = document.createElement('div');
-    beatBox.classList.add('beat-box');
+  beatContainers.forEach((beatContainer, index) => {
+    const audioPlayer = audioPlayers[index];
+    const beatImage = beatContainer.querySelector('.beat-image');
+    const beatInfo = beatContainer.querySelector('.beat-info');
+    const buyNowButton = beatContainer.querySelector('.buy-now-btn');
   
-    // create the beat title element
-    const beatTitle = document.createElement('h2');
-    beatTitle.classList.add('beat-title');
-    beatTitle.textContent = beat.title;
+    beatImage.addEventListener('click', () => {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        beatContainer.classList.add('active');
+      } else {
+        audioPlayer.pause();
+        beatContainer.classList.remove('active');
+      }
+    });
   
-    // create the beat image element
-    const beatImg = document.createElement('img');
-    beatImg.classList.add('beat-img');
-    beatImg.src = beat.image;
+    audioPlayer.addEventListener('ended', () => {
+      beatContainer.classList.remove('active');
+    });
   
-    // create the beat audio player element
-    const beatPlayer = document.createElement('audio');
-    beatPlayer.classList.add('beat-player');
-    beatPlayer.controls = true;
-    beatPlayer.innerHTML = `<source src="${beat.audio}" type="audio/mp3">`;
+    buyNowButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  });
   
-    // create the buy button element
-    const buyButton = document.createElement('a');
-    buyButton.classList.add('buy-button');
-    buyButton.href = beat.link;
-    buyButton.textContent = `Buy Now (${beat.price})`;
+  let currentIndex = 0;
   
-    // add the elements to the beat box
-    beatBox.appendChild(beatTitle);
-    beatBox.appendChild(beatImg);
-    beatBox.appendChild(beatPlayer);
-    beatBox.appendChild(buyButton);
+  const prevButton = document.querySelector('#prev-btn');
+  const nextButton = document.querySelector('#next-btn');
+  const beatList = document.querySelector('.beat-list');
   
-    // add the beat box to the beat container
-    beatContainer.appendChild(beatBox);
+  function renderBeats(startIndex) {
+    beatList.innerHTML = '';
+    for (let i = startIndex; i < startIndex + 4 && i < beats.length; i++) {
+      const beat = beats[i];
+  
+      const beatContainer = document.createElement('div');
+      beatContainer.classList.add('beat');
+  
+      const beatImage = document.createElement('img');
+      beatImage.classList.add('beat-image');
+      beatImage.src = beat.imageSrc;
+      beatContainer.appendChild(beatImage);
+  
+      const beatInfo = document.createElement('div');
+      beatInfo.classList.add('beat-info');
+  
+      const beatName = document.createElement('h3');
+      beatName.textContent = beat.name;
+      beatInfo.appendChild(beatName);
+  
+      const audioPlayer = document.createElement('audio');
+      audioPlayer.classList.add('audio-player');
+      audioPlayer.src = beat.audioSrc;
+      beatInfo.appendChild(audioPlayer);
+  
+      const buyNowButton = document.createElement('a');
+      buyNowButton.classList.add('buy-now-btn');
+      buyNowButton.textContent = 'Buy Now';
+      buyNowButton.href = beat.buyLink;
+      beatInfo.appendChild(buyNowButton);
+  
+      beatContainer.appendChild(beatInfo);
+  
+      beatList.appendChild(beatContainer);
+    }
+  }
+  
+  renderBeats(0);
+  
+  prevButton.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex -= 4;
+      renderBeats(currentIndex);
+    }
+  });
+  
+  nextButton.addEventListener('click', () => {
+    if (currentIndex < beats.length - 4) {
+      currentIndex += 4;
+      renderBeats(currentIndex);
+    }
   });
   
