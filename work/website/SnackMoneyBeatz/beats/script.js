@@ -3,7 +3,7 @@ const beats = [
       name: 'Beat 1',
       imageSrc: 'beat1.jpg',
       audioSrc: 'beat1.mp3',
-      buyLink: 'https://www.google.com'
+      buyLink: 'https://snackmoneybeatz.square.site/product/beat-1/6'
     },
     {
       name: 'Beat 2',
