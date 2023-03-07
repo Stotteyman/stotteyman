@@ -1,18 +1,17 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var playPauseBtns = document.querySelectorAll('.play-pause');
-    
-    playPauseBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var audioEl = new Audio(btn.getAttribute('data-audio'));
-        
-        if (audioEl.paused) {
-          audioEl.play();
-          btn.src = 'pause.png';
+window.addEventListener('load', function() {
+    var beats = document.getElementsByClassName('beat');
+    for (var i = 0; i < beats.length; i++) {
+      var playPauseButton = beats[i].getElementsByClassName('play-pause')[0];
+      var audioElement = new Audio(playPauseButton.getAttribute('data-audio'));
+      playPauseButton.addEventListener('click', function() {
+        if (audioElement.paused) {
+          audioElement.play();
+          beats[i].classList.add('popup');
         } else {
-          audioEl.pause();
-          btn.src = 'play.png';
+          audioElement.pause();
+          beats[i].classList.remove('popup');
         }
       });
-    });
+    }
   });
   
