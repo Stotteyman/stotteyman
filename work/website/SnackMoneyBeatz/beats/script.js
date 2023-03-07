@@ -25,33 +25,24 @@ const beats = [
     }
   ];
   
-  const audioPlayers = document.querySelectorAll('.audio');
+  const audioPlayers = document.querySelectorAll('.audio-player');
   const beatContainers = document.querySelectorAll('.beat');
   
   beatContainers.forEach((beatContainer, index) => {
     const audioPlayer = audioPlayers[index];
     const beatImage = beatContainer.querySelector('img');
     const beatInfo = beatContainer.querySelector('.beat-info');
-    const buyNowButton = beatContainer.querySelector('.buy-btn');
+    const buyNowButton = beatContainer.querySelector('.buy-now-btn');
+    const playIcon = beatContainer.querySelector('.play-icon');
+    const pauseIcon = beatContainer.querySelector('.pause-icon');
   
-    beatImage.addEventListener('click', () => {
-      if (audioPlayer.paused) {
-        audioPlayer.play();
-        beatContainer.classList.add('active');
-      } else {
-        audioPlayer.pause();
-        beatContainer.classList.remove('active');
-      }
+    beatContainer.addEventListener('mouseover', () => {
+      playIcon.style.opacity = 1;
     });
   
-    audioPlayer.addEventListener('ended', () => {
-      beatContainer.classList.remove('active');
+    beatContainer.addEventListener('mouseout', () => {
+      playIcon.style.opacity = 0;
     });
   
-    buyNowButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-    });
-  });
-  
-  let currentIndex = 0;
+    beatContainer.addEventListener('click
   
