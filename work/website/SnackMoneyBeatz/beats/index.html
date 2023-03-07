@@ -14,28 +14,28 @@
             <img src="beat1.jpg" class="play-pause" data-audio="beat1.mp3">
             <div class="beat-info">
               <h3>Beat 1</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com/">Buy</button>
             </div>
           </div>
           <div class="beat">
             <img src="beat2.jpg" class="play-pause" data-audio="beat2.mp3">
             <div class="beat-info">
               <h3>Beat 2</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com/">Buy</button>
             </div>
           </div>
           <div class="beat">
             <img src="beat3.jpg" class="play-pause" data-audio="beat3.mp3">
             <div class="beat-info">
               <h3>Beat 3</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com/">Buy</button>
             </div>
           </div>
           <div class="beat">
             <img src="beat4.jpg" class="play-pause" data-audio="beat4.mp3">
             <div class="beat-info">
               <h3>Beat 4</h3>
-              <button class="buy-btn">Buy</button>
+              <button class="buy-btn" data-link="https://www.google.com/">Buy</button>
             </div>
           </div>
         </div>
@@ -43,13 +43,16 @@
     </div>
 
     <div class="popup">
-      <div class="popup-content">
-        <audio id="audio-player" controls></audio>
-        <button id="close-btn">Close</button>
+      <div class="popup-info">
+        <h3 id="popup-title"></h3>
+        <a href="#" id="popup-link" target="_blank">Buy Now</a>
       </div>
+      <audio id="audio-player" controls></audio>
+      <button id="close-btn">Close</button>
     </div>
 
     <script type="text/javascript" src="playpause.js"></script>
     <script type="text/javascript" src="popout.js"></script>
+    <script type="text/javascript" src="buy.js"></script>
   </body>
 </html>
