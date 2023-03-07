@@ -1,21 +1,21 @@
-window.addEventListener("load", function () {
-    const audioElements = document.querySelectorAll("audio");
+window.addEventListener("load", function() {
+    let audioElements = document.querySelectorAll("audio");
   
-    audioElements.forEach(function (audio) {
-      const playPauseButtons = audio.previousElementSibling;
+    audioElements.forEach(function(audio) {
+      let playPauseButton = audio.previousElementSibling;
   
-      playPauseButtons.addEventListener("click", function () {
+      playPauseButton.addEventListener("click", function() {
         if (audio.paused) {
           audio.play();
-          playPauseButtons.classList.add("playing");
+          playPauseButton.classList.add("playing");
         } else {
           audio.pause();
-          playPauseButtons.classList.remove("playing");
+          playPauseButton.classList.remove("playing");
         }
       });
   
-      audio.addEventListener("ended", function () {
-        playPauseButtons.classList.remove("playing");
+      audio.addEventListener("ended", function() {
+        playPauseButton.classList.remove("playing");
       });
     });
   });
