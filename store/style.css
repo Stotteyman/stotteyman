@@ -1,47 +1,70 @@
 body {
   font-family: Arial, sans-serif;
-  background: #06090f;
-  color: #ffffff;
-  }
-  
-  .container {
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   height: 100vh;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.items-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.item {
+  display: flex;
+  margin: 20px;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.item-square {
+  width: 150px;
+  height: 150px;
+  background-color: #f5f5f5;
   display: flex;
   justify-content: center;
   align-items: center;
-  }
-  
-  .bg-img {
-  background-image: url("https://i.imgur.com/5xaYZWP.jpeg");
-  background-size: cover;
-  background-position: center;
-  filter: blur(10px);
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  }
-  
-  .content {
-  position: relative;
-  z-index: 1;
+}
+
+.item-img img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.item-info {
+  flex: 1;
   padding: 20px;
-  max-width: 400px;
-  text-align: center;
-  }
-  
-  .profile-name h1 {
-  font-size: 2.5rem;
-  margin-top: 20px;
-  margin-bottom: 0;
-  }
-  
-  .button-container {
-  margin-top: 30px;
-  }
-  
-  button {
+}
+
+.item-info h2 {
+  font-size: 1.8rem;
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.item-info p {
+  font-size: 1.2rem;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.buy-btn {
   background-color: #f26b1d;
   border: none;
   color: #ffffff;
@@ -52,12 +75,8 @@ body {
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  }
-  
-  button:hover {
+}
+
+.buy-btn:hover {
   background-color: #cf950d;
-  }
-  
-  button i {
-  margin-right: 10px;
-  }
+}
