@@ -3,30 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <title>Store Item List</title>
-    <meta name="description" content="A list of store items with clickable squares and buttons.">
+    <meta name="description" content="Store Item List">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
     <div class="container">
         <h1>Store Item List</h1>
-        <div class="item-grid">
+        <div class="item-container">
             <div class="item">
-                <a href="#" class="item-link">
-                    <div class="item-image" style="background-image: url(https://dummyimage.com/300x300/000/fff);"></div>
-                </a>
-                <div class="item-details">
-                    <h2>Item Name</h2>
-                    <p>$10.00</p>
-                    <stripe-buy-button
-                        buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
-                        publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
-                    ></stripe-buy-button>
-                </div>
+                <img src="item1.jpg" alt="Item 1">
+                <div class="item-name">Item 1</div>
+                <div class="item-price">$10.00</div>
+                <button class="buy-button" data-item-id="item1">Buy</button>
             </div>
-            <!-- Repeat this .item div for each item in the list -->
+            <div class="item">
+                <img src="item2.jpg" alt="Item 2">
+                <div class="item-name">Item 2</div>
+                <div class="item-price">$20.00</div>
+                <button class="buy-button" data-item-id="item2">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item3.jpg" alt="Item 3">
+                <div class="item-name">Item 3</div>
+                <div class="item-price">$30.00</div>
+                <button class="buy-button" data-item-id="item3">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item4.jpg" alt="Item 4">
+                <div class="item-name">Item 4</div>
+                <div class="item-price">$40.00</div>
+                <button class="buy-button" data-item-id="item4">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item5.jpg" alt="Item 5">
+                <div class="item-name">Item 5</div>
+                <div class="item-price">$50.00</div>
+                <button class="buy-button" data-item-id="item5">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item6.jpg" alt="Item 6">
+                <div class="item-name">Item 6</div>
+                <div class="item-price">$60.00</div>
+                <button class="buy-button" data-item-id="item6">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item7.jpg" alt="Item 7">
+                <div class="item-name">Item 7</div>
+                <div class="item-price">$70.00</div>
+                <button class="buy-button" data-item-id="item7">Buy</button>
+            </div>
+            <div class="item">
+                <img src="item8.jpg" alt="Item 8">
+                <div class="item-name">Item 8</div>
+                <div class="item-price">$80.00</div>
+                <button class="buy-button" data-item-id="item8">Buy</button>
+            </div>
         </div>
     </div>
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+    <script src="stripe.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
