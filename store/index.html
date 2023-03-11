@@ -15,10 +15,12 @@
 						<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
 					</div>
 				</div>
-				<h2>Product Name</h2>
-				<p>Product Description</p>
-				<p>$9.99</p>
-				<button>Buy Now</button>
+				<div class="item-info">
+					<h2>Product Name</h2>
+					<p>Product Description</p>
+					<p>$9.99</p>
+					<button id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq">Buy Now</button>
+				</div>
 			</div>
 			<div class="item">
 				<div class="item-square">
@@ -26,14 +28,38 @@
 						<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
 					</div>
 				</div>
-				<h2>Product Name</h2>
-				<p>Product Description</p>
-				<p>$9.99</p>
-				<button>Buy Now</button>
+				<div class="item-info">
+					<h2>Product Name</h2>
+					<p>Product Description</p>
+					<p>$9.99</p>
+					<button id="buy_btn_2MkL8SCYfgL2SDGtNNMuTviq">Buy Now</button>
+				</div>
 			</div>
 			<!-- Add more items here -->
 		</div>
 	</div>
-	<script src="script.js"></script>
+	<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+	<script>
+		var stripe = Stripe('pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu');
+		document.querySelectorAll('button').forEach(function(button) {
+			button.addEventListener('click', function(e) {
+				var buyButtonId = e.target.getAttribute('id');
+				var itemPrice = parseFloat(e.target.previousElementSibling.innerText.replace('$', ''));
+				stripe.redirectToCheckout({
+					items: [{sku: buyButtonId, quantity: 1}],
+					successUrl: 'https://your-website.com/success',
+					cancelUrl: 'https://your-website.com/canceled',
+				}).then(function (result) {
+					if (result.error) {
+						console.log(result.error.message);
+					}
+				});
+			});
+		});
+	</script>
 </body>
 </html>
+
+
+
+
