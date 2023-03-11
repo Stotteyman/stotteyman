@@ -4,38 +4,34 @@
 	<meta charset="UTF-8">
 	<title>Stotteyman's Store</title>
 	<link rel="stylesheet" href="style.css">
-	<script async src="https://js.stripe.com/v3/buy-button.js"></script>
 </head>
 <body>
 	<div class="container">
-		<div class="content">
-			<h1>Stotteyman's Store</h1>
+		<h1>Stotteyman's Store</h1>
+		<div class="items-container">
 			<div class="item">
-				<div class="item-img">
-					<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
+				<div class="item-square">
+					<div class="item-img">
+						<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
+					</div>
 				</div>
 				<h2>Product Name</h2>
 				<p>Product Description</p>
 				<p>$9.99</p>
-				<stripe-buy-button
-				  buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
-				  publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
-				>
-				</stripe-buy-button>
+				<button>Buy Now</button>
 			</div>
 			<div class="item">
-				<div class="item-img">
-					<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
+				<div class="item-square">
+					<div class="item-img">
+						<img src="https://i.imgur.com/WCzhPzb.jpg" alt="Product Image">
+					</div>
 				</div>
 				<h2>Product Name</h2>
 				<p>Product Description</p>
 				<p>$9.99</p>
-				<stripe-buy-button
-				  buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
-				  publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
-				>
-				</stripe-buy-button>
+				<button>Buy Now</button>
 			</div>
+			<!-- Add more items here -->
 		</div>
 	</div>
 	<script src="script.js"></script>
