@@ -2,37 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Stotteyman Store</title>
-    <meta name="description" content="Official store for all things Stotteyman!">
+    <title>Stotteyman's Store</title>
+    <meta name="description" content="Official website for Stotteyman's Store!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
-    <meta property="og:title" content="Stotteyman Store">
-    <meta property="og:description" content="Official store for all things Stotteyman!">
+    <meta property="og:title" content="Stotteyman's Store">
+    <meta property="og:description" content="Official website for Stotteyman's Store!">
     <meta property="og:image" content="https://i.imgur.com/5xaYZWP.jpeg">
 </head>
 <body>
     <div class="container">
         <div class="bg-img"></div>
         <div class="content">
-            <div class="profile-pic">
-                <img src="https://pbs.twimg.com/profile_images/1622811305903259648/2LJX8jLb_400x400.jpg" alt="Profile Picture">
-            </div>
             <div class="profile-name">
-                <h1>Stotteyman T-Shirt</h1>
+                <h1>Stotteyman's Store</h1>
             </div>
-            <div class="item-container">
-                <div class="item">
-                    <img src="https://i.imgur.com/ICx7vMz.png" alt="T-Shirt">
-                    <stripe-buy-button
-                        buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
-                        publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
-                    >
-                    </stripe-buy-button>
-                </div>
+            <div class="button-container">
+                <script async
+                  src="https://js.stripe.com/v3/buy-button.js">
+                </script>
+                <stripe-buy-button
+                  buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
+                  publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
+                >
+                </stripe-buy-button>
             </div>
         </div>
     </div>
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 </body>
 </html>
