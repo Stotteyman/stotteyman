@@ -32,7 +32,7 @@
 					<h2>Product Name</h2>
 					<p>Product Description</p>
 					<p>$9.99</p>
-					<button id="buy_btn_2MkL8SCYfgL2SDGtNNMuTviq">Buy Now</button>
+					<button id="buy_btn_1MkL6SCYfgL2SDGt3AgIyZ0D">Buy Now</button>
 				</div>
 			</div>
 			<!-- Add more items here -->
@@ -47,8 +47,8 @@
 				var itemPrice = parseFloat(e.target.previousElementSibling.innerText.replace('$', ''));
 				stripe.redirectToCheckout({
 					items: [{sku: buyButtonId, quantity: 1}],
-					successUrl: 'https://your-website.com/success',
-					cancelUrl: 'https://your-website.com/canceled',
+					successUrl: 'https://stotteyman.com/success',
+					cancelUrl: 'https://stotteyman.com/canceled',
 				}).then(function (result) {
 					if (result.error) {
 						console.log(result.error.message);
