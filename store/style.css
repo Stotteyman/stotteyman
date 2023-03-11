@@ -2,17 +2,17 @@ body {
   font-family: Arial, sans-serif;
   background: #06090f;
   color: #ffffff;
-  }
-  
-  .container {
+}
+
+.container {
   height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  }
-  
-  .bg-img {
+  flex-direction: column;
+}
+
+.bg-img {
   background-image: url("https://i.imgur.com/5xaYZWP.jpeg");
   background-size: cover;
   background-position: center;
@@ -22,89 +22,83 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  }
-  
-  h1 {
-  font-size: 3rem;
-  margin-top: 100px;
-  }
-  
-  .items-container {
+}
+
+.items-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   margin-top: 50px;
-  }
-  
-  .item {
+}
+
+.item {
   display: flex;
   margin: 20px;
   max-width: 400px;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-  }
-  
-  .item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-  }
-  
-  .item-square {
-  flex: 0 0 40%;
-  position: relative;
-  }
-  
-  .item-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+}
+
+.item-square {
+  background-color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  }
-  
-  .item-img img {
+  flex-basis: 50%;
+}
+
+.item-img img {
   max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  }
-  
-  .item-info {
-  flex: 0 0 60%;
-  padding: 20px;
-  }
-  
-  h2 {
-  font-size: 1.5rem;
-  margin-top: 0;
-  }
-  
-  p {
-  margin-bottom: 10px;
-  }
-  
-  .buy-btn {
+  height: auto;
+}
+
+.item-info {
   background-color: #f26b1d;
-  border: none;
   color: #ffffff;
-  padding: 10px 20px;
-  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 50%;
+  padding: 20px;
+}
+
+.item-info h2 {
+  font-size: 2rem;
+  margin: 0;
   margin-bottom: 10px;
+}
+
+.item-info p {
+  font-size: 1.2rem;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.buy-btn {
+  background-color: #ffffff;
+  border: none;
+  color: #f26b1d;
+  padding: 10px 20px;
+  margin-top: 10px;
   border-radius: 5px;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  }
-  
-  .buy-btn:hover {
-  background-color: #cf950d;
-  }
-  
-  .buy-btn i {
-  margin-right: 10px;
-  }
+}
+
+.buy-btn:hover {
+  background-color: #f26b1d;
+  color: #ffffff;
+}
+
+.buy-btn:active {
+  transform: translateY(2px);
+}
+
+h1 {
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
