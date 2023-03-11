@@ -1,64 +1,32 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Glass | Paper | Blunts | Tools | Gear</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-  </head>
-  <body>
-    <div class="category">
-      <h2>Glass</h2>
-      <div class="slideshow">
-        <img class="slides" src="i/glass1.jpg">
-        <img class="slides" src="i/glass2.jpg">
-        <img class="slides" src="i/glass3.jpg">
-        <img class="slides" src="i/glass4.jpg">
-      </div>
-      <button onclick="location.href='glass.html'">Shop Now</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Store Item List</title>
+    <meta name="description" content="A list of store items with clickable squares and buttons.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Store Item List</h1>
+        <div class="item-grid">
+            <div class="item">
+                <a href="#" class="item-link">
+                    <div class="item-image" style="background-image: url(https://dummyimage.com/300x300/000/fff);"></div>
+                </a>
+                <div class="item-details">
+                    <h2>Item Name</h2>
+                    <p>$10.00</p>
+                    <stripe-buy-button
+                        buy-button-id="buy_btn_1MkL8SCYfgL2SDGtNNMuTviq"
+                        publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
+                    ></stripe-buy-button>
+                </div>
+            </div>
+            <!-- Repeat this .item div for each item in the list -->
+        </div>
     </div>
-    
-    <div class="category">
-      <h2>Paper</h2>
-      <div class="slideshow">
-        <img class="slides" src="i/paper1.jpg">
-        <img class="slides" src="i/paper2.jpg">
-        <img class="slides" src="i/paper3.jpg">
-        <img class="slides" src="i/paper4.jpg">
-      </div>
-      <button onclick="location.href='paper.html'">Shop Now</button>
-    </div>
-
-    <div class="category">
-      <h2>Blunts</h2>
-      <div class="slideshow">
-        <img class="slides" src="i/blunts1.jpg">
-        <img class="slides" src="i/blunts2.jpg">
-        <img class="slides" src="i/blunts3.jpg">
-        <img class="slides" src="i/blunts4.jpg">
-      </div>
-      <button onclick="location.href='blunts.html'">Shop Now</button>
-    </div>
-
-    <div class="category">
-      <h2>Tools</h2>
-      <div class="slideshow">
-        <img class="slides" src="i/tools1.jpg">
-        <img class="slides" src="i/tools2.jpg">
-        <img class="slides" src="i/tools3.jpg">
-        <img class="slides" src="i/tools4.jpg">
-      </div>
-      <button onclick="location.href='tools.html'">Shop Now</button>
-    </div>
-
-    <div class="category">
-      <h2>Gear</h2>
-      <div class="slideshow">
-        <img class="slides" src="i/gear1.jpg">
-        <img class="slides" src="i/gear2.jpg">
-        <img class="slides" src="i/gear3.jpg">
-        <img class="slides" src="i/gear4.jpg">
-      </div>
-      <button onclick="location.href='gear.html'">Shop Now</button>
-    </div>
-  </body>
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+</body>
 </html>
