@@ -1,81 +1,56 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 body {
-    font-family: sans-serif;
+    font-family: Arial, sans-serif;
+    background: #06090f;
+    color: #ffffff;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.item-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-gap: 20px;
-}
-
-.item {
+    height: 100vh;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
 }
 
-.item-link {
-    display: block;
-    width: 100%;
-    height: 0;
-    padding-bottom: 100%;
-    position: relative;
-}
-
-.item-image {
+.bg-img {
+    background-image: url("https://i.imgur.com/5xaYZWP.jpeg");
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-size: cover;
-    background-position: center;
 }
 
-.item-details {
-    margin-top: 20px;
+.content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    max-width: 400px;
     text-align: center;
 }
 
-h2 {
-    margin-bottom: 10px;
+.profile-pic img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    object-position: center;
+    margin: 0 auto;
+    display: block;
 }
 
-p {
-    font-weight: bold;
-    margin-bottom: 10px;
+.profile-name h1 {
+    font-size: 2.5rem;
+    margin-top: 20px;
+    margin-bottom: 0;
 }
 
-button {
-    background-color: #2d3748;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    margin-top: 10px;
-    cursor: pointer;
+.item-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
 }
 
-button:hover {
-    background-color: #1a202c;
-}
