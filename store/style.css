@@ -4,6 +4,7 @@ body {
   font-family: Arial, sans-serif;
   background: url("https://i.imgur.com/5xaYZWP.jpeg") no-repeat center center fixed;
   background-size: cover;
+  overflow: hidden;
 }
 
 .container {
@@ -26,8 +27,7 @@ h1 {
 }
 
 .items-container {
-  max-height: 400px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .item {
