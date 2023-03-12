@@ -8,26 +8,31 @@ body {
 
 .container {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 50px auto;
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: relative;
-  top: 50px;
-  height: 500px; /* set a fixed height */
-  overflow-y: auto; /* make it scrollable */
+  height: calc(100vh - 100px); /* subtract 100px for the title height and margin */
+  overflow-y: scroll;
 }
 
 h1 {
-  text-align: center;
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 48px;
   color: #333;
   margin-bottom: 30px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .items-container {
-  /* remove max-height property */
+  max-height: calc(100% - 100px); /* subtract 100px for the title height and margin */
 }
 
 .item {
