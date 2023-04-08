@@ -1,0 +1,29 @@
+#streamers {
+    margin-top: 20px;
+  }
+  
+  #streamers h2 {
+    font-size: 24px;
+  }
+  
+  #streamers ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #streamers li {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  #streamers li.online {
+    color: green;
+    font-weight: bold;
+  }
+  
+  #streamers li.offline {
+    color: red;
+    font-weight: bold;
+  }
+  
