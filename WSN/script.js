@@ -1,41 +1,62 @@
-// Sample list of streamers
-const streamers = ['user1', 'user2', 'user3', 'user4', 'user5'];
-
-// Sample object representing streamer status (online/offline)
-const streamerStatus = {
-  user1: 'offline',
-  user2: 'online',
-  user3: 'offline',
-  user4: 'online',
-  user5: 'online'
-};
-
-// Sort streamers alphabetically
-streamers.sort();
-
-// Sort streamers by status (online/offline)
-streamers.sort((a, b) => {
-  const statusA = streamerStatus[a];
-  const statusB = streamerStatus[b];
-  if (statusA === 'online' && statusB === 'offline') {
-    return -1;
-  } else if (statusA === 'offline' && statusB === 'online') {
-    return 1;
-  } else {
-    return 0;
+// Function to get the online status of a streamer
+async function getStreamerStatus(username) {
+    const apiUrl = `https://kick.com/api/v2/channels/${username}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    if (data.is_live === true) {
+      return true;
+    } else {
+      return false;
+    }
   }
-});
-
-// Display streamers in the HTML
-const streamersList = document.getElementById('streamers-list');
-streamers.forEach(streamer => {
-  const status = streamerStatus[streamer];
-  const listItem = document.createElement('li');
-  listItem.textContent = streamer;
-  if (status === 'online') {
-    listItem.classList.add('online');
-  } else {
-    listItem.classList.add('offline');
+  
+  // Function to sort streamers alphabetically
+  function sortStreamersAlphabetically(streamers) {
+    streamers.sort();
   }
-  streamersList.appendChild(listItem);
-});
+  
+  // Function to sort streamers by online status
+  async function sortStreamersByStatus(streamers) {
+    const statusPromises = streamers.map(getStreamerStatus);
+    const statuses = await Promise.all(statusPromises);
+    streamers.sort((a, b) => {
+      const statusA = statuses[streamers.indexOf(a)];
+      const statusB = statuses[streamers.indexOf(b)];
+      if (statusA === true && statusB === false) {
+        return -1;
+      } else if (statusA === false && statusB === true) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  }
+  
+  // Function to display streamers in the HTML
+  function displayStreamers(streamers) {
+    const streamersList = document.getElementById('streamers-list');
+    streamers.forEach(async streamer => {
+      const isOnline = await getStreamerStatus(streamer);
+      const listItem = document.createElement('li');
+      listItem.textContent = streamer;
+      if (isOnline === true) {
+        listItem.classList.add('online');
+      } else {
+        listItem.classList.add('offline');
+      }
+      streamersList.appendChild(listItem);
+    });
+  }
+  
+  // Load streamers from usernames.txt
+  async function loadStreamers() {
+    const response = await fetch('usernames.txt');
+    const data = await response.text();
+    const streamers = data.split('\n').filter(Boolean);
+    await sortStreamersByStatus(streamers);
+    displayStreamers(streamers);
+  }
+  
+  // Call the loadStreamers function when the page is loaded
+  window.addEventListener('load', loadStreamers);
+  
