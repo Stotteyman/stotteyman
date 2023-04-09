@@ -1,11 +1,16 @@
 body {
   font-family: Tahoma, sans-serif;
+  overflow: hidden; /* prevent body from scrolling */
 }
 
 header {
   background-color: #333;
   color: #fff;
   padding: 10px;
+  position: fixed; /* make header fixed */
+  top: 0; /* position header at the top */
+  width: 100%; /* set header width to 100% of the viewport */
+  z-index: 1; /* set z-index to 1 to ensure header is on top of other elements */
 }
 
 h1 {
@@ -16,6 +21,8 @@ h1 {
 #streamers {
   text-align: center;
   margin: 20px;
+  height: calc(100vh - 60px); /* set height of streamers section to viewport height - header height - margin */
+  overflow-y: auto; /* enable vertical scrolling for streamers list */
 }
 
 #streamers h2 {
@@ -31,9 +38,17 @@ ul {
 li {
   margin: 10px 0;
   cursor: pointer;
-  font-size: 24px;
+  display: flex; /* enable flexbox for list items */
+  align-items: center; /* vertically center content */
 }
 
 li:hover {
   background-color: #f2f2f2;
+}
+
+li img {
+  margin-right: 10px; /* add margin to the right of the profile picture */
+  width: 50px; /* set width of profile picture */
+  height: 50px; /* set height of profile picture */
+  object-fit: cover; /* ensure profile picture fills the space without stretching */
 }
