@@ -38,12 +38,15 @@ async function getStreamerStatus(username) {
     streamers.forEach(async streamer => {
       const isOnline = await getStreamerStatus(streamer);
       const listItem = document.createElement('li');
-      listItem.textContent = streamer;
+      const link = document.createElement('a');
+      link.textContent = streamer;
+      link.href = `https://kick.com/${streamer}`;
       if (isOnline === true) {
         listItem.classList.add('online');
       } else {
         listItem.classList.add('offline');
       }
+      listItem.appendChild(link);
       streamersList.appendChild(listItem);
     });
   }
