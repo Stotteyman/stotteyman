@@ -10,13 +10,8 @@ async function getStreamerStatus(username) {
     }
   }
   
-  // Function to sort streamers alphabetically
-  function sortStreamersAlphabetically(streamers) {
-    streamers.sort();
-  }
-  
-  // Function to sort streamers by online status
-  async function sortStreamersByStatus(streamers) {
+  // Function to sort streamers by last online status
+  async function sortStreamersByLastOnline(streamers) {
     const statusPromises = streamers.map(getStreamerStatus);
     const statuses = await Promise.all(statusPromises);
     streamers.sort((a, b) => {
@@ -27,20 +22,28 @@ async function getStreamerStatus(username) {
       } else if (statusA === false && statusB === true) {
         return 1;
       } else {
-        return 0;
+        const apiUrlA = `https://kick.com/api/v2/channels/${a}`;
+        const apiUrlB = `https://kick.com/api/v2/channels/${b}`;
+        const responseA = fetch(apiUrlA);
+        const responseB = fetch(apiUrlB);
+        const dataA = await responseA.json();
+        const dataB = await responseB.json();
+        const lastLiveTimeA = new Date(dataA.last_live_at);
+        const lastLiveTimeB = new Date(dataB.last_live_at);
+        return lastLiveTimeB - lastLiveTimeA;
       }
     });
   }
   
   // Function to display streamers in the HTML
-  function displayStreamers(streamers) {
+  async function displayStreamers(streamers) {
     const streamersList = document.getElementById('streamers-list');
-    streamers.forEach(async streamer => {
-      const isOnline = await getStreamerStatus(streamer);
+    for (const streamer of streamers) {
       const listItem = document.createElement('li');
       const link = document.createElement('a');
       link.textContent = streamer;
       link.href = `https://kick.com/${streamer}`;
+      const isOnline = await getStreamerStatus(streamer);
       if (isOnline === true) {
         listItem.classList.add('online');
       } else {
@@ -48,18 +51,17 @@ async function getStreamerStatus(username) {
       }
       listItem.appendChild(link);
       streamersList.appendChild(listItem);
-    });
+    }
   }
   
   // Load streamers from usernames.txt
   async function loadStreamers() {
     const response = await fetch('usernames.txt');
-    const data = await response.text();
-    const streamers = data.split('\n').filter(Boolean);
-    await sortStreamersByStatus(streamers);
-    displayStreamers(streamers);
+    const text = await response.text();
+    const streamers = text.split('\n').filter(username => username !== '');
+    await sortStreamersByLastOnline(streamers);
+    await displayStreamers(streamers);
   }
   
-  // Call the loadStreamers function when the page is loaded
-  window.addEventListener('load', loadStreamers);
+  loadStreamers();
   
