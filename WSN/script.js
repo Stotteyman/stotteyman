@@ -6,26 +6,36 @@ fetch("usernames.txt")
   .then(data => {
     // Split the text into an array of usernames
     const usernames = data.split("\n").filter(username => username.trim() !== "");
-    // Sort the usernames alphabetically
-    usernames.sort();
-    // Loop through each username and add it to the list
-    usernames.forEach(username => {
-      const listItem = document.createElement("li");
-      const link = document.createElement("a");
-      link.textContent = username;
-      link.href = `https://kick.com/${username}`;
-      link.target = "_blank";
-      listItem.appendChild(link);
-      // Get the follower count for the streamer
-      fetch(`https://kick.com/api/v2/channels/${username}`)
+    // Get the follower count for each streamer and create an array of objects with the username and follower count
+    const promises = usernames.map(username => {
+      return fetch(`https://kick.com/api/v2/channels/${username}`)
         .then(response => response.json())
         .then(data => {
-          const followerCount = document.createElement("span");
-          followerCount.textContent = ` (${data.followers_count} followers)`;
-          listItem.appendChild(followerCount);
+          return {
+            username,
+            followers: data.followers_count
+          };
         })
         .catch(error => console.error(error));
-      streamersList.appendChild(listItem);
     });
+    // Wait for all the promises to resolve and then sort the array of objects by follower count
+    Promise.all(promises)
+      .then(streamers => {
+        streamers.sort((a, b) => b.followers - a.followers);
+        // Loop through each streamer and add it to the list
+        streamers.forEach(streamer => {
+          const listItem = document.createElement("li");
+          const link = document.createElement("a");
+          link.textContent = streamer.username;
+          link.href = `https://kick.com/${streamer.username}`;
+          link.target = "_blank";
+          const followerCount = document.createElement("span");
+          followerCount.textContent = ` (${streamer.followers} followers)`;
+          listItem.appendChild(link);
+          listItem.appendChild(followerCount);
+          streamersList.appendChild(listItem);
+        });
+      })
+      .catch(error => console.error(error));
   })
   .catch(error => console.error(error));
