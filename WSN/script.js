@@ -24,8 +24,8 @@ async function getStreamerStatus(username) {
       } else {
         const apiUrlA = `https://kick.com/api/v2/channels/${a}`;
         const apiUrlB = `https://kick.com/api/v2/channels/${b}`;
-        const responseA = fetch(apiUrlA);
-        const responseB = fetch(apiUrlB);
+        const responseA = await fetch(apiUrlA);
+        const responseB = await fetch(apiUrlB);
         const dataA = await responseA.json();
         const dataB = await responseB.json();
         const lastLiveTimeA = new Date(dataA.last_live_at);
