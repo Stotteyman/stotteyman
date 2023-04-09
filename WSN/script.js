@@ -1,55 +1,54 @@
-const streamersList = document.getElementById('streamers-list');
-const offlineStreamersList = document.getElementById('offline-streamers-list');
+const streamersList = document.querySelector('#streamers-list');
 
-async function displayStreamers() {
-  const response = await fetch('usernames.txt');
-  const usernames = await response.text();
+fetch('usernames.txt')
+  .then(response => response.text())
+  .then(usernames => {
+    const namesArray = usernames.trim().split('\n');
+    const onlineStreams = [];
+    const offlineStreams = [];
 
-  const streamers = [];
-  const offlineStreamers = [];
+    namesArray.forEach(name => {
+      fetch(`https://kick.com/api/v2/channels/${name}`)
+        .then(response => response.json())
+        .then(channel => {
+          if (channel.is_live) {
+            onlineStreams.push(channel);
+          } else {
+            offlineStreams.push(channel);
+          }
 
-  for (const username of usernames.trim().split('\n')) {
-    const url = `https://kick.com/api/v2/channels/${username.trim()}`;
-    const response = await fetch(url);
-    const data = await response.json();
+          // Sort online streamers by viewers
+          onlineStreams.sort((a, b) => b.viewers - a.viewers);
 
-    if (data.channel.online) {
-      streamers.push({
-        name: data.channel.username,
-        viewers: data.channel.current_viewers
-      });
-    } else {
-      offlineStreamers.push({
-        name: data.channel.username,
-        followers: data.channel.followers
-      });
-    }
-  }
+          // Sort offline streamers by followers
+          offlineStreams.sort((a, b) => b.followers - a.followers);
 
-  streamers.sort((a, b) => b.viewers - a.viewers);
-  offlineStreamers.sort((a, b) => b.followers - a.followers);
+          // Clear the current list
+          streamersList.innerHTML = '';
 
-  streamersList.innerHTML = '';
-  for (const streamer of streamers) {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.innerText = `${streamer.name} (${streamer.viewers} viewers)`;
-    a.target = '_blank';
-    a.href = `https://kick.com/${streamer.name}`;
-    li.appendChild(a);
-    streamersList.appendChild(li);
-  }
+          // Add the online streamers to the list
+          onlineStreams.forEach(stream => {
+            const streamer = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `https://kick.com/${stream.username}`;
+            link.target = '_blank';
+            link.innerText = `${stream.username} - ${stream.viewers} viewers`;
+            streamer.appendChild(link);
+            streamersList.appendChild(streamer);
+          });
 
-  offlineStreamersList.innerHTML = '';
-  for (const streamer of offlineStreamers) {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.innerText = `${streamer.name} (${streamer.followers} followers)`;
-    a.target = '_blank';
-    a.href = `https://kick.com/${streamer.name}`;
-    li.appendChild(a);
-    offlineStreamersList.appendChild(li);
-  }
-}
-
-displayStreamers();
+          // Add the offline streamers to the list
+          offlineStreams.forEach(stream => {
+            const streamer = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = `https://kick.com/${stream.username}`;
+            link.target = '_blank';
+            link.innerText = `${stream.username} - ${stream.followers} followers`;
+            streamer.appendChild(link);
+            document.querySelector('#streamers-offline').appendChild(streamer);
+          });
+        })
+        .catch(error => console.error(`Error fetching channel data for ${name}: ${error}`));
+    });
+  })
+  .catch(error => console.error(`Error fetching usernames: ${error}`));
