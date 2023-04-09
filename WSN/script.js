@@ -8,17 +8,15 @@ async function displayStreamers() {
   const streamers = [];
 
   // Loop through each username and fetch the data from API
-  for (const username of usernames.split('\n')) {
-    if (!username) continue;
-
+  for (const username of usernames.trim().split('\n')) {
     const url = `https://kick.com/api/v2/channels/${username.trim()}`;
     const response = await fetch(url);
     const data = await response.json();
 
     streamers.push({
-      name: data.username,
-      viewers: data.current_viewers,
-      lastOnline: new Date(data.last_online).getTime()
+      name: data.channel.username,
+      viewers: data.channel.current_viewers,
+      lastOnline: new Date(data.channel.last_online).getTime()
     });
   }
 
