@@ -17,7 +17,7 @@ async function displayStreamers() {
     });
   }
 
-  streamers.sort((a, b) => a.name.localeCompare(b.name));
+  streamers.sort((a, b) => b.viewers - a.viewers);
 
   streamersList.innerHTML = '';
   for (const streamer of streamers) {
