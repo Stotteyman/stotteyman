@@ -6,8 +6,8 @@ async function displayStreamers() {
 
   const streamers = [];
 
-  for (const username of usernames.trim().split('\n')) {
-    const url = `https://kick.com/api/v2/channels/${username.trim()}`;
+  for (const username of usernames.split('\n')) {
+    const url = `https://kick.com/api/v2/channels/${username}`;
     const response = await fetch(url);
     const data = await response.json();
 
