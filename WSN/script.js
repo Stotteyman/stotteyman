@@ -35,6 +35,13 @@ fetch("usernames.txt")
           listItem.appendChild(followerCount);
           streamersList.appendChild(listItem);
         });
+        // Add event listener to each list item
+        const listItems = document.querySelectorAll(".streamers-list li");
+        listItems.forEach(item => {
+          item.addEventListener("click", () => {
+            window.location.href = `https://kick.com/${item.firstChild.textContent}`;
+          });
+        });
       })
       .catch(error => console.error(error));
   })
