@@ -1,9 +1,15 @@
-body {
-  font-family: Tahoma, sans-serif;
+/* Reset default margin and padding */
+* {
   margin: 0;
   padding: 0;
 }
 
+/* Set default font */
+body {
+  font-family: Tahoma, sans-serif;
+}
+
+/* Style for the header */
 header {
   background-color: #333;
   color: #fff;
@@ -11,44 +17,47 @@ header {
   text-align: center;
 }
 
+/* Style for the title */
 h1 {
   margin: 0;
 }
 
-#streamers {
+/* Style for the main container */
+.container {
   display: flex;
-  justify-content: space-between;
-  margin: 20px;
-  background-color: #333;
-  color: #fff;
+  flex-direction: row;
+  height: 100vh;
 }
 
-#streamers-list {
+/* Style for the side sections */
+.container .side-section {
   flex: 1;
-  margin: 0 10px;
-  overflow: auto;
+  background-color: #333;
 }
 
-ul {
+/* Style for the middle section */
+.container .middle-section {
+  flex: 3;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style for the streamers list */
+.streamers-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-li {
+.streamers-list li {
   margin: 10px 0;
   cursor: pointer;
   font-size: 24px;
-  display: flex;
-  align-items: center;
 }
 
-li:hover {
+.streamers-list li:hover {
   background-color: #f2f2f2;
-}
-
-#left-section,
-#right-section {
-  flex: 1;
-  background-color: #333;
 }
