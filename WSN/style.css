@@ -1,25 +1,32 @@
 body {
   font-family: Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 header {
   background-color: #333;
   color: #fff;
   padding: 10px;
+  text-align: center;
 }
 
 h1 {
-  text-align: center;
   margin: 0;
 }
 
 #streamers {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
   margin: 20px;
+  background-color: #333;
+  color: #fff;
 }
 
-#streamers h2 {
-  margin-bottom: 10px;
+#streamers-list {
+  flex: 1;
+  margin: 0 10px;
+  overflow: auto;
 }
 
 ul {
@@ -32,8 +39,16 @@ li {
   margin: 10px 0;
   cursor: pointer;
   font-size: 24px;
+  display: flex;
+  align-items: center;
 }
 
 li:hover {
   background-color: #f2f2f2;
+}
+
+#left-section,
+#right-section {
+  flex: 1;
+  background-color: #333;
 }
