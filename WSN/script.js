@@ -16,6 +16,15 @@ fetch("usernames.txt")
       link.href = `https://kick.com/${username}`;
       link.target = "_blank";
       listItem.appendChild(link);
+      // Get the follower count for the streamer
+      fetch(`https://kick.com/api/v2/channels/${username}`)
+        .then(response => response.json())
+        .then(data => {
+          const followerCount = document.createElement("span");
+          followerCount.textContent = ` (${data.followers_count} followers)`;
+          listItem.appendChild(followerCount);
+        })
+        .catch(error => console.error(error));
       streamersList.appendChild(listItem);
     });
   })
