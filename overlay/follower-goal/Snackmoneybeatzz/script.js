@@ -1,5 +1,5 @@
 const apiEndpoint = 'https://kick.com/api/v1/channels/snackmoneybeatzz';
-const followerGoal = 200;
+const followerGoal = 300;
 
 function updateFollowerCount() {
   fetch(apiEndpoint)
