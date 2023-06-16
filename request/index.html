@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Request Form</title>
+  <style>
+    .task-container {
+      margin-bottom: 10px;
+    }
+  </style>
+  <script src="script.js"></script>
+</head>
+<body>
+  <h1>Task Request Form</h1>
+  <form id="task-form">
+    <label for="total-hours">Total Hours Purchased:</label>
+    <select id="total-hours">
+      <option value="2">2 hours</option>
+      <option value="4">4 hours</option>
+      <!-- Add other options for different hour increments up to 30 hours -->
+    </select>
+    <br>
+
+    <div id="task-container">
+      <div class="task">
+        <input type="text" class="task-name" placeholder="Task Description">
+        <input type="number" class="task-minutes" placeholder="Minutes">
+        <button type="button" onclick="removeTask(this)">Remove Task</button>
+      </div>
+    </div>
+    <button type="button" onclick="addTask()">Add Task</button>
+    <br><br>
+
+    <input type="submit" value="Submit Request">
+  </form>
+</body>
+</html>
