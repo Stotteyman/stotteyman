@@ -33,4 +33,31 @@ function getNote() {
       title: 'Service and Generosity',
       content: 'The Bible teaches men to serve others and show generosity...'
     }
- 
+  ];
+
+  // Return the note based on the currentNote index
+  return notes[currentNote - 1];
+}
+
+// Event listener for the previous button
+previousButton.addEventListener('click', function() {
+  if (currentNote === 1) {
+    currentNote = totalNotes;
+  } else {
+    currentNote--;
+  }
+  displayNote();
+});
+
+// Event listener for the next button
+nextButton.addEventListener('click', function() {
+  if (currentNote === totalNotes) {
+    currentNote = 1;
+  } else {
+    currentNote++;
+  }
+  displayNote();
+});
+
+// Display the initial note
+displayNote();
