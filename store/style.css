@@ -54,4 +54,12 @@ header {
     margin-top: 60px;
 }
 
-/* Rest of the CSS remains the same */
+.theme-toggle img {
+    cursor: pointer;
+    width: 24px;
+    height: auto;
+}
+
+.light-theme .theme-toggle img {
+    filter: invert(1);
+}
