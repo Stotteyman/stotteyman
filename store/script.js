@@ -4,8 +4,8 @@ const body = document.body;
 themeToggle.addEventListener('click', () => {
     body.classList.toggle('light-theme');
     if (body.classList.contains('light-theme')) {
-        themeToggle.innerHTML = '<span>Light Mode</span> / <span>Dark Mode</span>';
+        themeToggle.innerHTML = '<img src="light-icon.png" alt="Light Mode">';
     } else {
-        themeToggle.innerHTML = '<span>Dark Mode</span> / <span>Light Mode</span>';
+        themeToggle.innerHTML = '<img src="dark-icon.png" alt="Dark Mode">';
     }
 });
