@@ -1,0 +1,42 @@
+/* Reset some default styles */
+body, h1, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Basic styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+header, footer, main {
+    padding: 20px;
+}
+
+/* Header styles */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+}
+
+/* Footer styles */
+footer {
+    text-align: center;
+    background-color: #222;
+    color: #fff;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    header, footer, main {
+        padding: 10px;
+    }
+}
