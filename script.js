@@ -1,4 +1,5 @@
 const sections = document.querySelectorAll('.section');
+const container = document.querySelector('.sections');
 let currentSection = 0;
 
 document.addEventListener('wheel', (e) => {
