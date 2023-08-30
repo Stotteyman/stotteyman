@@ -9,11 +9,13 @@ body, html {
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     font-family: Arial, sans-serif;
     color: #fff;
+    transition: transform 0.5s;
 }
 
 #home {
@@ -34,4 +36,14 @@ body, html {
 
 #contact {
     background-color: #ccc;
+}
+
+.section h1, .section h2 {
+    margin: 0;
+    padding-bottom: 1rem;
+}
+
+.section p {
+    max-width: 600px;
+    margin: 0 auto;
 }
