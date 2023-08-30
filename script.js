@@ -38,6 +38,6 @@ document.addEventListener('touchmove', (e) => {
 
 function scrollToSection(index) {
     sections.forEach((section, i) => {
-        section.style.transform = `translateY(-${100 * (index - i)}vh)`;
+        section.style.transform = `translateY(-${100 * (index - i)}%)`;
     });
 }
