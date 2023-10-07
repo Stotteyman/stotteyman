@@ -21,7 +21,7 @@ body {
 }
 
 h1, h2 {
-    color: #FFD700;
+    color: #ff9900;
 }
 
 ul {
@@ -31,14 +31,14 @@ ul {
 
 ul li {
     margin-bottom: 10px;
-    color: #FFD700;
+    color: #ff9900;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 }
 
 #email {
-    color: #FFD700;
+    color: #ff9900;
     text-decoration: underline;
     cursor: pointer;
 }
