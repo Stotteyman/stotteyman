@@ -3,18 +3,46 @@ body {
     margin: 0;
     padding: 0;
     background-color: #000;
-    color: #fff;
+    color: #ff9900;
 }
 
 .container {
     max-width: 960px;
     margin: 0 auto;
     padding: 20px;
-    text-align: center;
+}
+
+.sections {
+    padding: 20px;
+}
+
+.section {
+    margin-bottom: 50px;
+}
+
+h1, h2 {
+    color: #ff9900;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#email {
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .download-link {
-    color: #FFD700;
+    color: #ff9900;
     font-size: 24px;
     cursor: pointer;
     text-decoration: underline;
