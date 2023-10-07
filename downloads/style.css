@@ -1,0 +1,21 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
+    color: #fff;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.download-link {
+    color: #FFD700;
+    font-size: 24px;
+    cursor: pointer;
+    text-decoration: underline;
+}
