@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #000;
-    color: #ff9900;
+    color: #fff;
 }
 
 .container {
@@ -20,7 +20,8 @@ body {
     margin-bottom: 50px;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: #ff9900;
 }
 
@@ -31,19 +32,14 @@ ul {
 
 ul li {
     margin-bottom: 10px;
+    color: #ff9900;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
 }
 
 #email {
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.download-link {
     color: #ff9900;
-    font-size: 24px;
-    cursor: pointer;
     text-decoration: underline;
+    cursor: pointer;
 }
