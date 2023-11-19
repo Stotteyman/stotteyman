@@ -59,13 +59,13 @@ nav ul {
 
 .navigation {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
 .navigation li {
-    margin: 0 10px;
     cursor: pointer;
+    margin-right: 20px;
     transition: color 0.3s ease-in-out;
 }
 
