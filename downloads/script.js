@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var downloadStreaming = document.getElementById('streaming');
     
     downloadMinecraft.addEventListener('click', function() {
-        window.location.href = 'https://www.mediafire.com/file/rcb5gu245pg71s8/Stotteyman%2527s_PvP_Pack_%25231.zip/file';
+        window.location.href = 'https://download1076.mediafire.com/jyeyql57f7igqFZZnyVzHjJqlRkfj_G3sPfYbv3CiZwwuTo8llu2fFskqYigiDUY4Jt5XBhKYNZFkf-UNkxEAAJPOpCtxJSv56sklt8srefQH7XDtUEsGsrG5T8cZ_a61jg21oG3BysU34GZ3w7RCmCmhzOIy9Zb0B6fzNfc3bM/rcb5gu245pg71s8/Stotteyman%5C%27s+PvP+Pack+%231.zip';
     });
 
     downloadStreaming.addEventListener('click', function() {
