@@ -66,9 +66,14 @@ nav ul {
 .navigation li {
     cursor: pointer;
     margin-right: 20px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: white;
     transition: color 0.3s ease-in-out;
 }
 
-.navigation li:hover {
+.navigation a:hover {
     color: #FF9900;
 }
