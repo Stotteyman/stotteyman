@@ -1,3 +1,4 @@
+/* Previous styles */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -20,7 +21,8 @@ body {
     margin-bottom: 50px;
 }
 
-h1, h2 {
+h1,
+h2 {
     color: #ff9900;
 }
 
@@ -41,4 +43,32 @@ ul li {
     color: #ff9900;
     text-decoration: underline;
     cursor: pointer;
+}
+
+/* Header Styles */
+header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.navigation li {
+    margin: 0 10px;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+}
+
+.navigation li:hover {
+    color: #FF9900;
 }
