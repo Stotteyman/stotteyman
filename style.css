@@ -1,51 +1,7 @@
-/* Previous styles */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #000;
-    color: #fff;
-}
+/* Your existing CSS styles */
+/* ... */
 
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.sections {
-    padding: 20px;
-}
-
-.section {
-    margin-bottom: 50px;
-}
-
-h1,
-h2 {
-    color: #ff9900;
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-ul li {
-    margin-bottom: 10px;
-    color: #ff9900;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#email {
-    color: #ff9900;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-/* Header Styles */
+/* Additional styles for the header */
 header {
     background-color: #333;
     color: white;
