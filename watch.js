@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to load livestream on button click
     function loadLivestream() {
-        window.open('kick.com/stotteyman', '_blank');
+        window.open('https://kick.com/stotteyman', '_blank');
     }
 
     // Create "Watch Live" button
