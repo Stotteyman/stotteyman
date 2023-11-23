@@ -32,5 +32,7 @@ header {
 }
 
 .container {
-    padding: 20px; /* Add padding to the container */
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
 }
