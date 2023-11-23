@@ -1,10 +1,11 @@
+/* Your existing CSS styles */
+/* ... */
+
 /* Additional styles for the header */
 header {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #000;
-    color: #fff;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
     justify-content: space-between; /* Align items to the right */
     align-items: center;
 }
@@ -31,7 +32,5 @@ header {
 }
 
 .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
+    padding: 20px; /* Add padding to the container */
 }
