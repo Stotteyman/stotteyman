@@ -1,0 +1,57 @@
+/* cards.css */
+
+/* Card wrapper */
+.card-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+/* Card container */
+.card-container {
+    width: 250px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Card image */
+.card-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Card content */
+.card-content {
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+/* Card title */
+.card-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Card social links */
+.card-social-links {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+
+/* Card social icons */
+.card-social-icon {
+    color: #333;
+    font-size: 24px;
+    transition: color 0.3s ease-in-out;
+}
+
+.card-social-icon:hover {
+    color: #FF9900;
+}
