@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Loop through each grid item and attach a click event listener
     gridItems.forEach(function(item) {
         item.addEventListener('click', function() {
-            // Redirect to the corresponding page based on the clicked item
+            // Open the corresponding page in a new tab based on the clicked item
             if (item.querySelector('img').alt === 'W.A.G.E. Society') {
-                window.location.href = 'https://wagesociety.com'; // Link to W.A.G.E. Society
+                window.open('https://wagesociety.com', '_blank'); // Link to W.A.G.E. Society
             } else if (item.querySelector('img').alt === 'Coming Soon') {
                 // Add the link for the second project if available
-                window.location.href = '/'; // Example link
+                window.open('/', '_blank'); // Example link
             }
             // Add more conditions for other projects if needed
         });
