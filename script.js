@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = 'https://wagesociety.com'; // Link to W.A.G.E. Society
             } else if (item.querySelector('img').alt === 'Coming Soon') {
                 // Add the link for the second project if available
-                window.location.href = 'https://example.com'; // Example link
+                window.location.href = '/'; // Example link
             }
             // Add more conditions for other projects if needed
         });
