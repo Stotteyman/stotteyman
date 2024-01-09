@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.open('https://wagesociety.com', '_blank'); // Link to W.A.G.E. Society
             } else if (item.querySelector('img').alt === 'Coming Soon') {
                 // Add the link for the second project if available
-                window.open('/', '_blank'); // Example link
+                window.open('/'); // Example link
             }
             // Add more conditions for other projects if needed
         });
