@@ -2,12 +2,12 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #1c8321;
+    background-color: #0f0f0f;
 }
 
 .header {
-    background-color: #1a470c;
-    color: #d4f8c0;
+    background-color: #333;
+    color: #fff;
     padding: 10px;
     text-align: center;
 }
@@ -23,12 +23,14 @@ nav ul li {
 }
 
 a {
-    color: #d4f8c0;
+    color: #fff;
     text-decoration: none;
 }
 
 .social-media {
     margin: 20px 0;
+    /* Updated styling for better visual appeal */
+    text-align: center;
 }
 
 #livestream-container {

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const liveLink = document.getElementById('live-link');
     const aboutLink = document.getElementById('about-link');
     const contactLink = document.getElementById('contact-link');
+    const livestreamContainer = document.getElementById('livestream-container');
 
     // Event listeners for the navigation links
     liveLink.addEventListener('click', showLiveContent);
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to show the live content
     function showLiveContent() {
         hideAllContent();
-        document.getElementById('livestream-container').style.display = 'block';
+        livestreamContainer.style.display = 'block';
     }
 
     // Function to show the about content
@@ -28,12 +29,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to hide all content sections
     function hideAllContent() {
-        document.getElementById('livestream-container').style.display = 'none';
+        livestreamContainer.style.display = 'none';
         document.getElementById('about-content').style.display = 'none';
         // Add more if needed for other sections
     }
 
     // By default, show the about content and highlight the "About" link
     showAboutContent();
-    aboutLink.classList.add('selected');
 });
