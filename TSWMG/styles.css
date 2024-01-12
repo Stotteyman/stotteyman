@@ -33,3 +33,7 @@ a {
 #livestream-container {
     display: none; /* Initially hide the livestream container */
 }
+
+#about-content {
+    display: none; /* Initially hide the about content */
+}
