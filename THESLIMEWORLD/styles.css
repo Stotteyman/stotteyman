@@ -49,3 +49,32 @@ a {
 .selected {
     color: #e71313; /* Highlight color for selected menu item */
 }
+#social-media {
+    display: none;
+    text-align: center;
+    margin-top: 20px; /* Add space between the title and links */
+}
+
+#social-media h2 {
+    color: #a5fa99; /* Match the color scheme */
+}
+
+#social-media ul {
+    list-style: none;
+    padding: 0;
+}
+
+#social-media li {
+    display: inline;
+    margin-right: 10px; /* Adjust spacing between links */
+}
+
+#social-media a {
+    color: #a5fa99;
+    text-decoration: none;
+    font-weight: bold; /* Make the links bold */
+}
+
+#social-media a:hover {
+    text-decoration: underline; /* Underline on hover for better feedback */
+}
