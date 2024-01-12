@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Hide social media links
         socialMedia.style.display = 'none';
         // Set the livestream URL with the provided iframe
-        document.getElementById('livestream-frame').src = 'https://player.kick.com/YOUR_USERNAME?muted=true&allowfullscreen=false';
+        document.getElementById('livestream-frame').src = 'https://player.kick.com/inslimewetrustlive?muted=false&allowfullscreen=true';
         // Highlight the "Live" link and remove highlights from other links
         liveLink.classList.add('selected');
         document.getElementById('about-link').classList.remove('selected');
