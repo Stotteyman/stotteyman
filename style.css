@@ -5,10 +5,10 @@ body {
 }
 
 .top-bar {
-    background-color: #333;
-    color: #fff;
+    background-color: #000000;
+    color: #ee732b;
     text-align: center;
-    padding: 10px;
+    padding: 20px;
 }
 
 .grid-container {
