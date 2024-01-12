@@ -1,38 +1,39 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const livestreamContainer = document.getElementById('livestream-container');
-    const livestreamFrame = document.getElementById('livestream-frame');
     const liveLink = document.getElementById('live-link');
-    const aboutContent = document.getElementById('about-content');
-    const socialMedia = document.getElementById('social-media');
+    const aboutLink = document.getElementById('about-link');
+    const contactLink = document.getElementById('contact-link');
+    const livestreamContainer = document.getElementById('livestream-container');
 
-    // Event listener for the "Live" link
-    liveLink.addEventListener('click', function () {
-        // Show livestream container
+    // Event listeners for the navigation links
+    liveLink.addEventListener('click', showLiveContent);
+    aboutLink.addEventListener('click', showAboutContent);
+    contactLink.addEventListener('click', showContactContent);
+
+    // Function to show the live content
+    function showLiveContent() {
+        hideAllContent();
         livestreamContainer.style.display = 'block';
-        // Hide social media links
-        socialMedia.style.display = 'none';
-        // Set the livestream URL
-        livestreamFrame.src = 'https://kick.com/inslimewetrustlive';
-    });
-
-    // Function to hide the livestream container
-    function hideLivestream() {
-        livestreamContainer.style.display = 'none';
-        // Pause the livestream when hiding
-        livestreamFrame.src = '';
     }
 
-    // Event listener for hiding livestream on other link clicks
-    document.addEventListener('click', function (event) {
-        const clickedElement = event.target;
-        if (!clickedElement.closest('#livestream-container') && !clickedElement.closest('#live-link')) {
-            hideLivestream();
-        }
-    });
+    // Function to show the about content
+    function showAboutContent() {
+        hideAllContent();
+        document.getElementById('about-content').style.display = 'block';
+    }
 
-    // Event listener for showing social media links on the "About" page
-    aboutContent.addEventListener('click', function () {
-        // Show social media links
-        socialMedia.style.display = 'block';
-    });
+    // Function to show the contact content
+    function showContactContent() {
+        hideAllContent();
+        // Add your contact content here
+    }
+
+    // Function to hide all content sections
+    function hideAllContent() {
+        livestreamContainer.style.display = 'none';
+        document.getElementById('about-content').style.display = 'none';
+        // Add more if needed for other sections
+    }
+
+    // By default, show the about content and highlight the "About" link
+    showAboutContent();
 });
