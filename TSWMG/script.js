@@ -11,28 +11,32 @@ document.addEventListener("DOMContentLoaded", function () {
     // Function to show the live content
     function showLiveContent() {
         hideAllContent();
-        document.getElementById('live-content').style.display = 'block';
+        document.getElementById('livestream-container').style.display = 'block';
+        // Add logic to check if the livestream is live using the provided API and display accordingly
+        // (Auto play, volume, chat integration when live, and offline screen when offline)
     }
 
     // Function to show the about content
     function showAboutContent() {
         hideAllContent();
         document.getElementById('about-content').style.display = 'block';
+        // Add your content for the about section (pictures, videos, etc.)
     }
 
     // Function to show the contact content
     function showContactContent() {
         hideAllContent();
-        document.getElementById('contact-content').style.display = 'block';
+        // Add your contact content here
     }
 
     // Function to hide all content sections
     function hideAllContent() {
-        document.getElementById('live-content').style.display = 'none';
+        document.getElementById('livestream-container').style.display = 'none';
         document.getElementById('about-content').style.display = 'none';
-        document.getElementById('contact-content').style.display = 'none';
+        // Add more if needed for other sections
     }
 
-    // By default, show the about content
+    // By default, show the about content and highlight the "About" link
     showAboutContent();
+    aboutLink.classList.add('selected');
 });
