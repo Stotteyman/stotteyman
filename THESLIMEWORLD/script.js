@@ -1,42 +1,38 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const aboutLink = document.getElementById('about-link');
-    const contactLink = document.getElementById('contact-link');
+    const liveLink = document.getElementById('live-link');
+    const livestreamContainer = document.getElementById('livestream-container');
     const socialMedia = document.getElementById('social-media');
 
-    // Event listeners for the navigation links
-    aboutLink.addEventListener('click', function (event) {
+    // Show livestream container
+    livestreamContainer.style.display = 'block';
+
+    // Event listener for the "Live" link
+    liveLink.addEventListener('click', function (event) {
         event.preventDefault(); // Prevent the default link behavior
-        showContent('about');
-        // Show social media links on the "About" page
-        socialMedia.style.display = 'block';
+        // Show livestream container
+        livestreamContainer.style.display = 'block';
+        // Hide social media links
+        socialMedia.style.display = 'none';
+        // Set the livestream URL with the provided iframe
+        document.getElementById('livestream-frame').src = 'https://player.kick.com/inslimewetrustlive?muted=false&allowfullscreen=true';
+        // Highlight the "Live" link and remove highlights from other links
+        liveLink.classList.add('selected');
+        document.getElementById('about-link').classList.remove('selected');
+        document.getElementById('contact-link').classList.remove('selected');
     });
 
-    contactLink.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default link behavior
-        // Navigate to the Discord link when "Contact" is clicked
-        window.location.href = 'https://discord.gg/gFQkHSQQkC';
-    });
+    // Function to hide the livestream container
+    function hideLivestream() {
+        livestreamContainer.style.display = 'none';
+        // Pause the livestream when hiding
+        document.getElementById('livestream-frame').src = '';
+    }
 
-    // Function to show the selected content
-    function showContent(contentType) {
-        hideAllContent();
-        if (contentType === 'about') {
-            document.getElementById('about-content').style.display = 'block';
-            // Highlight the "About" link and remove highlights from other links
-            aboutLink.classList.add('selected');
-            document.getElementById('live-link').classList.remove('selected');
-            document.getElementById('contact-link').classList.remove('selected');
+    // Event listener for hiding livestream on other link clicks
+    document.addEventListener('click', function (event) {
+        const clickedElement = event.target;
+        if (!clickedElement.closest('#livestream-container') && !clickedElement.closest('#live-link')) {
+            hideLivestream();
         }
-        // Add more conditions if needed for other content types
-    }
-
-    // Function to hide all content sections
-    function hideAllContent() {
-        document.getElementById('livestream-container').style.display = 'none';
-        document.getElementById('about-content').style.display = 'none';
-        // Add more if needed for other sections
-    }
-
-    // By default, show the "Live" content and highlight the "Live" link
-    showContent('live');
+    });
 });
