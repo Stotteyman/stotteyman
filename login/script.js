@@ -8,6 +8,9 @@ function onSignIn(googleUser) {
     console.log('Name: ' + profile.getName());
     console.log('Email: ' + profile.getEmail());
     // You can now handle the user data as needed, like sending it to your server.
+
+    // Redirect the user to the specified URL after successful login
+    window.location.href = 'https://stotteyman.com/members/';
 }
 
 // Ensure that the redirect_uri matches the one registered in the Google API Console
