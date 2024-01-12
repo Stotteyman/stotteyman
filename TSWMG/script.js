@@ -12,15 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function showLiveContent() {
         hideAllContent();
         document.getElementById('livestream-container').style.display = 'block';
-        // Add logic to check if the livestream is live using the provided API and display accordingly
-        // (Auto play, volume, chat integration when live, and offline screen when offline)
     }
 
     // Function to show the about content
     function showAboutContent() {
         hideAllContent();
         document.getElementById('about-content').style.display = 'block';
-        // Add your content for the about section (pictures, videos, etc.)
     }
 
     // Function to show the contact content
