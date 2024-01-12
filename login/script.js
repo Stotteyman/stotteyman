@@ -1,5 +1,5 @@
 function googleSignIn() {
-    gapi.auth2.getAuthInstance().signIn().then(onSignIn);
+    gapi.auth2.getAuthInstance().signIn({ scope: 'profile email openid offline_access' }).then(onSignIn);
 }
 
 function onSignIn(googleUser) {

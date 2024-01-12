@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-signin-client_id" content="232342949144-u4amlu55qr6of2ps53vptgec2dv4m388.apps.googleusercontent.com">
     <title>Login with Google</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -11,6 +12,7 @@
         <h1>Login with Google</h1>
         <button onclick="googleSignIn()">Sign in with Google</button>
     </div>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="script.js"></script>
