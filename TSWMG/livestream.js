@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Hide social media links
         socialMedia.style.display = 'none';
         // Set the livestream URL
-        livestreamFrame.src = 'https://kick.com/inslimewetrustlive';
+        livestreamFrame.src = 'https://kick.com/stotteyman';
     });
 
     // Function to hide the livestream container
