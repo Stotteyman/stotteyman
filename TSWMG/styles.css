@@ -2,12 +2,11 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #088b0f;
 }
 
 .header {
-    background-color: #09300d;
-    color: #c7f7bc;
+    background-color: #333;
+    color: #fff;
     padding: 10px;
     text-align: center;
 }
@@ -23,20 +22,23 @@ nav ul li {
 }
 
 a {
-    color: #c7f7bc;
+    color: #fff;
     text-decoration: none;
 }
 
-.social-media {
-    margin: 20px 0;
-    /* Updated styling for better visual appeal */
+#livestream-container {
+    display: none;
+    text-align: center; /* Center the livestream iframe */
+}
+
+#livestream-frame {
+    margin: 0 auto; /* Center the livestream iframe horizontally */
+}
+
+#social-media {
     text-align: center;
 }
 
-#livestream-container {
-    display: none; /* Initially hide the livestream container */
-}
-
-#about-content {
-    display: none; /* Initially hide the about content */
+.selected {
+    color: #fa9e34; /* Highlight color for selected menu item */
 }
