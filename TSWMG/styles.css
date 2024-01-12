@@ -7,7 +7,7 @@ body {
 
 .header {
     background-color: #09300d;
-    color: #ffffff;
+    color: #a5fa99;
     padding: 10px;
     text-align: center;
 }
@@ -23,7 +23,7 @@ nav ul li {
 }
 
 a {
-    color: #fff;
+    color: #a5fa99;
     text-decoration: none;
 }
 
@@ -47,5 +47,5 @@ a {
 }
 
 .selected {
-    color: #fa9e34; /* Highlight color for selected menu item */
+    color: #e71313; /* Highlight color for selected menu item */
 }
