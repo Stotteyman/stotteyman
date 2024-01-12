@@ -2,12 +2,12 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #0f0f0f;
+    background-color: #088b0f;
 }
 
 .header {
-    background-color: #333;
-    color: #fff;
+    background-color: #09300d;
+    color: #c7f7bc;
     padding: 10px;
     text-align: center;
 }
@@ -23,7 +23,7 @@ nav ul li {
 }
 
 a {
-    color: #fff;
+    color: #c7f7bc;
     text-decoration: none;
 }
 
