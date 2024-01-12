@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif; /* Use the Montserrat font */
     margin: 0;
     padding: 0;
     background-color: #088b0f;
@@ -49,6 +49,7 @@ a {
 .selected {
     color: #e71313; /* Highlight color for selected menu item */
 }
+
 #social-media {
     display: none;
     text-align: center;
@@ -57,6 +58,7 @@ a {
 
 #social-media h2 {
     color: #a5fa99; /* Match the color scheme */
+    font-family: 'Montserrat', sans-serif; /* Use the Montserrat font */
 }
 
 #social-media ul {
