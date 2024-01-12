@@ -4,13 +4,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const socialMedia = document.getElementById('social-media');
 
     // Event listeners for the navigation links
-    aboutLink.addEventListener('click', function () {
+    aboutLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
         showContent('about');
         // Show social media links on the "About" page
         socialMedia.style.display = 'block';
     });
 
-    contactLink.addEventListener('click', function () {
+    contactLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
         // Navigate to the Discord link when "Contact" is clicked
         window.location.href = 'https://discord.gg/gFQkHSQQkC';
     });
@@ -35,6 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
         // Add more if needed for other sections
     }
 
-    // By default, show the "About" content and highlight the "About" link
-    showContent('about');
+    // By default, show the "Live" content and highlight the "Live" link
+    showContent('live');
 });

@@ -3,8 +3,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const livestreamContainer = document.getElementById('livestream-container');
     const socialMedia = document.getElementById('social-media');
 
+    // Show livestream container
+    livestreamContainer.style.display = 'block';
+
     // Event listener for the "Live" link
-    liveLink.addEventListener('click', function () {
+    liveLink.addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent the default link behavior
         // Show livestream container
         livestreamContainer.style.display = 'block';
         // Hide social media links
