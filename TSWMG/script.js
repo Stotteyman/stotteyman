@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.isLive) {
                 // Show the livestream container and embed the livestream window
                 document.getElementById('livestream-container').style.display = 'block';
-                document.getElementById('livestream-container').innerHTML = '<iframe src="https://kick.com/inslimewetrust" width="100%" height="400px"></iframe>';
+                document.getElementById('livestream-container').innerHTML = '<iframe src="https://kick.com/inslimewetrustlive" width="100%" height="400px"></iframe>';
             }
         })
         .catch(error => console.error('Error checking livestream status:', error));
