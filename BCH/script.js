@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
   const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
   const pageLinks = [
-    '/',
-    '/',
-    '/',
-    '',
-    '',
-    '',
-    ''
+    '/bch',
+    '/bch',
+    '/bch',
+    '/bch',
+    '/bch',
+    '/bch',
+    '/bch'
   ];
 
   // Function to create a span with multiple spaces
