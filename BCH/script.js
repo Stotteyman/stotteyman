@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", function() {
       'socials.html',
       'customize.html',
       'shop.html',
-      'sales.html'
+      'sales.html',
+      'other.html'
     ];
   
     // Function to create a span with multiple spaces
