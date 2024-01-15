@@ -1,21 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Select the element containing the navigation words
     const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
-  
-    // Split the text content into individual words
     const words = navElement.innerText.trim().split(/\s+/);
-  
-    // Clear the original text content
-    navElement.innerHTML = '';
-  
-    // Array of links corresponding to each menu item
     const pageLinks = [
-      'home.html',       // Replace with your home page link
-      'contact.html',    // Replace with your contact page link
-      'socials.html',    // Replace with your socials page link
-      'customize.html',  // Replace with your customize page link
-      'shop.html',       // Replace with your shop page link
-      'sales.html'       // Replace with your sales page link
+      'home.html',
+      'contact.html',
+      'socials.html',
+      'customize.html',
+      'shop.html',
+      'sales.html'
     ];
   
     // Function to create a span with multiple spaces
@@ -35,10 +27,10 @@ document.addEventListener("DOMContentLoaded", function() {
   
         // Add event listeners to change the color on hover
         span.addEventListener('mouseover', function() {
-          this.style.color = 'red'; // Change this to the highlight color you want
+          this.style.color = 'red';
         });
         span.addEventListener('mouseout', function() {
-          this.style.color = ''; // Resets the color when not hovering
+          this.style.color = '';
         });
   
         // Add click event listener to redirect to the corresponding page
