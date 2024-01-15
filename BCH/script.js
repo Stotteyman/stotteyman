@@ -21,14 +21,6 @@ document.addEventListener("DOMContentLoaded", function() {
       const span = word.trim() === '' ? createSpacesSpan(6) : createSpacesSpan(1);
       span.innerHTML += word;
   
-      // Add event listeners to change the color on hover
-      span.addEventListener('mouseover', function() {
-        this.style.color = 'red'; // Change this to the highlight color you want
-      });
-      span.addEventListener('mouseout', function() {
-        this.style.color = ''; // Resets the color when not hovering
-      });
-  
       // Append the span element to the navigation element
       navElement.appendChild(span);
   
