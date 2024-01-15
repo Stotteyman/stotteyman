@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
   
     // Split the text content into individual words and spaces
-    const words = navElement.innerHTML.split(/(&nbsp;|\s)+/);
+    const words = navElement.innerHTML.split(/\s+/);
   
     // Clear the original text content
     navElement.innerHTML = '';
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Iterate over each word
     words.forEach((word, index) => {
       // Create a new span element for each word or space
-      const span = word.trim() === '' ? createSpacesSpan(6) : createSpacesSpan(1);
+      const span = createSpacesSpan(index === 0 ? 0 : 6); // No space before the first word
       span.innerHTML += word;
   
       // Add event listeners to change the color on hover
