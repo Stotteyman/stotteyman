@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
   
     // Split the text content into individual words
-    const words = navElement.innerText.split(/\s+/);
+    const words = navElement.innerText.trim().split(/\s+/);
   
     // Clear the original text content
     navElement.innerHTML = '';
