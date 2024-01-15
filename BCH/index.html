@@ -1,63 +1,51 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="globals.css" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="desktop">
-      <div class="div">
-        <div class="overlap">
-          <img class="line" src="img/line-1.svg" />
-          <img class="bchname" src="img/bchname-1.png" />
-          <div class="welcome-to-the-hood">welcome to the hood!</div>
-        </div>
-        <div class="overlap-group">
-          <div class="flexcontainer">
-            <p class="text">
-              <span class="text-wrapper"
-                >I&#39;m just a hoodie brand, standing in front of a hoodie lover, asking you to... buy these hoodies<br
-              /></span>
-            </p>
-            <p class="text">
-              <span class="text-wrapper"><br /></span>
-            </p>
-            <p class="text">
-              <span class="text-wrapper"
-                >Hello! Welcome to bestcoasthood. Your new favorite online hoodie store. I am a big fan of hoodies,
-                always have been, and I know you are, too. I figured: why not make my own hoodies and my own designs to
-                share with other hoodie lovers? So... I did!<br
-              /></span>
-            </p>
-            <p class="text">
-              <span class="text-wrapper"><br /></span>
-            </p>
-            <p class="text">
-              <span class="text-wrapper"
-                >I&#39;m here to offer my design services to you. Like my logos? Like my designs? Want them for your own
-                hoodie? Whether they&#39;re for yourself, you and bae, your entire family for that reunion you&#39;ve
-                been talking about, or a work group activity... I can make it! Use my designs with your group&#39;s
-                name, or send me your design/name/logo to put on the hoodies. You can also request names on the back
-                (for an added cost) :)<br
-              /></span>
-            </p>
-            <p class="text">
-              <span class="text-wrapper"><br /></span>
-            </p>
-            <p class="text"><span class="text-wrapper">happy browsing! thanks for stopping by.</span></p>
-          </div>
-          <div class="rectangle"></div>
-          <div class="text-wrapper-2">it’s hoodie season!</div>
-          <img class="image" src="img/image-1.png" />
-        </div>
-        <p class="HOME-CONTACT-SOCIALS">
-          home&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          socials&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          shop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sales&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;other
-        </p>
-      </div>
-    </div>
-    <script src="script.js"></script>
-  </body>
-</html>
+document.addEventListener("DOMContentLoaded", function() {
+    const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
+    const words = navElement.innerText.trim().split(/\s+/);
+    const pageLinks = [
+      'home.html',
+      'contact.html',
+      'socials.html',
+      'customize.html',
+      'shop.html',
+      'sales.html'
+    ];
+  
+    // Function to create a span with multiple spaces
+    const createSpacesSpan = (numSpaces) => {
+      const span = document.createElement('span');
+      span.innerHTML = '&nbsp;'.repeat(numSpaces);
+      return span;
+    };
+  
+    // Iterate over each word
+    words.forEach((word, index) => {
+      // Skip empty words
+      if (word !== '') {
+        // Create a new span element for each word or space
+        const span = createSpacesSpan(index === 0 ? 0 : 6); // No space before the first word
+        span.innerHTML += word;
+  
+        // Add event listeners to change the color on hover
+        span.addEventListener('mouseover', function() {
+          this.style.color = 'red';
+        });
+        span.addEventListener('mouseout', function() {
+          this.style.color = '';
+        });
+  
+        // Add click event listener to redirect to the corresponding page
+        span.addEventListener('click', function() {
+          window.location.href = pageLinks[index];
+        });
+  
+        // Append the span element to the navigation element
+        navElement.appendChild(span);
+  
+        // Add an additional space after each word (except the last one)
+        if (index < words.length - 1) {
+          navElement.appendChild(createSpacesSpan(6));
+        }
+      }
+    });
+  });
+  
