@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // Create the reactive set of text
-  const reactiveText = 'home&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contact&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; socials&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customize&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shop&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sales&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;other';
+  const reactiveText = 'home; contact; socials; customize; shop; sales; other';
 
   // Clear the original text content
   navElement.innerHTML = '';
