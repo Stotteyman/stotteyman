@@ -27,29 +27,32 @@ document.addEventListener("DOMContentLoaded", function() {
   
     // Iterate over each word
     words.forEach((word, index) => {
-      // Create a new span element for each word or space
-      const span = createSpacesSpan(index === 0 ? 0 : 6); // No space before the first word
-      span.innerHTML += word;
+      // Skip empty words
+      if (word !== '') {
+        // Create a new span element for each word or space
+        const span = createSpacesSpan(index === 0 ? 0 : 6); // No space before the first word
+        span.innerHTML += word;
   
-      // Add event listeners to change the color on hover
-      span.addEventListener('mouseover', function() {
-        this.style.color = 'red'; // Change this to the highlight color you want
-      });
-      span.addEventListener('mouseout', function() {
-        this.style.color = ''; // Resets the color when not hovering
-      });
+        // Add event listeners to change the color on hover
+        span.addEventListener('mouseover', function() {
+          this.style.color = 'red'; // Change this to the highlight color you want
+        });
+        span.addEventListener('mouseout', function() {
+          this.style.color = ''; // Resets the color when not hovering
+        });
   
-      // Add click event listener to redirect to the corresponding page
-      span.addEventListener('click', function() {
-        window.location.href = pageLinks[index];
-      });
+        // Add click event listener to redirect to the corresponding page
+        span.addEventListener('click', function() {
+          window.location.href = pageLinks[index];
+        });
   
-      // Append the span element to the navigation element
-      navElement.appendChild(span);
+        // Append the span element to the navigation element
+        navElement.appendChild(span);
   
-      // Add an additional space after each word (except the last one)
-      if (index < words.length - 1) {
-        navElement.appendChild(createSpacesSpan(6));
+        // Add an additional space after each word (except the last one)
+        if (index < words.length - 1) {
+          navElement.appendChild(createSpacesSpan(6));
+        }
       }
     });
   });
