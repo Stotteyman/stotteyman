@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
   };
 
   // Create the reactive set of text
-  const reactiveText = 'home; contact; socials; customize; shop; sales; other';
+  const reactiveText = 'home contact socials customize shop sales other';
 
   // Clear the original text content
   navElement.innerHTML = '';
