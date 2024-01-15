@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Select the element containing the navigation words
     const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
   
-    // Split the text content into individual words and spaces
-    const words = navElement.innerHTML.split(/\s+/);
+    // Split the text content into individual words
+    const words = navElement.innerText.split(/\s+/);
   
     // Clear the original text content
     navElement.innerHTML = '';
