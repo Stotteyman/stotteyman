@@ -46,11 +46,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Append the span element to the navigation element
-    navElement.appendChild(span);
-
-    // Add an additional space after each word (except the last one)
-    if (index < words.length - 1) {
-      navElement.appendChild(createSpacesSpan(6));
-    }
+    navElement.appendChild(span)
   });
 });
