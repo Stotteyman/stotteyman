@@ -3,17 +3,17 @@ document.addEventListener("DOMContentLoaded", function() {
     // Select the element containing the navigation words
     const navElement = document.querySelector('.HOME-CONTACT-SOCIALS');
 
-    // Split the text content into individual words
-    const words = navElement.textContent.split(/\s+/);
+    // Split the text content into individual words and spaces
+    const words = navElement.innerHTML.split(/(&nbsp;|\s)+/);
 
     // Clear the original text content
-    navElement.textContent = '';
+    navElement.innerHTML = '';
 
     // Iterate over each word
     words.forEach(word => {
         // Create a new span element for each word
         const span = document.createElement('span');
-        span.textContent = word;
+        span.innerHTML = word;
 
         // Add event listeners to change the color on hover
         span.addEventListener('mouseover', function() {
@@ -25,8 +25,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Append the span element to the navigation element
         navElement.appendChild(span);
-
-        // Add a space after each word for proper spacing
-        navElement.appendChild(document.createTextNode(' '));
     });
 });
