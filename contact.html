@@ -389,9 +389,35 @@
                 </button>
               </div>
             </div>
+            <script>
+              function handleClick(fieldId) {
+                const field = document.getElementById(fieldId);
+                field.innerHTML = '<input type="text" />';
+              }
             
+              function sendMessage() {
+                // Validate email address
+                const emailField = document.getElementById('emailField');
+                const emailInput = emailField.querySelector('input');
+                const emailValue = emailInput.value.trim();
+            
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailValue)) {
+                  alert('Please enter a valid email address.');
+                  return;
+                }
+            
+                // Perform further actions or submit the form
+                // ...
+            
+                // For now, let's log the input values
+                console.log('Name:', document.getElementById('nameField').querySelector('input').value.trim());
+                console.log('Email:', emailValue);
+                console.log('Message:', document.getElementById('messageField').querySelector('input').value.trim());
+              }
+            </script>     
 
-          
             <img
               src="public/external/vector2009245-rq5a.svg"
               alt="Vector2009245"
