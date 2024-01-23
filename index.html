@@ -19,52 +19,156 @@
 </head>
 
 <body>
-    <header class="top-bar">
-        <h1>Stotteyman's Portfolio</h1>
-    </header>
-
-    <div class="grid-container" id="gridContainer">
-        <!-- Replace this section with your project items -->
-        <div class="grid-item" data-link="https://wagesociety.com">
-            <img src="resources\logo.gif" alt="W.A.G.E. Society">
-            <p>W.A.G.E. Society is a place where people of all talents can learn new ways to be successful online. Join the community now!</p>
-        </div>
-        <div class="grid-item" data-link="/downloads">
-            <img src="resources\download_icon.jpg" alt="Downloads">
-            <p>Explore free downloads from Stotteyman, including resources related to technology and gaming.</p>
-        </div>
-        <div class="grid-item" data-link="https://cwallet.com/t/54VJ15YA">
-            <img src="resources\cwallet.png" alt="CWallet">
-            <p>Support my projects by sending cryptocurrency through CWallet on any network.</p>
-        </div>
-        <div class="grid-item" data-link="https://snackmoneybeatz.com/">
-            <img src="https://snackmoneybeatz.com/i/snackmoneybeatz.jpg" alt="snackmoneybeatz">
-            <p>Check out what snack money got goin on</p>
-        </div>
-        <div class="grid-item" data-link="/croag">
-            <img src="resources\croaglife.png" alt="CROAG DAY">
-            <p>Discover and celebrate Croag Day with unique events and activities. Stay tuned for the latest updates!</p>
-        </div>
-        <div class="grid-item" data-link="/THESLIMEWORLD">
-            <img src="resources\Slime_Gang.gif" alt="THE SLIME WORLD MONEY GANG">
-            <p>Immerse yourself in The Slime World Money Gang, a vibrant gaming community. Join the gang and level up together!</p>
-        </div>
-        <div class="grid-item" data-link="https://store.steampowered.com/wishlist/id/stotteyman/#sort=order&discount_any=1">
-            <img src="resources\steam.jpg" alt="Steam Wishlist">
-            <p>Browse Stotteyman's Steam Wishlist and surprise me with a game during the next sale. Let's game together!</p>
-        </div>
-        <div class="grid-item" data-link="https://bestcoasthood.com/">
-            <img src="https://bestcoasthood.com/img/image-1.png" alt="bestcoasthood">
-            <p>Check out Best Coast Hood for cool custom hoodies. Express your style with unique and trendy designs!</p>
-        </div>
-        <div class="grid-item" data-link="">
-            <img src="resources\coming soon.jpg" alt="Coming Soon">
-            <p>This undisclosed project is coming soon! Stay tuned for exciting announcements and updates.</p>
-        </div>
-        <!-- Add more grid-item divs for each project -->
+  <div id="app">
+    <div class="header">
+      <div class="logo"></div>
+      <div class="menu">
+        <div class="menu-item">Home</div>
+        <div class="menu-item">Portfolio</div>
+        <div class="menu-item">About</div>
+        <div class="menu-item">Contact</div>
+      </div>
     </div>
 
-    <script src="script.js"></script>
+    <div class="section">
+      <div class="intro">
+        <div class="name">Gary Lee McCullouch</div>
+        <div class="subtitle">Welcome to my portfolio website!</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="featured-projects">
+        <div class="project">
+          <div class="project-image">
+            <div class="product-overlay">
+              <div class="product-title">Product 1</div>
+            </div>
+          </div>
+          <div class="project-details">
+            <div class="project-name">Project A</div>
+            <div class="project-description">Some details about Project A</div>
+          </div>
+        </div>
+
+        <div class="project">
+          <div class="project-image">
+            <div class="product-overlay">
+              <div class="product-title">Product 2</div>
+            </div>
+          </div>
+          <div class="project-details">
+            <div class="project-name">Project B</div>
+            <div class="project-description">Some details about Project B</div>
+          </div>
+        </div>
+
+        <div class="project">
+          <div class="project-image">
+            <div class="product-overlay">
+              <div class="product-title">Product 3</div>
+            </div>
+          </div>
+          <div class="project-details">
+            <div class="project-name">Project C</div>
+            <div class="project-description">Some details about Project C</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="client-reviews">
+        <div class="review">
+          <div class="client-avatar"></div>
+          <div class="review-text">Gary is a talented designer, and I am extremely satisfied with his work.</div>
+        </div>
+
+        <div class="review">
+          <div class="client-avatar"></div>
+          <div class="review-text">Working with Gary was a pleasure. He delivered top-notch designs.</div>
+        </div>
+
+        <div class="review">
+          <div class="client-avatar"></div>
+          <div class="review-text">I highly recommend Gary for any design project. He exceeded my expectations.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="about-me">
+        <div class="avatar"></div>
+        <div class="about-details">
+          <div class="name">Gary Lee McCullouch</div>
+          <div class="roles">
+            <div class="role">UI/UX Designer</div>
+            <div class="role">Front-end Developer</div>
+          </div>
+          <div class="bio">Passionate about creating delightful user experiences.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="latest-updates">
+        <div class="update">
+          <div class="update-image">
+            <div class="post-overlay">
+              <div class="post-title">Post 1</div>
+              <div class="post-divider">
+                <div class="line"></div>
+                <div class="circle"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+              </div>
+            </div>
+          </div>
+          <div class="update-details">
+            <div class="update-text">Excited to share my new design project!</div>
+            <div class="tags">
+              <div class="tag">Design</div>
+              <div class="tag">Project</div>
+            </div>
+            <div class="author">GaryDesigns</div>
+          </div>
+        </div>
+
+        <div class="update">
+          <div class="update-image">
+            <div class="post-overlay">
+              <div class="post-title">Post 2</div>
+              <div class="post-divider">
+                <div class="line"></div>
+                <div class="circle"></div>
+                <div class="line"></div>
+                <div class="line"></div>
+              </div>
+            </div>
+          </div>
+          <div class="update-details">
+            <div class="update-text">Exploring new trends in UI/UX design. Stay tuned for updates!</div>
+            <div class="tags">
+              <div class="tag">UI/UX</div>
+              <div class="tag">Design</div>
+            </div>
+            <div class="author">GaryDesigns</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="social-icons">
+        <div class="social-icon"></div>
+        <div class="social-icon"></div>
+        <div class="social-icon"></div>
+      </div>
+      <div class="copyright">© 2024 Stotteyman.com. All rights reserved.</div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 
 </html>
