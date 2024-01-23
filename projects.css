@@ -6,6 +6,7 @@
   align-items: center;
   flex-direction: column;
 }
+
 .projects-projects {
   width: 100%;
   height: auto;
@@ -16,6 +17,7 @@
   flex-direction: column;
   background-color: rgba(255, 255, 255, 1);
 }
+
 .projects-top-bar {
   gap: 20px;
   width: 1440px;
@@ -23,17 +25,19 @@
   display: flex;
   padding: 20px;
   overflow: hidden;
-  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.11999999731779099) ;
+  box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.11999999731779099);
   align-items: center;
   flex-shrink: 0;
   justify-content: center;
   background-color: rgba(255, 255, 255, 1);
 }
+
 .projects-rectangle4137 {
   width: 40px;
   height: 40px;
   border-radius: 100px;
 }
+
 .projects-text {
   color: rgba(0, 0, 0, 1);
   height: auto;
@@ -47,12 +51,14 @@
   font-stretch: normal;
   text-decoration: none;
 }
+
 .projects-navigation {
   gap: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: rgba(255, 255, 255, 1);
+
 }
 .projects-text02 {
   color: rgba(0, 0, 0, 1);
