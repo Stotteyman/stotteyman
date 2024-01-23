@@ -1,23 +1,13 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Get all projects cards
-    const projectCards = document.querySelectorAll('.projects-card1');
+document.addEventListener('DOMContentLoaded', function() {
+    const gridItems = document.querySelectorAll('.grid-item');
 
-    // Define click event handler
-    const handleClick = function (url) {
-      window.open(url, '_blank'); // Open the URL in a new tab
-    };
-
-    // Attach click event to each project card
-    projectCards.forEach(function (card) {
-      const image = card.querySelector('.projects-image2');
-      const url = card.getAttribute('data-url');
-
-      // Check if URL is available
-      if (url) {
-        // Add click event to open the URL
-        image.addEventListener('click', function () {
-          handleClick(url);
+    gridItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+            // Open the corresponding page in a new tab based on the clicked item
+            const link = item.getAttribute('data-link');
+            if (link) {
+                window.open(link, '_blank');
+            }
         });
-      }
     });
-  });
+});
