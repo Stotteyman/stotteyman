@@ -7,7 +7,7 @@ function sendMessage() {
 
     // Prepare data to send to the Discord webhook with formatting
     var discordData = {
-        content: `**New message from ${name} (${email}):**\n${message}\n\n@stotteyman`
+        content: `@here **New message from ${name} (${email}):**\n${message}`
     };
 
     // Discord webhook URL (replace with your actual webhook URL)
