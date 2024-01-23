@@ -390,66 +390,39 @@
               </div>
             </div>
             <script>
-              function resetForm() {
-  // Reset the form by setting input values to their default placeholders
-  document.getElementById('nameField').innerHTML = '<span class="contact-text12"><span>Enter your name</span></span>';
-  document.getElementById('emailField').innerHTML = '<span class="contact-text16"><span>Enter your email address</span></span>';
-  document.getElementById('messageField').innerHTML = '<span class="contact-text20"><span>Enter your message</span></span>';
-}
-
-function sendDiscordMessage(name, email, message) {
-  // Format the message
-  const formattedMessage = `@here\nNew contact form submission:\n\nName: ${name}\nEmail: ${email}\nMessage: ${message}`;
-
-  // Discord webhook URL
-  const webhookUrl = 'https://discord.com/api/webhooks/1199319139014152192/wZjX7TAn_Sbu3ZjocRwuaa_GKsfxY7AOjrvwzRnH58g4vCfgReFQ1AKy3UVu62tuUtQy';
-
-  // Send message to Discord
-  fetch(webhookUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      content: formattedMessage,
-    }),
-  })
-  .then(response => {
-    if (!response.ok) {
-      console.error('Error sending message to Discord:', response.status, response.statusText);
-    } else {
-      console.log('Message sent to Discord successfully.');
-    }
-  })
-  .catch(error => console.error('Error:', error));
-
-  // Return and display the formatted message
-  return formattedMessage;
-}
-
-function sendMessage() {
-  // Get input values
-  const nameValue = document.getElementById('nameField').querySelector('input').value.trim();
-  const emailValue = document.getElementById('emailField').querySelector('input').value.trim();
-  const messageValue = document.getElementById('messageField').querySelector('input').value.trim();
-
-  // Validate email address
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(emailValue)) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-
-  // Send message to Discord and get the formatted message
-  const formattedMessage = sendDiscordMessage(nameValue, emailValue, messageValue);
-
-  // Log the formatted message (you can display it on your webpage as needed)
-  console.log('Formatted Message:', formattedMessage);
-
-  // Reset the form after sending the message
-  resetForm();
-}
-
+              function handleClick(fieldId) {
+                const field = document.getElementById(fieldId);
+                if (!field.querySelector('input')) {
+                  const inputElement = document.createElement('input');
+                  inputElement.type = 'text';
+                  inputElement.value = field.textContent.trim();
+                  field.innerHTML = '';
+                  field.appendChild(inputElement);
+                  inputElement.focus();
+                }
+              }
+            
+              function sendMessage() {
+                // Validate email address
+                const emailField = document.getElementById('emailField');
+                const emailInput = emailField.querySelector('input');
+                const emailValue = emailInput.value.trim();
+            
+                // Basic email validation
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailValue)) {
+                  alert('Please enter a valid email address.');
+                  return;
+                }
+            
+                // Perform further actions or submit the form
+                // ...
+            
+                // For now, let's log the input values
+                console.log('Name:', document.getElementById('nameField').querySelector('input').value.trim());
+                console.log('Email:', emailValue);
+                console.log('Message:', document.getElementById('messageField').querySelector('input').value.trim());
+              }
             </script>     
 
             <img
