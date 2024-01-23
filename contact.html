@@ -392,7 +392,14 @@
             <script>
               function handleClick(fieldId) {
                 const field = document.getElementById(fieldId);
-                field.innerHTML = '<input type="text" />';
+                if (!field.querySelector('input')) {
+                  const inputElement = document.createElement('input');
+                  inputElement.type = 'text';
+                  inputElement.value = field.textContent.trim();
+                  field.innerHTML = '';
+                  field.appendChild(inputElement);
+                  inputElement.focus();
+                }
               }
             
               function sendMessage() {
