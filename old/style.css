@@ -11,13 +11,6 @@ body {
     padding: 20px;
 }
 
-.logout-button {
-    color: #ee732b;
-    text-decoration: none;
-    margin-left: 20px;
-    cursor: pointer;
-}
-
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
