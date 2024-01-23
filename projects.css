@@ -453,13 +453,22 @@
   flex-shrink: 0;
 }
 .projects-image2 {
+  width: 340px;
+  height: 340px;
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  align-self: stretch;
+  align-items: flex-start;
+  background-color: rgba(216, 216, 216, 0.5);
   background-image: url('resources/logo.gif');
   background-size: cover; /* or 'contain' based on your preference */
   background-position: center; /* or adjust as needed */
   background-repeat: no-repeat;
-  /* Add any additional styling as needed */
+    /* Add any additional styling as needed */
+  
+  
 }
-
 .projects-text30 {
   top: 162px;
   left: 16px;
