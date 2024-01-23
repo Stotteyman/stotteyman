@@ -344,42 +344,54 @@
               </a>
             </div>
           </div>
-          <div class="contact-section">
-            <div class="contact-container1">
-              <span class="contact-text08"><span>Contact</span></span>
-              <div class="contact-input">
-                <span class="contact-text10"><span>Name</span></span>
-                <div class="contact-textfield">
-                  <span class="contact-text12">
-                    <span>Enter your name</span>
-                  </span>
+            <div class="contact-section">
+              <div class="contact-container1">
+                <span class="contact-text08"><span>Contact</span></span>
+              
+                <!-- Name Input -->
+                <div class="contact-input">
+                  <span class="contact-text10"><span>Name</span></span>
+                  <div class="contact-textfield" id="nameField" onclick="handleClick('nameField')">
+                    <span class="contact-text12">
+                      <span>Enter your name</span>
+                    </span>
+                  </div>
                 </div>
+              
+                <!-- Email Input -->
+                <div class="contact-input1">
+                  <span class="contact-text14"><span>Email</span></span>
+                  <div class="contact-textfield1" id="emailField" onclick="handleClick('emailField')">
+                    <span class="contact-text16">
+                      <span>Enter your email address</span>
+                    </span>
+                  </div>
+                </div>
+              
+                <!-- Message Input -->
+                <div class="contact-input2">
+                  <span class="contact-text18"><span>Message</span></span>
+                  <div class="contact-textfield2" id="messageField" onclick="handleClick('messageField')">
+                    <span class="contact-text20">
+                      <span>Enter your message</span>
+                    </span>
+                  </div>
+                </div>
+              
+                <!-- Button -->
+                <button class="contact-button">
+                  <div class="contact-seconday">
+                    <span class="contact-text22"><span>Cancel</span></span>
+                  </div>
+                  <div class="contact-primary">
+                    <span class="contact-text24" onclick="sendMessage()"><span>Send</span></span>
+                  </div>
+                </button>
               </div>
-              <div class="contact-input1">
-                <span class="contact-text14"><span>Email</span></span>
-                <div class="contact-textfield1">
-                  <span class="contact-text16">
-                    <span>Enter your email address</span>
-                  </span>
-                </div>
-              </div>
-              <div class="contact-input2">
-                <span class="contact-text18"><span>Message</span></span>
-                <div class="contact-textfield2">
-                  <span class="contact-text20">
-                    <span>Enter your message</span>
-                  </span>
-                </div>
-              </div>
-              <button class="contact-button">
-                <div class="contact-seconday">
-                  <span class="contact-text22"><span>Cancel</span></span>
-                </div>
-                <div class="contact-primary">
-                  <span class="contact-text24"><span>Send</span></span>
-                </div>
-              </button>
             </div>
+            
+
+          
             <img
               src="public/external/vector2009245-rq5a.svg"
               alt="Vector2009245"
