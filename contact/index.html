@@ -1,76 +1,105 @@
-<div>
-    <link href="./page.css" rel="stylesheet" />
-    <div class="page-container">
-      <div class="page-page">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Stotteyman's Portfolio">
+    <meta property="og:description" content="Explore Stotteyman's diverse projects in technology, internet, social media, livestreaming, gaming, and W.A.G.E. Society.">
+    <meta property="og:image" content="https://www.stotteyman.com/images/stotteyman.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="400">
+    <meta property="og:url" content="https://www.stotteyman.com">
+    <meta name="keywords" content="livestream, video content, creators, community, W.A.G.E. SOCIETY, entertainment, stotteyman">
+    <meta name="description" content="Explore Stotteyman's diverse projects in technology, internet, social media, livestreaming, gaming, and W.A.G.E. Society.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="shortcut icon" href="images/stotteyman.ico" type="image/x-icon">
+    <title>Stotteyman's Portfolio</title>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="page-page">
         <div class="page-top-bar">
-          <img
-            alt="Rectangle41379219"
-            src="/rectangle41379219-143e-200h.png"
-            class="page-rectangle4137"
-          />
-          <span class="page-text"><span>Stotteyman.com</span></span>
-          <div class="page-navigation">
-            <span class="page-text02"><span>Projects</span></span>
-            <span class="page-text04"><span>Contact</span></span>
-            <span class="page-text06"><span>Donate</span></span>
-          </div>
+            <img
+                alt="Rectangle41379219"
+                src="/rectangle41379219-143e-200h.png"
+                class="page-rectangle4137"
+            />
+            <span class="page-text"><span>Stotteyman.com</span></span>
+            <div class="page-navigation">
+                <span class="page-text02"><span>Projects</span></span>
+                <span class="page-text04"><span>Contact</span></span>
+                <span class="page-text06"><span>Donate</span></span>
+            </div>
         </div>
         <div class="page-section">
-          <div class="page-container1">
-            <span class="page-text08"><span>Contact</span></span>
-            <div class="page-input">
-              <span class="page-text10"><span>Name</span></span>
-              <div class="page-textfield">
-                <span class="page-text12"><span>Enter your name</span></span>
-              </div>
+            <div class="page-container1">
+                <span class="page-text08"><span>Contact</span></span>
+                <div class="page-input">
+                    <span class="page-text10"><span>Name</span></span>
+                    <div class="page-textfield">
+                        <input type="text" id="name" placeholder="Enter your name">
+                    </div>
+                </div>
+                <div class="page-input1">
+                    <span class="page-text14"><span>Email</span></span>
+                    <div class="page-textfield1">
+                        <input type="email" id="email" placeholder="Enter your email address">
+                    </div>
+                </div>
+                <div class="page-input2">
+                    <span class="page-text18"><span>Message</span></span>
+                    <div class="page-textfield2">
+                        <textarea id="message" placeholder="Enter your message"></textarea>
+                    </div>
+                </div>
+                <button class="page-button" onclick="sendMessage()">
+                    <div class="page-seconday">
+                        <span class="page-text22"><span>Cancel</span></span>
+                    </div>
+                    <div class="page-primary">
+                        <span class="page-text24"><span>Send</span></span>
+                    </div>
+                </button>
             </div>
-            <div class="page-input1">
-              <span class="page-text14"><span>Email</span></span>
-              <div class="page-textfield1">
-                <span class="page-text16">
-                  <span>Enter your email address</span>
-                </span>
-              </div>
-            </div>
-            <div class="page-input2">
-              <span class="page-text18"><span>Message</span></span>
-              <div class="page-textfield2">
-                <span class="page-text20"><span>Enter your message</span></span>
-              </div>
-            </div>
-            <button class="page-button">
-              <div class="page-seconday">
-                <span class="page-text22"><span>Cancel</span></span>
-              </div>
-              <div class="page-primary">
-                <span class="page-text24"><span>Send</span></span>
-              </div>
-            </button>
-          </div>
-          <img
-            alt="Vector2009245"
-            src="/vector2009245-jw69.svg"
-            class="page-vector200"
-          />
+            <img
+                alt="Vector2009245"
+                src="/vector2009245-jw69.svg"
+                class="page-vector200"
+            />
         </div>
         <div class="page-section1">
-          <div class="page-avatar"></div>
-          <div class="page-container2">
-            <span class="page-text26"><span>Gary Lee McCullouch</span></span>
-          </div>
-          <img
-            alt="Vector2009250"
-            src="/vector2009250-yas1.svg"
-            class="page-vector2001"
-          />
+            <div class="page-avatar"></div>
+            <div class="page-container2">
+                <span class="page-text26"><span>Gary Lee McCullouch</span></span>
+            </div>
+            <img
+                alt="Vector2009250"
+                src="/vector2009250-yas1.svg"
+                class="page-vector2001"
+            />
         </div>
         <div class="page-section2">
-          <div class="page-container3">
-            <span class="page-text28"><span>© 2023 Stotteyman.com</span></span>
-            <span class="page-text30"><span>All rights reserved</span></span>
-          </div>
+            <div class="page-container3">
+                <span class="page-text28"><span>© 2023 Stotteyman.com</span></span>
+                <span class="page-text30"><span>All rights reserved</span></span>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  
+</div>
+
+<!-- JavaScript for form submission -->
+<script>
+    function sendMessage() {
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var message = document.getElementById("message").value;
+
+        // Add your logic here to handle the form submission
+        console.log("Name: " + name + ", Email: " + email + ", Message: " + message);
+    }
+</script>
+
+</body>
+</html>
