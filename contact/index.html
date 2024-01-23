@@ -13,8 +13,9 @@
     <meta name="keywords" content="livestream, video content, creators, community, W.A.G.E. SOCIETY, entertainment, stotteyman">
     <meta name="description" content="Explore Stotteyman's diverse projects in technology, internet, social media, livestreaming, gaming, and W.A.G.E. Society.">
     <link rel="stylesheet" href="./page.css">
-    <link rel="shortcut icon" href="images/stotteyman.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/stotteyman.ico" type="image/x-icon">
     <title>Stotteyman's Portfolio</title>
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -39,13 +40,13 @@
                 <div class="page-input">
                     <span class="page-text10"><span>Name</span></span>
                     <div class="page-textfield">
-                        <input type="text" id="name" placeholder="Enter your name">
+                        <input type="text" id="name" placeholder="Enter your alphanumeric name" pattern="[A-Za-z0-9]+" required>
                     </div>
                 </div>
                 <div class="page-input1">
                     <span class="page-text14"><span>Email</span></span>
                     <div class="page-textfield1">
-                        <input type="email" id="email" placeholder="Enter your email address">
+                        <input type="email" id="email" placeholder="Enter your valid email" required>
                     </div>
                 </div>
                 <div class="page-input2">
@@ -54,14 +55,7 @@
                         <textarea id="message" placeholder="Enter your message"></textarea>
                     </div>
                 </div>
-                <button class="page-button" onclick="sendMessage()">
-                    <div class="page-seconday">
-                        <span class="page-text22"><span>Cancel</span></span>
-                    </div>
-                    <div class="page-primary">
-                        <span class="page-text24"><span>Send</span></span>
-                    </div>
-                </button>
+                <button class="page-button" onclick="sendMessage()">Send</button>
             </div>
             <img
                 alt="Vector2009245"
@@ -89,7 +83,5 @@
     </div>
 </div>
 
-<script src="./script.js"></script>
 </body>
-
 </html>
