@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var monthsElement = document.getElementById("months");
     var yearsElement = document.getElementById("years");
     var timestampDisplay = document.getElementById("timestamp");
+    var titleElement = document.getElementById("title");
 
     // Convert timestamp to Date object
     var date = new Date(timestamp * 1000);
@@ -22,10 +23,14 @@ document.addEventListener("DOMContentLoaded", function() {
         var currentTime = new Date().getTime() / 1000;
         var timeDifference = currentTime - timestamp;
 
+        var daysSince = Math.floor(timeDifference / (60 * 60 * 24));
+
+        // Update title with the number of days sober
+        titleElement.textContent = daysSince + " days sober";
+
         var secondsSince = Math.floor(timeDifference % 60);
         var minutesSince = Math.floor((timeDifference / 60) % 60);
         var hoursSince = Math.floor((timeDifference / (60 * 60)) % 24);
-        var daysSince = Math.floor(timeDifference / (60 * 60 * 24));
         var weeksSince = Math.floor(timeDifference / (60 * 60 * 24 * 7));
         var monthsSince = Math.floor(timeDifference / (60 * 60 * 24 * 30.44)); // Average month length
         var yearsSince = Math.floor(timeDifference / (60 * 60 * 24 * 365.25)); // Average year length
