@@ -8,6 +8,12 @@ document.addEventListener("DOMContentLoaded", function() {
     var weeksElement = document.getElementById("weeks");
     var monthsElement = document.getElementById("months");
     var yearsElement = document.getElementById("years");
+    var timestampDisplay = document.getElementById("timestamp");
+
+    // Convert timestamp to human-readable date
+    var date = new Date(timestamp * 1000);
+    var dateString = date.toUTCString(); // Convert to UTC to avoid timezone offset
+    timestampDisplay.textContent = dateString;
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
