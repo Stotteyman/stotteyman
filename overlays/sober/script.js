@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Start timestamp
-    var startDate = new Date('2024-04-24T00:34:28'); // Example start date
+    // Unix timestamp (1713997329) for April 24, 2024, 15:22:09 PST
+    var startDate = new Date(1713997329 * 1000); // Convert Unix timestamp to milliseconds
     var daysCountElement = document.getElementById("daysCount");
     var lastUpdate = startDate.getTime(); // Initialize last update with the start time
     var daysCount = 0; // Initialize days count to 0
