@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Unix timestamp (1713997329) for April 24, 2024, 15:22:09 PST
     var startDate = new Date(1713997329 * 1000); // Convert Unix timestamp to milliseconds
     var daysCountElement = document.getElementById("daysCount");
-    var timeElements = document.querySelectorAll(".time-element");
 
     // Update days count function
     function updateDaysCount() {
@@ -22,30 +21,25 @@ document.addEventListener("DOMContentLoaded", function() {
         // Determine the highest non-zero time denomination
         if (years > 0) {
             timeDenomination = years === 1 ? "year" : "years";
+            daysCountElement.textContent = years + " " + timeDenomination;
         } else if (months > 0) {
             timeDenomination = months === 1 ? "month" : "months";
+            daysCountElement.textContent = months + " " + timeDenomination;
         } else if (weeks > 0) {
             timeDenomination = weeks === 1 ? "week" : "weeks";
+            daysCountElement.textContent = weeks + " " + timeDenomination;
         } else if (days > 0) {
             timeDenomination = days === 1 ? "day" : "days";
+            daysCountElement.textContent = days + " " + timeDenomination;
         } else if (hours > 0) {
             timeDenomination = hours === 1 ? "hour" : "hours";
+            daysCountElement.textContent = hours + " " + timeDenomination;
         } else if (minutes > 0) {
             timeDenomination = minutes === 1 ? "minute" : "minutes";
+            daysCountElement.textContent = minutes + " " + timeDenomination;
         } else {
             timeDenomination = seconds === 1 ? "second" : "seconds";
-        }
-
-        // Update days count text
-        var highestNonZeroValue = years || months || weeks || days || hours || minutes || seconds;
-        for (var i = 0; i < timeElements.length; i++) {
-            var element = timeElements[i];
-            if (element.classList.contains(timeDenomination)) {
-                element.textContent = highestNonZeroValue + " " + timeDenomination;
-                element.style.fontWeight = "bold";
-            } else {
-                element.textContent = "";
-            }
+            daysCountElement.textContent = seconds + " " + timeDenomination;
         }
     }
 
