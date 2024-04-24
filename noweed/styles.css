@@ -1,31 +1,24 @@
-/* Light Theme */
-.container {
-    background-color: #FFFFFF; /* White background */
-    color: #333333; /* Dark text color */
-}
-
 .time-row {
     margin-top: 5px;
+    color: #FFCC80; /* Lightest shade of orange */
 }
 
-.time-row:nth-child(odd) {
-    background-color: #FFE0B2; /* Light orange background for odd rows */
+.time-row:nth-child(2) {
+    color: #FFB74D; /* Light orange */
 }
 
-.time-row:nth-child(even) {
-    background-color: #FFD54F; /* Lighter orange background for even rows */
+.time-row:nth-child(3) {
+    color: #FFA726; /* Orange */
 }
 
-/* Dark Theme */
-.dark-theme .container {
-    background-color: #333333; /* Dark background */
-    color: #FFFFFF; /* Light text color */
+.time-row:nth-child(4) {
+    color: #FF9800; /* Dark orange */
 }
 
-.dark-theme .time-row:nth-child(odd) {
-    background-color: #FFB74D; /* Dark orange background for odd rows */
+.time-row:nth-child(5) {
+    color: #F57C00; /* Darker orange */
 }
 
-.dark-theme .time-row:nth-child(even) {
-    background-color: #FFA726; /* Darker orange background for even rows */
+.time-row:nth-child(6) {
+    color: #E65100; /* Darkest shade of orange */
 }
