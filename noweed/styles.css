@@ -1,24 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+.time-container {
+    margin-top: 20px;
+}
+
 .time-row {
-    margin-top: 5px;
-    color: #FFCC80; /* Lightest shade of orange */
+    font-size: 18px;
+    color: #FFA500; /* Orange color */
+    margin-top: 10px;
 }
 
-.time-row:nth-child(2) {
-    color: #FFB74D; /* Light orange */
+.light-orange {
+    color: #FFD700; /* Lighter orange */
 }
 
-.time-row:nth-child(3) {
-    color: #FFA726; /* Orange */
-}
-
-.time-row:nth-child(4) {
-    color: #FF9800; /* Dark orange */
-}
-
-.time-row:nth-child(5) {
-    color: #F57C00; /* Darker orange */
-}
-
-.time-row:nth-child(6) {
-    color: #E65100; /* Darkest shade of orange */
+.dark-orange {
+    color: #FFA500; /* Darker orange */
 }
