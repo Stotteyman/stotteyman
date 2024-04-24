@@ -12,9 +12,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // Check if a full day has passed since the last update
         if (currentTime - lastUpdate >= 24 * 60 * 60 * 1000) {
             daysCount++; // Increment days count
-            daysCountElement.textContent = daysCount === 0 ? "0 days" : (daysCount === 1 ? "1 day" : daysCount + " days"); // Update days count
             lastUpdate = currentTime; // Update last update time
         }
+
+        // Update days count text
+        daysCountElement.textContent = daysCount === 0 ? "0 days" : (daysCount === 1 ? "1 day" : daysCount + " days");
     }
 
     // Initial call to update days count
