@@ -10,10 +10,13 @@ document.addEventListener("DOMContentLoaded", function() {
     var yearsElement = document.getElementById("years");
     var timestampDisplay = document.getElementById("timestamp");
 
-    // Convert timestamp to human-readable date
+    // Convert timestamp to Date object
     var date = new Date(timestamp * 1000);
-    var dateString = date.toUTCString(); // Convert to UTC to avoid timezone offset
-    timestampDisplay.textContent = dateString;
+
+    // Format date to display in PST
+    var options = { timeZone: 'America/Los_Angeles', weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    var dateString = date.toLocaleString('en-US', options);
+    timestampDisplay.textContent = dateString + ' PST';
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
