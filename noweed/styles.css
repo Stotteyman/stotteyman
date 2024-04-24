@@ -20,15 +20,29 @@ h1 {
 }
 
 .time-row {
-    font-size: 18px;
-    color: #FFA500; /* Orange color */
-    margin-top: 10px;
+    margin-top: 5px;
+}
+
+.lightest-orange {
+    color: #FFCC80; /* Lightest orange */
 }
 
 .light-orange {
-    color: #FFD700; /* Lighter orange */
+    color: #FFB74D; /* Light orange */
+}
+
+.orange {
+    color: #FFA726; /* Orange */
 }
 
 .dark-orange {
-    color: #FFA500; /* Darker orange */
+    color: #FF9800; /* Dark orange */
+}
+
+.darker-orange {
+    color: #F57C00; /* Darker orange */
+}
+
+.darkest-orange {
+    color: #E65100; /* Darkest orange */
 }
