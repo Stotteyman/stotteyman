@@ -1,34 +1,31 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-}
-
+/* Light Theme */
 .container {
-    max-width: 800px;
-    margin: 50px auto;
-    text-align: center;
-}
-
-h1 {
-    color: #333;
-}
-
-.time-container {
-    margin-top: 20px;
+    background-color: #FFFFFF; /* White background */
+    color: #333333; /* Dark text color */
 }
 
 .time-row {
-    font-size: 18px;
-    color: #FFA500; /* Orange color */
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
-.light-orange {
-    color: #FFD700; /* Lighter orange */
+.time-row:nth-child(odd) {
+    background-color: #FFE0B2; /* Light orange background for odd rows */
 }
 
-.dark-orange {
-    color: #FFA500; /* Darker orange */
+.time-row:nth-child(even) {
+    background-color: #FFD54F; /* Lighter orange background for even rows */
+}
+
+/* Dark Theme */
+.dark-theme .container {
+    background-color: #333333; /* Dark background */
+    color: #FFFFFF; /* Light text color */
+}
+
+.dark-theme .time-row:nth-child(odd) {
+    background-color: #FFB74D; /* Dark orange background for odd rows */
+}
+
+.dark-theme .time-row:nth-child(even) {
+    background-color: #FFA726; /* Darker orange background for even rows */
 }

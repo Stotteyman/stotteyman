@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function() {
     var minutesElement = document.getElementById("minutes");
     var secondsElement = document.getElementById("seconds");
     var timestampDisplay = document.getElementById("timestamp");
-    var titleElement = document.title;
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
@@ -57,4 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     updateTimeSince();
     setInterval(updateTimeSince, 1000); // Update every second
+});
+
+document.getElementById("theme-toggle").addEventListener("click", function() {
+    document.body.classList.toggle("dark-theme");
 });
