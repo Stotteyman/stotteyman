@@ -1,47 +1,50 @@
 document.addEventListener("DOMContentLoaded", function() {
     var timestamp = 1713944068;
     var timeSinceElement = document.getElementById("timeSince");
-    var secondsElement = document.getElementById("seconds");
-    var minutesElement = document.getElementById("minutes");
-    var hoursElement = document.getElementById("hours");
-    var daysElement = document.getElementById("days");
-    var weeksElement = document.getElementById("weeks");
-    var monthsElement = document.getElementById("months");
     var yearsElement = document.getElementById("years");
-    var timestampDisplay = document.getElementById("timestamp");
-    var titleElement = document.getElementById("title");
-
-    // Convert timestamp to Date object
-    var date = new Date(timestamp * 1000);
-
-    // Format date to display in PST
-    var options = { timeZone: 'America/Los_Angeles', weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    var dateString = date.toLocaleString('en-US', options);
-    timestampDisplay.textContent = dateString + ' PST';
+    var monthsElement = document.getElementById("months");
+    var weeksElement = document.getElementById("weeks");
+    var daysElement = document.getElementById("days");
+    var hoursElement = document.getElementById("hours");
+    var minutesElement = document.getElementById("minutes");
+    var secondsElement = document.getElementById("seconds");
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
         var timeDifference = currentTime - timestamp;
 
-        var daysSince = Math.floor(timeDifference / (60 * 60 * 24));
-
-        // Update title with the number of days sober
-        titleElement.textContent = daysSince + " days sober";
-
+        var yearsSince = Math.floor(timeDifference / (60 * 60 * 24 * 365.25));
+        var monthsSince = Math.floor((timeDifference % (60 * 60 * 24 * 365.25)) / (60 * 60 * 24 * 30.44));
+        var weeksSince = Math.floor((timeDifference % (60 * 60 * 24 * 30.44)) / (60 * 60 * 24 * 7));
+        var daysSince = Math.floor((timeDifference % (60 * 60 * 24 * 7)) / (60 * 60 * 24));
+        var hoursSince = Math.floor((timeDifference % (60 * 60 * 24)) / (60 * 60));
+        var minutesSince = Math.floor((timeDifference % (60 * 60)) / 60);
         var secondsSince = Math.floor(timeDifference % 60);
-        var minutesSince = Math.floor((timeDifference / 60) % 60);
-        var hoursSince = Math.floor((timeDifference / (60 * 60)) % 24);
-        var weeksSince = Math.floor(timeDifference / (60 * 60 * 24 * 7));
-        var monthsSince = Math.floor(timeDifference / (60 * 60 * 24 * 30.44)); // Average month length
-        var yearsSince = Math.floor(timeDifference / (60 * 60 * 24 * 365.25)); // Average year length
 
-        secondsElement.textContent = secondsSince;
-        minutesElement.textContent = minutesSince;
-        hoursElement.textContent = hoursSince;
-        daysElement.textContent = daysSince;
-        weeksElement.textContent = weeksSince;
-        monthsElement.textContent = monthsSince;
         yearsElement.textContent = yearsSince;
+        monthsElement.textContent = monthsSince;
+        weeksElement.textContent = weeksSince;
+        daysElement.textContent = daysSince;
+        hoursElement.textContent = hoursSince;
+        minutesElement.textContent = minutesSince;
+        secondsElement.textContent = secondsSince;
+
+        // Update the title
+        if (yearsSince > 0) {
+            timeSinceElement.textContent = yearsSince + " years sober";
+        } else if (monthsSince > 0) {
+            timeSinceElement.textContent = monthsSince + " months sober";
+        } else if (weeksSince > 0) {
+            timeSinceElement.textContent = weeksSince + " weeks sober";
+        } else if (daysSince > 0) {
+            timeSinceElement.textContent = daysSince + " days sober";
+        } else if (hoursSince > 0) {
+            timeSinceElement.textContent = hoursSince + " hours sober";
+        } else if (minutesSince > 0) {
+            timeSinceElement.textContent = minutesSince + " minutes sober";
+        } else {
+            timeSinceElement.textContent = secondsSince + " seconds sober";
+        }
     }
 
     updateTimeSince();
