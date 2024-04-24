@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var minutesElement = document.getElementById("minutes");
     var secondsElement = document.getElementById("seconds");
     var timestampDisplay = document.getElementById("timestamp");
+    var titleElement = document.title;
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
@@ -29,6 +30,23 @@ document.addEventListener("DOMContentLoaded", function() {
         hoursElement.textContent = hoursSince;
         minutesElement.textContent = minutesSince;
         secondsElement.textContent = secondsSince;
+
+        // Update the title
+        if (yearsSince > 0) {
+            document.title = yearsSince + " years sober";
+        } else if (monthsSince > 0) {
+            document.title = monthsSince + " months sober";
+        } else if (weeksSince > 0) {
+            document.title = weeksSince + " weeks sober";
+        } else if (daysSince > 0) {
+            document.title = daysSince + " days sober";
+        } else if (hoursSince > 0) {
+            document.title = hoursSince + " hours sober";
+        } else if (minutesSince > 0) {
+            document.title = minutesSince + " minutes sober";
+        } else {
+            document.title = secondsSince + " seconds sober";
+        }
 
         // Update the timestamp in human-readable format
         var date = new Date(timestamp * 1000);
