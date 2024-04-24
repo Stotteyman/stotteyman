@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    var timestamp = 1713944068;
+    var timestamp = 1713997329;
     var timeSinceElement = document.getElementById("timeSince");
     var yearsElement = document.getElementById("years");
     var monthsElement = document.getElementById("months");
@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var hoursElement = document.getElementById("hours");
     var minutesElement = document.getElementById("minutes");
     var secondsElement = document.getElementById("seconds");
+    var timestampDisplay = document.getElementById("timestamp");
 
     function updateTimeSince() {
         var currentTime = new Date().getTime() / 1000;
@@ -29,22 +30,11 @@ document.addEventListener("DOMContentLoaded", function() {
         minutesElement.textContent = minutesSince;
         secondsElement.textContent = secondsSince;
 
-        // Update the title
-        if (yearsSince > 0) {
-            timeSinceElement.textContent = yearsSince + " years sober";
-        } else if (monthsSince > 0) {
-            timeSinceElement.textContent = monthsSince + " months sober";
-        } else if (weeksSince > 0) {
-            timeSinceElement.textContent = weeksSince + " weeks sober";
-        } else if (daysSince > 0) {
-            timeSinceElement.textContent = daysSince + " days sober";
-        } else if (hoursSince > 0) {
-            timeSinceElement.textContent = hoursSince + " hours sober";
-        } else if (minutesSince > 0) {
-            timeSinceElement.textContent = minutesSince + " minutes sober";
-        } else {
-            timeSinceElement.textContent = secondsSince + " seconds sober";
-        }
+        // Update the timestamp in human-readable format
+        var date = new Date(timestamp * 1000);
+        var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
+        var localDateString = date.toLocaleString(navigator.language, options);
+        timestampDisplay.textContent = "Last updated: " + localDateString;
     }
 
     updateTimeSince();
