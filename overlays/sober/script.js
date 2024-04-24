@@ -7,8 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateDaysCount() {
         var currentDate = new Date();
         var timeDifference = currentDate.getTime() - startDate.getTime();
-        var daysCount = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        daysCountElement.textContent = daysCount;
+        var daysCount = Math.round(timeDifference / (1000 * 60 * 60 * 24)); // Round to nearest whole number
+        daysCountElement.textContent = daysCount + " days";
     }
 
     // Initial call to update days count
