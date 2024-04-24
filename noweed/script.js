@@ -47,3 +47,8 @@ document.addEventListener("DOMContentLoaded", function() {
     updateTimeSince();
     setInterval(updateTimeSince, 1000); // Update every second
 });
+
+function resetTimestamp() {
+    // Reset timestamp to current time
+    timestamp = Math.floor(new Date().getTime() / 1000);
+}
