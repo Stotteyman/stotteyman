@@ -16,6 +16,14 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="shortcut icon" href="/images/stotteyman.ico" type="image/x-icon">
     <title>Stotteyman.com</title>
+    <style>
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Adjust this value as needed to center vertically */
+        }
+    </style>
 </head>
 
 <body>
@@ -23,15 +31,14 @@
         <h1>Gaming PC / Streamer PC / Content Creator</h1>
     </header>
 
-    <script async
-  src="https://js.stripe.com/v3/buy-button.js">
-</script>
+    <div class="center">
+        <script async src="https://js.stripe.com/v3/buy-button.js"></script>
 
-<stripe-buy-button
-  buy-button-id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"
-  publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu"
->
-</stripe-buy-button>
+        <stripe-buy-button
+            buy-button-id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"
+            publishable-key="pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu">
+        </stripe-buy-button>
+    </div>
 
     <script src="script.js"></script>
 </body>
