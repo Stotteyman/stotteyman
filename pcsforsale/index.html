@@ -1,40 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Computer Sales</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Stotteyman's Portfolio">
+    <meta property="og:description" content="Explore Stotteyman's diverse projects in technology, internet, social media, livestreaming, gaming, and W.A.G.E. Society.">
+    <meta property="og:image" content="https://www.stotteyman.com/images/stotteyman.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="600">
+    <meta property="og:image:height" content="400">
+    <meta property="og:url" content="https://www.stotteyman.com">
+    <meta name="keywords" content="livestream, video content, creators, community, W.A.G.E. SOCIETY, entertainment, stotteyman">
+    <meta name="description" content="Explore Stotteyman's diverse projects in technology, internet, social media, livestreaming, gaming, and W.A.G.E. Society.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="images/stotteyman.ico" type="image/x-icon">
+    <title>Stotteyman.com</title>
 </head>
+
 <body>
-  <div class="container">
-    <div class="computer">
-      <h2>Computer 1</h2>
-      <div id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"></div>
+    <header class="top-bar">
+        <h1>Stotteyman's Portfolio</h1>
+    </header>
+
+    <div class="grid-container" id="gridContainer">
+        <!-- Replace this section with your project items -->
+        <div class="grid-item" data-link="/pcsforsale">
+            <img src="resources\sale.png" alt="Pcs For Sale">
+            <p>I build computers! Buy one from me!</p>
+            <div id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"></div> <!-- Stripe buy button container -->
+        </div>
+        <!-- Add more grid-item divs for each project -->
     </div>
-    <div class="computer">
-      <h2>Computer 2</h2>
-      <div id="buy_btn_2"></div>
-    </div>
-  </div>
 
-  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-  <script>
-    var stripe = Stripe('pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu');
+    <script src="script.js"></script>
 
-    var buyBtn1 = stripe.elements.create('buyButton', {
-      // Modify these options to customize your button
-      style: {
-        color: 'white',
-        layout: 'horizontal',
-        height: '40px',
-        label: 'buy',
-      },
-    });
+    <!-- Stripe JavaScript -->
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Stripe buy button for the first computer
+            var stripe = Stripe('pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu');
+            var buyBtn1 = stripe.elements.create('buyButton', {
+                // Modify these options to customize your button
+                style: {
+                    color: 'white',
+                    layout: 'horizontal',
+                    height: '40px',
+                    label: 'buy',
+                },
+                // Add your product details here
+                product: {
+                    name: 'Computer 1',
+                    description: 'Custom-built computer',
+                    // Add more product details as needed
+                },
+                // Add your price details here
+                price: 1000, // Replace with your actual price
+                // Add any additional metadata you want to track
+                metadata: {
+                    computer_id: '1', // Replace with your computer ID or any relevant identifier
+                },
+            });
+            buyBtn1.mount('#buy_btn_1PA36GCYfgL2SDGtP41Dr9t3');
 
-    buyBtn1.mount('#buy_btn_1PA36GCYfgL2SDGtP41Dr9t3');
-
-    // Repeat the above process for the second computer link
-  </script>
+            // Initialize Stripe buy button for the second computer (if needed)
+            // Repeat this process for each additional computer
+        });
+    </script>
 </body>
+
 </html>
