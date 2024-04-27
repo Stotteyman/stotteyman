@@ -20,54 +20,31 @@
 
 <body>
     <header class="top-bar">
-        <h1>Stotteyman's Portfolio</h1>
+        <h1>PCs FOR SALE!</h1>
     </header>
 
     <div class="grid-container" id="gridContainer">
         <!-- Replace this section with your project items -->
+        <div class="grid-item" data-link="https://buy.stripe.com/fZe16s7E3eZ94GQdQW">
+            <img src="resources\pc.jpg" alt="Gaming / Streaming / Content Creator Pc">
+            <p>Intel Core i9 64 GB DDR4 RAM 1 TB SSD GeForce RTX 4060 8 GB</p>
+        </div>
         <div class="grid-item" data-link="/pcsforsale">
-            <img src="resources\sale.png" alt="Pcs For Sale">
+            <img src="resources\sale.png" alt="Coming Soon">
             <p>I build computers! Buy one from me!</p>
-            <div id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"></div> <!-- Stripe buy button container -->
+        </div>
+        <div class="grid-item" data-link="/downloads">
+            <img src="resources\download_icon.jpg" alt="Downloads">
+            <p>Explore free downloads from Stotteyman, including resources related to technology and gaming.</p>
+        </div>
+        <div class="grid-item" data-link="/cwallet">
+            <img src="resources\cwallet.png" alt="CWallet">
+            <p>Support my projects by sending cryptocurrency through CWallet on any network.</p>
         </div>
         <!-- Add more grid-item divs for each project -->
     </div>
 
     <script src="script.js"></script>
-
-    <!-- Stripe JavaScript -->
-    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Stripe buy button for the first computer
-            var stripe = Stripe('pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu');
-            var buyBtn1 = stripe.elements.create('buyButton', {
-                // Modify these options to customize your button
-                style: {
-                    color: 'white',
-                    layout: 'horizontal',
-                    height: '40px',
-                    label: 'buy',
-                },
-                // Add your product details here
-                product: {
-                    name: 'Computer 1',
-                    description: 'Custom-built computer',
-                    // Add more product details as needed
-                },
-                // Add your price details here
-                price: 1000, // Replace with your actual price
-                // Add any additional metadata you want to track
-                metadata: {
-                    computer_id: '1', // Replace with your computer ID or any relevant identifier
-                },
-            });
-            buyBtn1.mount('#buy_btn_1PA36GCYfgL2SDGtP41Dr9t3');
-
-            // Initialize Stripe buy button for the second computer (if needed)
-            // Repeat this process for each additional computer
-        });
-    </script>
 </body>
 
 </html>
