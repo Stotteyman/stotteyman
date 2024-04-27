@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Sales</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="computer">
+      <h2>Computer 1</h2>
+      <div id="buy_btn_1PA36GCYfgL2SDGtP41Dr9t3"></div>
+    </div>
+    <div class="computer">
+      <h2>Computer 2</h2>
+      <div id="buy_btn_2"></div>
+    </div>
+  </div>
+
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
+  <script>
+    var stripe = Stripe('pk_live_51MipdfCYfgL2SDGtEr49qYrKHNPdBTC8Rru3EzwAgXMoVmNvLFpaiy6l3gQuXK0spPwJNgyRSvKGB4WxZVTt9SZ100zJMInUfu');
+
+    var buyBtn1 = stripe.elements.create('buyButton', {
+      // Modify these options to customize your button
+      style: {
+        color: 'white',
+        layout: 'horizontal',
+        height: '40px',
+        label: 'buy',
+      },
+    });
+
+    buyBtn1.mount('#buy_btn_1PA36GCYfgL2SDGtP41Dr9t3');
+
+    // Repeat the above process for the second computer link
+  </script>
+</body>
+</html>
