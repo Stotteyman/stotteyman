@@ -1,49 +1,260 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Stotteyman - Creator, entrepreneur, and founder of W.A.G.E. Society">
-  <meta name="theme-color" content="#2d3748">
   <title>Stotteyman | Gary McCullouch Jr.</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <header>
+  <div id="landing" class="screen active">
     <h1>Stotteyman</h1>
     <p class="slogan">"Life is what you make it."</p>
-  </header>
+    <p class="tap-instruction">Tap anywhere to continue</p>
+  </div>
 
-  <section class="carousel-section">
-    <div class="carousel-container">
-      <div class="carousel">
-        <div class="project-box">Project #1</div>
-        <div class="project-box">Project #2</div>
-        <div class="project-box">Project #3</div>
-        <div class="project-box">Project #4</div>
-      </div>
-      <button class="carousel-btn prev">&lt;</button>
-      <button class="carousel-btn next">&gt;</button>
+  <div id="home" class="screen">
+    <div class="app-grid">
+      <a class="app-icon" data-section="about">
+        <i class="fas fa-user"></i>
+        <span>About Me</span>
+      </a>
+      <a class="app-icon" data-section="live">
+        <i class="fas fa-video"></i>
+        <span>Live</span>
+      </a>
+      <a class="app-icon" data-section="contact">
+        <i class="fas fa-address-book"></i>
+        <span>Contacts</span>
+      </a>
+      <a class="app-icon" data-section="phone">
+        <i class="fas fa-phone"></i>
+        <span>Phone</span>
+      </a>
+      <a class="app-icon" data-section="email">
+        <i class="fas fa-envelope"></i>
+        <span>Email</span>
+      </a>
+      <a class="app-icon" data-section="photos">
+        <i class="fas fa-images"></i>
+        <span>Photos</span>
+      </a>
+      <a class="app-icon" data-section="notes">
+        <i class="fas fa-sticky-note"></i>
+        <span>Notes</span>
+      </a>
     </div>
-  </section>
+  </div>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <p>My name is Gary McCullouch Jr., also known as Stotteyman. I'm a creator, entrepreneur, and the founder of <a href="https://wagesociety.com" target="_blank">W.A.G.E. Society</a> — a collective dedicated to turning ideas into opportunity. I help people build brands, livestreams, and creative content using technology.</p>
-  </section>
+  <div id="about" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>About Me</h2>
+    </div>
+    <div class="content">
+      <p>My name is Gary McCullouch Jr., also known as Stotteyman. I'm a creator, entrepreneur, and the founder of W.A.G.E. Society — a collective dedicated to turning ideas into opportunity. I help people build brands, livestreams, and creative content using technology.</p>
+    </div>
+  </div>
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <p>Reach out for collaborations, business inquiries, or creative projects:</p>
-    <ul>
-      <li>Email: <a href="mailto:contact@stotteyman.com">contact@stotteyman.com</a></li>
-      <li>Instagram: <a href="https://instagram.com/stotteyman" target="_blank">@stotteyman</a></li>
-    </ul>
-  </section>
+  <div id="contact" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Contact</h2>
+    </div>
+    <div class="content">
+      <div class="contact-list">
+        <a href="mailto:contact@stotteyman.com" class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>contact@stotteyman.com</span>
+        </a>
+        <a href="https://instagram.com/stotteyman" target="_blank" class="contact-item">
+          <i class="fab fa-instagram"></i>
+          <span>@stotteyman</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 Stotteyman Enterprises LLC</p>
-  </footer>
+  <div id="phone" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Phone</h2>
+    </div>
+    <div class="phone-content">
+      <div id="keypad-screen" class="phone-screen active">
+        <!-- Keypad interface here -->
+        <div class="keypad-grid">
+          <div class="keypad-button">1</div>
+          <div class="keypad-button">2<span>ABC</span></div>
+          <div class="keypad-button">3<span>DEF</span></div>
+          <div class="keypad-button">4<span>GHI</span></div>
+          <div class="keypad-button">5<span>JKL</span></div>
+          <div class="keypad-button">6<span>MNO</span></div>
+          <div class="keypad-button">7<span>PQRS</span></div>
+          <div class="keypad-button">8<span>TUV</span></div>
+          <div class="keypad-button">9<span>WXYZ</span></div>
+          <div class="keypad-button">*</div>
+          <div class="keypad-button">0<span>+</span></div>
+          <div class="keypad-button">#</div>
+        </div>
+      </div>
+      <div id="favorites-screen" class="phone-screen">
+        <div class="favorites-list">
+          <p>No favorites yet</p>
+        </div>
+      </div>
+      <div id="recents-screen" class="phone-screen">
+        <div class="recents-list">
+          <p>No recent calls</p>
+        </div>
+      </div>
+      <div id="contacts-screen" class="phone-screen">
+        <div class="contacts-list">
+          <div class="contact-entry" data-contact="banjoe">
+            <img src="https://picsum.photos/50" alt="Banjoe" class="contact-photo">
+            <span class="contact-name">Banjoe</span>
+          </div>
+          <div class="contact-entry" data-contact="williekush">
+            <img src="https://picsum.photos/51" alt="Willie Kush" class="contact-photo">
+            <span class="contact-name">Willie Kush</span>
+          </div>
+          <div class="contact-entry" data-contact="deanza">
+            <img src="https://picsum.photos/52" alt="Deanza" class="contact-photo">
+            <span class="contact-name">Deanza</span>
+          </div>
+          <div class="contact-entry" data-contact="snackmoneybeatz">
+            <img src="https://picsum.photos/53" alt="SnackMoneyBeatz" class="contact-photo">
+            <span class="contact-name">SnackMoneyBeatz</span>
+          </div>
+          <div class="contact-entry" data-contact="newz">
+            <img src="https://picsum.photos/54" alt="Newz" class="contact-photo">
+            <span class="contact-name">Newz</span>
+          </div>
+          <div class="contact-entry" data-contact="bobby">
+            <img src="https://picsum.photos/55" alt="Bobby" class="contact-photo">
+            <span class="contact-name">Bobby</span>
+          </div>
+          <div class="contact-entry" data-contact="bahbah">
+            <img src="https://picsum.photos/56" alt="BahBah" class="contact-photo">
+            <span class="contact-name">BahBah</span>
+          </div>
+          <div class="contact-entry" data-contact="alex">
+            <img src="https://picsum.photos/57" alt="Alex" class="contact-photo">
+            <span class="contact-name">Alex</span>
+          </div>
+          <div class="contact-entry" data-contact="sarah">
+            <img src="https://picsum.photos/58" alt="Sarah" class="contact-photo">
+            <span class="contact-name">Sarah</span>
+          </div>
+          <div class="contact-entry" data-contact="michael">
+            <img src="https://picsum.photos/59" alt="Michael" class="contact-photo">
+            <span class="contact-name">Michael</span>
+          </div>
+          <div class="contact-entry" data-contact="emma">
+            <img src="https://picsum.photos/60" alt="Emma" class="contact-photo">
+            <span class="contact-name">Emma</span>
+          </div>
+          <div class="contact-entry" data-contact="david">
+            <img src="https://picsum.photos/61" alt="David" class="contact-photo">
+            <span class="contact-name">David</span>
+          </div>
+          <div class="contact-entry" data-contact="olivia">
+            <img src="https://picsum.photos/62" alt="Olivia" class="contact-photo">
+            <span class="contact-name">Olivia</span>
+          </div>
+        </div>
+        <div class="contact-details" style="display: none;">
+          <button class="close-details">×</button>
+          <div class="details-content"></div>
+        </div>
+      </div>
+      <div id="voicemail-screen" class="phone-screen">
+        <div class="voicemail-list">
+          <p>No voicemail messages</p>
+        </div>
+      </div>
+    </div>
+    <nav class="phone-nav">
+      <button class="nav-btn active" data-screen="favorites">
+        <i class="fas fa-star"></i>
+        <span>Favorites</span>
+      </button>
+      <button class="nav-btn" data-screen="recents">
+        <i class="fas fa-clock"></i>
+        <span>Recents</span>
+      </button>
+      <button class="nav-btn" data-screen="contacts">
+        <i class="fas fa-address-book"></i>
+        <span>Contacts</span>
+      </button>
+      <button class="nav-btn" data-screen="keypad">
+        <i class="fas fa-th"></i>
+        <span>Keypad</span>
+      </button>
+      <button class="nav-btn" data-screen="voicemail">
+        <i class="fas fa-voicemail"></i>
+        <span>Voicemail</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="photos" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Photos</h2>
+    </div>
+    <div class="content">
+      <p>There's nothing here yet, check back later</p>
+    </div>
+  </div>
+
+  <div id="live" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Live Streams</h2>
+    </div>
+    <div class="content streams-grid">
+      <a href="https://twitch.tv/stotteyman" target="_blank" class="stream-link">
+        <i class="fab fa-twitch"></i>
+        <span>Twitch Stream</span>
+      </a>
+      <a href="https://kick.com/stotteyman" target="_blank" class="stream-link">
+        <i class="fas fa-play-circle"></i>
+        <span>Kick Stream</span>
+      </a>
+      <a href="https://youtube.com/stotteyman" target="_blank" class="stream-link">
+        <i class="fab fa-youtube"></i>
+        <span>YouTube Stream</span>
+      </a>
+    </div>
+  </div>
+
+  <div id="email" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Contact Form</h2>
+    </div>
+    <div class="content">
+      <form id="contactForm" class="contact-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea placeholder="Your Message (max 500 characters)" maxlength="500" required></textarea>
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="notes" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Notes</h2>
+    </div>
+    <div class="content">
+      <p>There's nothing here yet, check back later</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

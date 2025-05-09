@@ -1,15 +1,14 @@
-Assistant checkpoint: Updated website to dark theme with improved responsiveness
+Assistant checkpoint: Add loading animation to menu selection
 
 Assistant generated file changes:
-- style.css: Update section backgrounds and carousel
-Update section backgrounds and carousel
-Update carousel buttons and footer
+- style.css: Add loading animation styles
+- script.js: Add loading animation to menu selection
 
 ---
 
 User prompt:
 
-give this website a darker theme with the same color scheme and make sure its still professional. make sure the website is optimized for desktop, mobile, tablet etc.
+instead of just showing the content when the button is pressed from the home menu, do an animation that shows that the menu button was selected (loading) before showing the content
 
 Replit-Commit-Author: Assistant
 Replit-Commit-Session-Id: 04ccd6fc-5e57-4a46-81de-15d92d9f69fa
