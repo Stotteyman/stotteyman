@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stotteyman | Gary McCullouch Jr.</title>
-  
+
   <!-- Primary Meta Tags -->
   <meta name="title" content="Stotteyman | Gary McCullouch Jr.">
   <meta name="description" content="Life is what you make it">
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Stotteyman">
   <meta property="og:description" content="Life is what you make it">
   <meta property="og:image" content="https://picsum.photos/1200/630">
-  
+
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:title" content="Stotteyman">
@@ -31,35 +31,106 @@
   </div>
 
   <div id="home" class="screen">
-    <div class="app-grid">
-      <a class="app-icon" data-section="about">
-        <i class="fas fa-user"></i>
-        <span>About Me</span>
-      </a>
-      <a class="app-icon" data-section="live">
-        <i class="fas fa-video"></i>
-        <span>Live</span>
-      </a>
-      <a class="app-icon" data-section="contact">
-        <i class="fas fa-address-book"></i>
-        <span>Contacts</span>
-      </a>
-      <a class="app-icon" data-section="phone">
-        <i class="fas fa-phone"></i>
-        <span>Phone</span>
-      </a>
-      <a class="app-icon" data-section="email">
-        <i class="fas fa-envelope"></i>
-        <span>Email</span>
-      </a>
-      <a class="app-icon" data-section="photos">
-        <i class="fas fa-images"></i>
-        <span>Photos</span>
-      </a>
-      <a class="app-icon" data-section="notes">
-        <i class="fas fa-sticky-note"></i>
-        <span>Notes</span>
-      </a>
+    <div class="home-container">
+      <div class="app-pages">
+        <div class="app-grid active">
+          <a class="app-icon" data-section="about">
+            <i class="fas fa-user"></i>
+            <span>Me</span>
+          </a>
+          <a class="app-icon" data-section="live">
+            <i class="fas fa-video"></i>
+            <span>Live</span>
+          </a>
+          <a class="app-icon" data-section="contact">
+            <i class="fas fa-address-book"></i>
+            <span>Contacts</span>
+          </a>
+          <a class="app-icon" data-section="favorites">
+            <i class="fas fa-star"></i>
+            <span>Favorites</span>
+          </a>
+          <a class="app-icon" data-section="recents">
+            <i class="fas fa-clock"></i>
+            <span>Recents</span>
+          </a>
+          <a class="app-icon" data-section="phone">
+            <i class="fas fa-phone"></i>
+            <span>Phone</span>
+          </a>
+          <a class="app-icon" data-section="voicemail">
+            <i class="fas fa-voicemail"></i>
+            <span>Voicemail</span>
+          </a>
+          <a class="app-icon" data-section="email">
+            <i class="fas fa-envelope"></i>
+            <span>Email</span>
+          </a>
+          <a class="app-icon" data-section="photos">
+            <i class="fas fa-images"></i>
+            <span>Photos</span>
+          </a>
+          <a class="app-icon" data-section="bank">
+            <i class="fas fa-university"></i>
+            <span>Bank</span>
+          </a>
+          <a class="app-icon" data-section="news">
+            <i class="fas fa-newspaper"></i>
+            <span>News</span>
+          </a>
+          <a class="app-icon" data-section="books">
+            <i class="fas fa-book"></i>
+            <span>Books</span>
+          </a>
+          <a class="app-icon" data-section="gps">
+            <i class="fas fa-location-dot"></i>
+            <span>GPS</span>
+          </a>
+          <a class="app-icon" data-section="music">
+            <i class="fas fa-music"></i>
+            <span>Music</span>
+          </a>
+        </div>
+        <div class="app-grid">
+          <a class="app-icon" data-section="browser">
+            <i class="fas fa-globe"></i>
+            <span>Browser</span>
+          </a>
+          <a class="app-icon" data-section="vpn">
+            <i class="fas fa-shield"></i>
+            <span>VPN</span>
+          </a>
+          <a class="app-icon" data-section="wallet">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+          </a>
+          <a class="app-icon" data-section="finance">
+            <i class="fas fa-chart-line"></i>
+            <span>Finance</span>
+          </a>
+          <a class="app-icon" data-section="shopping">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Shopping</span>
+          </a>
+          <a class="app-icon" data-section="settings">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+          </a>
+          <a class="app-icon" data-section="notes">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+          <a class="app-icon" data-section="help">
+            <i class="fas fa-question-circle"></i>
+            <span>Help</span>
+          </a>
+          <a class="app-icon" data-section="more">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>More</span>
+          </a>
+        </div>
+      </div>
+      <div class="pagination-dots"></div>
     </div>
   </div>
 
@@ -277,7 +348,11 @@
       <h2>Photos</h2>
     </div>
     <div class="content">
-      <p>There's nothing here yet, check back later</p>
+      <div class="empty-state">
+        <i class="fas fa-images"></i>
+        <p>No photos available</p>
+        <span>Your photos will appear here</span>
+      </div>
     </div>
   </div>
 
@@ -323,10 +398,239 @@
       <h2>Notes</h2>
     </div>
     <div class="content">
-      <p>There's nothing here yet, check back later</p>
+      <div class="empty-state">
+        <i class="fas fa-sticky-note"></i>
+        <p>No notes yet</p>
+        <span>Create your first note to get started</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="music" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Music</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-music"></i>
+        <p>No music available</p>
+        <span>Your music library will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="browser" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Browser</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-globe"></i>
+        <p>Browser not available</p>
+        <span>Web browsing coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="vpn" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>VPN</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-shield"></i>
+        <p>VPN not available</p>
+        <span>VPN service coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="wallet" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Wallet</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-wallet"></i>
+        <p>No wallet found</p>
+        <span>Digital wallet coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="finance" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Finance</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-chart-line"></i>
+        <p>No financial data</p>
+        <span>Finance tracking coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="shopping" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Shopping</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-shopping-cart"></i>
+        <p>No items available</p>
+        <span>Shopping features coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Settings</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-cog"></i>
+        <p>No settings available</p>
+        <span>Settings panel coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="help" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Help</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-question-circle"></i>
+        <p>Help center not available</p>
+        <span>Help documentation coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="more" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>More</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-ellipsis-h"></i>
+        <p>No additional features</p>
+        <span>More features coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="bank" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Bank</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-university"></i>
+        <p>Banking not available</p>
+        <span>Banking features coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="gps" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>GPS</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-location-dot"></i>
+        <p>Location services not available</p>
+        <span>GPS navigation coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="favorites" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Favorites</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-star"></i>
+        <p>No favorites yet</p>
+        <span>Your favorite contacts will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="recents" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Recents</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-clock"></i>
+        <p>No recent activity</p>
+        <span>Your recent calls will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="voicemail" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Voicemail</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-voicemail"></i>
+        <p>No voicemail messages</p>
+        <span>Your voicemail messages will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="books" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>Books</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-book"></i>
+        <p>No books available</p>
+        <span>Your book library will appear here</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="news" class="screen">
+    <div class="screen-header">
+      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
+      <h2>News</h2>
+    </div>
+    <div class="content">
+      <div class="empty-state">
+        <i class="fas fa-newspaper"></i>
+        <p>No news available</p>
+        <span>Latest news will appear here</span>
+      </div>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
+```

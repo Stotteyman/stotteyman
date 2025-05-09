@@ -19,7 +19,8 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  padding: 20px;
+  padding: 0;
+  background: #000;
 }
 
 .screen.active {
@@ -59,14 +60,108 @@ h1 {
   100% { opacity: 0.6; }
 }
 
-.app-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 20px;
-  padding: 20px;
+.home-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.clock.app-icon {
+  background: #2d2d2d;
+  font-size: 1.2rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: span 2;
+  grid-row: span 1;
+  width: 160px;
+  height: 70px;
+  padding: 10px;
+  border-radius: 15px;
+}
+
+@media (max-width: 768px) {
+  .app-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .clock.app-icon {
+    font-size: 1.2rem;
+  }
+}
+
+.app-pages {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  grid-template-rows: repeat(4, auto);
+  gap: 20px;
+  padding: 20px;
+  position: absolute;
+  width: 100%;
+  height: calc(100vh - 100px);
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  touch-action: pan-x;
+  user-select: none;
+  justify-content: center;
+  align-content: flex-start;
+  grid-auto-flow: row;
+  grid-auto-rows: min-content;
+}
+
+.app-grid.active {
+  display: grid;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.app-grid.previous {
+  transform: translateX(-100%);
+}
+
+.pagination-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #666;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.dot.active {
+  background: #ff6b00;
 }
 
 .app-icon {
@@ -76,11 +171,23 @@ h1 {
   text-align: center;
   text-decoration: none;
   color: #fff;
-  padding: 15px;
-  border-radius: 15px;
-  background-color: #2d2d2d;
   transition: transform 0.2s;
   cursor: pointer;
+}
+
+.app-icon i {
+  width: 70px;
+  height: 70px;
+  background-color: #2d2d2d;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.app-icon span {
+  font-size: 0.8rem;
 }
 
 .app-icon:hover {
@@ -109,8 +216,20 @@ h1 {
   display: flex;
   align-items: center;
   width: 100%;
-  padding: 10px 0;
-  margin-bottom: 20px;
+  padding: 15px;
+  background: #1c1c1e;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #2c2c2e;
+}
+
+.screen-header h2 {
+  flex: 1;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .back-btn {
@@ -377,4 +496,30 @@ h1 {
   .app-icon i {
     font-size: 1.5rem;
   }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.empty-state i {
+  font-size: 3rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.empty-state span {
+  color: #666;
+  font-size: 0.9rem;
 }
