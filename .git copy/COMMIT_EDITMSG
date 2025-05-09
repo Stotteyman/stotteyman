@@ -1,14 +1,14 @@
-Assistant checkpoint: Add loading animation to menu selection
+Assistant checkpoint: Added Saiman to contacts
 
 Assistant generated file changes:
-- style.css: Add loading animation styles
-- script.js: Add loading animation to menu selection
+- script.js: Add Saiman to contact data
+- index.html: Add Saiman to contacts list, Add Saiman to phone contacts
 
 ---
 
 User prompt:
 
-instead of just showing the content when the button is pressed from the home menu, do an animation that shows that the menu button was selected (loading) before showing the content
+make sure Saiman is on the list of contacts (https://www.twitch.tv/itsmesaiman)
 
 Replit-Commit-Author: Assistant
 Replit-Commit-Session-Id: 04ccd6fc-5e57-4a46-81de-15d92d9f69fa

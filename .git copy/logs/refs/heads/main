@@ -12,3 +12,9 @@ ca59a1748cd96a4c637cebdb2204fa2e531372af 9b1039b5281f942815f1137215a9e50b1595b1a
 9188e53e57c3c696e8ddc3a2ecda32ebb4764fa8 48028abc5603c535e45723d79bee959c57321e0a Gary McCullouch <stotteyman@gmail.com> 1746765396 +0000	commit: Assistant checkpoint: Add live streams screen and contact form functionality
 48028abc5603c535e45723d79bee959c57321e0a c583502eb4d1c6c9a1b473429c334a4b42ad91e7 Gary McCullouch <stotteyman@gmail.com> 1746765768 +0000	commit: Assistant checkpoint: Update contacts list and create sitemap
 c583502eb4d1c6c9a1b473429c334a4b42ad91e7 758a317535984d58532b7e37bd699b5efb20164c Gary McCullouch <stotteyman@gmail.com> 1746765900 +0000	commit: Assistant checkpoint: Add loading animation to menu selection
+758a317535984d58532b7e37bd699b5efb20164c 942a150cb29a2297558419f2aec4916185bdf28a Gary McCullouch <stotteyman@gmail.com> 1746766400 +0000	commit: Assistant checkpoint: Updated contacts list with alphabetical order
+942a150cb29a2297558419f2aec4916185bdf28a 22a1e261b0572d1138050dedf59f52f84c593708 Gary McCullouch <stotteyman@gmail.com> 1746766527 +0000	commit: Assistant checkpoint: Update contacts section to match phone app layout
+22a1e261b0572d1138050dedf59f52f84c593708 f14c1e8cd9eca1aad323dcc3a00cf9397918297d Gary McCullouch <stotteyman@gmail.com> 1746766566 +0000	reset: moving to f14c1e8cd9eca1aad323dcc3a00cf9397918297d
+f14c1e8cd9eca1aad323dcc3a00cf9397918297d 0db5bf4a40ebdcbfb92b41e24b6b74362e6cc9c4 Gary McCullouch <stotteyman@gmail.com> 1746766729 +0000	commit: Assistant checkpoint: Update contacts icon to open phone app contacts tab
+0db5bf4a40ebdcbfb92b41e24b6b74362e6cc9c4 6bff259ecefa55b149e4469a91d93a98117b5c57 Gary McCullouch <stotteyman@gmail.com> 1746767008 +0000	commit: Assistant checkpoint: Add social media meta tags
+6bff259ecefa55b149e4469a91d93a98117b5c57 74424901841616e635daaf2492e58815de02f9ae Gary McCullouch <stotteyman@gmail.com> 1746767105 +0000	commit: Assistant checkpoint: Added Saiman to contacts

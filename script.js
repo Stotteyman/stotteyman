@@ -24,6 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.classList.remove('loading');
         home.classList.remove('active');
         section.classList.add('active');
+        
+        // If contacts icon was clicked, switch to contacts tab in phone app
+        if (sectionId === 'contact') {
+          section.classList.remove('active');
+          const phoneSection = document.getElementById('phone');
+          phoneSection.classList.add('active');
+          
+          // Show contacts screen and update nav
+          document.querySelectorAll('.phone-screen').forEach(screen => {
+            screen.classList.remove('active');
+          });
+          document.getElementById('contacts-screen').classList.add('active');
+          
+          // Update nav buttons
+          document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('data-screen') === 'contacts') {
+              btn.classList.add('active');
+            }
+          });
+        }
       }, 800); // 800ms delay for loading effect
     });
   });
@@ -67,6 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Contact details data
   const contactData = {
+    saiman: {
+      fullName: "Saiman",
+      role: "Content Creator",
+      bio: "Creative Twitch streamer and content creator",
+      links: ["https://www.twitch.tv/itsmesaiman"]
+    },
     banjoe: {
       fullName: "Banjoe",
       role: "Music Producer",
