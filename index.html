@@ -4,633 +4,123 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stotteyman | Gary McCullouch Jr.</title>
-
-  <!-- Primary Meta Tags -->
-  <meta name="title" content="Stotteyman | Gary McCullouch Jr.">
   <meta name="description" content="Life is what you make it">
-
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Stotteyman">
-  <meta property="og:description" content="Life is what you make it">
-  <meta property="og:image" content="https://picsum.photos/1200/630">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:title" content="Stotteyman">
-  <meta property="twitter:description" content="Life is what you make it">
-  <meta property="twitter:image" content="https://picsum.photos/1200/630">
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* FUSED CSS STYLES */
+    html, body {
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #000; color: #fff;
+      height: 100%; overflow: hidden;
+    }
+    .screen { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; background-color: #000; justify-content: center; align-items: center; flex-direction: column; }
+    .screen.active { display: flex; }
+    #lockscreen { text-align: center; }
+    .clock-large { font-size: 3rem; margin-bottom: 20px; }
+    .tap-instruction { color: #888; font-size: 1rem; animation: blink 2s infinite; }
+    @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+    #homescreen { flex-direction: column; }
+    .status-bar { display: flex; justify-content: space-between; padding: 10px 20px; font-size: 0.9rem; background: #111; width: 100%; }
+    .status-icons i { margin-left: 8px; }
+    .app-grid { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; justify-items: center; align-items: center; }
+    .app-icon { display: flex; flex-direction: column; align-items: center; color: #fff; cursor: pointer; transition: transform 0.2s; }
+    .app-icon:hover { transform: scale(1.1); }
+    .app-icon i { font-size: 2rem; background: #222; padding: 20px; border-radius: 20px; margin-bottom: 8px; }
+    .app-icon span { font-size: 0.8rem; }
+    .dock { display: flex; justify-content: space-around; padding: 10px 0; background: rgba(20, 20, 20, 0.9); border-top: 1px solid #333; width: 100%; }
+    .app-screen { display: none; flex-direction: column; height: 100%; background: #000; width: 100%; }
+    .app-screen.active { display: flex; }
+    .app-header { background: #111; padding: 15px; font-weight: bold; text-align: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 10; }
+    .app-body { padding: 20px; overflow-y: auto; flex: 1; line-height: 1.6; }
+    .back-btn { background: none; border: none; color: #ff6b00; font-size: 1.5rem; cursor: pointer; position: absolute; left: 10px; top: 10px; }
+  </style>
 </head>
 <body>
-  <div id="landing" class="screen active">
-    <h1>Stotteyman</h1>
-    <p class="slogan">"Life is what you make it."</p>
-    <p class="tap-instruction">Tap anywhere to continue</p>
-  </div>
+  <div id="app">
+    <div id="lockscreen" class="screen active">
+      <div class="clock-large" id="lock-clock"></div>
+      <p class="slogan">"Life is what you make it."</p>
+      <p class="tap-instruction">Tap to unlock</p>
+    </div>
 
-  <div id="home" class="screen">
-    <div class="home-container">
-      <div class="app-pages">
-        <div class="app-grid active">
-          <a class="app-icon" data-section="about">
-            <i class="fas fa-user"></i>
-            <span>Me</span>
-          </a>
-          <a class="app-icon" data-section="live">
-            <i class="fas fa-video"></i>
-            <span>Live</span>
-          </a>
-          <a class="app-icon" data-section="contact">
-            <i class="fas fa-address-book"></i>
-            <span>Contacts</span>
-          </a>
-          <a class="app-icon" data-section="favorites">
-            <i class="fas fa-star"></i>
-            <span>Favorites</span>
-          </a>
-          <a class="app-icon" data-section="recents">
-            <i class="fas fa-clock"></i>
-            <span>Recents</span>
-          </a>
-          <a class="app-icon" data-section="phone">
-            <i class="fas fa-phone"></i>
-            <span>Phone</span>
-          </a>
-          <a class="app-icon" data-section="voicemail">
-            <i class="fas fa-voicemail"></i>
-            <span>Voicemail</span>
-          </a>
-          <a class="app-icon" data-section="email">
-            <i class="fas fa-envelope"></i>
-            <span>Email</span>
-          </a>
-          <a class="app-icon" data-section="photos">
-            <i class="fas fa-images"></i>
-            <span>Photos</span>
-          </a>
-          <a class="app-icon" data-section="bank">
-            <i class="fas fa-university"></i>
-            <span>Bank</span>
-          </a>
-          <a class="app-icon" data-section="news">
-            <i class="fas fa-newspaper"></i>
-            <span>News</span>
-          </a>
-          <a class="app-icon" data-section="books">
-            <i class="fas fa-book"></i>
-            <span>Books</span>
-          </a>
-          <a class="app-icon" data-section="gps">
-            <i class="fas fa-location-dot"></i>
-            <span>GPS</span>
-          </a>
-          <a class="app-icon" data-section="music">
-            <i class="fas fa-music"></i>
-            <span>Music</span>
-          </a>
-        </div>
-        <div class="app-grid">
-          <a class="app-icon" data-section="browser">
-            <i class="fas fa-globe"></i>
-            <span>Browser</span>
-          </a>
-          <a class="app-icon" data-section="vpn">
-            <i class="fas fa-shield"></i>
-            <span>VPN</span>
-          </a>
-          <a class="app-icon" data-section="wallet">
-            <i class="fas fa-wallet"></i>
-            <span>Wallet</span>
-          </a>
-          <a class="app-icon" data-section="finance">
-            <i class="fas fa-chart-line"></i>
-            <span>Finance</span>
-          </a>
-          <a class="app-icon" data-section="shopping">
-            <i class="fas fa-shopping-cart"></i>
-            <span>Shopping</span>
-          </a>
-          <a class="app-icon" data-section="settings">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-          </a>
-          <a class="app-icon" data-section="notes">
-            <i class="fas fa-sticky-note"></i>
-            <span>Notes</span>
-          </a>
-          <a class="app-icon" data-section="help">
-            <i class="fas fa-question-circle"></i>
-            <span>Help</span>
-          </a>
-          <a class="app-icon" data-section="more">
-            <i class="fas fa-ellipsis-h"></i>
-            <span>More</span>
-          </a>
-        </div>
+    <div id="homescreen" class="screen">
+      <div class="status-bar">
+        <span id="status-time"></span>
+        <span class="status-icons">
+          <i class="fas fa-signal"></i>
+          <i class="fas fa-wifi"></i>
+          <i class="fas fa-battery-full"></i>
+        </span>
       </div>
-      <div class="pagination-dots"></div>
-    </div>
-  </div>
-
-  <div id="about" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>About Me</h2>
-    </div>
-    <div class="content">
-      <p>My name is Gary McCullouch Jr., also known as Stotteyman. I'm a creator, entrepreneur, and the founder of W.A.G.E. Society — a collective dedicated to turning ideas into opportunity. I help people build brands, livestreams, and creative content using technology.</p>
-    </div>
-  </div>
-
-  <div id="contact" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Contacts</h2>
-    </div>
-    <div class="content">
-      <div class="contacts-list">
-        <div class="contact-entry" data-contact="alex">
-          <img src="https://picsum.photos/57" alt="Alex" class="contact-photo">
-          <span class="contact-name">Alex</span>
-        </div>
-        <div class="contact-entry" data-contact="bahbah">
-          <img src="https://picsum.photos/56" alt="BahBah" class="contact-photo">
-          <span class="contact-name">BahBah</span>
-        </div>
-        <div class="contact-entry" data-contact="banjoe">
-          <img src="https://picsum.photos/50" alt="Banjoe" class="contact-photo">
-          <span class="contact-name">Banjoe</span>
-        </div>
-        <div class="contact-entry" data-contact="bobby">
-          <img src="https://picsum.photos/55" alt="Bobby" class="contact-photo">
-          <span class="contact-name">Bobby</span>
-        </div>
-        <div class="contact-entry" data-contact="david">
-          <img src="https://picsum.photos/61" alt="David" class="contact-photo">
-          <span class="contact-name">David</span>
-        </div>
-        <div class="contact-entry" data-contact="deanza">
-          <img src="https://picsum.photos/52" alt="Deanza" class="contact-photo">
-          <span class="contact-name">Deanza</span>
-        </div>
-        <div class="contact-entry" data-contact="emma">
-          <img src="https://picsum.photos/60" alt="Emma" class="contact-photo">
-          <span class="contact-name">Emma</span>
-        </div>
-        <div class="contact-entry" data-contact="michael">
-          <img src="https://picsum.photos/59" alt="Michael" class="contact-photo">
-          <span class="contact-name">Michael</span>
-        </div>
-        <div class="contact-entry" data-contact="newz">
-          <img src="https://picsum.photos/54" alt="Newz" class="contact-photo">
-          <span class="contact-name">Newz</span>
-        </div>
-        <div class="contact-entry" data-contact="olivia">
-          <img src="https://picsum.photos/62" alt="Olivia" class="contact-photo">
-          <span class="contact-name">Olivia</span>
-        </div>
-        <div class="contact-entry" data-contact="saiman">
-          <img src="https://picsum.photos/63" alt="Saiman" class="contact-photo">
-          <span class="contact-name">Saiman</span>
-        </div>
-        <div class="contact-entry" data-contact="sarah">
-          <img src="https://picsum.photos/58" alt="Sarah" class="contact-photo">
-          <span class="contact-name">Sarah</span>
-        </div>
-        <div class="contact-entry" data-contact="snackmoneybeatz">
-          <img src="https://picsum.photos/53" alt="SnackMoneyBeatz" class="contact-photo">
-          <span class="contact-name">SnackMoneyBeatz</span>
-        </div>
-        <div class="contact-entry" data-contact="williekush">
-          <img src="https://picsum.photos/51" alt="Willie Kush" class="contact-photo">
-          <span class="contact-name">Willie Kush</span>
-        </div>
+      <div class="app-grid">
+        <div class="app-icon" data-app="about"><i class="fas fa-user"></i><span>Me</span></div>
+        <div class="app-icon" data-app="live"><i class="fas fa-video"></i><span>Live</span></div>
+        <div class="app-icon" data-app="contacts"><i class="fas fa-address-book"></i><span>Contacts</span></div>
+        <div class="app-icon" data-app="music"><i class="fas fa-music"></i><span>Music</span></div>
+        <div class="app-icon" data-app="photos"><i class="fas fa-images"></i><span>Photos</span></div>
+        <div class="app-icon" data-app="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
       </div>
-      <div class="contact-details" style="display: none;">
-        <button class="close-details">×</button>
-        <div class="details-content"></div>
+      <div class="dock">
+        <div class="app-icon" data-app="phone"><i class="fas fa-phone"></i></div>
+        <div class="app-icon" data-app="browser"><i class="fas fa-globe"></i></div>
+        <div class="app-icon" data-app="email"><i class="fas fa-envelope"></i></div>
+        <div class="app-icon" data-app="camera"><i class="fas fa-camera"></i></div>
+      </div>
+    </div>
+
+    <div class="app-screen" id="about">
+      <div class="app-header"><button class="back-btn"><i class="fas fa-chevron-left"></i></button>About</div>
+      <div class="app-body">
+        <p>I'm Gary McCullouch Jr., aka Stotteyman — creator and founder of W.A.G.E. Society. I help people build brands, livestreams, and creative content using technology.</p>
       </div>
     </div>
   </div>
 
-  <div id="phone" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Phone</h2>
-    </div>
-    <div class="phone-content">
-      <div id="keypad-screen" class="phone-screen active">
-        <!-- Keypad interface here -->
-        <div class="keypad-grid">
-          <div class="keypad-button">1</div>
-          <div class="keypad-button">2<span>ABC</span></div>
-          <div class="keypad-button">3<span>DEF</span></div>
-          <div class="keypad-button">4<span>GHI</span></div>
-          <div class="keypad-button">5<span>JKL</span></div>
-          <div class="keypad-button">6<span>MNO</span></div>
-          <div class="keypad-button">7<span>PQRS</span></div>
-          <div class="keypad-button">8<span>TUV</span></div>
-          <div class="keypad-button">9<span>WXYZ</span></div>
-          <div class="keypad-button">*</div>
-          <div class="keypad-button">0<span>+</span></div>
-          <div class="keypad-button">#</div>
-        </div>
-      </div>
-      <div id="favorites-screen" class="phone-screen">
-        <div class="favorites-list">
-          <p>No favorites yet</p>
-        </div>
-      </div>
-      <div id="recents-screen" class="phone-screen">
-        <div class="recents-list">
-          <p>No recent calls</p>
-        </div>
-      </div>
-      <div id="contacts-screen" class="phone-screen">
-        <div class="contacts-list">
-          <div class="contact-entry" data-contact="banjoe">
-            <img src="https://picsum.photos/50" alt="Banjoe" class="contact-photo">
-            <span class="contact-name">Banjoe</span>
-          </div>
-          <div class="contact-entry" data-contact="williekush">
-            <img src="https://picsum.photos/51" alt="Willie Kush" class="contact-photo">
-            <span class="contact-name">Willie Kush</span>
-          </div>
-          <div class="contact-entry" data-contact="deanza">
-            <img src="https://picsum.photos/52" alt="Deanza" class="contact-photo">
-            <span class="contact-name">Deanza</span>
-          </div>
-          <div class="contact-entry" data-contact="snackmoneybeatz">
-            <img src="https://picsum.photos/53" alt="SnackMoneyBeatz" class="contact-photo">
-            <span class="contact-name">SnackMoneyBeatz</span>
-          </div>
-          <div class="contact-entry" data-contact="newz">
-            <img src="https://picsum.photos/54" alt="Newz" class="contact-photo">
-            <span class="contact-name">Newz</span>
-          </div>
-          <div class="contact-entry" data-contact="bobby">
-            <img src="https://picsum.photos/55" alt="Bobby" class="contact-photo">
-            <span class="contact-name">Bobby</span>
-          </div>
-          <div class="contact-entry" data-contact="bahbah">
-            <img src="https://picsum.photos/56" alt="BahBah" class="contact-photo">
-            <span class="contact-name">BahBah</span>
-          </div>
-          <div class="contact-entry" data-contact="alex">
-            <img src="https://picsum.photos/57" alt="Alex" class="contact-photo">
-            <span class="contact-name">Alex</span>
-          </div>
-          <div class="contact-entry" data-contact="saiman">
-            <img src="https://picsum.photos/63" alt="Saiman" class="contact-photo">
-            <span class="contact-name">Saiman</span>
-          </div>
-          <div class="contact-entry" data-contact="sarah">
-            <img src="https://picsum.photos/58" alt="Sarah" class="contact-photo">
-            <span class="contact-name">Sarah</span>
-          </div>
-          <div class="contact-entry" data-contact="michael">
-            <img src="https://picsum.photos/59" alt="Michael" class="contact-photo">
-            <span class="contact-name">Michael</span>
-          </div>
-          <div class="contact-entry" data-contact="emma">
-            <img src="https://picsum.photos/60" alt="Emma" class="contact-photo">
-            <span class="contact-name">Emma</span>
-          </div>
-          <div class="contact-entry" data-contact="david">
-            <img src="https://picsum.photos/61" alt="David" class="contact-photo">
-            <span class="contact-name">David</span>
-          </div>
-          <div class="contact-entry" data-contact="olivia">
-            <img src="https://picsum.photos/62" alt="Olivia" class="contact-photo">
-            <span class="contact-name">Olivia</span>
-          </div>
-        </div>
-        <div class="contact-details" style="display: none;">
-          <button class="close-details">×</button>
-          <div class="details-content"></div>
-        </div>
-      </div>
-      <div id="voicemail-screen" class="phone-screen">
-        <div class="voicemail-list">
-          <p>No voicemail messages</p>
-        </div>
-      </div>
-    </div>
-    <nav class="phone-nav">
-      <button class="nav-btn active" data-screen="favorites">
-        <i class="fas fa-star"></i>
-        <span>Favorites</span>
-      </button>
-      <button class="nav-btn" data-screen="recents">
-        <i class="fas fa-clock"></i>
-        <span>Recents</span>
-      </button>
-      <button class="nav-btn" data-screen="contacts">
-        <i class="fas fa-address-book"></i>
-        <span>Contacts</span>
-      </button>
-      <button class="nav-btn" data-screen="keypad">
-        <i class="fas fa-th"></i>
-        <span>Keypad</span>
-      </button>
-      <button class="nav-btn" data-screen="voicemail">
-        <i class="fas fa-voicemail"></i>
-        <span>Voicemail</span>
-      </button>
-    </nav>
-  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const lockscreen = document.getElementById("lockscreen");
+      const homescreen = document.getElementById("homescreen");
+      const lockClock = document.getElementById("lock-clock");
+      const statusTime = document.getElementById("status-time");
+      const appIcons = document.querySelectorAll(".app-icon[data-app]");
+      const appScreens = document.querySelectorAll(".app-screen");
+      const backButtons = document.querySelectorAll(".back-btn");
 
-  <div id="photos" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Photos</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-images"></i>
-        <p>No photos available</p>
-        <span>Your photos will appear here</span>
-      </div>
-    </div>
-  </div>
+      function updateClock() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        if (lockClock) lockClock.textContent = timeString;
+        if (statusTime) statusTime.textContent = timeString;
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
 
-  <div id="live" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Live Streams</h2>
-    </div>
-    <div class="content streams-grid">
-      <a href="https://twitch.tv/stotteyman" target="_blank" class="stream-link">
-        <i class="fab fa-twitch"></i>
-        <span>Twitch Stream</span>
-      </a>
-      <a href="https://kick.com/stotteyman" target="_blank" class="stream-link">
-        <i class="fas fa-play-circle"></i>
-        <span>Kick Stream</span>
-      </a>
-      <a href="https://youtube.com/stotteyman" target="_blank" class="stream-link">
-        <i class="fab fa-youtube"></i>
-        <span>YouTube Stream</span>
-      </a>
-    </div>
-  </div>
+      lockscreen.addEventListener("click", () => {
+        lockscreen.classList.remove("active");
+        homescreen.classList.add("active");
+      });
 
-  <div id="email" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Contact Form</h2>
-    </div>
-    <div class="content">
-      <form id="contactForm" class="contact-form">
-        <input type="text" placeholder="Your Name" required>
-        <input type="email" placeholder="Your Email" required>
-        <textarea placeholder="Your Message (max 500 characters)" maxlength="500" required></textarea>
-        <button type="submit" class="submit-btn">Send Message</button>
-      </form>
-    </div>
-  </div>
+      appIcons.forEach((icon) => {
+        const appId = icon.dataset.app;
+        const target = document.getElementById(appId);
+        icon.addEventListener("click", () => {
+          homescreen.classList.remove("active");
+          if (target) target.classList.add("active");
+        });
+      });
 
-  <div id="notes" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Notes</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-sticky-note"></i>
-        <p>No notes yet</p>
-        <span>Create your first note to get started</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="music" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Music</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-music"></i>
-        <p>No music available</p>
-        <span>Your music library will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="browser" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Browser</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-globe"></i>
-        <p>Browser not available</p>
-        <span>Web browsing coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="vpn" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>VPN</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-shield"></i>
-        <p>VPN not available</p>
-        <span>VPN service coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="wallet" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Wallet</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-wallet"></i>
-        <p>No wallet found</p>
-        <span>Digital wallet coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="finance" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Finance</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-chart-line"></i>
-        <p>No financial data</p>
-        <span>Finance tracking coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="shopping" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Shopping</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-shopping-cart"></i>
-        <p>No items available</p>
-        <span>Shopping features coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="settings" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Settings</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-cog"></i>
-        <p>No settings available</p>
-        <span>Settings panel coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="help" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Help</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-question-circle"></i>
-        <p>Help center not available</p>
-        <span>Help documentation coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="more" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>More</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-ellipsis-h"></i>
-        <p>No additional features</p>
-        <span>More features coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="bank" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Bank</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-university"></i>
-        <p>Banking not available</p>
-        <span>Banking features coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="gps" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>GPS</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-location-dot"></i>
-        <p>Location services not available</p>
-        <span>GPS navigation coming soon</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="favorites" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Favorites</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-star"></i>
-        <p>No favorites yet</p>
-        <span>Your favorite contacts will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="recents" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Recents</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-clock"></i>
-        <p>No recent activity</p>
-        <span>Your recent calls will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="voicemail" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Voicemail</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-voicemail"></i>
-        <p>No voicemail messages</p>
-        <span>Your voicemail messages will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="books" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>Books</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-book"></i>
-        <p>No books available</p>
-        <span>Your book library will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="news" class="screen">
-    <div class="screen-header">
-      <button class="back-btn"><i class="fas fa-chevron-left"></i></button>
-      <h2>News</h2>
-    </div>
-    <div class="content">
-      <div class="empty-state">
-        <i class="fas fa-newspaper"></i>
-        <p>No news available</p>
-        <span>Latest news will appear here</span>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+      backButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const screen = btn.closest(".app-screen");
+          if (screen) screen.classList.remove("active");
+          homescreen.classList.add("active");
+        });
+      });
+    });
+  </script>
 </body>
 </html>
-```
