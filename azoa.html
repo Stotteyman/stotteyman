@@ -28,11 +28,24 @@
     main {
       padding: 2rem;
     }
-    .track-embed {
-      margin: 2rem auto;
-      max-width: 560px;
-      display: flex;
-      justify-content: center;
+    .release {
+      background: #151515;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 6px;
+      border-left: 3px solid #888;
+    }
+    .release h2 {
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+    .release p {
+      margin: 0.5rem 0;
+      color: #ccc;
+    }
+    .release a {
+      color: #ff66cc;
+      text-decoration: underline;
     }
     footer {
       background-color: #0a0a0a;
@@ -49,13 +62,21 @@
 <body>
   <header>
     <h1>AZOA</h1>
-    <p>Explore the sound of Azoa</p>
+    <p>Dark. Emotional. Real. Explore the sound of Azoa.</p>
   </header>
 
   <main>
-    <div class="track-embed">
-      <iframe width="100%" height="315" src="https://www.youtube.com/embed/videoseries?list=PLte9kYzmrezc5zC-2xi-D5tzSaRID0T30&autoplay=1" title="Azoa Playlist" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <!-- NEW RELEASE SECTION START -->
+    <div class="release">
+      <h2>New Track: \"Life\"</h2>
+      <p>Released: June 1, 2025</p>
+      <p><a href="https://music.youtube.com/watch?v=1nUNrF66c_w&si=vTeOdsfDo_6RJut5" target="_blank">Listen Now</a></p>
+      <p><a href="#" target="_blank">More Info</a> | <a href="#" target="_blank">Merch</a></p>
+      <div style="margin-top:1rem">
+        <iframe width="100%" height="315" src="https://www.youtube.com/embed/1nUNrF66c_w" title=\"Life by Azoa\" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
     </div>
+    <!-- COPY ABOVE BLOCK TO ADD MORE RELEASES -->
   </main>
 
   <footer>
