@@ -54,7 +54,7 @@
       const container = document.getElementById('referrals');
       container.innerHTML = '';
 
-      rows.forEach(row => {
+      rows.slice(1).forEach(row => { // ⬅️ SKIPS first row
         const name = row.c[0]?.v;
         const desc = row.c[1]?.v || '';
         const link = row.c[2]?.v;
