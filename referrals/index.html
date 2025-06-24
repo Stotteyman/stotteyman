@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gary’s Referral Links</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 1em;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #ff6600;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1em;
+      margin-bottom: 1em;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .card h2 {
+      margin: 0 0 .5em;
+    }
+    .card a {
+      display: inline-block;
+      padding: .5em 1em;
+      background: #ff6600;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>💸 Gary’s Referral Links</h1>
+  <div id="referrals">Loading…</div>
+
+  <script>
+    const SHEET_ID = '16m98PqUxPxtkIsBU-NKYxYd9Pp2_vggn';
+    const GID = '0';
+
+    async function loadReferrals() {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.slice(text.indexOf('(') + 1, text.lastIndexOf(')')));
+      const rows = json.table.rows;
+
+      const container = document.getElementById('referrals');
+      container.innerHTML = '';
+
+      rows.forEach(row => {
+        const name = row.c[0]?.v;
+        const desc = row.c[1]?.v || '';
+        const link = row.c[2]?.v;
+
+        if (!name || !link) return;
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h2>${name}</h2>
+          <p>${desc}</p>
+          <a href="${link}" target="_blank">Sign Up</a>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    loadReferrals();
+  </script>
+</body>
+</html>
