@@ -26,13 +26,24 @@
     .card h2 {
       margin: 0 0 .5em;
     }
-    .card a {
-      display: inline-block;
-      padding: .5em 1em;
-      background: #ff6600;
-      color: white;
-      text-decoration: none;
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .buttons a,
+    .buttons button {
+      padding: 0.5em 1em;
       border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      background: #ff6600;
+      border: none;
+      cursor: pointer;
+    }
+    .buttons button:disabled {
+      background: #999;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -54,7 +65,7 @@
       const container = document.getElementById('referrals');
       container.innerHTML = '';
 
-      rows.slice(1).forEach(row => { // ⬅️ SKIPS first row
+      rows.slice(1).forEach(row => {
         const name = row.c[0]?.v;
         const desc = row.c[1]?.v || '';
         const link = row.c[2]?.v;
@@ -66,10 +77,25 @@
         card.innerHTML = `
           <h2>${name}</h2>
           <p>${desc}</p>
-          <a href="${link}" target="_blank">Sign Up</a>
+          <div class="buttons">
+            <a href="${link}" target="_blank">Sign Up</a>
+            <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
+          </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    function shareLink(title, text, url) {
+      if (navigator.share) {
+        navigator.share({
+          title: title,
+          text: text,
+          url: url
+        }).catch(console.error);
+      } else {
+        alert("Sharing is not supported on this device.");
+      }
     }
 
     loadReferrals();
