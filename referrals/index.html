@@ -20,49 +20,10 @@
 
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
-    const TABS = ['Cashback & Investing', 'Crypto & Wallets', 'Gaming', 'Gambling', 'Misc', 'Free Money'];
 
-    async function fetchTab(tabName) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
-      const res = await fetch(url);
-      const txt = await res.text();
-      const json = JSON.parse(txt.slice(txt.indexOf('(')+1, txt.lastIndexOf(')')));
-      return json.table.rows;
-    }
-
-    function shareLink(title, text, url) {
-      if (navigator.share) {
-        navigator.share({ title, text, url }).catch(() => {});
-      } else {
-        alert("Sharing is not supported on this device.");
-      }
-    }
-
-    (async () => {
-      const container = document.getElementById('content');
-      container.innerHTML = '';
-      for (const tab of TABS) {
-        const rows = await fetchTab(tab);
-        if (!rows.length) continue;
-        const section = document.createElement('section');
-        section.innerHTML = `<h2>${tab}</h2>`;
-        rows.slice(1).forEach(r => {
-          const [nameCell, descCell, linkCell] = r.c;
-          const name = nameCell?.v, desc = descCell?.v || '', link = linkCell?.v;
-          if (!name || !link) return;
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <strong>${name}</strong><br>${desc}
-            <div class="buttons">
-              <a href="${link}" target="_blank">Sign Up</a>
-              <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
-            </div>`;
-          section.appendChild(card);
-        });
-        container.appendChild(section);
-      }
-    })();
-  </script>
-</body>
-</html>
+    // Fetch sheet metadata to get all tab names
+    async function getSheetTabs() {
+      const metadataUrl = `https://spreadsheets.google.com/feeds/worksheets/${SHEET_ID}/public/basic?alt=json`;
+      const res = await fetch(metadataUrl);
+      const json = await res.json();
+      return json.feed.
