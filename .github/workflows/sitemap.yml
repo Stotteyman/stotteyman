@@ -5,25 +5,31 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 3 * * *'  # Daily at 3:00 AM UTC
+    - cron: '0 3 * * *'   # daily at 03:00 UTC
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      # 1. Pull the repo so we can add the new sitemap later
+      - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # needed so we can push back to main
 
+      # 2. Set up Node for the sitemap-generator CLI
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      - name: Install sitemap generator
+      # 3. Install the CLI globally
+      - name: Install sitemap-generator
         run: npm install -g sitemap-generator-cli
 
-      - name: Generate Sitemap
+      # 4. Crawl the entire site and build /public/sitemap.xml
+      - name: Generate sitemap
         run: |
           mkdir -p public
           sitemap-generator https://stotteyman.com \
@@ -32,10 +38,19 @@ jobs:
             --max-entries 5000 \
             --include-url https://stotteyman.com
 
-      - name: Commit and Push sitemap.xml
+      # 5. Commit the file back to the same branch (no personal token required)
+      - name: Commit & push sitemap.xml
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          # make sure we’re on the real branch, not detached HEAD
+          git fetch origin main
+          git checkout main
+
           git add public/sitemap.xml
+          # only commit if the file actually changed
           git diff --quiet || git commit -m "Automated sitemap update"
-          git push
+
+          # push right back to main
+          git push origin main
