@@ -5,30 +5,26 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 3 * * *'   # daily at 03:00 UTC
+    - cron: '0 3 * * *'   # Daily at 03:00 UTC
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Pull the repo so we can add the new sitemap later
-      - name: Checkout repo
+      - name: Checkout Repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0        # needed so we can push back to main
+          fetch-depth: 0  # Needed to push changes back
 
-      # 2. Set up Node for the sitemap-generator CLI
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 3. Install the CLI globally
-      - name: Install sitemap-generator
+      - name: Install sitemap generator
         run: npm install -g sitemap-generator-cli
 
-      # 4. Crawl the entire site and build /public/sitemap.xml
       - name: Generate sitemap
         run: |
           mkdir -p public
@@ -36,21 +32,24 @@ jobs:
             --output ./public/sitemap.xml \
             --strip-querystring \
             --max-entries 5000 \
-            --include-url https://stotteyman.com
+            --include-url https://stotteyman.com || true
 
-      # 5. Commit the file back to the same branch (no personal token required)
+          echo "📁 Listing contents of public folder:"
+          ls -la public
+
       - name: Commit & push sitemap.xml
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          # make sure we’re on the real branch, not detached HEAD
           git fetch origin main
           git checkout main
 
-          git add public/sitemap.xml
-          # only commit if the file actually changed
-          git diff --quiet || git commit -m "Automated sitemap update"
+          if [ ! -f public/sitemap.xml ]; then
+            echo "❌ Sitemap not found — skipping commit."
+            exit 0
+          fi
 
-          # push right back to main
+          git add public/sitemap.xml
+          git diff --quiet || git commit -m "Automated sitemap update"
           git push origin main
