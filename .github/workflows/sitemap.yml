@@ -25,10 +25,11 @@ jobs:
         run: |
           mkdir -p public
           sitemap-generator https://stotteyman.com \
-            -o ./public \
-            --max-depth 3 \
+            --output ./public/sitemap.xml \
             --strip-querystring \
-            --filepath sitemap.xml
+            --max-entries 5000 \
+            --include-url https://stotteyman.com \
+            --crawl
 
       - name: Commit and Push sitemap.xml
         run: |
