@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact | Stotteyman</title>
+  <style>
+    body {font-family: sans-serif; background:#fafafa; max-width:680px; margin:auto; padding:1rem;}
+    h1 {text-align:center; color:#ff6600;}
+    .card {background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:1.2rem; margin:1rem 0;}
+    dt {font-weight:600; margin-top:.6rem;}
+    dd {margin:0 0 .4rem 0;}
+    button,a.action {display:inline-block; margin:.4rem .3rem; padding:.6rem 1.1rem; border:none; border-radius:4px;
+      background:#ff6600; color:#fff; text-decoration:none; cursor:pointer; font-size:.93rem;}
+    button:disabled {background:#999; cursor:not-allowed;}
+  </style>
+</head>
+<body>
+
+<h1>📇 Contact Gary "Stotteyman" McCullouch</h1>
+
+<!-- CONTACT DETAILS -->
+<dl class="card">
+  <dt>Public Phone</dt><dd>+1 661 597 2210</dd>
+  <dt>Public Email</dt><dd>stotteyman</dd>
+
+  <dt>Personal Phone</dt><dd>+1 714 323 6534</dd>
+  <dt>Personal Email</dt><dd>garymccullouch@gmail.com</dd>
+</dl>
+
+<!-- ACTION BUTTONS (PUBLIC INFO ONLY) -->
+<div class="card" style="text-align:center">
+  <a id="vcardBtn" class="action" download="Stotteyman.vcf">➕ Add to Contacts</a>
+  <button onclick="shareContact()">🔗 Share Contact</button>
+  <a class="action" href="tel:+16615972210">📞 Call</a>
+  <a class="action" href="facetime:+16615972210">📹 FaceTime</a>
+</div>
+
+<script>
+/* ---------- 1. Generate vCard for public info ---------- */
+const vcard =
+`BEGIN:VCARD
+VERSION:3.0
+FN:Gary McCullouch (Stotteyman)
+TEL;TYPE=CELL:+16615972210
+EMAIL;TYPE=INTERNET:stotteyman
+END:VCARD`;
+document.getElementById('vcardBtn').href =
+  'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcard);
+
+/* ---------- 2. Web Share API for contact text ---------- */
+function shareContact(){
+  const text = `Gary "Stotteyman" McCullouch
+Public phone: +1 661-597-2210
+Public email: stotteyman`;
+  if (navigator.share){
+    navigator.share({title:'Stotteyman Contact', text})
+      .catch(()=>{});           // user cancelled
+  }else{
+    alert('Sharing not supported on this device.');
+  }
+}
+</script>
+
+</body>
+</html>
