@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '0 3 * * *'  # Daily at 3:00 AM UTC
 
 jobs:
   build:
@@ -28,8 +30,7 @@ jobs:
             --output ./public/sitemap.xml \
             --strip-querystring \
             --max-entries 5000 \
-            --include-url https://stotteyman.com \
-            --crawl
+            --include-url https://stotteyman.com
 
       - name: Commit and Push sitemap.xml
         run: |
