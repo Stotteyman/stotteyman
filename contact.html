@@ -3,57 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact | Stotteyman</title>
+  <title>Contact | stotteyman</title>
   <style>
-    body {font-family: sans-serif; background:#fafafa; max-width:680px; margin:auto; padding:1rem;}
-    h1 {text-align:center; color:#ff6600;}
-    .card {background:#fff; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:1.2rem; margin:1rem 0;}
-    dt {font-weight:600; margin-top:.6rem;}
-    dd {margin:0 0 .4rem 0;}
-    button,a.action {display:inline-block; margin:.4rem .3rem; padding:.6rem 1.1rem; border:none; border-radius:4px;
-      background:#ff6600; color:#fff; text-decoration:none; cursor:pointer; font-size:.93rem;}
-    button:disabled {background:#999; cursor:not-allowed;}
+    body { font-family: sans-serif; background: #fafafa; max-width: 680px; margin: auto; padding: 1rem; }
+    h1 { text-align: center; color: #ff6600; }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.1); padding: 1.2rem; margin: 1rem 0; }
+    dt { font-weight: 600; margin-top: .6rem; }
+    dd { margin: 0 0 .4rem 0; }
+    button, a.action {
+      display: inline-block;
+      margin: .4rem .3rem;
+      padding: .6rem 1.1rem;
+      border: none;
+      border-radius: 4px;
+      background: #ff6600;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      font-size: .93rem;
+    }
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
 
-<h1>📇 Contact Gary "Stotteyman" McCullouch</h1>
+<h1>📇 Contact stotteyman</h1>
 
-<!-- PUBLIC CONTACT INFO -->
 <dl class="card">
   <dt>Phone</dt><dd>+1 661 597 2210</dd>
-  <dt>Email</dt><dd>stotteyman</dd>
+  <dt>Email</dt><dd>contact@stotteyman.com</dd>
 </dl>
 
-<!-- ACTION BUTTONS -->
 <div class="card" style="text-align:center">
-  <a id="vcardBtn" class="action" download="Stotteyman.vcf">➕ Add to Contacts</a>
+  <a id="vcardBtn" class="action" download="stotteyman.vcf">➕ Add to Contacts</a>
   <button onclick="shareContact()">🔗 Share Contact</button>
   <a class="action" href="tel:+16615972210">📞 Call</a>
   <a class="action" href="facetime:+16615972210">📹 FaceTime</a>
 </div>
 
 <script>
-/* ---------- vCard with public info only ---------- */
-const vcard =
-`BEGIN:VCARD
+const vcard = `
+BEGIN:VCARD
 VERSION:3.0
-FN:Gary McCullouch (Stotteyman)
+FN:stotteyman
 TEL;TYPE=CELL:+16615972210
-EMAIL;TYPE=INTERNET:stotteyman
-END:VCARD`;
+EMAIL;TYPE=INTERNET:contact@stotteyman.com
+END:VCARD
+`.trim();
+
 document.getElementById('vcardBtn').href =
   'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcard);
 
-/* ---------- Share via Web Share API ---------- */
-function shareContact(){
-  const text = `Gary "Stotteyman" McCullouch
-Phone: +1 661-597-2210
-Email: stotteyman`;
-  if (navigator.share){
-    navigator.share({title:'Stotteyman Contact', text})
-      .catch(()=>{});
-  }else{
+function shareContact() {
+  const text = `stotteyman\nPhone: +1 661-597-2210\nEmail: contact@stotteyman.com`;
+  if (navigator.share) {
+    navigator.share({ title: 'Contact stotteyman', text })
+      .catch(() => {});
+  } else {
     alert('Sharing not supported on this device.');
   }
 }
