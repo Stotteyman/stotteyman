@@ -8,18 +8,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: npm install -g sitemap-generator-cli
-      - run: sitemap-generator https://stotteyman.com -o ./public
-      - name: Commit sitemap
+
+      - name: Install sitemap generator
+        run: npm install -g sitemap-generator-cli
+
+      - name: Generate Sitemap
+        run: |
+          mkdir -p public
+          sitemap-generator https://stotteyman.com \
+            -o ./public \
+            --max-depth 3 \
+            --strip-querystring \
+            --filepath sitemap.xml
+
+      - name: Commit and Push sitemap.xml
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add .
-          git commit -m "update sitemap"
+          git add public/sitemap.xml
+          git diff --quiet || git commit -m "Automated sitemap update"
           git push
