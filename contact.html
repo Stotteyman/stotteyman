@@ -19,16 +19,13 @@
 
 <h1>📇 Contact Gary "Stotteyman" McCullouch</h1>
 
-<!-- CONTACT DETAILS -->
+<!-- PUBLIC CONTACT INFO -->
 <dl class="card">
-  <dt>Public Phone</dt><dd>+1 661 597 2210</dd>
-  <dt>Public Email</dt><dd>stotteyman</dd>
-
-  <dt>Personal Phone</dt><dd>+1 714 323 6534</dd>
-  <dt>Personal Email</dt><dd>garymccullouch@gmail.com</dd>
+  <dt>Phone</dt><dd>+1 661 597 2210</dd>
+  <dt>Email</dt><dd>stotteyman</dd>
 </dl>
 
-<!-- ACTION BUTTONS (PUBLIC INFO ONLY) -->
+<!-- ACTION BUTTONS -->
 <div class="card" style="text-align:center">
   <a id="vcardBtn" class="action" download="Stotteyman.vcf">➕ Add to Contacts</a>
   <button onclick="shareContact()">🔗 Share Contact</button>
@@ -37,7 +34,7 @@
 </div>
 
 <script>
-/* ---------- 1. Generate vCard for public info ---------- */
+/* ---------- vCard with public info only ---------- */
 const vcard =
 `BEGIN:VCARD
 VERSION:3.0
@@ -48,14 +45,14 @@ END:VCARD`;
 document.getElementById('vcardBtn').href =
   'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcard);
 
-/* ---------- 2. Web Share API for contact text ---------- */
+/* ---------- Share via Web Share API ---------- */
 function shareContact(){
   const text = `Gary "Stotteyman" McCullouch
-Public phone: +1 661-597-2210
-Public email: stotteyman`;
+Phone: +1 661-597-2210
+Email: stotteyman`;
   if (navigator.share){
     navigator.share({title:'Stotteyman Contact', text})
-      .catch(()=>{});           // user cancelled
+      .catch(()=>{});
   }else{
     alert('Sharing not supported on this device.');
   }
