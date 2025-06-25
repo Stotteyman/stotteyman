@@ -23,7 +23,8 @@
 
     // Fetch sheet metadata to get all tab names
     async function getSheetTabs() {
-      const metadataUrl = `https://spreadsheets.google.com/feeds/worksheets/${SHEET_ID}/public/basic?alt=json`;
+      const metadataUrl = `https://spreadsheets.google.com/feeds/worksheets/$19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z
+/public/basic?alt=json`;
       const res = await fetch(metadataUrl);
       const json = await res.json();
       return json.feed.
