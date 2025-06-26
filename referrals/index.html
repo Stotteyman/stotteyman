@@ -6,21 +6,21 @@
   <title>Freebies, deals, promos & more!</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    :root { color-scheme: light dark; }
     body {
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 1em;
       max-width: 800px;
       margin: auto;
-      color: black;
     }
-    @media (prefers-color-scheme: dark) {
-      body { background: #1e1e1e; color: white; }
-      .card { background: #ffffff; color: black; box-shadow: 0 1px 3px rgba(255,255,255,.05); }
+    h1 {
+      text-align: center;
+      color: #ff6600;
+      margin-bottom: .5em;
     }
-    h1 { text-align: center; color: #ff6600; margin-bottom: .5em; }
-    h2 { margin-top: 1.5em; }
+    h2 {
+      margin-top: 1.5em;
+    }
     .card {
       background: white;
       border-radius: 8px;
@@ -28,8 +28,14 @@
       margin: .75em 0;
       box-shadow: 0 1px 3px rgba(0,0,0,.1);
     }
-    .buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: .5em; }
-    .buttons a, .buttons button {
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: .5em;
+    }
+    .buttons a,
+    .buttons button {
       padding: .5em 1em;
       border-radius: 4px;
       text-decoration: none;
@@ -37,98 +43,78 @@
       background: #ff6600;
       border: none;
       cursor: pointer;
-      font-size: .9em;
+      font-size: 0.9em;
     }
-    .buttons button:disabled { background: #999; cursor: not-allowed; }
-    /* Modal styles */
-    .modal { display: none; position: fixed; z-index: 999; inset: 0; background: rgba(0,0,0,.8); }
-    .modal-content {
-      background: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
-      width: 90%;
-      color: black;
-    }
-    .close { float: right; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>💸 Freebies, deals, promos & more!</h1>
   <div id="content">Loading…</div>
 
-  <!-- Info Modal -->
-  <div id="infoModal" class="modal" onclick="modalClick(event)">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <p id="infoText">No info available</p>
-    </div>
-  </div>
-
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
-    const TABS = ['Banking','Cashback Rewards','Casino','Crypto'];
+    const TABS = [
+      'Free Money',
+      'Cashback & Investing',
+      'Crypto & Wallets',
+      'Gambling',
+      'Entertainment',
+      'Free Trials',
+      'Gaming',
+      'Misc'
+    ];
 
-    /**
-     * Use opensheet.elk.sh to avoid CORS & complicated GViz parsing.
-     * Docs: https://opensheet.elk.sh
-     */
-    async function fetchTab(tabName){
-      const url = `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(tabName)}`;
+    async function fetchTab(tabName) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
       const res = await fetch(url);
-      if(!res.ok) throw new Error('Network error');
-      return await res.json(); // returns array of objects
+      const text = await res.text();
+      const json = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
+      return json.table.rows;
     }
 
-    function shareLink(title,text,url){
-      if(navigator.share){ navigator.share({title,text,url}).catch(()=>{}); }
-      else{ alert('Sharing not supported on this device.'); }
+    function shareLink(title, text, url) {
+      if (navigator.share) {
+        navigator.share({ title, text, url }).catch(() => {});
+      } else {
+        alert("Sharing not supported on this device.");
+      }
     }
 
-    function showInfo(name){
-      document.getElementById('infoText').innerText = `No info available for "${name}"`;
-      document.getElementById('infoModal').style.display = 'block';
-    }
-
-    function closeModal(){ document.getElementById('infoModal').style.display='none'; }
-    function modalClick(evt){ if(evt.target.id==='infoModal') closeModal(); }
-
-    (async()=>{
+    (async () => {
       const container = document.getElementById('content');
-      try{
-        container.innerHTML='';
-        for(const tab of TABS){
+      container.innerHTML = '';
+
+      for (const tab of TABS) {
+        try {
           const rows = await fetchTab(tab);
-          if(!rows.length) continue;
+          if (!rows.length) continue;
 
           const section = document.createElement('section');
           section.innerHTML = `<h2>${tab}</h2>`;
 
-          rows.forEach(row=>{
-            // Attempt to pull cells by header names; fallback to values order
-            const vals = Object.values(row);
-            const name = (row.Name || row.name || vals[0] || '').trim();
-            const desc = (row.Description || row.desc || vals[1] || '').trim();
-            const link = (row.Link || row.URL || vals[2] || '').trim();
-            if(!name || !link) return;
+          rows.slice(1).forEach(r => {
+            const name = r.c[0]?.v;
+            const desc = r.c[1]?.v || '';
+            const link = r.c[2]?.v;
+
+            if (!name || !link) return;
 
             const card = document.createElement('div');
-            card.className='card';
-            card.innerHTML=`<strong>${name}</strong><br>${desc}
+            card.className = 'card';
+            card.innerHTML = `
+              <strong>${name}</strong><br>${desc}
               <div class="buttons">
-                <a href="${link}" target="_blank" rel="noopener">Sign Up</a>
-                <button onclick="shareLink('${name.replace(/'/g,"&#39;")}', '${desc.replace(/'/g,"&#39;")}', '${link.replace(/'/g,"&#39;")}')">Share</button>
-                <button onclick="showInfo('${name.replace(/'/g,"&#39;")}')">Info</button>
-              </div>`;
+                <a href="${link}" target="_blank">Sign Up</a>
+                <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
+              </div>
+            `;
             section.appendChild(card);
           });
+
           container.appendChild(section);
+        } catch (e) {
+          console.error(`Error loading tab: ${tab}`, e);
         }
-        if(!container.innerHTML) container.innerHTML='<p>No data found. Please check the Google Sheet.</p>';
-      }catch(err){
-        console.error(err);
-        container.innerHTML='<p style="color:red">Failed to load data. Please try again later.</p>';
       }
     })();
   </script>
