@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
+$1<link rel="icon" href="favicon.ico" type="image/x-icon" />
+<meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Freebies, deals, promos & more!</title>
   <style>
@@ -20,13 +20,13 @@
 
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
-    const TABS = ['Cashback & Investing', 'Crypto & Wallets', 'Gaming', 'Gambling', 'Misc', 'Free Money'];
+    const TABS = ['Free Money', 'Cashback & Investing', 'Crypto & Wallets', 'Gambling', 'Entertainment', 'Free Trials', 'Gaming', 'Misc'];
 
     async function fetchTab(tabName) {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
       const res = await fetch(url);
-      const txt = await res.text();
-      const json = JSON.parse(txt.slice(txt.indexOf('(')+1, txt.lastIndexOf(')')));
+      const text = await res.text();
+      const json = JSON.parse(text.slice(text.indexOf('(') + 1, text.lastIndexOf(')')));
       return json.table.rows;
     }
 
@@ -34,7 +34,7 @@
       if (navigator.share) {
         navigator.share({ title, text, url }).catch(() => {});
       } else {
-        alert("Sharing is not supported on this device.");
+        alert("Sharing not supported on this device.");
       }
     }
 
@@ -42,25 +42,29 @@
       const container = document.getElementById('content');
       container.innerHTML = '';
       for (const tab of TABS) {
-        const rows = await fetchTab(tab);
-        if (!rows.length) continue;
-        const section = document.createElement('section');
-        section.innerHTML = `<h2>${tab}</h2>`;
-        rows.slice(1).forEach(r => {
-          const [nameCell, descCell, linkCell] = r.c;
-          const name = nameCell?.v, desc = descCell?.v || '', link = linkCell?.v;
-          if (!name || !link) return;
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <strong>${name}</strong><br>${desc}
-            <div class="buttons">
-              <a href="${link}" target="_blank">Sign Up</a>
-              <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
-            </div>`;
-          section.appendChild(card);
-        });
-        container.appendChild(section);
+        try {
+          const rows = await fetchTab(tab);
+          if (!rows.length) continue;
+          const section = document.createElement('section');
+          section.innerHTML = `<h2>${tab}</h2>`;
+          rows.slice(1).forEach(r => {
+            const [nameCell, descCell, linkCell] = r.c;
+            const name = nameCell?.v, desc = descCell?.v || '', link = linkCell?.v;
+            if (!name || !link) return;
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <strong>${name}</strong><br>${desc}
+              <div class="buttons">
+                <a href="${link}" target="_blank">Sign Up</a>
+                <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
+              </div>`;
+            section.appendChild(card);
+          });
+          container.appendChild(section);
+        } catch (e) {
+          console.error(`Error loading tab: ${tab}`, e);
+        }
       }
     })();
   </script>
