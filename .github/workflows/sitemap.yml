@@ -1,0 +1,55 @@
+name: Generate Sitemap
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 3 * * *'   # Daily at 03:00 UTC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Needed to push changes back
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install sitemap generator
+        run: npm install -g sitemap-generator-cli
+
+      - name: Generate sitemap
+        run: |
+          mkdir -p public
+          sitemap-generator https://stotteyman.com \
+            --output ./public/sitemap.xml \
+            --strip-querystring \
+            --max-entries 5000 \
+            --include-url https://stotteyman.com || true
+
+          echo "📁 Listing contents of public folder:"
+          ls -la public
+
+      - name: Commit & push sitemap.xml
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git fetch origin main
+          git checkout main
+
+          if [ ! -f public/sitemap.xml ]; then
+            echo "❌ Sitemap not found — skipping commit."
+            exit 0
+          fi
+
+          git add public/sitemap.xml
+          git diff --quiet || git commit -m "Automated sitemap update"
+          git push origin main
