@@ -6,12 +6,32 @@
   <title>Freebies, deals, promos & more!</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
+    :root {
+      color-scheme: light dark;
+    }
     body {
       font-family: sans-serif;
       background: #f4f4f4;
       padding: 1em;
       max-width: 800px;
       margin: auto;
+      color: black;
+    }
+    @media (prefers-color-scheme: dark) {
+  body {
+    background: #1e1e1e;
+    color: white;
+  }
+  .card {
+    background: #ffffff;
+    color: black;
+    box-shadow: 0 1px 3px rgba(255,255,255,0.05);
+  }
+}
+      .card {
+        background: #2b2b2b;
+        box-shadow: 0 1px 3px rgba(255,255,255,0.05);
+      }
     }
     h1 {
       text-align: center;
@@ -58,10 +78,10 @@
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
     const TABS = [
-      'Free Money',
-      'Cashback & Investing',
-      'Crypto',
-      'Casino'
+      'Banking',
+      'Cashback Rewards',
+      'Casino',
+      'Crypto'
     ];
 
     async function fetchTab(tabName) {
@@ -92,10 +112,10 @@
           section.innerHTML = `<h2>${tab}</h2>`;
 
           rows.slice(1).forEach(r => {
-            const [nameCell, descCell, linkCell] = r.c;
-            const name = nameCell?.v;
-            const desc = descCell?.v || '';
-            const link = linkCell?.v;
+            const cells = r.c;
+            const name = cells[0]?.v?.trim();
+            const desc = cells[1]?.v?.trim() || '';
+            const link = cells[2]?.v?.trim();
 
             if (!name || !link) return;
 
