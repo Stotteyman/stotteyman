@@ -45,6 +45,10 @@
       cursor: pointer;
       font-size: 0.9em;
     }
+    .buttons button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
@@ -56,10 +60,9 @@
     const TABS = [
       'Free Money',
       'Cashback & Investing',
-      'Crypto & Wallets',
-      'Gambling',
-      'Entertainment',
-      'Free Trials',
+      'Crypto',
+      'Casino',
+      'Rewards',
       'Gaming',
       'Misc'
     ];
@@ -83,7 +86,6 @@
     (async () => {
       const container = document.getElementById('content');
       container.innerHTML = '';
-
       for (const tab of TABS) {
         try {
           const rows = await fetchTab(tab);
@@ -93,9 +95,10 @@
           section.innerHTML = `<h2>${tab}</h2>`;
 
           rows.slice(1).forEach(r => {
-            const name = r.c[0]?.v;
-            const desc = r.c[1]?.v || '';
-            const link = r.c[2]?.v;
+            const [nameCell, descCell, linkCell] = r.c;
+            const name = nameCell?.v;
+            const desc = descCell?.v || '';
+            const link = linkCell?.v;
 
             if (!name || !link) return;
 
