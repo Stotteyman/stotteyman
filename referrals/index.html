@@ -6,9 +6,7 @@
   <title>Freebies, deals, promos & more!</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    :root {
-      color-scheme: light dark;
-    }
+    :root { color-scheme: light dark; }
     body {
       font-family: sans-serif;
       background: #f4f4f4;
@@ -18,16 +16,11 @@
       color: black;
     }
     @media (prefers-color-scheme: dark) {
-      body {
-        background: #1e1e1e;
-        color: white;
-      }
-      .card {
-        background: #ffffff;
-        color: black;
-        box-shadow: 0 1px 3px rgba(255,255,255,0.05);
-      }
+      body { background: #1e1e1e; color: white; }
+      .card { background: #ffffff; color: black; box-shadow: 0 1px 3px rgba(255,255,255,.05); }
     }
+    h1 { text-align: center; color: #ff6600; margin-bottom: .5em; }
+    h2 { margin-top: 1.5em; }
     .card {
       background: white;
       border-radius: 8px;
@@ -35,22 +28,8 @@
       margin: .75em 0;
       box-shadow: 0 1px 3px rgba(0,0,0,.1);
     }
-    h1 {
-      text-align: center;
-      color: #ff6600;
-      margin-bottom: .5em;
-    }
-    h2 {
-      margin-top: 1.5em;
-    }
-    .buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: .5em;
-    }
-    .buttons a,
-    .buttons button {
+    .buttons { display: flex; gap: 10px; flex-wrap: wrap; margin-top: .5em; }
+    .buttons a, .buttons button {
       padding: .5em 1em;
       border-radius: 4px;
       text-decoration: none;
@@ -58,47 +37,29 @@
       background: #ff6600;
       border: none;
       cursor: pointer;
-      font-size: 0.9em;
+      font-size: .9em;
     }
-    .buttons button:disabled {
-      background: #999;
-      cursor: not-allowed;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.8);
-    }
+    .buttons button:disabled { background: #999; cursor: not-allowed; }
+    /* Modal styles */
+    .modal { display: none; position: fixed; z-index: 999; inset: 0; background: rgba(0,0,0,.8); }
     .modal-content {
-      background-color: #fff;
+      background: #fff;
       margin: 15% auto;
       padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 400px;
-      color: black;
       border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      color: black;
     }
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+    .close { float: right; font-size: 28px; font-weight: bold; color: #aaa; cursor: pointer; }
   </style>
 </head>
 <body>
   <h1>💸 Freebies, deals, promos & more!</h1>
   <div id="content">Loading…</div>
 
-  <div id="infoModal" class="modal">
+  <!-- Info Modal -->
+  <div id="infoModal" class="modal" onclick="modalClick(event)">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <p id="infoText">No info available</p>
@@ -107,81 +68,67 @@
 
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
-    const TABS = [
-      'Banking',
-      'Cashback Rewards',
-      'Casino',
-      'Crypto'
-    ];
+    const TABS = ['Banking','Cashback Rewards','Casino','Crypto'];
 
-    async function fetchTab(tabName) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
+    /**
+     * Use opensheet.elk.sh to avoid CORS & complicated GViz parsing.
+     * Docs: https://opensheet.elk.sh
+     */
+    async function fetchTab(tabName){
+      const url = `https://opensheet.elk.sh/${SHEET_ID}/${encodeURIComponent(tabName)}`;
       const res = await fetch(url);
-      const text = await res.text();
-      const json = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
-      return json.table.rows;
+      if(!res.ok) throw new Error('Network error');
+      return await res.json(); // returns array of objects
     }
 
-    function shareLink(title, text, url) {
-      if (navigator.share) {
-        navigator.share({ title, text, url }).catch(() => {});
-      } else {
-        alert("Sharing not supported on this device.");
-      }
+    function shareLink(title,text,url){
+      if(navigator.share){ navigator.share({title,text,url}).catch(()=>{}); }
+      else{ alert('Sharing not supported on this device.'); }
     }
 
-    function showInfo(name) {
+    function showInfo(name){
       document.getElementById('infoText').innerText = `No info available for "${name}"`;
       document.getElementById('infoModal').style.display = 'block';
     }
 
-    function closeModal() {
-      document.getElementById('infoModal').style.display = 'none';
-    }
+    function closeModal(){ document.getElementById('infoModal').style.display='none'; }
+    function modalClick(evt){ if(evt.target.id==='infoModal') closeModal(); }
 
-    window.onclick = function(event) {
-      const modal = document.getElementById('infoModal');
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    }
-
-    (async () => {
+    (async()=>{
       const container = document.getElementById('content');
-      container.innerHTML = '';
-      for (const tab of TABS) {
-        try {
+      try{
+        container.innerHTML='';
+        for(const tab of TABS){
           const rows = await fetchTab(tab);
-          if (!rows.length) continue;
+          if(!rows.length) continue;
 
           const section = document.createElement('section');
           section.innerHTML = `<h2>${tab}</h2>`;
 
-          rows.slice(1).forEach(r => {
-            const cells = r.c;
-            const name = cells[0]?.v?.trim();
-            const desc = cells[1]?.v?.trim() || '';
-            const link = cells[2]?.v?.trim();
-
-            if (!name || !link) return;
+          rows.forEach(row=>{
+            // Attempt to pull cells by header names; fallback to values order
+            const vals = Object.values(row);
+            const name = (row.Name || row.name || vals[0] || '').trim();
+            const desc = (row.Description || row.desc || vals[1] || '').trim();
+            const link = (row.Link || row.URL || vals[2] || '').trim();
+            if(!name || !link) return;
 
             const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-              <strong>${name}</strong><br>${desc}
+            card.className='card';
+            card.innerHTML=`<strong>${name}</strong><br>${desc}
               <div class="buttons">
-                <a href="${link}" target="_blank">Sign Up</a>
-                <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
-                <button onclick="showInfo('${name}')">Info</button>
-              </div>
-            `;
+                <a href="${link}" target="_blank" rel="noopener">Sign Up</a>
+                <button onclick="shareLink('${name.replace(/'/g,"&#39;")}', '${desc.replace(/'/g,"&#39;")}', '${link.replace(/'/g,"&#39;")}')">Share</button>
+                <button onclick="showInfo('${name.replace(/'/g,"&#39;")}')">Info</button>
+              </div>`;
             section.appendChild(card);
           });
-
           container.appendChild(section);
-        } catch (e) {
-          console.error(`Error loading tab: ${tab}`, e);
         }
+        if(!container.innerHTML) container.innerHTML='<p>No data found. Please check the Google Sheet.</p>';
+      }catch(err){
+        console.error(err);
+        container.innerHTML='<p style="color:red">Failed to load data. Please try again later.</p>';
       }
     })();
   </script>
