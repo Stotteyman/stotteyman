@@ -18,20 +18,22 @@
       color: black;
     }
     @media (prefers-color-scheme: dark) {
-  body {
-    background: #1e1e1e;
-    color: white;
-  }
-  .card {
-    background: #ffffff;
-    color: black;
-    box-shadow: 0 1px 3px rgba(255,255,255,0.05);
-  }
-}
+      body {
+        background: #1e1e1e;
+        color: white;
+      }
       .card {
-        background: #2b2b2b;
+        background: #ffffff;
+        color: black;
         box-shadow: 0 1px 3px rgba(255,255,255,0.05);
       }
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1em;
+      margin: .75em 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
     }
     h1 {
       text-align: center;
@@ -40,13 +42,6 @@
     }
     h2 {
       margin-top: 1.5em;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      padding: 1em;
-      margin: .75em 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,.1);
     }
     .buttons {
       display: flex;
@@ -69,11 +64,46 @@
       background: #999;
       cursor: not-allowed;
     }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 400px;
+      color: black;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h1>💸 Freebies, deals, promos & more!</h1>
   <div id="content">Loading…</div>
+
+  <div id="infoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <p id="infoText">No info available</p>
+    </div>
+  </div>
 
   <script>
     const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
@@ -97,6 +127,22 @@
         navigator.share({ title, text, url }).catch(() => {});
       } else {
         alert("Sharing not supported on this device.");
+      }
+    }
+
+    function showInfo(name) {
+      document.getElementById('infoText').innerText = `No info available for "${name}"`;
+      document.getElementById('infoModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('infoModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('infoModal');
+      if (event.target === modal) {
+        modal.style.display = 'none';
       }
     }
 
@@ -126,6 +172,7 @@
               <div class="buttons">
                 <a href="${link}" target="_blank">Sign Up</a>
                 <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
+                <button onclick="showInfo('${name}')">Info</button>
               </div>
             `;
             section.appendChild(card);
