@@ -1,75 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Freebies, deals, promos & more!</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referral Deals</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 1em;
-      max-width: 800px;
-      margin: auto;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f7f7f7;
+      color: #333;
     }
-    h1 {
+    header {
+      background: orange;
+      padding: 1em;
       text-align: center;
-      color: #ff6600;
-      margin-bottom: .5em;
+      color: white;
+      font-size: 1.5em;
+    }
+    section {
+      padding: 1em;
     }
     h2 {
-      margin-top: 1.5em;
+      color: #ff6600;
+      border-bottom: 2px solid #ccc;
+      margin-top: 1em;
     }
     .card {
       background: white;
+      border: 1px solid #ddd;
       border-radius: 8px;
       padding: 1em;
-      margin: .75em 0;
-      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+      margin-bottom: 1em;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: .5em;
+    .card-buttons {
+      margin-top: 1em;
     }
-    .buttons a,
-    .buttons button {
-      padding: .5em 1em;
-      border-radius: 4px;
-      text-decoration: none;
-      color: white;
-      background: #ff6600;
+    .card-buttons button {
+      margin-right: 0.5em;
+      padding: 0.5em 1em;
       border: none;
+      border-radius: 4px;
+      background: #ff6600;
+      color: white;
       cursor: pointer;
-      font-size: 0.9em;
+    }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 2em;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+    }
+    .close-btn {
+      margin-top: 1em;
+      background: gray;
     }
   </style>
 </head>
 <body>
-  <h1>💸 Freebies, deals, promos & more!</h1>
+  <header>Referral Deals</header>
   <div id="content">Loading…</div>
 
+  <!-- Modal -->
+  <div class="modal" id="infoModal">
+    <div class="modal-content">
+      <p>No info available yet</p>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
   <script>
-    const SHEET_ID = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
-    const TABS = [
-      'Free Money',
-      'Cashback & Investing',
-      'Crypto & Wallets',
-      'Gambling',
-      'Entertainment',
-      'Free Trials',
-      'Gaming',
-      'Misc'
-    ];
+    const sheetId = '19rRwlvb4V64NolwwDwRoh5NysDhSMr5Z';
+    const defaultTabs = ['Banking', 'Cashback Rewards', 'Casino', 'Crypto'];
+
+    async function getSheetTabs() {
+      const url = `https://spreadsheets.google.com/feeds/worksheets/${sheetId}/public/basic?alt=json`;
+      const res = await fetch(url);
+      const json = await res.json();
+      return json.feed.entry.map(e => e.title.$t);
+    }
 
     async function fetchTab(tabName) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${encodeURIComponent(tabName)}&tqx=out:json`;
       const res = await fetch(url);
       const text = await res.text();
       const json = JSON.parse(text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1));
       return json.table.rows;
+    }
+
+    function openModal() {
+      document.getElementById('infoModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('infoModal').style.display = 'none';
     }
 
     function shareLink(title, text, url) {
@@ -81,39 +117,74 @@
     }
 
     (async () => {
-      const container = document.getElementById('content');
-      container.innerHTML = '';
+      const contentDiv = document.getElementById('content');
+      contentDiv.innerHTML = '';
 
-      for (const tab of TABS) {
+      let activeTabs = [...defaultTabs];
+      try {
+        const liveTabs = await getSheetTabs();
+        const tabsChanged = JSON.stringify(liveTabs) !== JSON.stringify(defaultTabs);
+        if (tabsChanged) {
+          console.log('Tab structure changed. Updating...');
+          activeTabs = liveTabs;
+        }
+      } catch (e) {
+        console.warn('Using default tab list due to fetch error.');
+      }
+
+      for (const tab of activeTabs) {
         try {
           const rows = await fetchTab(tab);
-          if (!rows.length) continue;
+          if (!rows || rows.length <= 1) continue;
 
           const section = document.createElement('section');
-          section.innerHTML = `<h2>${tab}</h2>`;
+          const title = document.createElement('h2');
+          title.textContent = tab;
+          section.appendChild(title);
 
-          rows.slice(1).forEach(r => {
-            const name = r.c[0]?.v;
-            const desc = r.c[1]?.v || '';
-            const link = r.c[2]?.v;
+          rows.slice(1).forEach(row => {
+            const name = row.c[0]?.v?.trim();
+            const description = row.c[1]?.v?.trim() || '';
+            const link = row.c[2]?.v?.trim();
 
             if (!name || !link) return;
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.innerHTML = `
-              <strong>${name}</strong><br>${desc}
-              <div class="buttons">
-                <a href="${link}" target="_blank">Sign Up</a>
-                <button onclick="shareLink('${name}', '${desc}', '${link}')">Share</button>
-              </div>
-            `;
+
+            const h3 = document.createElement('h3');
+            h3.textContent = name;
+            card.appendChild(h3);
+
+            const p = document.createElement('p');
+            p.textContent = description;
+            card.appendChild(p);
+
+            const buttonGroup = document.createElement('div');
+            buttonGroup.className = 'card-buttons';
+
+            const signupBtn = document.createElement('button');
+            signupBtn.textContent = 'Sign Up';
+            signupBtn.onclick = () => window.open(link, '_blank');
+            buttonGroup.appendChild(signupBtn);
+
+            const shareBtn = document.createElement('button');
+            shareBtn.textContent = 'Share';
+            shareBtn.onclick = () => shareLink(name, description, link);
+            buttonGroup.appendChild(shareBtn);
+
+            const infoBtn = document.createElement('button');
+            infoBtn.textContent = 'Info';
+            infoBtn.onclick = () => openModal();
+            buttonGroup.appendChild(infoBtn);
+
+            card.appendChild(buttonGroup);
             section.appendChild(card);
           });
 
-          container.appendChild(section);
-        } catch (e) {
-          console.error(`Error loading tab: ${tab}`, e);
+          contentDiv.appendChild(section);
+        } catch (err) {
+          console.error(`Error loading tab: ${tab}`, err);
         }
       }
     })();
