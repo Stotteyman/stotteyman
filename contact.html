@@ -48,22 +48,35 @@
 const vcard = `
 BEGIN:VCARD
 VERSION:3.0
+N:Stotteyman;;;;
 FN:stotteyman
-TEL;TYPE=CELL:+16615972210
+TEL;TYPE=CELL:+1-661-597-2210
 EMAIL;TYPE=INTERNET:contact@stotteyman.com
 END:VCARD
 `.trim();
 
+// Add to Contacts button
 document.getElementById('vcardBtn').href =
   'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcard);
 
-function shareContact() {
-  const text = `stotteyman\nPhone: +1 661-597-2210\nEmail: contact@stotteyman.com`;
-  if (navigator.share) {
-    navigator.share({ title: 'Contact stotteyman', text })
-      .catch(() => {});
-  } else {
-    alert('Sharing not supported on this device.');
+// Share .vcf file using Web Share API with Files (iOS Safari supported)
+async function shareContact() {
+  try {
+    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const file = new File([blob], "stotteyman.vcf", { type: "text/vcard" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        title: "Contact stotteyman",
+        text: "Save stotteyman's contact info",
+        files: [file]
+      });
+    } else {
+      alert('Sharing contact file not supported on this device.');
+    }
+  } catch (error) {
+    alert('Error sharing contact file.');
+    console.error(error);
   }
 }
 </script>
