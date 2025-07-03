@@ -44,8 +44,14 @@
   <a class="action" href="facetime:+16615972210">📹 FaceTime</a>
 </div>
 
+<div class="card" style="text-align:center">
+  <a class="action" href="https://www.instagram.com/stotteymantv" target="_blank">📷 DM Me on Instagram</a>
+  <a class="action" href="https://discord.com/users/stotteyman" target="_blank">🎮 Add Me on Discord</a>
+  <a class="action" href="https://www.youtube.com/@stotteyman" target="_blank">📺 Subscribe on YouTube</a>
+</div>
+
 <script>
-const vcard = `
+const vcardData = `
 BEGIN:VCARD
 VERSION:3.0
 N:Stotteyman;;;;
@@ -55,14 +61,14 @@ EMAIL;TYPE=INTERNET:contact@stotteyman.com
 END:VCARD
 `.trim();
 
-// Add to Contacts button
+// Set Add to Contacts link
 document.getElementById('vcardBtn').href =
-  'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcard);
+  'data:text/vcard;charset=utf-8,' + encodeURIComponent(vcardData);
 
-// Share .vcf file using Web Share API with Files (iOS Safari supported)
+// Share Contact button logic
 async function shareContact() {
   try {
-    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const blob = new Blob([vcardData], { type: 'text/vcard' });
     const file = new File([blob], "stotteyman.vcf", { type: "text/vcard" });
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
