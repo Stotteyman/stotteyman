@@ -3,23 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Referral deals curated by stotteyman" />
   <title>Referral Deals</title>
+  <link rel="stylesheet" href="/styles.css" />
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
       background: linear-gradient(135deg, #1f1f1f, #333);
       color: #eee;
       overflow-x: hidden;
     }
     header {
-      background: #ff6600;
-      padding: 1em;
-      text-align: center;
-      color: white;
+      box-shadow: 0 0 20px var(--accent-color);
       font-size: 2em;
-      box-shadow: 0 0 20px #ff6600;
+      color: #fff;
     }
     section {
       padding: 1em;
@@ -27,7 +23,7 @@
     }
     h2 {
       color: #ffcc80;
-      border-bottom: 2px solid #ff6600;
+      border-bottom: 2px solid var(--accent-color);
       margin-top: 2em;
     }
     .card {
@@ -53,8 +49,8 @@
       padding: 0.5em 1em;
       border: none;
       border-radius: 4px;
-      background: #ff6600;
-      color: white;
+      background: var(--accent-color);
+      color: #fff;
       cursor: pointer;
       font-weight: bold;
       transition: background 0.2s, transform 0.2s;
@@ -79,7 +75,7 @@
       color: #fff;
       padding: 2em;
       border-radius: 12px;
-      box-shadow: 0 0 20px #ff6600;
+      box-shadow: 0 0 20px var(--accent-color);
       text-align: center;
     }
     .close-btn {
@@ -98,10 +94,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
 <body>
-  <header>Referral Deals</header>
-  <div id="content">Loading…</div>
+  <header><a href="/">stotteyman.com</a></header>
+  <main>
+    <div id="content">Loading…</div>
+  </main>
 
-  <!-- Modal -->
   <div class="modal" id="infoModal">
     <div class="modal-content">
       <p id="modalText">No info available yet</p>
@@ -136,11 +133,7 @@
     function openQR(link, name, description) {
       const modal = document.getElementById('infoModal');
       const content = document.getElementById('modalText');
-      content.innerHTML = `
-        <canvas id="qrCanvas"></canvas>
-        <h3>${name}</h3>
-        <p>${description}</p>
-      `;
+      content.innerHTML = `<canvas id="qrCanvas"></canvas><h3>${name}</h3><p>${description}</p>`;
       new QRious({
         element: document.getElementById('qrCanvas'),
         value: link,
@@ -159,7 +152,7 @@
       if (navigator.share) {
         navigator.share({ title, text, url }).catch(() => {});
       } else {
-        alert("Sharing not supported on this device.");
+        alert('Sharing not supported on this device.');
       }
     }
 
