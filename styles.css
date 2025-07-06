@@ -108,6 +108,17 @@ main {
   text-align: center;
 }
 
+.hero {
+  padding: 2rem 0;
+}
+
+.info-sections {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .card {
   background: rgba(0, 0, 0, 0.05);
   padding: 1rem;
