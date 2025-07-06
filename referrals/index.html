@@ -12,9 +12,8 @@
       color: #eee;
       overflow-x: hidden;
     }
-    header {
+    .site-header {
       box-shadow: 0 0 20px var(--accent-color);
-      font-size: 2em;
       color: #fff;
     }
     section {
@@ -94,8 +93,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 </head>
 <body>
-  <header><a href="/">stotteyman.com</a></header>
-  <main>
+  <header class="site-header">
+    <a href="/" class="logo">stotteyman.com</a>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/azoa.html">Azoa</a></li>
+        <li><a href="/contact.html">Contact</a></li>
+        <li><a href="/referrals/">Referrals</a></li>
+        <li><a href="/discord.html">Discord</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container">
     <div id="content">Loading…</div>
   </main>
 
