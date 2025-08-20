@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
 
 :root {
   --accent-color: #ff6b00;
@@ -18,12 +18,11 @@ body {
   padding: 0;
   background: var(--bg-color);
   color: var(--text-color);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
 
 main {
   flex: 1;
@@ -162,4 +161,23 @@ main {
   font-size: 0.875rem;
   color: #666;
   margin-bottom: 1rem;
+}
+
+.portfolio-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.portfolio-item img {
+  width: 100%;
+  border-radius: 6px;
+  display: block;
+}
+
+.booking-wrapper iframe {
+  width: 100%;
+  height: 700px;
+  border: none;
+  border-radius: 6px;
 }
