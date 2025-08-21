@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
+import { CalendlyModal } from './CalendlyModal'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,13 +29,14 @@ export function Navigation() {
   ]
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'glass-dark backdrop-blur-md' : 'bg-transparent'
-      }`}
-    >
+    <>
+      <motion.nav
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? 'glass-dark backdrop-blur-md' : 'bg-transparent'
+        }`}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -58,16 +61,14 @@ export function Navigation() {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             ))}
-            <motion.a
-              href="https://calendly.com/garymccullouch"
-              target="_blank"
-              rel="noopener noreferrer"
+            <motion.button
+              onClick={() => setIsCalendlyOpen(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
             >
               Book a Call
-            </motion.a>
+            </motion.button>
           </div>
 
           {/* Mobile menu button */}
@@ -101,18 +102,24 @@ export function Navigation() {
                   {item.label}
                 </Link>
               ))}
-              <a
-                href="https://calendly.com/garymccullouch"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => {
+                  setIsCalendlyOpen(true)
+                  setIsOpen(false)
+                }}
                 className="block w-full text-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow"
               >
                 Book a Call
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.nav>
+      <CalendlyModal
+        isOpen={isCalendlyOpen}
+        onClose={() => setIsCalendlyOpen(false)}
+      />
+    </>
   )
 }

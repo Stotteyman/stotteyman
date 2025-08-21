@@ -4,11 +4,12 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { 
-  Palette, Leaf, Users, Smartphone, Video, 
-  ExternalLink, TrendingUp, DollarSign, 
-  Calendar, ArrowRight, Filter 
+import {
+  Palette, Leaf, Users, Smartphone, Video,
+  ExternalLink, TrendingUp, DollarSign,
+  Calendar, ArrowRight, Filter
 } from 'lucide-react'
+import { CalendlyModal } from '@/components/CalendlyModal'
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
@@ -157,6 +158,7 @@ const categories = ['All', 'Creative', 'Lifestyle', 'Technology', 'Media']
 export default function VenturesPage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [selectedVenture, setSelectedVenture] = useState<string | null>(null)
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const filteredVentures = selectedCategory === 'All' 
@@ -452,16 +454,14 @@ export default function VenturesPage() {
 
                     {/* CTA */}
                     <div className="flex gap-4 justify-center">
-                      <motion.a
-                        href="https://calendly.com/garymccullouch"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <motion.button
+                        onClick={() => setIsCalendlyOpen(true)}
                         whileHover={{ scale: 1.05 }}
                         className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
                       >
                         <Calendar size={20} className="mr-2" />
                         Discuss Investment
-                      </motion.a>
+                      </motion.button>
                       <button
                         onClick={() => setSelectedVenture(null)}
                         className="px-8 py-4 glass border border-white/20 text-white rounded-full font-medium hover:border-blue-500/50 transition-all duration-300"
@@ -493,20 +493,22 @@ export default function VenturesPage() {
               Explore investment opportunities in our growing portfolio of innovative ventures.
             </p>
             
-            <motion.a
-              href="https://calendly.com/garymccullouch"
-              target="_blank"
-              rel="noopener noreferrer"
+            <motion.button
+              onClick={() => setIsCalendlyOpen(true)}
               whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
               whileTap={{ scale: 0.95 }}
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule Investment Call
               <Calendar size={24} className="ml-3" />
-            </motion.a>
+            </motion.button>
           </motion.div>
         </div>
       </section>
+      <CalendlyModal
+        isOpen={isCalendlyOpen}
+        onClose={() => setIsCalendlyOpen(false)}
+      />
     </div>
   )
 }
