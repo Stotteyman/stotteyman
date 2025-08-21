@@ -1,13 +1,15 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ArrowDown, Sparkles } from 'lucide-react'
+import { CalendlyModal } from './CalendlyModal'
 
 export function HeroSection() {
     const logoRef = useRef<HTMLDivElement>(null)
     const textRef = useRef<HTMLDivElement>(null)
+    const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
 
     useEffect(() => {
         const tl = gsap.timeline()
@@ -39,6 +41,7 @@ export function HeroSection() {
     }, [])
 
     return (
+        <>
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
             {/* Grid Background */}
             <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.1)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
@@ -79,16 +82,14 @@ export function HeroSection() {
 
                 {/* CTA Buttons */}
                 <div className="hero-cta mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    <motion.a
-                        href="https://calendly.com/garymccullouch"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <motion.button
+                        onClick={() => setIsCalendlyOpen(true)}
                         whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
                         whileTap={{ scale: 0.95 }}
                         className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300"
                     >
                         Schedule Investment Call
-                    </motion.a>
+                    </motion.button>
 
                     <motion.a
                         href="/ventures"
@@ -114,5 +115,10 @@ export function HeroSection() {
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float" />
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </section>
+        <CalendlyModal
+            isOpen={isCalendlyOpen}
+            onClose={() => setIsCalendlyOpen(false)}
+        />
+        </>
     )
 }

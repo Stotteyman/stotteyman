@@ -1,10 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, ArrowRight, Sparkles } from 'lucide-react'
+import { CalendlyModal } from './CalendlyModal'
 
 export function CTASection() {
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
   return (
+    <>
     <section className="py-32 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5" />
@@ -41,19 +45,17 @@ export function CTASection() {
           </p>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <motion.a
-              href="https://calendly.com/garymccullouch"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-              whileTap={{ scale: 0.95 }}
-              className="group flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
-            >
-              <Calendar size={24} className="mr-3" />
-              Book Investment Call
-              <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" />
-            </motion.a>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <motion.button
+                onClick={() => setIsCalendlyOpen(true)}
+                whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+                whileTap={{ scale: 0.95 }}
+                className="group flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
+              >
+                <Calendar size={24} className="mr-3" />
+                Book Investment Call
+                <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" />
+              </motion.button>
             
             <motion.a
               href="/contact"
@@ -79,5 +81,10 @@ export function CTASection() {
         </motion.div>
       </div>
     </section>
+    <CalendlyModal
+      isOpen={isCalendlyOpen}
+      onClose={() => setIsCalendlyOpen(false)}
+    />
+    </>
   )
 }
