@@ -6,7 +6,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Palette, Leaf, Users, Smartphone, Video,
-  ExternalLink, TrendingUp, DollarSign,
+  ExternalLink,
   Calendar, ArrowRight, Filter
 } from 'lucide-react'
 import { CalendlyModal } from '@/components/CalendlyModal'
@@ -28,14 +28,7 @@ const ventures = [
     borderColor: 'border-orange-500/30',
     category: 'Creative',
     stage: 'Growth',
-    investment: '$250K+',
-    roi: '180%',
     tags: ['Media Production', 'Brand Development', 'Digital Marketing', 'Creative Consulting'],
-    metrics: [
-      { label: 'Projects Completed', value: '150+' },
-      { label: 'Client Retention', value: '95%' },
-      { label: 'Revenue Growth', value: '240%' },
-    ],
     highlights: [
       'Award-winning creative campaigns',
       'Fortune 500 client portfolio',
@@ -55,14 +48,7 @@ const ventures = [
     borderColor: 'border-green-500/30',
     category: 'Lifestyle',
     stage: 'Expansion',
-    investment: '$500K+',
-    roi: '320%',
     tags: ['Hemp Products', 'Lifestyle Brand', 'E-commerce', 'Community Building'],
-    metrics: [
-      { label: 'Monthly Revenue', value: '$85K' },
-      { label: 'Customer Base', value: '12K+' },
-      { label: 'Market Share', value: '8%' },
-    ],
     highlights: [
       'Premium product line',
       'Strong brand recognition',
@@ -82,14 +68,7 @@ const ventures = [
     borderColor: 'border-purple-500/30',
     category: 'Technology',
     stage: 'Growth',
-    investment: '$750K+',
-    roi: '280%',
     tags: ['Social Platform', 'Community Building', 'Content Creation', 'User Engagement'],
-    metrics: [
-      { label: 'Active Users', value: '25K+' },
-      { label: 'Engagement Rate', value: '78%' },
-      { label: 'Content Created', value: '50K+' },
-    ],
     highlights: [
       'High user engagement',
       'Viral content features',
@@ -109,14 +88,7 @@ const ventures = [
     borderColor: 'border-blue-500/30',
     category: 'Technology',
     stage: 'Launch',
-    investment: '$300K+',
-    roi: '150%',
     tags: ['Cannabis Tech', 'Product Innovation', 'Consumer Electronics', 'Lifestyle Tech'],
-    metrics: [
-      { label: 'Products Launched', value: '8' },
-      { label: 'Pre-orders', value: '2.5K' },
-      { label: 'Market Interest', value: '92%' },
-    ],
     highlights: [
       'Innovative product designs',
       'Strong market demand',
@@ -136,14 +108,7 @@ const ventures = [
     borderColor: 'border-red-500/30',
     category: 'Media',
     stage: 'Growth',
-    investment: '$200K+',
-    roi: '200%',
     tags: ['Content Archive', 'Cultural Documentation', 'Livestream Analytics', 'Community Rankings'],
-    metrics: [
-      { label: 'Content Archived', value: '10K+' },
-      { label: 'Monthly Visitors', value: '45K' },
-      { label: 'Creator Profiles', value: '500+' },
-    ],
     highlights: [
       'Comprehensive content archive',
       'Cultural significance',
@@ -287,18 +252,6 @@ export default function VenturesPage() {
                           {venture.description}
                         </p>
 
-                        {/* Metrics */}
-                        <div className="grid grid-cols-3 gap-4 mb-6">
-                          {venture.metrics.map((metric) => (
-                            <div key={metric.label} className="text-center">
-                              <div className={`text-xl font-bold bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`}>
-                                {metric.value}
-                              </div>
-                              <div className="text-xs text-gray-400">{metric.label}</div>
-                            </div>
-                          ))}
-                        </div>
-
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-6">
                           {venture.tags.slice(0, 3).map((tag) => (
@@ -312,20 +265,10 @@ export default function VenturesPage() {
                         </div>
 
                         {/* CTA */}
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4 text-sm text-gray-400">
-                            <div className="flex items-center">
-                              <DollarSign size={16} className="mr-1" />
-                              {venture.investment}
-                            </div>
-                            <div className="flex items-center">
-                              <TrendingUp size={16} className="mr-1" />
-                              {venture.roi} ROI
-                            </div>
-                          </div>
+                        <div className="flex items-center justify-end">
                           <motion.div
                             initial={{ x: -10, opacity: 0 }}
-                            animate={{ 
+                            animate={{
                               x: 0,
                               opacity: 1
                             }}
@@ -412,44 +355,19 @@ export default function VenturesPage() {
                         </ul>
                       </div>
 
-                      {/* Metrics & Info */}
-                      <div>
-                        <h3 className="text-2xl font-bold text-white mb-4">Performance Metrics</h3>
-                        <div className="grid grid-cols-1 gap-4 mb-6">
-                          {venture.metrics.map((metric) => (
-                            <div key={metric.label} className="glass rounded-xl p-4 border border-white/10">
-                              <div className={`text-2xl font-bold bg-gradient-to-r ${venture.color} bg-clip-text text-transparent mb-1`}>
-                                {metric.value}
-                              </div>
-                              <div className="text-gray-400">{metric.label}</div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="glass rounded-xl p-4 border border-white/10 mb-6">
-                          <div className="grid grid-cols-2 gap-4 text-center">
-                            <div>
-                              <div className="text-lg font-bold text-white mb-1">Investment</div>
-                              <div className="text-gray-400">{venture.investment}</div>
-                            </div>
-                            <div>
-                              <div className="text-lg font-bold text-white mb-1">ROI</div>
-                              <div className="text-green-400">{venture.roi}</div>
-                            </div>
+                        {/* Info */}
+                        <div>
+                          <div className="flex flex-wrap gap-2">
+                            {venture.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className={`px-3 py-1 text-sm font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full`}
+                              >
+                                {tag}
+                              </span>
+                            ))}
                           </div>
                         </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          {venture.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className={`px-3 py-1 text-sm font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full`}
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
                     </div>
 
                     {/* CTA */}

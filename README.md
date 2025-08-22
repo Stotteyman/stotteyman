@@ -130,13 +130,11 @@ npm start
 ### Ventures (`/ventures`)
 - Detailed portfolio showcase
 - Interactive venture cards
-- Performance metrics
 - Investment opportunities
 
 ### Livestream (`/livestream`)
 - IRL culture involvement
 - Key collaborator profiles
-- Community impact metrics
 - Partnership opportunities
 
 ### Blog (`/blog`)
