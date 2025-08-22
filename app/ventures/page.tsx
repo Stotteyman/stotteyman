@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   Palette, Leaf, Users, Smartphone, Video,
   ExternalLink,
@@ -12,9 +10,6 @@ import {
 import { CalendlyModal } from '@/components/CalendlyModal'
 
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 const ventures = [
   {
@@ -132,24 +127,33 @@ export default function VenturesPage() {
     : ventures.filter(venture => venture.category === selectedCategory)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.venture-card',
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: '.ventures-grid',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-    }, containerRef)
+    let ctx: any
+    const run = async () => {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
 
-    return () => ctx.revert()
+        ctx = gsap.context(() => {
+          gsap.fromTo('.venture-card',
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.6,
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: '.ventures-grid',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          )
+        }, containerRef)
+      }
+    }
+    run()
+    return () => ctx && ctx.revert()
   }, [selectedCategory])
 
   return (
