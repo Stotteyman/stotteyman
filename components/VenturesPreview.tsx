@@ -82,10 +82,12 @@ export function VenturesPreview() {
             onMouseEnter={() => setHoveredCard(venture.id)}
             onMouseLeave={() => setHoveredCard(null)}
           >
-            <motion.div
+            <motion.button
+              type="button"
               whileHover={{ y: -10, scale: 1.02 }}
-              className={`relative h-80 glass rounded-2xl p-6 border ${venture.borderColor} overflow-hidden cursor-pointer transition-all duration-300`}
+              className={`relative h-80 glass rounded-2xl p-6 border ${venture.borderColor} overflow-hidden transition-all duration-300`}
               onClick={() => setSelectedCard(venture.id)}
+              aria-label={`Learn more about ${venture.name}`}
             >
               {/* Background Gradient */}
               <div className={`absolute inset-0 bg-gradient-to-br ${venture.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
@@ -135,7 +137,7 @@ export function VenturesPreview() {
 
               {/* Glow Effect */}
               <div className={`absolute inset-0 bg-gradient-to-r ${venture.color} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300 -z-10`} />
-            </motion.div>
+            </motion.button>
           </motion.div>
         )
       })}
