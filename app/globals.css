@@ -32,6 +32,10 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+.skip-link {
+  @apply absolute left-4 top-4 z-50 px-4 py-2 rounded bg-white text-black;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

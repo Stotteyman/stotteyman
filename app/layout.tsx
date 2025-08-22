@@ -24,14 +24,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} font-sans bg-black text-white overflow-x-hidden`}>
-        <Navigation />
-        <main className="relative">
-          {children}
-        </main>
-        <FloatingCTA />
-      </body>
-    </html>
-  )
-}
+      <html lang="en" className="dark">
+        <body className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} font-sans bg-black text-white overflow-x-hidden`}>
+          <a href="#main" className="sr-only focus:not-sr-only skip-link">Skip to content</a>
+          <Navigation />
+          <main id="main" className="relative">
+            {children}
+          </main>
+          <FloatingCTA />
+        </body>
+      </html>
+    )
+  }
