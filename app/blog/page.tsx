@@ -1,9 +1,26 @@
 'use client'
 
+import type { Metadata } from 'next'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
+  description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
+  openGraph: {
+    title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
+    description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
+    images: ['/og-image.svg']
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
+    description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
+    images: ['/og-image.svg']
+  }
+}
 
 // Mock blog posts - in production, these would come from a CMS or API
 const blogPosts = [

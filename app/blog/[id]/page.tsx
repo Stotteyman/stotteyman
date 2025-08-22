@@ -1,5 +1,6 @@
 'use client'
 
+import type { Metadata } from 'next'
 import { motion } from 'framer-motion'
 import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react'
 import Link from 'next/link'
@@ -39,6 +40,31 @@ const blogPosts = [
   },
   // Add more posts as needed
 ]
+
+export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+  const post = blogPosts.find(p => p.id === parseInt(params.id))
+  if (!post) {
+    return {
+      title: 'Post Not Found | Gary Lee McCullouch Jr.',
+      description: 'The requested article could not be found.'
+    }
+  }
+  return {
+    title: `${post.title} | Gary Lee McCullouch Jr.`,
+    description: post.excerpt,
+    openGraph: {
+      title: `${post.title} | Gary Lee McCullouch Jr.`,
+      description: post.excerpt,
+      images: ['/og-image.svg']
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${post.title} | Gary Lee McCullouch Jr.`,
+      description: post.excerpt,
+      images: ['/og-image.svg']
+    }
+  }
+}
 
 export default function BlogPostPage({ params }: { params: { id: string } }) {
   const post = blogPosts.find(p => p.id === parseInt(params.id))

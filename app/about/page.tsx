@@ -1,10 +1,27 @@
 'use client'
 
+import type { Metadata } from 'next'
 import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Award, Target, Lightbulb, TrendingUp, Users, Zap } from 'lucide-react'
+
+export const metadata: Metadata = {
+  title: 'About Gary Lee McCullouch Jr. | Startup Genius & Visionary Investor',
+  description: 'Get to know Gary Lee McCullouch Jr., a compassionate and intelligent founder devoted to people-first innovation and transformative investments.',
+  openGraph: {
+    title: 'About Gary Lee McCullouch Jr.',
+    description: 'Compassionate startup genius and visionary investor focused on people-first innovation.',
+    images: ['/og-image.svg']
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Gary Lee McCullouch Jr.',
+    description: 'Compassionate startup genius and visionary investor focused on people-first innovation.',
+    images: ['/og-image.svg']
+  }
+}
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)
