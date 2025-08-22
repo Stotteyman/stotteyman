@@ -1,70 +1,12 @@
 'use client'
 
-import type { Metadata } from 'next'
 import { motion } from 'framer-motion'
 import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { blogPosts } from "../posts"
 
-// Mock blog post data - in production, this would come from a CMS or API
-const blogPosts = [
-  {
-    id: 1,
-    title: 'The Future of IRL Livestreaming: Trends and Predictions for 2024',
-    excerpt: 'Exploring the evolving landscape of IRL content creation and the technologies shaping its future.',
-    content: `
-      <p>The IRL livestreaming space continues to evolve at breakneck speed, with new technologies and platforms emerging that fundamentally change how creators connect with their audiences. As we look toward 2024, several key trends are shaping the future of this dynamic industry.</p>
 
-      <h2>The Rise of Interactive Technologies</h2>
-      <p>Interactive streaming technologies are becoming more sophisticated, allowing viewers to participate in real-time decision-making during streams. This shift from passive consumption to active participation is creating deeper engagement and stronger community bonds.</p>
-
-      <h2>Mobile-First Innovation</h2>
-      <p>The mobile streaming revolution continues to accelerate, with creators increasingly relying on smartphones and portable equipment to deliver high-quality content. This democratization of streaming technology is opening doors for creators worldwide.</p>
-
-      <h2>AI-Powered Content Enhancement</h2>
-      <p>Artificial intelligence is beginning to play a crucial role in content creation, from real-time language translation to automated highlight generation. These tools are making streams more accessible and discoverable.</p>
-
-      <h2>Community-Driven Monetization</h2>
-      <p>New monetization models are emerging that put community support at the center. From cryptocurrency donations to NFT collectibles, creators are finding innovative ways to generate sustainable income while building stronger relationships with their audiences.</p>
-
-      <h2>The Metaverse Integration</h2>
-      <p>As virtual and augmented reality technologies mature, we're seeing the first experiments in metaverse-integrated streaming. This represents a fundamental shift in how we think about digital presence and audience interaction.</p>
-
-      <p>The future of IRL livestreaming is bright, with technology continuing to break down barriers between creators and audiences. Those who adapt to these emerging trends will find themselves at the forefront of a rapidly evolving digital landscape.</p>
-    `,
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2024-01-15',
-    readTime: '8 min read',
-    category: 'Livestreaming',
-    tags: ['IRL', 'Technology', 'Trends', 'Future'],
-  },
-  // Add more posts as needed
-]
-
-export function generateMetadata({ params }: { params: { id: string } }): Metadata {
-  const post = blogPosts.find(p => p.id === parseInt(params.id))
-  if (!post) {
-    return {
-      title: 'Post Not Found | Gary Lee McCullouch Jr.',
-      description: 'The requested article could not be found.'
-    }
-  }
-  return {
-    title: `${post.title} | Gary Lee McCullouch Jr.`,
-    description: post.excerpt,
-    openGraph: {
-      title: `${post.title} | Gary Lee McCullouch Jr.`,
-      description: post.excerpt,
-      images: ['/og-image.svg']
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${post.title} | Gary Lee McCullouch Jr.`,
-      description: post.excerpt,
-      images: ['/og-image.svg']
-    }
-  }
-}
 
 export default function BlogPostPage({ params }: { params: { id: string } }) {
   const post = blogPosts.find(p => p.id === parseInt(params.id))

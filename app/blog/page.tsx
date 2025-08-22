@@ -1,108 +1,12 @@
 'use client'
 
-import type { Metadata } from 'next'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
-  description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
-  openGraph: {
-    title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
-    description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
-    images: ['/og-image.svg']
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: "Insights from a Startup Genius | Gary Lee McCullouch Jr.'s Blog",
-    description: 'Thought leadership on innovation, community, and investment from startup genius Gary Lee McCullouch Jr.',
-    images: ['/og-image.svg']
-  }
-}
+import { blogPosts } from "./posts"
 
-// Mock blog posts - in production, these would come from a CMS or API
-const blogPosts = [
-  {
-    id: 1,
-    title: 'The Future of IRL Livestreaming: Trends and Predictions for 2024',
-    excerpt: 'Exploring the evolving landscape of IRL content creation and the technologies shaping its future.',
-    content: 'The IRL livestreaming space continues to evolve at breakneck speed...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2024-01-15',
-    readTime: '8 min read',
-    category: 'Livestreaming',
-    tags: ['IRL', 'Technology', 'Trends', 'Future'],
-    featured: true,
-    image: '/blog/irl-future.jpg'
-  },
-  {
-    id: 2,
-    title: 'Building Sustainable Cannabis Tech Ventures in a Regulated Market',
-    excerpt: 'Navigating the complex landscape of cannabis technology while maintaining compliance and innovation.',
-    content: 'The cannabis technology sector presents unique opportunities...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2024-01-10',
-    readTime: '6 min read',
-    category: 'Cannabis Tech',
-    tags: ['Cannabis', 'Technology', 'Regulation', 'Business'],
-    featured: false,
-    image: '/blog/cannabis-tech.jpg'
-  },
-  {
-    id: 3,
-    title: 'Community-First Approach: Lessons from Building Wage Society',
-    excerpt: 'How prioritizing community needs over metrics led to sustainable growth and authentic engagement.',
-    content: 'When we started Wage Society, our primary focus was...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2024-01-05',
-    readTime: '5 min read',
-    category: 'Community Building',
-    tags: ['Community', 'Growth', 'Strategy', 'Engagement'],
-    featured: false,
-    image: '/blog/community-building.jpg'
-  },
-  {
-    id: 4,
-    title: 'Creative Studios in the Digital Age: Adapting to New Media Landscapes',
-    excerpt: 'How Orange Duck Studios evolved to meet the demands of modern digital content creation.',
-    content: 'The creative industry has undergone massive transformation...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2023-12-28',
-    readTime: '7 min read',
-    category: 'Creative Industry',
-    tags: ['Creative', 'Digital Media', 'Adaptation', 'Innovation'],
-    featured: false,
-    image: '/blog/creative-studios.jpg'
-  },
-  {
-    id: 5,
-    title: 'Investment Strategies for Multi-Industry Portfolios',
-    excerpt: 'Diversification strategies and risk management across creative, tech, and lifestyle ventures.',
-    content: 'Building a diverse portfolio across multiple industries...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2023-12-20',
-    readTime: '9 min read',
-    category: 'Investment',
-    tags: ['Investment', 'Strategy', 'Portfolio', 'Risk Management'],
-    featured: false,
-    image: '/blog/investment-strategy.jpg'
-  },
-  {
-    id: 6,
-    title: 'The Rise of Hemp Lifestyle Brands: Market Analysis and Opportunities',
-    excerpt: 'Analyzing the growth of hemp-based lifestyle brands and emerging market opportunities.',
-    content: 'The hemp lifestyle market has experienced unprecedented growth...',
-    author: 'Gary Lee McCullouch Jr.',
-    date: '2023-12-15',
-    readTime: '6 min read',
-    category: 'Hemp Industry',
-    tags: ['Hemp', 'Lifestyle', 'Market Analysis', 'Opportunities'],
-    featured: false,
-    image: '/blog/hemp-lifestyle.jpg'
-  },
-]
 
 const categories = ['All', 'Livestreaming', 'Cannabis Tech', 'Community Building', 'Creative Industry', 'Investment', 'Hemp Industry']
 
