@@ -5,6 +5,7 @@ import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { blogPosts } from "../posts"
+import { sanitizeHtml } from '@/lib/sanitizeHtml'
 
 
 
@@ -92,9 +93,9 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Content */}
-            <div 
+            <div
               className="prose prose-lg prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: post.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
             />
 
             {/* Author Bio */}
