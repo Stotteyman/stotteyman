@@ -11,81 +11,64 @@ if (typeof window !== 'undefined') {
 }
 
 const collaborators = [
-  { 
-    name: 'itsmesaiman', 
-    role: 'Content Creator', 
-    impact: 'Strategic Partnership',
-    description: 'Pioneering content creation strategies and audience engagement techniques.',
-    followers: '125K',
-    engagement: '8.5%'
-  },
-  { 
-    name: 'hamptonbrandon', 
-    role: 'IRL Pioneer', 
-    impact: 'Cultural Influence',
-    description: 'Defining the IRL livestreaming landscape with authentic, unfiltered content.',
-    followers: '89K',
-    engagement: '12.3%'
-  },
-  { 
-    name: 'ebz', 
-    role: 'Community Builder', 
-    impact: 'Audience Development',
-    description: 'Building loyal communities through consistent engagement and quality content.',
-    followers: '67K',
-    engagement: '9.7%'
-  },
-  { 
-    name: 'yuber', 
-    role: 'Tech Innovator', 
-    impact: 'Platform Integration',
-    description: 'Integrating cutting-edge technology solutions for enhanced streaming experiences.',
-    followers: '45K',
-    engagement: '11.2%'
-  },
-  { 
-    name: 'iamtrevian', 
-    role: 'Creative Director', 
-    impact: 'Brand Development',
-    description: 'Crafting compelling brand narratives and visual identities for creators.',
-    followers: '78K',
-    engagement: '7.8%'
-  },
-  { 
-    name: 'jakefuture1x', 
-    role: 'Growth Strategist', 
-    impact: 'Market Expansion',
-    description: 'Developing scalable growth strategies for emerging content creators.',
-    followers: '92K',
-    engagement: '10.1%'
-  },
-  { 
-    name: 'sboy', 
-    role: 'Community Manager', 
-    impact: 'Engagement Optimization',
-    description: 'Optimizing community engagement through data-driven strategies.',
-    followers: '34K',
-    engagement: '13.5%'
-  },
-]
+    {
+      name: 'itsmesaiman',
+      role: 'Content Creator',
+      impact: 'Strategic Partnership',
+      description: 'Pioneering content creation strategies and audience engagement techniques.'
+    },
+    {
+      name: 'hamptonbrandon',
+      role: 'IRL Pioneer',
+      impact: 'Cultural Influence',
+      description: 'Defining the IRL livestreaming landscape with authentic, unfiltered content.'
+    },
+    {
+      name: 'ebz',
+      role: 'Community Builder',
+      impact: 'Audience Development',
+      description: 'Building loyal communities through consistent engagement and quality content.'
+    },
+    {
+      name: 'yuber',
+      role: 'Tech Innovator',
+      impact: 'Platform Integration',
+      description: 'Integrating cutting-edge technology solutions for enhanced streaming experiences.'
+    },
+    {
+      name: 'iamtrevian',
+      role: 'Creative Director',
+      impact: 'Brand Development',
+      description: 'Crafting compelling brand narratives and visual identities for creators.'
+    },
+    {
+      name: 'jakefuture27',
+      role: 'Growth Strategist',
+      impact: 'Market Expansion',
+      description: 'Developing scalable growth strategies for emerging content creators.'
+    },
+    {
+      name: '1xsboy',
+      role: 'Community Manager',
+      impact: 'Engagement Optimization',
+      description: 'Optimizing community engagement through data-driven strategies.'
+    },
+  ]
 
 const achievements = [
   {
     title: 'IRL Culture Documentation',
     description: 'Comprehensive archive of pivotal moments in livestreaming history',
-    metric: '10K+ Hours',
     icon: Award
   },
   {
     title: 'Community Growth',
     description: 'Facilitated exponential growth across multiple creator communities',
-    metric: '500K+ Followers',
     icon: TrendingUp
   },
   {
     title: 'Strategic Partnerships',
     description: 'Established key relationships with industry-leading creators',
-    metric: '25+ Partnerships',
     icon: Users
   },
 ]
@@ -195,10 +178,6 @@ export default function LivestreamPage() {
                       <Icon size={32} className="text-white" />
                     </div>
                     
-                    <div className="text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
-                      {achievement.metric}
-                    </div>
-                    
                     <h3 className="text-2xl font-bold text-white mb-4">
                       {achievement.title}
                     </h3>
@@ -263,17 +242,6 @@ export default function LivestreamPage() {
                     {collab.description}
                   </p>
 
-                  {/* Metrics */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-white mb-1">{collab.followers}</div>
-                      <div className="text-xs text-gray-400">Followers</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-lg font-bold text-green-400 mb-1">{collab.engagement}</div>
-                      <div className="text-xs text-gray-400">Engagement</div>
-                    </div>
-                  </div>
                 </div>
               </motion.div>
             ))}
@@ -299,21 +267,6 @@ export default function LivestreamPage() {
                 The definitive archive and ranking platform for IRL livestreaming culture, 
                 documenting pivotal moments and influential creators.
               </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-              {[
-                { label: 'Content Archived', value: '10K+ Hours', color: 'from-blue-500 to-cyan-500' },
-                { label: 'Creator Profiles', value: '500+', color: 'from-purple-500 to-pink-500' },
-                { label: 'Monthly Visitors', value: '45K', color: 'from-green-500 to-emerald-500' },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className={`text-4xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
-                    {stat.value}
-                  </div>
-                  <div className="text-gray-400">{stat.label}</div>
-                </div>
-              ))}
             </div>
 
             <div className="text-center">

@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Play, Users, TrendingUp, Award } from 'lucide-react'
+import { Play } from 'lucide-react'
 import Link from 'next/link'
 
 const collaborators = [
@@ -10,8 +10,8 @@ const collaborators = [
   { name: 'ebz', role: 'Community Builder', impact: 'Audience Development' },
   { name: 'yuber', role: 'Tech Innovator', impact: 'Platform Integration' },
   { name: 'iamtrevian', role: 'Creative Director', impact: 'Brand Development' },
-  { name: 'jakefuture1x', role: 'Growth Strategist', impact: 'Market Expansion' },
-  { name: 'sboy', role: 'Community Manager', impact: 'Engagement Optimization' },
+  { name: 'jakefuture27', role: 'Growth Strategist', impact: 'Market Expansion' },
+  { name: '1xsboy', role: 'Community Manager', impact: 'Engagement Optimization' },
 ]
 
 export function LivestreamPreview() {
@@ -46,35 +46,6 @@ export function LivestreamPreview() {
             Pioneering the future of IRL livestreaming through strategic collaborations 
             and innovative community building initiatives.
           </p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {[
-            { icon: Users, label: 'Community Members', value: '50K+', color: 'from-blue-500 to-cyan-500' },
-            { icon: TrendingUp, label: 'Growth Rate', value: '300%', color: 'from-green-500 to-emerald-500' },
-            { icon: Award, label: 'Partnerships', value: '25+', color: 'from-purple-500 to-pink-500' },
-          ].map((stat, index) => {
-            const Icon = stat.icon
-            return (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center"
-              >
-                <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${stat.color} rounded-full mb-4 opacity-80`}>
-                  <Icon size={24} className="text-white" />
-                </div>
-                <div className={`text-3xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-2`}>
-                  {stat.value}
-                </div>
-                <div className="text-gray-400">{stat.label}</div>
-              </motion.div>
-            )
-          })}
         </div>
 
         {/* Collaborators Carousel */}
