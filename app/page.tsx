@@ -1,5 +1,6 @@
 'use client'
 
+import type { Metadata } from 'next'
 import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { gsap } from 'gsap'
@@ -8,6 +9,22 @@ import { HeroSection } from '@/components/HeroSection'
 import { VenturesPreview } from '@/components/VenturesPreview'
 import { LivestreamPreview } from '@/components/LivestreamPreview'
 import { CTASection } from '@/components/CTASection'
+
+export const metadata: Metadata = {
+  title: 'Stotteyman Enterprises | People-First Startup Innovation',
+  description: 'Startup genius Gary Lee McCullouch Jr. builds intelligent, community-focused ventures that invite bold investment and inspire social good.',
+  openGraph: {
+    title: 'Stotteyman Enterprises | People-First Startup Innovation',
+    description: 'Startup genius Gary Lee McCullouch Jr. builds intelligent, community-focused ventures that invite bold investment and inspire social good.',
+    images: ['/og-image.svg']
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stotteyman Enterprises | People-First Startup Innovation',
+    description: 'Startup genius Gary Lee McCullouch Jr. builds intelligent, community-focused ventures that invite bold investment and inspire social good.',
+    images: ['/og-image.svg']
+  }
+}
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger)

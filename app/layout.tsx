@@ -20,18 +20,18 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Stotteyman Enterprises LLC | Visionary Investment Opportunities',
-  description: 'Discover cutting-edge ventures led by Gary Lee McCullouch Jr. - from creative studios to cannabis tech, livestream culture to AI innovation.',
-  keywords: 'investment, ventures, Gary McCullouch, Orange Duck Studios, Hella Fkn Gas, Wage Society, livestream, cannabis tech',
+  title: 'Gary Lee McCullouch Jr. | Startup Genius & Visionary Investor',
+  description: 'Explore people-first ventures crafted by Gary Lee McCullouch Jr., a startup genius blending heart and intelligence to drive transformative investments.',
+  keywords: 'startup genius, visionary investor, Gary Lee McCullouch Jr., people-first innovation, venture capital, community building',
   authors: [{ name: 'Gary Lee McCullouch Jr.' }],
   openGraph: {
-    title: 'Stotteyman Enterprises LLC',
-    description: 'Visionary Investment Opportunities',
+    title: 'Gary Lee McCullouch Jr. | Startup Genius & Visionary Investor',
+    description: 'People-first ventures and visionary investments.',
     url: 'https://stotteyman.com',
     siteName: 'Stotteyman Enterprises',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
       },
@@ -41,9 +41,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Stotteyman Enterprises LLC',
-    description: 'Visionary Investment Opportunities',
-    images: ['/og-image.jpg'],
+    title: 'Gary Lee McCullouch Jr. | Startup Genius & Visionary Investor',
+    description: 'People-first ventures and visionary investments.',
+    images: ['/og-image.svg'],
+  },
+  icons: {
+    icon: '/favicon.svg',
   },
   robots: {
     index: true,
