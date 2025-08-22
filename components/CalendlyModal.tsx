@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
+import { useEffect } from 'react'
 
 interface CalendlyModalProps {
   isOpen: boolean
@@ -9,6 +10,19 @@ interface CalendlyModalProps {
 }
 
 export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose])
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -25,6 +39,8 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
             exit={{ scale: 0.8, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-4xl h-[80vh] glass rounded-2xl overflow-hidden"
+            role="dialog"
+            aria-modal="true"
           >
             <button
               onClick={onClose}
@@ -40,6 +56,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
               frameBorder="0"
               title="Schedule a meeting with Gary McCullouch"
               className="rounded-2xl"
+              loading="lazy"
             />
           </motion.div>
         </motion.div>
