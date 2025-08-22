@@ -2,14 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Play, Users, TrendingUp, Award, Calendar, ExternalLink } from 'lucide-react'
 
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 const collaborators = [
     {
@@ -78,39 +73,48 @@ export default function LivestreamPage() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo('.collab-card',
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: '.collaborators-section',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
+    let ctx: any
+    const run = async () => {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
 
-      gsap.fromTo('.achievement-card',
-        { x: -50, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: '.achievements-section',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-    }, containerRef)
+        ctx = gsap.context(() => {
+          gsap.fromTo('.collab-card',
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.6,
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: '.collaborators-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          )
 
-    return () => ctx.revert()
+          gsap.fromTo('.achievement-card',
+            { x: -50, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: '.achievements-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          )
+        }, containerRef)
+      }
+    }
+    run()
+    return () => ctx && ctx.revert()
   }, [])
 
   return (

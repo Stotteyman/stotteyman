@@ -2,14 +2,9 @@
 
 import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Award, Target, Lightbulb, TrendingUp, Users, Zap } from 'lucide-react'
 
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 const values = [
   {
@@ -53,42 +48,51 @@ export default function AboutPage() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Timeline animations
-      gsap.fromTo('.milestone-item',
-        { x: -100, opacity: 0 },
-        {
-          x: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: '.timeline-section',
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
+    let ctx: any
+    const run = async () => {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
 
-      // Values animation
-      gsap.fromTo('.value-card',
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.6,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: '.values-section',
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-    }, containerRef)
+        ctx = gsap.context(() => {
+          // Timeline animations
+          gsap.fromTo('.milestone-item',
+            { x: -100, opacity: 0 },
+            {
+              x: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: '.timeline-section',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          )
 
-    return () => ctx.revert()
+          // Values animation
+          gsap.fromTo('.value-card',
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.6,
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: '.values-section',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+              }
+            }
+          )
+        }, containerRef)
+      }
+    }
+    run()
+    return () => ctx && ctx.revert()
   }, [])
 
   return (

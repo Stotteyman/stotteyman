@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
-import { gsap } from 'gsap'
 import { ArrowDown, Sparkles } from 'lucide-react'
 import { CalendlyModal } from './CalendlyModal'
 
@@ -12,32 +11,47 @@ export function HeroSection() {
     const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
 
     useEffect(() => {
-        const tl = gsap.timeline()
+        let tl: any
+        let floatingAnim: any
+        const run = async () => {
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                const { gsap } = await import('gsap')
+                const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+                gsap.registerPlugin(ScrollTrigger)
 
-        // Logo reveal animation
-        tl.fromTo(logoRef.current,
-            { scale: 0, rotation: -180, opacity: 0 },
-            { scale: 1, rotation: 0, opacity: 1, duration: 1.5, ease: 'back.out(1.7)' }
-        )
-            .fromTo('.hero-text',
-                { y: 100, opacity: 0 },
-                { y: 0, opacity: 1, duration: 1, stagger: 0.2 },
-                '-=0.5'
-            )
-            .fromTo('.hero-cta',
-                { scale: 0, opacity: 0 },
-                { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
-                '-=0.3'
-            )
+                tl = gsap.timeline()
 
-        // Floating animation for logo
-        gsap.to(logoRef.current, {
-            y: -20,
-            duration: 3,
-            ease: 'power2.inOut',
-            yoyo: true,
-            repeat: -1
-        })
+                // Logo reveal animation
+                tl.fromTo(logoRef.current,
+                    { scale: 0, rotation: -180, opacity: 0 },
+                    { scale: 1, rotation: 0, opacity: 1, duration: 1.5, ease: 'back.out(1.7)' }
+                )
+                    .fromTo('.hero-text',
+                        { y: 100, opacity: 0 },
+                        { y: 0, opacity: 1, duration: 1, stagger: 0.2 },
+                        '-=0.5'
+                    )
+                    .fromTo('.hero-cta',
+                        { scale: 0, opacity: 0 },
+                        { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
+                        '-=0.3'
+                    )
+
+                // Floating animation for logo
+                floatingAnim = gsap.to(logoRef.current, {
+                    y: -20,
+                    duration: 3,
+                    ease: 'power2.inOut',
+                    yoyo: true,
+                    repeat: -1
+                })
+            }
+        }
+        run()
+        return () => {
+            tl?.kill()
+            floatingAnim?.kill()
+        }
     }, [])
 
     return (

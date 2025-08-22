@@ -2,16 +2,11 @@
 
 import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { HeroSection } from '@/components/HeroSection'
 import { VenturesPreview } from '@/components/VenturesPreview'
 import { LivestreamPreview } from '@/components/LivestreamPreview'
 import { CTASection } from '@/components/CTASection'
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
 
 export default function ClientPage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -21,56 +16,65 @@ export default function ClientPage() {
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '200%'])
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Parallax animations
-      gsap.to('.parallax-bg', {
-        yPercent: -50,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.parallax-bg',
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
+    let ctx: any
+    const run = async () => {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
 
-      // Stagger animations for cards
-      gsap.fromTo(
-        '.venture-card',
-        { y: 100, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.2,
-          scrollTrigger: {
-            trigger: '.ventures-section',
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse',
-          },
-        },
-      )
+        ctx = gsap.context(() => {
+          // Parallax animations
+          gsap.to('.parallax-bg', {
+            yPercent: -50,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.parallax-bg',
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+            },
+          })
 
-      // Text reveal animations
-      gsap.fromTo(
-        '.reveal-text',
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: '.reveal-text',
-            start: 'top 85%',
-            toggleActions: 'play none none reverse',
-          },
-        },
-      )
-    }, containerRef)
+          // Stagger animations for cards
+          gsap.fromTo(
+            '.venture-card',
+            { y: 100, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.8,
+              stagger: 0.2,
+              scrollTrigger: {
+                trigger: '.ventures-section',
+                start: 'top 80%',
+                end: 'bottom 20%',
+                toggleActions: 'play none none reverse',
+              },
+            },
+          )
 
-    return () => ctx.revert()
+          // Text reveal animations
+          gsap.fromTo(
+            '.reveal-text',
+            { y: 50, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: '.reveal-text',
+                start: 'top 85%',
+                toggleActions: 'play none none reverse',
+              },
+            },
+          )
+        }, containerRef)
+      }
+    }
+    run()
+    return () => ctx && ctx.revert()
   }, [])
 
   return (
