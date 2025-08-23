@@ -7,49 +7,67 @@ import { Play, Users, TrendingUp, Award, Calendar, ExternalLink } from 'lucide-r
 
 
 const collaborators = [
-    {
-      name: 'itsmesaiman',
-      role: 'Content Creator',
-      impact: 'Strategic Partnership',
-      description: 'Pioneering content creation strategies and audience engagement techniques.'
-    },
-    {
-      name: 'hamptonbrandon',
-      role: 'IRL Pioneer',
-      impact: 'Cultural Influence',
-      description: 'Defining the IRL livestreaming landscape with authentic, unfiltered content.'
-    },
-    {
-      name: 'ebz',
-      role: 'Community Builder',
-      impact: 'Audience Development',
-      description: 'Building loyal communities through consistent engagement and quality content.'
-    },
-    {
-      name: 'yuber',
-      role: 'Tech Innovator',
-      impact: 'Platform Integration',
-      description: 'Integrating cutting-edge technology solutions for enhanced streaming experiences.'
-    },
-    {
-      name: 'iamtrevian',
-      role: 'Creative Director',
-      impact: 'Brand Development',
-      description: 'Crafting compelling brand narratives and visual identities for creators.'
-    },
-    {
-      name: 'jakefuture27',
-      role: 'Growth Strategist',
-      impact: 'Market Expansion',
-      description: 'Developing scalable growth strategies for emerging content creators.'
-    },
-    {
-      name: '1xsboy',
-      role: 'Community Manager',
-      impact: 'Engagement Optimization',
-      description: 'Optimizing community engagement through data-driven strategies.'
-    },
-  ]
+  {
+    name: 'Hampton Brandon',
+    role: 'IRL Streamer',
+    impact: 'Hollywood Blvd Content',
+    description: 'Made some of the best Hollywood Blvd content as an IRL streamer.'
+  },
+  {
+    name: 'JakeFuture27',
+    role: 'Streamer',
+    impact: 'New Jersey Influence',
+    description: 'Streamer from New Jersey bringing local flair to the scene.'
+  },
+  {
+    name: '1xsboy',
+    role: 'Livestreamer',
+    impact: 'Atlanta Presence',
+    description: 'Livestreamer representing Atlanta, Georgia.'
+  },
+  {
+    name: 'Cracc_harlow',
+    role: 'Music Collaborator',
+    impact: 'Sound Branding',
+    description: 'Crafting unique audio experiences for livestreaming projects.'
+  },
+  {
+    name: 'snackmoneybeatz',
+    role: 'Music Producer',
+    impact: 'West Texas Sound',
+    description: 'Music producer from West Texas.'
+  },
+  {
+    name: 'yuber',
+    role: 'IRL Streamer',
+    impact: 'Hollywood Blvd Incident',
+    description: 'Had his teeth knocked out on Hollywood Blvd during an IRL stream.'
+  },
+  {
+    name: 'EBZ',
+    role: 'IRL Streamer',
+    impact: 'Rapper Aspirations',
+    description: 'Streamed daily life while pursuing a rap career.'
+  },
+  {
+    name: 'itsmesaiman',
+    role: 'Travel IRL Streamer',
+    impact: 'Daily Travel Streams',
+    description: 'Does daily travel IRL streams showcasing life on the move.'
+  },
+  {
+    name: 'iamtrevian',
+    role: 'IRL Streamer',
+    impact: 'Massachusetts Roots',
+    description: 'IRL streamer hailing from Massachusetts.'
+  },
+  {
+    name: 'treloquence',
+    role: 'Content Strategist',
+    impact: 'Narrative Development',
+    description: 'Shaping compelling stories and dialogues for memorable live experiences.'
+  },
+]
 
 const achievements = [
   {
@@ -238,7 +256,7 @@ export default function LivestreamPage() {
 
                   {/* Content */}
                   <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-gradient transition-all duration-300">
-                    @{collab.name}
+                    {collab.name}
                   </h3>
                   <p className="text-lg font-medium bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent mb-4">
                     {collab.role}

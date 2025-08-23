@@ -4,14 +4,19 @@ import { motion } from 'framer-motion'
 import { Play } from 'lucide-react'
 import Link from 'next/link'
 
+const CARD_WIDTH = 200
+
 const collaborators = [
-  { name: 'itsmesaiman', role: 'Content Creator', impact: 'Strategic Partnership' },
-  { name: 'hamptonbrandon', role: 'IRL Pioneer', impact: 'Cultural Influence' },
-  { name: 'ebz', role: 'Community Builder', impact: 'Audience Development' },
-  { name: 'yuber', role: 'Tech Innovator', impact: 'Platform Integration' },
-  { name: 'iamtrevian', role: 'Creative Director', impact: 'Brand Development' },
-  { name: 'jakefuture27', role: 'Growth Strategist', impact: 'Market Expansion' },
-  { name: '1xsboy', role: 'Community Manager', impact: 'Engagement Optimization' },
+  { name: 'Hampton Brandon', role: 'IRL Streamer', impact: 'Hollywood Blvd Content' },
+  { name: 'JakeFuture27', role: 'Streamer', impact: 'New Jersey Influence' },
+  { name: '1xsboy', role: 'Livestreamer', impact: 'Atlanta Presence' },
+  { name: 'Cracc_harlow', role: 'Music Collaborator', impact: 'Sound Branding' },
+  { name: 'snackmoneybeatz', role: 'Music Producer', impact: 'West Texas Sound' },
+  { name: 'yuber', role: 'IRL Streamer', impact: 'Hollywood Blvd Incident' },
+  { name: 'EBZ', role: 'IRL Streamer', impact: 'Rapper Aspirations' },
+  { name: 'itsmesaiman', role: 'Travel IRL Streamer', impact: 'Daily Travel Streams' },
+  { name: 'iamtrevian', role: 'IRL Streamer', impact: 'Massachusetts Roots' },
+  { name: 'treloquence', role: 'Content Strategist', impact: 'Narrative Development' },
 ]
 
 export function LivestreamPreview() {
@@ -53,10 +58,10 @@ export function LivestreamPreview() {
           <h3 className="text-2xl font-bold text-white mb-8 text-center">Key Collaborators</h3>
           <div className="relative overflow-hidden">
             <motion.div
-              animate={{ x: [0, -100 * collaborators.length] }}
-              transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+              animate={{ x: [0, -(collaborators.length * CARD_WIDTH)] }}
+              transition={{ duration: collaborators.length * 5, repeat: Infinity, ease: 'linear' }}
               className="flex space-x-6"
-              style={{ width: `${collaborators.length * 200}px` }}
+              style={{ width: `${collaborators.length * CARD_WIDTH * 2}px` }}
             >
               {[...collaborators, ...collaborators].map((collab, index) => (
                 <motion.div
@@ -65,7 +70,7 @@ export function LivestreamPreview() {
                   className="flex-shrink-0 w-48 glass rounded-xl p-4 border border-white/10"
                 >
                   <div className="text-lg font-semibold text-white mb-1">
-                    @{collab.name}
+                    {collab.name}
                   </div>
                   <div className="text-sm text-gray-400 mb-2">
                     {collab.role}
