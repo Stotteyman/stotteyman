@@ -9,21 +9,21 @@ import { Play, Users, TrendingUp, Award, Calendar, ExternalLink } from 'lucide-r
 const collaborators = [
   {
     name: 'Hampton Brandon',
-    role: 'IRL Pioneer',
-    impact: 'Cultural Influence',
-    description: 'Defining the IRL livestreaming landscape with authentic, unfiltered content.'
+    role: 'IRL Streamer',
+    impact: 'Hollywood Blvd Content',
+    description: 'Made some of the best Hollywood Blvd content as an IRL streamer.'
   },
   {
     name: 'JakeFuture27',
-    role: 'Growth Strategist',
-    impact: 'Market Expansion',
-    description: 'Developing scalable growth strategies for emerging content creators.'
+    role: 'Streamer',
+    impact: 'New Jersey Influence',
+    description: 'Streamer from New Jersey bringing local flair to the scene.'
   },
   {
     name: '1xsboy',
-    role: 'Community Manager',
-    impact: 'Engagement Optimization',
-    description: 'Optimizing community engagement through data-driven strategies.'
+    role: 'Livestreamer',
+    impact: 'Atlanta Presence',
+    description: 'Livestreamer representing Atlanta, Georgia.'
   },
   {
     name: 'Cracc_harlow',
@@ -34,32 +34,32 @@ const collaborators = [
   {
     name: 'snackmoneybeatz',
     role: 'Music Producer',
-    impact: 'Sound Engineering',
-    description: 'Delivering high-energy production to elevate content.'
+    impact: 'West Texas Sound',
+    description: 'Music producer from West Texas.'
   },
   {
     name: 'yuber',
-    role: 'Tech Innovator',
-    impact: 'Platform Integration',
-    description: 'Integrating cutting-edge technology solutions for enhanced streaming experiences.'
+    role: 'IRL Streamer',
+    impact: 'Hollywood Blvd Incident',
+    description: 'Had his teeth knocked out on Hollywood Blvd during an IRL stream.'
   },
   {
     name: 'EBZ',
-    role: 'Community Builder',
-    impact: 'Audience Development',
-    description: 'Building loyal communities through consistent engagement and quality content.'
+    role: 'IRL Streamer',
+    impact: 'Rapper Aspirations',
+    description: 'Streamed daily life while pursuing a rap career.'
   },
   {
     name: 'itsmesaiman',
-    role: 'Content Creator',
-    impact: 'Strategic Partnership',
-    description: 'Pioneering content creation strategies and audience engagement techniques.'
+    role: 'Travel IRL Streamer',
+    impact: 'Daily Travel Streams',
+    description: 'Does daily travel IRL streams showcasing life on the move.'
   },
   {
     name: 'iamtrevian',
-    role: 'Creative Director',
-    impact: 'Brand Development',
-    description: 'Crafting compelling brand narratives and visual identities for creators.'
+    role: 'IRL Streamer',
+    impact: 'Massachusetts Roots',
+    description: 'IRL streamer hailing from Massachusetts.'
   },
   {
     name: 'treloquence',
