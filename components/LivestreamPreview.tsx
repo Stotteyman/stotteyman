@@ -5,13 +5,16 @@ import { Play } from 'lucide-react'
 import Link from 'next/link'
 
 const collaborators = [
-  { name: 'itsmesaiman', role: 'Content Creator', impact: 'Strategic Partnership' },
-  { name: 'hamptonbrandon', role: 'IRL Pioneer', impact: 'Cultural Influence' },
-  { name: 'ebz', role: 'Community Builder', impact: 'Audience Development' },
-  { name: 'yuber', role: 'Tech Innovator', impact: 'Platform Integration' },
-  { name: 'iamtrevian', role: 'Creative Director', impact: 'Brand Development' },
-  { name: 'jakefuture27', role: 'Growth Strategist', impact: 'Market Expansion' },
+  { name: 'Hampton Brandon', role: 'IRL Pioneer', impact: 'Cultural Influence' },
+  { name: 'JakeFuture27', role: 'Growth Strategist', impact: 'Market Expansion' },
   { name: '1xsboy', role: 'Community Manager', impact: 'Engagement Optimization' },
+  { name: 'Cracc_harlow', role: 'Music Collaborator', impact: 'Sound Branding' },
+  { name: 'snackmoneybeatz', role: 'Music Producer', impact: 'Sound Engineering' },
+  { name: 'yuber', role: 'Tech Innovator', impact: 'Platform Integration' },
+  { name: 'EBZ', role: 'Community Builder', impact: 'Audience Development' },
+  { name: 'itsmesaiman', role: 'Content Creator', impact: 'Strategic Partnership' },
+  { name: 'iamtrevian', role: 'Creative Director', impact: 'Brand Development' },
+  { name: 'treloquence', role: 'Content Strategist', impact: 'Narrative Development' },
 ]
 
 export function LivestreamPreview() {
@@ -65,7 +68,7 @@ export function LivestreamPreview() {
                   className="flex-shrink-0 w-48 glass rounded-xl p-4 border border-white/10"
                 >
                   <div className="text-lg font-semibold text-white mb-1">
-                    @{collab.name}
+                    {collab.name}
                   </div>
                   <div className="text-sm text-gray-400 mb-2">
                     {collab.role}
