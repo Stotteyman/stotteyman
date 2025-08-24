@@ -1,9 +1,14 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { ArrowDown, Sparkles } from 'lucide-react'
-import { CalendlyModal } from './CalendlyModal'
+
+const CalendlyModal = dynamic(
+  () => import('./CalendlyModal').then((mod) => mod.CalendlyModal),
+  { ssr: false }
+)
 
 export function HeroSection() {
     const logoRef = useRef<HTMLDivElement>(null)
@@ -134,10 +139,13 @@ export function HeroSection() {
             <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float" />
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
         </section>
-        <CalendlyModal
-            isOpen={isCalendlyOpen}
-            onClose={() => setIsCalendlyOpen(false)}
-        />
+        {isCalendlyOpen && (
+            <CalendlyModal
+                isOpen={isCalendlyOpen}
+                onClose={() => setIsCalendlyOpen(false)}
+            />
+        )}
         </>
     )
 }
+

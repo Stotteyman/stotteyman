@@ -16,11 +16,11 @@ describe('HeroSection', () => {
     ).toBeInTheDocument()
   })
 
-  it('opens Calendly modal when button is clicked', () => {
+  it('opens Calendly modal when button is clicked', async () => {
     render(<HeroSection />)
     fireEvent.click(
       screen.getByRole('button', { name: /schedule investment call/i })
     )
-    expect(screen.getByTestId('calendly-modal')).toBeInTheDocument()
+    expect(await screen.findByTestId('calendly-modal')).toBeInTheDocument()
   })
 })

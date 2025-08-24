@@ -1,9 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import { motion } from 'framer-motion'
 import { Calendar } from 'lucide-react'
-import { CalendlyModal } from './CalendlyModal'
+
+const CalendlyModal = dynamic(
+  () => import('./CalendlyModal').then((mod) => mod.CalendlyModal),
+  { ssr: false }
+)
 
 export function FloatingCTA() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -24,10 +29,13 @@ export function FloatingCTA() {
         <Calendar size={24} aria-hidden="true" focusable="false" />
       </motion.button>
 
-      <CalendlyModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
+      {isModalOpen && (
+        <CalendlyModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </>
   )
 }
+
