@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
@@ -14,6 +14,8 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(blogPosts)
+  const [email, setEmail] = useState('')
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   useEffect(() => {
     let filtered = blogPosts
@@ -35,6 +37,28 @@ export default function BlogPage() {
 
   const featuredPost = blogPosts.find(post => post.featured)
   const regularPosts = filteredPosts.filter(post => !post.featured)
+
+  const handleSubscribe = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setFeedback(null)
+    try {
+      const res = await fetch('/.netlify/functions/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (res.ok) {
+        setFeedback({ type: 'success', message: 'Thanks for subscribing!' })
+        setEmail('')
+      } else {
+        const data = await res.json().catch(() => ({}))
+        setFeedback({ type: 'error', message: data.message || 'Subscription failed. Please try again.' })
+      }
+    } catch {
+      setFeedback({ type: 'error', message: 'Subscription failed. Please try again.' })
+    }
+  }
 
   return (
     <div className="relative min-h-screen pt-16">
@@ -288,22 +312,33 @@ export default function BlogPage() {
               delivered directly to your inbox.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
+            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
+              <label htmlFor="newsletter-email" className="sr-only">Email address</label>
               <input
+                id="newsletter-email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
+                required
                 className="flex-1 px-6 py-3 glass rounded-full border border-white/20 text-white placeholder-gray-400 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
               />
               <motion.button
-                type="button"
+                type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-full neon-glow transition-all duration-300"
               >
                 Subscribe
               </motion.button>
-            </div>
-            
+            </form>
+
+            {feedback && (
+              <p className={`text-sm mb-4 ${feedback.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                {feedback.message}
+              </p>
+            )}
+
             <p className="text-gray-400 text-sm">
               No spam, unsubscribe at any time. We respect your privacy.
             </p>
