@@ -70,15 +70,15 @@ export default function ContactPage() {
             <p className="text-2xl md:text-3xl text-gray-300 mb-8 leading-relaxed max-w-4xl mx-auto">
               Ready to explore investment opportunities or discuss strategic partnerships?
             </p>
-            <div className="text-lg text-gray-400 max-w-3xl mx-auto">
-              Let&apos;s connect and build something extraordinary together.
-            </div>
+              <div className="text-lg text-gray-400 max-w-3xl mx-auto">
+                Let&apos;s connect and build something extraordinary together.
+              </div>
           </motion.div>
         </div>
       </section>
 
       {/* Contact Methods */}
-      <section aria-label="Contact methods" className="py-16 relative">
+      <section className="py-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {[
@@ -164,9 +164,9 @@ export default function ContactPage() {
               <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
                 Send a Message
               </h2>
-              <p className="text-xl text-gray-300">
-                Fill out the form below and we&apos;ll get back to you within 24 hours.
-              </p>
+                <p className="text-xl text-gray-300">
+                  Fill out the form below and we&apos;ll get back to you within 24 hours.
+                </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -263,9 +263,9 @@ export default function ContactPage() {
                     onChange={handleChange}
                     className="w-4 h-4 text-blue-500 bg-transparent border-2 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
                   />
-                  <label htmlFor="investmentInterest" className="ml-3 text-gray-300">
-                    I&apos;m interested in investment opportunities
-                  </label>
+                    <label htmlFor="investmentInterest" className="ml-3 text-gray-300">
+                      I&apos;m interested in investment opportunities
+                    </label>
                 </div>
                 
                 <div className="flex items-center">
@@ -277,9 +277,9 @@ export default function ContactPage() {
                     onChange={handleChange}
                     className="w-4 h-4 text-blue-500 bg-transparent border-2 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
                   />
-                  <label htmlFor="partnershipInterest" className="ml-3 text-gray-300">
-                    I&apos;m interested in strategic partnerships
-                  </label>
+                    <label htmlFor="partnershipInterest" className="ml-3 text-gray-300">
+                      I&apos;m interested in strategic partnerships
+                    </label>
                 </div>
               </div>
 
@@ -330,14 +330,14 @@ export default function ContactPage() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-                Let&apos;s Connect
-              </h2>
-              <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Whether you&apos;re an investor looking for the next big opportunity, 
-                a potential partner with complementary expertise, or someone with 
-                an innovative idea, we&apos;d love to hear from you.
-              </p>
+                <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
+                  Let&apos;s Connect
+                </h2>
+                <p className="text-xl text-gray-300 mb-8 leading-relaxed">
+                  Whether you&apos;re an investor looking for the next big opportunity,
+                  a potential partner with complementary expertise, or someone with
+                  an innovative idea, we&apos;d love to hear from you.
+                </p>
               
               <div className="space-y-4">
                 <div className="flex items-center text-gray-300">

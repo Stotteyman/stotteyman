@@ -68,7 +68,7 @@ export function CTASection() {
           </div>
 
           {/* Trust Indicators */}
-          <section aria-label="Trust indicators" className="mt-16 pt-12 border-t border-white/10">
+          <div className="mt-16 pt-12 border-t border-white/10">
             <p className="text-gray-400 mb-6">Trusted by investors and partners worldwide</p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
               {['Innovative', 'Scalable', 'Profitable', 'Sustainable'].map((trait) => (
@@ -77,7 +77,7 @@ export function CTASection() {
                 </div>
               ))}
             </div>
-          </section>
+          </div>
         </motion.div>
       </div>
     </section>

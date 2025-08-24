@@ -149,10 +149,10 @@ export default function AboutPage() {
             </h2>
             
             <div className="prose prose-lg prose-invert max-w-none">
-              <p className="text-xl text-gray-300 leading-relaxed mb-6">
-                Gary&apos;s entrepreneurial journey began with a simple yet powerful belief: 
-                that innovation thrives at the intersection of creativity, technology, and authentic community building.
-              </p>
+                <p className="text-xl text-gray-300 leading-relaxed mb-6">
+                  Gary&apos;s entrepreneurial journey began with a simple yet powerful belief:
+                  that innovation thrives at the intersection of creativity, technology, and authentic community building.
+                </p>
               
               <p className="text-lg text-gray-400 leading-relaxed mb-6">
                 Through years of building diverse ventures—from creative studios to cannabis tech, 
@@ -285,9 +285,9 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-              Let&apos;s Build Together
-            </h2>
+              <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
+                Let&apos;s Build Together
+              </h2>
             <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
               Ready to explore investment opportunities and strategic partnerships?
             </p>

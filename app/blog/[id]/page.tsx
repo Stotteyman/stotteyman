@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Clock, ArrowLeft, Share2, BookOpen, Tag } from 'lucide-react'
+import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { blogPosts } from "../posts"
@@ -22,7 +22,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       <div className="fixed inset-0 -z-10 animated-bg" />
 
       {/* Back Button */}
-      <section aria-label="Back navigation" className="py-8 relative">
+      <section className="py-8 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
@@ -53,11 +53,6 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
                   #{tag}
                 </span>
               ))}
-            </div>
-
-            {/* Visual Placeholder */}
-            <div className="w-full h-64 mb-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center rounded-xl">
-              <Tag size={64} className="text-white/30" />
             </div>
 
             {/* Title */}
@@ -163,9 +158,9 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             viewport={{ once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-              Let&apos;s Discuss
-            </h2>
+              <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
+                Let&apos;s Discuss
+              </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Interested in exploring investment opportunities or discussing the ideas in this article?
             </p>

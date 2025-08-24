@@ -29,6 +29,7 @@ export const blogPosts = [
     category: 'Livestreaming',
     tags: ['IRL', 'Technology', 'Trends', 'Future'],
     featured: true,
+    image: '/blog/irl-future.jpg',
   },
   {
     id: 2,
@@ -41,6 +42,7 @@ export const blogPosts = [
     category: 'Cannabis Tech',
     tags: ['Cannabis', 'Technology', 'Regulation', 'Business'],
     featured: false,
+    image: '/blog/cannabis-tech.jpg',
   },
   {
     id: 3,
@@ -53,6 +55,7 @@ export const blogPosts = [
     category: 'Community Building',
     tags: ['Community', 'Growth', 'Strategy', 'Engagement'],
     featured: false,
+    image: '/blog/community-building.jpg',
   },
   {
     id: 4,
@@ -65,6 +68,7 @@ export const blogPosts = [
     category: 'Creative Industry',
     tags: ['Creative', 'Digital Media', 'Adaptation', 'Innovation'],
     featured: false,
+    image: '/blog/creative-studios.jpg',
   },
   {
     id: 5,
@@ -77,6 +81,7 @@ export const blogPosts = [
     category: 'Investment',
     tags: ['Investment', 'Strategy', 'Portfolio', 'Risk Management'],
     featured: false,
+    image: '/blog/investment-strategy.jpg',
   },
   {
     id: 6,
@@ -89,6 +94,7 @@ export const blogPosts = [
     category: 'Hemp Industry',
     tags: ['Hemp', 'Lifestyle', 'Market Analysis', 'Opportunities'],
     featured: false,
+    image: '/blog/hemp-lifestyle.jpg',
   },
 ]
 

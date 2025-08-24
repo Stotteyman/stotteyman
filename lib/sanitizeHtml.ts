@@ -14,10 +14,7 @@ if (typeof window === 'undefined') {
   // client bundle.
   const { JSDOM } = require('jsdom');
   const { window } = new JSDOM('');
-  // jsdom's `window` provides the DOM APIs DOMPurify expects, but the
-  // TypeScript types don't reflect that. Cast to include `typeof globalThis`
-  // so the constructor properties (e.g. `DocumentFragment`) are present.
-  DOMPurify = createDOMPurify(window as unknown as Window & typeof globalThis);
+  DOMPurify = createDOMPurify(window as unknown as Window);
 } else {
   // Browser environment: use the existing window
   DOMPurify = createDOMPurify(window);

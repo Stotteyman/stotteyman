@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
@@ -10,9 +10,6 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
-  const toggleRef = useRef<HTMLButtonElement>(null)
-  const wasOpen = useRef(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,59 +27,6 @@ export function Navigation() {
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
   ]
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    const menu = menuRef.current
-    if (!menu) return
-
-    const focusableSelectors =
-      'a[href], button:not([disabled]), textarea, input, select'
-    const focusable = Array.from(
-      menu.querySelectorAll<HTMLElement>(focusableSelectors)
-    )
-    const firstEl = focusable[0]
-    const lastEl = focusable[focusable.length - 1]
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false)
-        return
-      }
-      if (e.key === 'Tab') {
-        if (focusable.length === 0) {
-          e.preventDefault()
-          return
-        }
-        if (e.shiftKey) {
-          if (document.activeElement === firstEl) {
-            e.preventDefault()
-            lastEl?.focus()
-          }
-        } else {
-          if (document.activeElement === lastEl) {
-            e.preventDefault()
-            firstEl?.focus()
-          }
-        }
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    firstEl?.focus()
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [isOpen])
-
-  useEffect(() => {
-    if (wasOpen.current && !isOpen) {
-      toggleRef.current?.focus()
-    }
-    wasOpen.current = isOpen
-  }, [isOpen])
 
   return (
     <>
@@ -129,7 +73,6 @@ export function Navigation() {
 
           {/* Mobile menu button */}
           <button
-            ref={toggleRef}
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white p-2"
             aria-label="Toggle menu"
@@ -143,7 +86,6 @@ export function Navigation() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            ref={menuRef}
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
