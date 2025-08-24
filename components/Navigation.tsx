@@ -145,7 +145,6 @@ export function Navigation() {
           <button
             type="button"
             ref={toggleRef}
-            type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white p-2"
             aria-label="Toggle menu"
