@@ -22,7 +22,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       <div className="fixed inset-0 -z-10 animated-bg" />
 
       {/* Back Button */}
-      <section className="py-8 relative">
+      <section aria-label="Back navigation" className="py-8 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/blog"
