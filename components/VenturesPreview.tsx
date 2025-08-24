@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, ArrowRight, Palette, Leaf, Users, Smartphone, Video } from 'lucide-react'
 import Link from 'next/link'
+import FocusTrap from 'focus-trap-react'
 
 const ventures = [
   {
@@ -66,6 +67,27 @@ const ventures = [
 export function VenturesPreview() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!selectedCard) {
+      document.body.classList.remove('overflow-hidden')
+      return
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedCard(null)
+      }
+    }
+
+    document.body.classList.add('overflow-hidden')
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [selectedCard])
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -152,60 +174,62 @@ export function VenturesPreview() {
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={() => setSelectedCard(null)}
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-2xl w-full glass rounded-2xl p-8"
-            >
-              {(() => {
-                const venture = ventures.find(v => v.id === selectedCard)!
-                const Icon = venture.icon
-                return (
-                  <>
-                    <div className="flex items-center mb-6">
-                      <div className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mr-4`}>
-                        <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+            <FocusTrap active={!!selectedCard} focusTrapOptions={{ escapeDeactivates: false }}>
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative max-w-2xl w-full glass rounded-2xl p-8"
+              >
+                {(() => {
+                  const venture = ventures.find(v => v.id === selectedCard)!
+                  const Icon = venture.icon
+                  return (
+                    <>
+                      <div className="flex items-center mb-6">
+                        <div className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mr-4`}>
+                          <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+                        </div>
+                        <h3 className="text-3xl font-bold text-gradient">
+                          {venture.name}
+                        </h3>
                       </div>
-                      <h3 className="text-3xl font-bold text-gradient">
-                        {venture.name}
-                      </h3>
-                    </div>
-                    
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      {venture.fullDescription}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-8">
-                      {venture.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className={`px-4 py-2 text-sm font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full`}
+
+                      <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                        {venture.fullDescription}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mb-8">
+                        {venture.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`px-4 py-2 text-sm font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="flex gap-4">
+                        <Link
+                          href="/ventures"
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center rounded-full font-medium neon-glow transition-all duration-300 hover:scale-105"
                         >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-4">
-                      <Link
-                        href="/ventures"
-                        className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-center rounded-full font-medium neon-glow transition-all duration-300 hover:scale-105"
-                      >
-                        View All Ventures
-                      </Link>
-                      <button
-                        onClick={() => setSelectedCard(null)}
-                        className="px-6 py-3 glass border border-white/20 text-white rounded-full font-medium hover:border-blue-500/50 transition-all duration-300"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </>
-                )
-              })()}
-            </motion.div>
+                          View All Ventures
+                        </Link>
+                        <button
+                          onClick={() => setSelectedCard(null)}
+                          className="px-6 py-3 glass border border-white/20 text-white rounded-full font-medium hover:border-blue-500/50 transition-all duration-300"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </>
+                  )
+                })()}
+              </motion.div>
+            </FocusTrap>
           </motion.div>
         )}
       </AnimatePresence>
