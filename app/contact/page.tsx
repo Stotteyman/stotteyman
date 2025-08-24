@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, Mail, Phone, MapPin, Send, CheckCircle, ExternalLink } from 'lucide-react'
+import { phone, email, calendlyUrl } from '@/config/contact'
 
 
 export default function ContactPage() {
@@ -87,7 +88,7 @@ export default function ContactPage() {
                 title: 'Schedule a Call',
                 description: 'Book a personalized consultation to discuss investment opportunities.',
                 action: 'Book Now',
-                href: 'https://calendly.com/garymccullouch',
+                href: calendlyUrl,
                 color: 'from-blue-500 to-purple-500',
               },
               {
@@ -95,7 +96,7 @@ export default function ContactPage() {
                 title: 'Send an Email',
                 description: 'Reach out directly for inquiries and partnership discussions.',
                 action: 'Email Us',
-                href: 'mailto:gary@stotteyman.com',
+                href: `mailto:${email}`,
                 color: 'from-green-500 to-emerald-500',
               },
               {
@@ -103,7 +104,7 @@ export default function ContactPage() {
                 title: 'Quick Connect',
                 description: 'For urgent matters or immediate consultation needs.',
                 action: 'Contact',
-                href: 'tel:+1234567890',
+                href: `tel:${phone}`,
                 color: 'from-purple-500 to-pink-500',
               },
             ].map((method, index) => {
@@ -346,7 +347,7 @@ export default function ContactPage() {
                 </div>
                 <div className="flex items-center text-gray-300">
                   <Mail size={20} className="mr-3 text-blue-400" />
-                  <span>gary@stotteyman.com</span>
+                  <span>{email}</span>
                 </div>
                 <div className="flex items-center text-gray-300">
                   <Calendar size={20} className="mr-3 text-blue-400" />
