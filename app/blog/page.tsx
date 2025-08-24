@@ -164,7 +164,7 @@ export default function BlogPage() {
                   </Link>
                 </div>
                 
-                {/* Image Placeholder */}
+                {/* Visual Placeholder */}
                 <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center min-h-[400px]">
                   <TrendingUp size={64} className="text-white/30" />
                 </div>
@@ -197,7 +197,7 @@ export default function BlogPage() {
                   className="group"
                 >
                   <div className="glass rounded-2xl overflow-hidden border border-white/10 group-hover:border-blue-500/30 transition-all duration-300 h-full flex flex-col">
-                    {/* Image Placeholder */}
+                    {/* Visual Placeholder */}
                     <div className="bg-gradient-to-br from-gray-800 to-gray-900 h-48 flex items-center justify-center">
                       <Tag size={32} className="text-gray-600" />
                     </div>
