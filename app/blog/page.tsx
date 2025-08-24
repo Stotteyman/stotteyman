@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
-import { blogPosts } from "./posts"
+import { blogPosts } from './posts'
 
 
 const categories = ['All', 'Livestreaming', 'Cannabis Tech', 'Community Building', 'Creative Industry', 'Investment', 'Hemp Industry']
