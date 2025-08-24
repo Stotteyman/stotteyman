@@ -72,10 +72,13 @@ export function Navigation() {
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    firstEl?.focus()
+    const timer = setTimeout(() => {
+      firstEl?.focus()
+    }, 100)
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
+      clearTimeout(timer)
     }
   }, [isOpen])
 
@@ -148,6 +151,8 @@ export function Navigation() {
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white p-2"
             aria-label="Toggle menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
           >
             {isOpen ? (
               <X size={24} aria-hidden="true" focusable="false" />
@@ -163,6 +168,7 @@ export function Navigation() {
         {isOpen && (
           <motion.div
             ref={menuRef}
+            id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
