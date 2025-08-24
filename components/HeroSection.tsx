@@ -14,7 +14,10 @@ export function HeroSection() {
         let tl: any
         let floatingAnim: any
         const run = async () => {
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return
+            }
+            try {
                 const { gsap } = await import('gsap')
                 const { ScrollTrigger } = await import('gsap/ScrollTrigger')
                 gsap.registerPlugin(ScrollTrigger)
@@ -26,14 +29,12 @@ export function HeroSection() {
                     { scale: 0, rotation: -180, opacity: 0 },
                     { scale: 1, rotation: 0, opacity: 1, duration: 1.5, ease: 'back.out(1.7)' }
                 )
-                    .fromTo('.hero-text',
-                        { y: 100, opacity: 0 },
-                        { y: 0, opacity: 1, duration: 1, stagger: 0.2 },
+                    .from('.hero-text',
+                        { y: 100, duration: 1, stagger: 0.2 },
                         '-=0.5'
                     )
-                    .fromTo('.hero-cta',
-                        { scale: 0, opacity: 0 },
-                        { scale: 1, opacity: 1, duration: 0.8, ease: 'back.out(1.7)' },
+                    .from('.hero-cta',
+                        { y: 50, duration: 0.8, ease: 'back.out(1.7)' },
                         '-=0.3'
                     )
 
@@ -45,6 +46,8 @@ export function HeroSection() {
                     yoyo: true,
                     repeat: -1
                 })
+            } catch (error) {
+                console.error('Failed to load GSAP', error)
             }
         }
         run()
