@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from 'lucide-react'
+import { Calendar, Clock, ArrowLeft, Share2, BookOpen, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { blogPosts } from "../posts"
@@ -53,6 +53,11 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
                   #{tag}
                 </span>
               ))}
+            </div>
+
+            {/* Visual Placeholder */}
+            <div className="w-full h-64 mb-8 bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center rounded-xl">
+              <Tag size={64} className="text-white/30" />
             </div>
 
             {/* Title */}
