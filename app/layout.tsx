@@ -30,10 +30,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} font-sans bg-black text-white overflow-x-hidden`}>
+      <body className={`${inter.variable} ${playfair.variable} ${jetbrains.variable} font-sans bg-black text-white overflow-x-hidden min-h-screen`}>
         <a href="#main" className="sr-only focus:not-sr-only skip-link">Skip to content</a>
         <Navigation />
-        <main id="main" className="relative">
+        <main id="main" className="relative min-h-screen">
           {children}
         </main>
         <FloatingCTA />

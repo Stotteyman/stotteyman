@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@next/swc-win32-x64-msvc": "^15.5.0",
     "clsx": "^2.0.0",
     "dompurify": "^3.2.6",
     "dotenv": "^16.6.1",

@@ -15,6 +15,9 @@ export function HeroSection() {
     const textRef = useRef<HTMLDivElement>(null)
     const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
 
+    // Debug log
+    console.log('HeroSection is rendering')
+
     useEffect(() => {
         let tl: any
         let floatingAnim: any
@@ -63,89 +66,104 @@ export function HeroSection() {
     }, [])
 
     return (
-        <>
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            {/* Grid Background */}
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.1)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
-
-            {/* Content */}
-            <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Animated Logo */}
-                <motion.div
-                    ref={logoRef}
-                    className="mb-12 relative"
-                >
-                    <div className="relative inline-block">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 animate-pulse" />
-                        <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center neon-glow">
-                            <Sparkles size={48} className="text-white animate-pulse" aria-hidden="true" focusable="false" />
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Main Heading */}
-                <div ref={textRef} className="space-y-6">
-                    <h1 className="hero-text text-6xl md:text-8xl lg:text-9xl font-bold leading-tight">
-                        <span className="block text-gradient font-serif">Stotteyman</span>
-                        <span className="block text-white">Enterprises</span>
-                    </h1>
-
-                    <p className="hero-text text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                        Visionary investment opportunities at the intersection of
-                        <span className="text-gradient font-semibold"> creativity</span>,
-                        <span className="text-gradient font-semibold"> technology</span>, and
-                        <span className="text-gradient font-semibold"> innovation</span>
-                    </p>
-
-                    <div className="hero-text text-lg text-gray-400 max-w-3xl mx-auto">
-                        Led by Gary Lee McCullouch Jr. — Building the future across multiple industries
-                    </div>
+        <div style={{ 
+            minHeight: '100vh', 
+            background: 'linear-gradient(-45deg, #0a0a0a, #1a1a2e, #16213e, #0f3460)',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            position: 'relative'
+        }}>
+            <div style={{ textAlign: 'center', maxWidth: '800px' }}>
+                <div style={{
+                    width: '120px',
+                    height: '120px',
+                    background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 40px',
+                    boxShadow: '0 0 30px rgba(59, 130, 246, 0.5)'
+                }}>
+                    <Sparkles size={48} color="white" />
                 </div>
-
-                {/* CTA Buttons */}
-                <div className="hero-cta mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    <motion.button
-                        type="button"
+                
+                <h1 style={{
+                    fontSize: '4rem',
+                    fontWeight: 'bold',
+                    marginBottom: '20px',
+                    background: 'linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                }}>
+                    Stotteyman Enterprises
+                </h1>
+                
+                <p style={{
+                    fontSize: '1.5rem',
+                    marginBottom: '30px',
+                    color: '#ccc',
+                    lineHeight: '1.6'
+                }}>
+                    Visionary investment opportunities at the intersection of creativity, technology, and innovation
+                </p>
+                
+                <p style={{
+                    fontSize: '1.1rem',
+                    marginBottom: '40px',
+                    color: '#999'
+                }}>
+                    Led by Gary Lee McCullouch Jr. — Building the future across multiple industries
+                </p>
+                
+                <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button
                         onClick={() => setIsCalendlyOpen(true)}
-                        whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300"
+                        style={{
+                            padding: '15px 30px',
+                            background: 'linear-gradient(45deg, #3b82f6, #8b5cf6)',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '25px',
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            boxShadow: '0 0 20px rgba(59, 130, 246, 0.3)'
+                        }}
                     >
                         Schedule Investment Call
-                    </motion.button>
-
-                    <motion.a
+                    </button>
+                    
+                    <a
                         href="/ventures"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="px-8 py-4 glass border border-white/20 text-white text-lg font-semibold rounded-full hover:border-blue-500/50 transition-all duration-300"
+                        style={{
+                            padding: '15px 30px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            color: 'white',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            borderRadius: '25px',
+                            fontSize: '1.1rem',
+                            fontWeight: '600',
+                            textDecoration: 'none',
+                            display: 'inline-block'
+                        }}
                     >
                         Explore Ventures
-                    </motion.a>
+                    </a>
                 </div>
-
-                {/* Scroll Indicator */}
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                    aria-label="Scroll down"
-                >
-                    <ArrowDown size={32} className="text-gray-400" aria-hidden="true" focusable="false" />
-                </motion.div>
             </div>
-
-            {/* Ambient Orbs */}
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-        </section>
-        {isCalendlyOpen && (
-            <CalendlyModal
-                isOpen={isCalendlyOpen}
-                onClose={() => setIsCalendlyOpen(false)}
-            />
-        )}
-        </>
+            
+            {isCalendlyOpen && (
+                <CalendlyModal
+                    isOpen={isCalendlyOpen}
+                    onClose={() => setIsCalendlyOpen(false)}
+                />
+            )}
+        </div>
     )
 }
 

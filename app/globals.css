@@ -41,6 +41,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  min-height: 100vh;
+  position: relative;
 }
 
 .skip-link {
@@ -102,6 +104,14 @@ body {
   animation: gradient 15s ease infinite;
 }
 
+/* Fallback background for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animated-bg {
+    background: linear-gradient(-45deg, #0a0a0a, #1a1a2e);
+    animation: none;
+  }
+}
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
@@ -123,6 +133,85 @@ body {
 .focus-visible:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
+}
+
+/* Float animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Ensure content is visible */
+.venture-card,
+.collab-card,
+.achievement-card,
+.milestone-item,
+.value-card,
+.hero-text,
+.hero-cta,
+.reveal-text {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+/* Force visibility for all sections */
+section {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Ensure text is visible */
+h1, h2, h3, h4, h5, h6, p, div {
+  opacity: 1 !important;
+  color: white !important;
+}
+
+/* Fix z-index issues */
+.glass {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure main content is above background */
+main {
+  position: relative;
+  z-index: 10;
+}
+
+/* Fix navigation z-index */
+nav {
+  z-index: 50;
+}
+
+/* Ensure modals are on top */
+[role="dialog"] {
+  z-index: 100;
+}
+
+/* Ensure text is readable */
+.text-gradient {
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fallback for browsers that don't support background-clip */
+@supports not (-webkit-background-clip: text) {
+  .text-gradient {
+    color: #3b82f6;
+  }
 }
 
 /* Loading animation */
