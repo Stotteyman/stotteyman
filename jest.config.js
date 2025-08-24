@@ -5,6 +5,7 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  testPathIgnorePatterns: ['/node_modules/', '/legacy/'],
   collectCoverageFrom: [
     'components/**/*.tsx',
     'app/**/page.tsx',
