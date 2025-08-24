@@ -2,14 +2,25 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { CalendlyModal } from './CalendlyModal'
+
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/ventures', label: 'Ventures' },
+  { href: '/livestream', label: 'Livestream' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/contact', label: 'Contact' },
+]
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,15 +29,6 @@ export function Navigation() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/ventures', label: 'Ventures' },
-    { href: '/livestream', label: 'Livestream' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
-  ]
 
   return (
     <>
@@ -55,6 +57,7 @@ export function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={pathname === item.href ? 'page' : undefined}
                 className="relative text-gray-300 hover:text-white transition-colors duration-200 group"
               >
                 {item.label}
@@ -97,6 +100,7 @@ export function Navigation() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
+                  aria-current={pathname === item.href ? 'page' : undefined}
                   className="block text-gray-300 hover:text-white transition-colors duration-200"
                 >
                   {item.label}
@@ -120,6 +124,6 @@ export function Navigation() {
         isOpen={isCalendlyOpen}
         onClose={() => setIsCalendlyOpen(false)}
       />
-    </>
-  )
-}
+      </>
+    )
+  }
