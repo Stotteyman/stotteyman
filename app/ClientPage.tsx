@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { HeroSection } from '@/components/HeroSection'
 import { VenturesPreview } from '@/components/VenturesPreview'
@@ -11,6 +11,10 @@ import { CTASection } from '@/components/CTASection'
 export default function ClientPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll()
+
+  const [particles, setParticles] = useState<
+    { left: string; top: string; duration: number; delay: number }[]
+  >([])
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '200%'])
@@ -77,6 +81,18 @@ export default function ClientPage() {
     return () => ctx && ctx.revert()
   }, [])
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const configs = Array.from({ length: 20 }).map(() => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: Math.random() * 10 + 10,
+        delay: Math.random() * 5,
+      }))
+      setParticles(configs)
+    }
+  }, [])
+
   return (
     <div ref={containerRef} className="relative overflow-hidden">
       {/* Animated Background */}
@@ -87,7 +103,7 @@ export default function ClientPage() {
 
       {/* Floating Particles */}
       <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
@@ -97,13 +113,13 @@ export default function ClientPage() {
               opacity: [0, 1, 0],
             }}
             transition={{
-              duration: Math.random() * 10 + 10,
+              duration: p.duration,
               repeat: Infinity,
-              delay: Math.random() * 5,
+              delay: p.delay,
             }}
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: p.left,
+              top: p.top,
             }}
           />
         ))}
