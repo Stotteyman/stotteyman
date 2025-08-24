@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Livestream Ventures | Gary Lee McCullouch Jr.',
     description: 'People-first collaborations building engaging livestream communities.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Livestream Ventures | Gary Lee McCullouch Jr.',
     description: 'People-first collaborations building engaging livestream communities.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
 }
 

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Stotteyman Enterprises | People-First Startup Innovation',
     description: 'Startup genius Gary Lee McCullouch Jr. builds intelligent, community-focused ventures that invite bold investment and inspire social good.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Stotteyman Enterprises | People-First Startup Innovation',
     description: 'Startup genius Gary Lee McCullouch Jr. builds intelligent, community-focused ventures that invite bold investment and inspire social good.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
 }
 

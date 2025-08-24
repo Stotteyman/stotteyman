@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact Gary Lee McCullouch Jr.',
     description: 'Reach out to a people-first startup genius for visionary partnerships.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Contact Gary Lee McCullouch Jr.',
     description: 'Reach out to a people-first startup genius for visionary partnerships.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
 }
 
