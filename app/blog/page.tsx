@@ -69,7 +69,7 @@ export default function BlogPage() {
           <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-12">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
-              <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true" focusable="false" />
               <input
                 type="text"
                 placeholder="Search articles..."
@@ -134,7 +134,7 @@ export default function BlogPage() {
                   
                   <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center text-gray-400 text-sm">
-                      <Calendar size={16} className="mr-2" />
+                      <Calendar size={16} className="mr-2" aria-hidden="true" focusable="false" />
                       {new Date(featuredPost.date).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'long', 
@@ -142,7 +142,7 @@ export default function BlogPage() {
                       })}
                     </div>
                     <div className="flex items-center text-gray-400 text-sm">
-                      <Clock size={16} className="mr-2" />
+                      <Clock size={16} className="mr-2" aria-hidden="true" focusable="false" />
                       {featuredPost.readTime}
                     </div>
                   </div>
@@ -160,13 +160,13 @@ export default function BlogPage() {
                     className="inline-flex items-center text-blue-400 hover:text-white transition-colors duration-300 group"
                   >
                     Read Full Article
-                    <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
                   </Link>
                 </div>
                 
                 {/* Image Placeholder */}
                 <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center min-h-[400px]">
-                  <TrendingUp size={64} className="text-white/30" />
+                  <TrendingUp size={64} className="text-white/30" aria-hidden="true" focusable="false" />
                 </div>
               </div>
             </motion.div>
@@ -199,7 +199,7 @@ export default function BlogPage() {
                   <div className="glass rounded-2xl overflow-hidden border border-white/10 group-hover:border-blue-500/30 transition-all duration-300 h-full flex flex-col">
                     {/* Image Placeholder */}
                     <div className="bg-gradient-to-br from-gray-800 to-gray-900 h-48 flex items-center justify-center">
-                      <Tag size={32} className="text-gray-600" />
+                      <Tag size={32} className="text-gray-600" aria-hidden="true" focusable="false" />
                     </div>
                     
                     {/* Content */}
@@ -220,14 +220,14 @@ export default function BlogPage() {
                       
                       <div className="flex items-center justify-between text-gray-400 text-sm mb-4">
                         <div className="flex items-center">
-                          <Calendar size={14} className="mr-1" />
+                          <Calendar size={14} className="mr-1" aria-hidden="true" focusable="false" />
                           {new Date(post.date).toLocaleDateString('en-US', { 
                             month: 'short', 
                             day: 'numeric' 
                           })}
                         </div>
                         <div className="flex items-center">
-                          <Clock size={14} className="mr-1" />
+                          <Clock size={14} className="mr-1" aria-hidden="true" focusable="false" />
                           {post.readTime}
                         </div>
                       </div>
@@ -245,7 +245,7 @@ export default function BlogPage() {
                         className="inline-flex items-center text-blue-400 hover:text-white transition-colors duration-300 group/link"
                       >
                         Read More
-                        <ArrowRight size={14} className="ml-1 group-hover/link:translate-x-1 transition-transform duration-300" />
+                        <ArrowRight size={14} className="ml-1 group-hover/link:translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
                       </Link>
                     </div>
                   </div>

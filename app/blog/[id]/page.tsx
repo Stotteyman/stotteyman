@@ -28,7 +28,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             href="/blog"
             className="inline-flex items-center text-gray-400 hover:text-white transition-colors duration-300 group"
           >
-            <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" />
+            <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
             Back to Blog
           </Link>
         </div>
@@ -63,7 +63,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             {/* Meta Info */}
             <div className="flex flex-wrap items-center gap-6 mb-8 text-gray-400">
               <div className="flex items-center">
-                <Calendar size={16} className="mr-2" />
+                <Calendar size={16} className="mr-2" aria-hidden="true" focusable="false" />
                 {new Date(post.date).toLocaleDateString('en-US', { 
                   year: 'numeric', 
                   month: 'long', 
@@ -71,11 +71,11 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
                 })}
               </div>
               <div className="flex items-center">
-                <Clock size={16} className="mr-2" />
+                <Clock size={16} className="mr-2" aria-hidden="true" focusable="false" />
                 {post.readTime}
               </div>
               <div className="flex items-center">
-                <BookOpen size={16} className="mr-2" />
+                <BookOpen size={16} className="mr-2" aria-hidden="true" focusable="false" />
                 By {post.author}
               </div>
             </div>
@@ -87,7 +87,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center px-4 py-2 glass border border-white/20 text-gray-300 hover:text-white hover:border-blue-500/50 rounded-full transition-all duration-300"
               >
-                <Share2 size={16} className="mr-2" />
+                <Share2 size={16} className="mr-2" aria-hidden="true" focusable="false" />
                 Share Article
               </motion.button>
             </div>
@@ -142,7 +142,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300 hover:scale-105"
             >
               View All Articles
-              <ArrowLeft size={20} className="ml-2 rotate-180" />
+              <ArrowLeft size={20} className="ml-2 rotate-180" aria-hidden="true" focusable="false" />
             </Link>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule a Call
-              <Calendar size={24} className="ml-3" />
+              <Calendar size={24} className="ml-3" aria-hidden="true" focusable="false" />
             </motion.a>
           </motion.div>
         </div>

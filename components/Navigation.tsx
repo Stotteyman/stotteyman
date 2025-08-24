@@ -77,7 +77,7 @@ export function Navigation() {
             className="md:hidden text-white p-2"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={24} aria-hidden="true" focusable="false" /> : <Menu size={24} aria-hidden="true" focusable="false" />}
           </button>
         </div>
       </div>

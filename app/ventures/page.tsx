@@ -199,7 +199,7 @@ export default function VenturesPage() {
                     : 'glass border border-white/20 text-gray-300 hover:border-blue-500/50'
                 }`}
               >
-                <Filter size={16} className="inline mr-2" />
+                <Filter size={16} className="inline mr-2" aria-hidden="true" focusable="false" />
                 {category}
               </motion.button>
             ))}
@@ -235,7 +235,7 @@ export default function VenturesPage() {
                       {/* Header */}
                       <div className="relative z-10 flex items-start justify-between mb-6">
                         <div className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center`}>
-                          <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+                          <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} aria-hidden="true" focusable="false" />
                         </div>
                         <div className="text-right">
                           <div className={`text-sm font-medium ${venture.bgColor} ${venture.borderColor} border px-3 py-1 rounded-full mb-2`}>
@@ -279,7 +279,7 @@ export default function VenturesPage() {
                             }}
                             className="flex items-center text-sm text-gray-400 group-hover:text-white"
                           >
-                            Learn more <ArrowRight size={16} className="ml-2" />
+                            Learn more <ArrowRight size={16} className="ml-2" aria-hidden="true" focusable="false" />
                           </motion.div>
                         </div>
                       </div>
@@ -321,7 +321,7 @@ export default function VenturesPage() {
                     <div className="flex items-center justify-between mb-8">
                       <div className="flex items-center">
                         <div className={`w-20 h-20 ${venture.bgColor} rounded-xl flex items-center justify-center mr-6`}>
-                          <Icon size={40} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+                          <Icon size={40} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} aria-hidden="true" focusable="false" />
                         </div>
                         <div>
                           <h2 className="text-4xl font-bold text-gradient mb-2">
@@ -382,7 +382,7 @@ export default function VenturesPage() {
                         whileHover={{ scale: 1.05 }}
                         className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
                       >
-                        <Calendar size={20} className="mr-2" />
+                        <Calendar size={20} className="mr-2" aria-hidden="true" focusable="false" />
                         Discuss Investment
                       </motion.button>
                       <button
@@ -423,7 +423,7 @@ export default function VenturesPage() {
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule Investment Call
-              <Calendar size={24} className="ml-3" />
+              <Calendar size={24} className="ml-3" aria-hidden="true" focusable="false" />
             </motion.button>
           </motion.div>
         </div>

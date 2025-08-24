@@ -47,7 +47,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
               className="absolute top-4 right-4 z-10 p-2 text-white hover:text-gray-300 transition-colors"
               aria-label="Close modal"
             >
-              <X size={24} />
+              <X size={24} aria-hidden="true" focusable="false" />
             </button>
             <iframe
               src="https://calendly.com/garymccullouch"

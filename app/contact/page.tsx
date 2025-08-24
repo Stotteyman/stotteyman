@@ -120,7 +120,7 @@ export default function ContactPage() {
                 >
                   <div className="glass rounded-2xl p-8 border border-white/10 text-center group-hover:border-blue-500/30 transition-all duration-300 h-full">
                     <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${method.color} rounded-xl mb-6 opacity-80 group-hover:opacity-100 transition-opacity duration-300`}>
-                      <Icon size={32} className="text-white" />
+                      <Icon size={32} className="text-white" aria-hidden="true" focusable="false" />
                     </div>
                     
                     <h3 className="text-2xl font-bold text-white mb-4">
@@ -140,7 +140,7 @@ export default function ContactPage() {
                       className={`inline-flex items-center px-6 py-3 bg-gradient-to-r ${method.color} text-white font-semibold rounded-full neon-glow transition-all duration-300`}
                     >
                       {method.action}
-                      {method.href.startsWith('http') && <ExternalLink size={16} className="ml-2" />}
+                      {method.href.startsWith('http') && <ExternalLink size={16} className="ml-2" aria-hidden="true" focusable="false" />}
                     </motion.a>
                   </div>
                 </motion.div>
@@ -299,7 +299,7 @@ export default function ContactPage() {
                 >
                   {isSubmitted ? (
                     <>
-                      <CheckCircle size={20} className="mr-2" />
+                      <CheckCircle size={20} className="mr-2" aria-hidden="true" focusable="false" />
                       Message Sent!
                     </>
                   ) : isSubmitting ? (
@@ -309,7 +309,7 @@ export default function ContactPage() {
                     </>
                   ) : (
                     <>
-                      <Send size={20} className="mr-2" />
+                      <Send size={20} className="mr-2" aria-hidden="true" focusable="false" />
                       Send Message
                     </>
                   )}
@@ -341,15 +341,15 @@ export default function ContactPage() {
               
               <div className="space-y-4">
                 <div className="flex items-center text-gray-300">
-                  <MapPin size={20} className="mr-3 text-blue-400" />
+                  <MapPin size={20} className="mr-3 text-blue-400" aria-hidden="true" focusable="false" />
                   <span>Based in the United States</span>
                 </div>
                 <div className="flex items-center text-gray-300">
-                  <Mail size={20} className="mr-3 text-blue-400" />
+                  <Mail size={20} className="mr-3 text-blue-400" aria-hidden="true" focusable="false" />
                   <span>gary@stotteyman.com</span>
                 </div>
                 <div className="flex items-center text-gray-300">
-                  <Calendar size={20} className="mr-3 text-blue-400" />
+                  <Calendar size={20} className="mr-3 text-blue-400" aria-hidden="true" focusable="false" />
                   <span>Available for consultations worldwide</span>
                 </div>
               </div>
