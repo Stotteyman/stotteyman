@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     siteName: 'Stotteyman Enterprises',
     images: [
       {
-        url: '/og-image.svg',
+        url: '/og',
         width: 1200,
         height: 630,
       },
@@ -26,10 +26,11 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Gary Lee McCullouch Jr. | Startup Genius & Visionary Investor',
     description: 'People-first ventures and visionary investments.',
-    images: ['/og-image.svg'],
+    images: ['/og'],
   },
   icons: {
-    icon: '/favicon.svg',
+    icon:
+      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23000'/%3E%3Ctext x='32' y='44' font-size='40' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3EG%3C/text%3E%3C/svg%3E",
   },
   robots: {
     index: true,
