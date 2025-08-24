@@ -113,8 +113,15 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold text-gradient"
+              whileHover={{ 
+                scale: 1.05,
+                rotate: [0, -2, 2, 0]
+              }}
+              transition={{ 
+                rotate: { duration: 0.5 },
+                scale: { duration: 0.2 }
+              }}
+              className="text-2xl font-bold text-shimmer"
             >
               Stotteyman
             </motion.div>
@@ -136,11 +143,15 @@ export function Navigation() {
             <motion.button
               type="button"
               onClick={() => setIsCalendlyOpen(true)}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ 
+                scale: 1.05,
+                boxShadow: '0 0 25px rgba(59, 130, 246, 0.6)',
+                y: -1
+              }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
+              className="relative px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow-premium btn-premium overflow-hidden"
             >
-              Book a Call
+              <span className="relative z-10">Book a Call</span>
             </motion.button>
           </div>
 

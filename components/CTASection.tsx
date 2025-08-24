@@ -21,13 +21,31 @@ export function CTASection() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          {/* Icon */}
+          {/* Enhanced Icon */}
           <motion.div
-            animate={{ rotate: [0, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-            className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-8 neon-glow"
+            animate={{ 
+              rotate: [0, 360],
+              scale: [1, 1.1, 1]
+            }}
+            transition={{ 
+              rotate: { duration: 20, repeat: Infinity, ease: 'linear' },
+              scale: { duration: 4, repeat: Infinity, ease: 'easeInOut' }
+            }}
+            className="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full mb-8 neon-glow-premium morphing-bg"
           >
             <Sparkles size={32} className="text-white" aria-hidden="true" focusable="false" />
+            
+            {/* Orbiting Elements */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+              className="absolute inset-0"
+            >
+              <div className="absolute w-3 h-3 bg-blue-400 rounded-full -top-1 left-1/2 transform -translate-x-1/2"></div>
+              <div className="absolute w-3 h-3 bg-purple-400 rounded-full top-1/2 -right-1 transform -translate-y-1/2"></div>
+              <div className="absolute w-3 h-3 bg-pink-400 rounded-full -bottom-1 left-1/2 transform -translate-x-1/2"></div>
+              <div className="absolute w-3 h-3 bg-cyan-400 rounded-full top-1/2 -left-1 transform -translate-y-1/2"></div>
+            </motion.div>
           </motion.div>
 
           {/* Heading */}
@@ -49,13 +67,36 @@ export function CTASection() {
               <motion.button
                 type="button"
                 onClick={() => setIsCalendlyOpen(true)}
-                whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+                whileHover={{ 
+                  scale: 1.05, 
+                  boxShadow: '0 0 50px rgba(59, 130, 246, 0.8)',
+                  y: -3
+                }}
                 whileTap={{ scale: 0.95 }}
-                className="group flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
+                className="group relative flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white text-xl font-semibold rounded-full neon-glow-premium btn-premium overflow-hidden"
               >
-                <Calendar size={24} className="mr-3" aria-hidden="true" focusable="false" />
-                Book Investment Call
-                <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  initial={false}
+                />
+                
+                <motion.div
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                  className="relative z-10"
+                >
+                  <Calendar size={24} className="mr-3" aria-hidden="true" focusable="false" />
+                </motion.div>
+                
+                <span className="relative z-10">Book Investment Call</span>
+                
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="relative z-10"
+                >
+                  <ArrowRight size={20} className="ml-3 group-hover:translate-x-2 transition-transform duration-300" aria-hidden="true" focusable="false" />
+                </motion.div>
               </motion.button>
             
             <motion.a

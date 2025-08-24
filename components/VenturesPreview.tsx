@@ -106,59 +106,162 @@ export function VenturesPreview() {
           >
             <motion.button
               type="button"
-              whileHover={{ y: -10, scale: 1.02 }}
-              className={`relative h-80 glass rounded-2xl p-6 border ${venture.borderColor} overflow-hidden transition-all duration-300`}
+              whileHover={{ 
+                y: -15, 
+                scale: 1.03,
+                rotateY: 5,
+                rotateX: 5
+              }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 300, 
+                damping: 20 
+              }}
+              className={`group relative h-80 glass-premium rounded-2xl p-6 border ${venture.borderColor} overflow-hidden card-hover-effect neon-border`}
               onClick={() => setSelectedCard(venture.id)}
               aria-label={`Learn more about ${venture.name}`}
+              style={{ 
+                transformStyle: 'preserve-3d',
+                perspective: '1000px'
+              }}
             >
-              {/* Background Gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${venture.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`} />
+              {/* Animated Background Gradient */}
+              <motion.div 
+                className={`absolute inset-0 bg-gradient-to-br ${venture.color} opacity-5 group-hover:opacity-15 transition-opacity duration-500 morphing-bg`}
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.5 }}
+              />
               
-              {/* Icon */}
+              {/* Floating Particles */}
+              <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className={`absolute w-2 h-2 bg-gradient-to-r ${venture.color} rounded-full opacity-30`}
+                    animate={{
+                      x: [0, 100, 0],
+                      y: [0, -50, 0],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      duration: 4 + i,
+                      repeat: Infinity,
+                      delay: i * 0.5,
+                    }}
+                    style={{
+                      left: `${20 + i * 30}%`,
+                      top: `${30 + i * 20}%`,
+                    }}
+                  />
+                ))}
+              </div>
+              
+              {/* Icon with Enhanced Animation */}
               <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mb-6 relative z-10`}
+                whileHover={{ 
+                  rotate: 360,
+                  scale: 1.2,
+                  y: -5
+                }}
+                transition={{ 
+                  duration: 0.8,
+                  type: "spring",
+                  stiffness: 200
+                }}
+                className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mb-6 relative z-10 neon-glow-premium float-animation`}
               >
                 <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} aria-hidden="true" focusable="false" />
+                
+                {/* Icon Glow Effect */}
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-r ${venture.color} rounded-xl opacity-0 group-hover:opacity-30 blur-md`}
+                  whileHover={{ opacity: 0.5 }}
+                  transition={{ duration: 0.3 }}
+                />
               </motion.div>
 
-              {/* Content */}
+              {/* Content with Staggered Animation */}
               <div className="relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-gradient transition-all duration-300">
+                <motion.h3 
+                  className="text-2xl font-bold text-white mb-3 group-hover:text-shimmer transition-all duration-500"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.2 }}
+                >
                   {venture.name}
-                </h3>
-                <p className="text-gray-300 mb-4 leading-relaxed">
-                  {venture.description}
-                </p>
+                </motion.h3>
                 
-                {/* Tags */}
+                <motion.p 
+                  className="text-gray-300 mb-4 leading-relaxed group-hover:text-gray-100 transition-colors duration-300"
+                  whileHover={{ y: -2 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {venture.description}
+                </motion.p>
+                
+                {/* Enhanced Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {venture.tags.map((tag) => (
-                    <span
+                  {venture.tags.map((tag, tagIndex) => (
+                    <motion.span
                       key={tag}
-                      className={`px-3 py-1 text-xs font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full`}
+                      className={`px-3 py-1 text-xs font-medium ${venture.bgColor} ${venture.borderColor} border rounded-full group-hover:border-opacity-60 transition-all duration-300`}
+                      whileHover={{ 
+                        scale: 1.1,
+                        y: -2,
+                        backgroundColor: `rgba(59, 130, 246, 0.2)`
+                      }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: tagIndex * 0.1 }}
                     >
                       {tag}
-                    </span>
+                    </motion.span>
                   ))}
                 </div>
 
-                {/* Hover Arrow */}
+                {/* Enhanced Hover Arrow */}
                 <motion.div
-                  initial={{ x: -10, opacity: 0 }}
+                  initial={{ x: -20, opacity: 0 }}
                   animate={{ 
-                    x: hoveredCard === venture.id ? 0 : -10,
+                    x: hoveredCard === venture.id ? 0 : -20,
                     opacity: hoveredCard === venture.id ? 1 : 0
+                  }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 25
                   }}
                   className="flex items-center text-sm text-gray-400 group-hover:text-white"
                 >
-                  Learn more <ArrowRight size={16} className="ml-2" aria-hidden="true" focusable="false" />
+                  <span className="mr-2">Learn more</span>
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ 
+                      duration: 1.5, 
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    <ArrowRight size={16} aria-hidden="true" focusable="false" />
+                  </motion.div>
                 </motion.div>
               </div>
 
-              {/* Glow Effect */}
-              <div className={`absolute inset-0 bg-gradient-to-r ${venture.color} opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300 -z-10`} />
+              {/* Enhanced Glow Effect */}
+              <motion.div 
+                className={`absolute inset-0 bg-gradient-to-r ${venture.color} opacity-0 group-hover:opacity-25 blur-xl transition-all duration-500 -z-10`}
+                whileHover={{ 
+                  scale: 1.2,
+                  opacity: 0.3
+                }}
+                transition={{ duration: 0.5 }}
+              />
+              
+              {/* Shine Effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"
+                style={{ transform: 'skewX(-20deg)' }}
+              />
             </motion.button>
           </motion.div>
         )
