@@ -53,6 +53,7 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
               aria-modal="true"
             >
               <button
+                type="button"
                 onClick={onClose}
                 className="absolute top-4 right-4 z-10 p-2 text-white hover:text-gray-300 transition-colors"
                 aria-label="Close modal"

@@ -88,6 +88,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             {/* Share Button */}
             <div className="flex justify-end mb-8">
               <motion.button
+                type="button"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center px-4 py-2 glass border border-white/20 text-gray-300 hover:text-white hover:border-blue-500/50 rounded-full transition-all duration-300"

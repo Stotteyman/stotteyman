@@ -131,6 +131,7 @@ export function Navigation() {
               </Link>
             ))}
             <motion.button
+              type="button"
               onClick={() => setIsCalendlyOpen(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -142,6 +143,7 @@ export function Navigation() {
 
           {/* Mobile menu button */}
           <button
+            type="button"
             ref={toggleRef}
             type="button"
             onClick={() => setIsOpen(!isOpen)}
@@ -180,6 +182,7 @@ export function Navigation() {
                 </Link>
               ))}
               <button
+                type="button"
                 onClick={() => {
                   setIsCalendlyOpen(true)
                   setIsOpen(false)

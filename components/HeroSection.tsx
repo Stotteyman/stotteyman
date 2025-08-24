@@ -97,6 +97,7 @@ export function HeroSection() {
                 {/* CTA Buttons */}
                 <div className="hero-cta mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <motion.button
+                        type="button"
                         onClick={() => setIsCalendlyOpen(true)}
                         whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
                         whileTap={{ scale: 0.95 }}

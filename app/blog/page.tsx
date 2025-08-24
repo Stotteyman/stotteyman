@@ -84,6 +84,7 @@ export default function BlogPage() {
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <motion.button
+                  type="button"
                   key={category}
                   onClick={() => setSelectedCategory(category)}
                   whileHover={{ scale: 1.05 }}
@@ -294,6 +295,7 @@ export default function BlogPage() {
                 className="flex-1 px-6 py-3 glass rounded-full border border-white/20 text-white placeholder-gray-400 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
               />
               <motion.button
+                type="button"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-full neon-glow transition-all duration-300"
