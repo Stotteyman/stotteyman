@@ -19,15 +19,16 @@ const collaborators = [
   { name: 'treloquence', role: 'Content Strategist', impact: 'Narrative Development' },
 ]
 
+const iconClass =
+  'inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-6 neon-glow'
+const linkClass =
+  'inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300 hover:scale-105'
+
 export function LivestreamPreview() {
   const prefersReducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const MotionDiv: any = prefersReducedMotion ? 'div' : motion.div
-  const iconClass =
-    'inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-6 neon-glow'
-  const linkClass =
-    'inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300 hover:scale-105'
 
   return (
     <div className="relative">
