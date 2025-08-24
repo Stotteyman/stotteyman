@@ -150,7 +150,7 @@ export default function AboutPage() {
             
             <div className="prose prose-lg prose-invert max-w-none">
               <p className="text-xl text-gray-300 leading-relaxed mb-6">
-                Gary's entrepreneurial journey began with a simple yet powerful belief: 
+                Gary&apos;s entrepreneurial journey began with a simple yet powerful belief: 
                 that innovation thrives at the intersection of creativity, technology, and authentic community building.
               </p>
               
@@ -286,7 +286,7 @@ export default function AboutPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-              Let's Build Together
+              Let&apos;s Build Together
             </h2>
             <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto">
               Ready to explore investment opportunities and strategic partnerships?
