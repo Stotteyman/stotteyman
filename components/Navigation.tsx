@@ -2,9 +2,19 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { CalendlyModal } from './CalendlyModal'
+
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/ventures', label: 'Ventures' },
+  { href: '/livestream', label: 'Livestream' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/contact', label: 'Contact' },
+]
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -13,6 +23,7 @@ export function Navigation() {
   const menuRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
   const wasOpen = useRef(false)
+  const pathname = usePathname()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,15 +32,6 @@ export function Navigation() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/ventures', label: 'Ventures' },
-    { href: '/livestream', label: 'Livestream' },
-    { href: '/blog', label: 'Blog' },
-    { href: '/contact', label: 'Contact' },
-  ]
 
   useEffect(() => {
     if (!isOpen) return
@@ -84,6 +86,16 @@ export function Navigation() {
     wasOpen.current = isOpen
   }, [isOpen])
 
+  useEffect(() => {
+    const body = document.body
+    if (isOpen) {
+      body.classList.add('overflow-hidden')
+    } else {
+      body.classList.remove('overflow-hidden')
+    }
+    return () => body.classList.remove('overflow-hidden')
+  }, [isOpen])
+
   return (
     <>
       <motion.nav
@@ -111,6 +123,7 @@ export function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
+                aria-current={pathname === item.href ? 'page' : undefined}
                 className="relative text-gray-300 hover:text-white transition-colors duration-200 group"
               >
                 {item.label}
@@ -130,6 +143,7 @@ export function Navigation() {
           {/* Mobile menu button */}
           <button
             ref={toggleRef}
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden text-white p-2"
             aria-label="Toggle menu"
@@ -154,6 +168,7 @@ export function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={pathname === item.href ? 'page' : undefined}
                   onClick={() => setIsOpen(false)}
                   className="block text-gray-300 hover:text-white transition-colors duration-200"
                 >
