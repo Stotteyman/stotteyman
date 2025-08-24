@@ -64,7 +64,7 @@ export default function BlogPage() {
       </section>
 
       {/* Search and Filter */}
-      <section className="py-16 relative">
+      <section aria-label="Blog search and filters" className="py-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-12">
             {/* Search */}
@@ -175,7 +175,7 @@ export default function BlogPage() {
       )}
 
       {/* Blog Posts Grid */}
-      <section className="py-16 relative">
+      <section aria-label="Blog posts" className="py-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatePresence mode="wait">
             <motion.div
