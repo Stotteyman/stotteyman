@@ -69,8 +69,12 @@ export default function BlogPage() {
           <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-12">
             {/* Search */}
             <div className="relative flex-1 max-w-md">
+              <label htmlFor="blog-search" className="sr-only">
+                Search articles
+              </label>
               <Search size={20} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
+                id="blog-search"
                 type="text"
                 placeholder="Search articles..."
                 value={searchTerm}
@@ -282,12 +286,16 @@ export default function BlogPage() {
               Stay Updated
             </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Get the latest insights on entrepreneurship, innovation, and industry trends 
+              Get the latest insights on entrepreneurship, innovation, and industry trends
               delivered directly to your inbox.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
+
+            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
+              <label htmlFor="newsletter-email" className="sr-only">
+                Email address
+              </label>
               <input
+                id="newsletter-email"
                 type="email"
                 placeholder="Enter your email"
                 className="flex-1 px-6 py-3 glass rounded-full border border-white/20 text-white placeholder-gray-400 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
@@ -299,7 +307,7 @@ export default function BlogPage() {
               >
                 Subscribe
               </motion.button>
-            </div>
+            </form>
             
             <p className="text-gray-400 text-sm">
               No spam, unsubscribe at any time. We respect your privacy.
