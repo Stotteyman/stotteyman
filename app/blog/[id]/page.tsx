@@ -159,7 +159,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-              Let's Discuss
+              Let&apos;s Discuss
             </h2>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Interested in exploring investment opportunities or discussing the ideas in this article?

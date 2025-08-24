@@ -71,7 +71,7 @@ export default function ContactPage() {
               Ready to explore investment opportunities or discuss strategic partnerships?
             </p>
             <div className="text-lg text-gray-400 max-w-3xl mx-auto">
-              Let's connect and build something extraordinary together.
+              Let&apos;s connect and build something extraordinary together.
             </div>
           </motion.div>
         </div>
@@ -165,7 +165,7 @@ export default function ContactPage() {
                 Send a Message
               </h2>
               <p className="text-xl text-gray-300">
-                Fill out the form below and we'll get back to you within 24 hours.
+                Fill out the form below and we&apos;ll get back to you within 24 hours.
               </p>
             </div>
 
@@ -264,7 +264,7 @@ export default function ContactPage() {
                     className="w-4 h-4 text-blue-500 bg-transparent border-2 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
                   />
                   <label htmlFor="investmentInterest" className="ml-3 text-gray-300">
-                    I'm interested in investment opportunities
+                    I&apos;m interested in investment opportunities
                   </label>
                 </div>
                 
@@ -278,7 +278,7 @@ export default function ContactPage() {
                     className="w-4 h-4 text-blue-500 bg-transparent border-2 border-white/20 rounded focus:ring-blue-500 focus:ring-2"
                   />
                   <label htmlFor="partnershipInterest" className="ml-3 text-gray-300">
-                    I'm interested in strategic partnerships
+                    I&apos;m interested in strategic partnerships
                   </label>
                 </div>
               </div>
@@ -331,12 +331,12 @@ export default function ContactPage() {
               viewport={{ once: true }}
             >
               <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
-                Let's Connect
+                Let&apos;s Connect
               </h2>
               <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-                Whether you're an investor looking for the next big opportunity, 
+                Whether you&apos;re an investor looking for the next big opportunity, 
                 a potential partner with complementary expertise, or someone with 
-                an innovative idea, we'd love to hear from you.
+                an innovative idea, we&apos;d love to hear from you.
               </p>
               
               <div className="space-y-4">
