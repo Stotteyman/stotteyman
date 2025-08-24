@@ -11,7 +11,7 @@ const VerifyInvite = () => {
   return (
     <div>
       <h2>Verifying invite code...</h2>
-      <button onClick={handleAccept}>Accept Invite</button>
+      <button type="button" onClick={handleAccept}>Accept Invite</button>
     </div>
   );
 };

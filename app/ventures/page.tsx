@@ -189,6 +189,7 @@ export default function VenturesPage() {
           <div className="flex flex-wrap justify-center gap-4 mb-12">
             {categories.map((category) => (
               <motion.button
+                type="button"
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 whileHover={{ scale: 1.05 }}
@@ -333,6 +334,7 @@ export default function VenturesPage() {
                         </div>
                       </div>
                       <button
+                        type="button"
                         onClick={() => setSelectedVenture(null)}
                         className="text-gray-400 hover:text-white transition-colors"
                       >
@@ -378,6 +380,7 @@ export default function VenturesPage() {
                     {/* CTA */}
                     <div className="flex gap-4 justify-center">
                       <motion.button
+                        type="button"
                         onClick={() => setIsCalendlyOpen(true)}
                         whileHover={{ scale: 1.05 }}
                         className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
@@ -386,6 +389,7 @@ export default function VenturesPage() {
                         Discuss Investment
                       </motion.button>
                       <button
+                        type="button"
                         onClick={() => setSelectedVenture(null)}
                         className="px-8 py-4 glass border border-white/20 text-white rounded-full font-medium hover:border-blue-500/50 transition-all duration-300"
                       >
@@ -417,6 +421,7 @@ export default function VenturesPage() {
             </p>
             
             <motion.button
+              type="button"
               onClick={() => setIsCalendlyOpen(true)}
               whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
               whileTap={{ scale: 0.95 }}

@@ -219,6 +219,7 @@ export function VenturesPreview() {
                           View All Ventures
                         </Link>
                         <button
+                          type="button"
                           onClick={() => setSelectedCard(null)}
                           className="px-6 py-3 glass border border-white/20 text-white rounded-full font-medium hover:border-blue-500/50 transition-all duration-300"
                         >
