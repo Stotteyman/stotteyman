@@ -41,7 +41,7 @@ export function LivestreamPreview() {
             viewport={{ once: true }}
             className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-6 neon-glow"
           >
-            <Play size={32} className="text-white ml-1" />
+            <Play size={32} className="text-white ml-1" aria-hidden="true" focusable="false" />
           </motion.div>
           
           <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-4">
@@ -91,7 +91,7 @@ export function LivestreamPreview() {
             className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300 hover:scale-105"
           >
             Explore Livestream History
-            <Play size={20} className="ml-2" />
+            <Play size={20} className="ml-2" aria-hidden="true" focusable="false" />
           </Link>
         </div>
       </motion.div>

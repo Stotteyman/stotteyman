@@ -120,7 +120,7 @@ export function VenturesPreview() {
                 transition={{ duration: 0.6 }}
                 className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mb-6 relative z-10`}
               >
-                <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+                <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} aria-hidden="true" focusable="false" />
               </motion.div>
 
               {/* Content */}
@@ -153,7 +153,7 @@ export function VenturesPreview() {
                   }}
                   className="flex items-center text-sm text-gray-400 group-hover:text-white"
                 >
-                  Learn more <ArrowRight size={16} className="ml-2" />
+                  Learn more <ArrowRight size={16} className="ml-2" aria-hidden="true" focusable="false" />
                 </motion.div>
               </div>
 
@@ -189,7 +189,7 @@ export function VenturesPreview() {
                     <>
                       <div className="flex items-center mb-6">
                         <div className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mr-4`}>
-                          <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
+                          <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} aria-hidden="true" focusable="false" />
                         </div>
                         <h3 className="text-3xl font-bold text-gradient">
                           {venture.name}
@@ -247,7 +247,7 @@ export function VenturesPreview() {
           className="group flex items-center px-8 py-4 glass border border-white/20 text-white text-lg font-semibold rounded-full hover:border-blue-500/50 transition-all duration-300 hover:scale-105"
         >
           Explore All Ventures
-          <ExternalLink size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+          <ExternalLink size={20} className="ml-2 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
         </Link>
       </motion.div>
     </div>
