@@ -6,6 +6,7 @@ import { HeroSection } from '@/components/HeroSection'
 import { VenturesPreview } from '@/components/VenturesPreview'
 import { LivestreamPreview } from '@/components/LivestreamPreview'
 import { CTASection } from '@/components/CTASection'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 export default function ClientPage() {
@@ -14,11 +15,12 @@ export default function ClientPage() {
 
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
   const textY = useTransform(scrollYProgress, [0, 1], ['0%', '200%'])
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     let ctx: any
     const run = async () => {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion) {
         const { gsap } = await import('gsap')
         const { ScrollTrigger } = await import('gsap/ScrollTrigger')
         gsap.registerPlugin(ScrollTrigger)
@@ -75,39 +77,41 @@ export default function ClientPage() {
     }
     run()
     return () => ctx && ctx.revert()
-  }, [])
+  }, [prefersReducedMotion])
 
   return (
     <div ref={containerRef} className="relative overflow-hidden">
       {/* Animated Background */}
       <motion.div
-        style={{ y: backgroundY }}
+        style={{ y: prefersReducedMotion ? 0 : backgroundY }}
         className="fixed inset-0 -z-10 animated-bg"
       />
 
       {/* Floating Particles */}
-      <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
-            animate={{
-              x: [0, 100, 0],
-              y: [0, -100, 0],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-            }}
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </div>
+      {!prefersReducedMotion && (
+        <div className="fixed inset-0 -z-5 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-blue-500/20 rounded-full"
+              animate={{
+                x: [0, 100, 0],
+                y: [0, -100, 0],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: Math.random() * 10 + 10,
+                repeat: Infinity,
+                delay: Math.random() * 5,
+              }}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Hero Section */}
       <HeroSection />
@@ -116,10 +120,10 @@ export default function ClientPage() {
       <section className="ventures-section py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-20"
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6 reveal-text">

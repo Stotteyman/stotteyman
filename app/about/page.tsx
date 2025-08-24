@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Award, Target, Lightbulb, TrendingUp, Users, Zap } from 'lucide-react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 
@@ -46,11 +47,12 @@ export default function AboutPage() {
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll()
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '100%'])
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     let ctx: any
     const run = async () => {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion) {
         const { gsap } = await import('gsap')
         const { ScrollTrigger } = await import('gsap/ScrollTrigger')
         gsap.registerPlugin(ScrollTrigger)
@@ -93,13 +95,13 @@ export default function AboutPage() {
     }
     run()
     return () => ctx && ctx.revert()
-  }, [])
+  }, [prefersReducedMotion])
 
   return (
     <div ref={containerRef} className="relative min-h-screen pt-16">
       {/* Animated Background */}
       <motion.div
-        style={{ y: backgroundY }}
+        style={{ y: prefersReducedMotion ? 0 : backgroundY }}
         className="fixed inset-0 -z-10 animated-bg"
       />
 
@@ -107,12 +109,12 @@ export default function AboutPage() {
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
           >
             <div className="relative inline-block mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 animate-pulse" />
+              <div className={`absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 ${prefersReducedMotion ? '' : 'animate-pulse'}`} />
               <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center neon-glow">
                 <Award size={48} className="text-white" />
               </div>
@@ -138,10 +140,10 @@ export default function AboutPage() {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-8 text-center">
@@ -181,10 +183,10 @@ export default function AboutPage() {
       <section className="values-section py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-20"
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
@@ -202,7 +204,7 @@ export default function AboutPage() {
                 <motion.div
                   key={value.title}
                   className="value-card group"
-                  whileHover={{ y: -10, scale: 1.02 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
                 >
                   <div className="glass rounded-2xl p-6 border border-white/10 h-full text-center group-hover:border-blue-500/30 transition-all duration-300">
                     <div className={`inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r ${value.color} rounded-xl mb-6 opacity-80 group-hover:opacity-100 transition-opacity duration-300`}>
@@ -228,10 +230,10 @@ export default function AboutPage() {
       <section className="timeline-section py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-20"
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
@@ -280,10 +282,10 @@ export default function AboutPage() {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
               Let&apos;s Build Together
@@ -296,8 +298,8 @@ export default function AboutPage() {
               href="https://calendly.com/garymccullouch"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule a Consultation

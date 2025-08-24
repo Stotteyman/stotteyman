@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Calendar, Mail, Phone, MapPin, Send, CheckCircle, ExternalLink } from 'lucide-react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 export default function ContactPage() {
@@ -17,6 +18,7 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -54,15 +56,15 @@ export default function ContactPage() {
   return (
     <div className="relative min-h-screen pt-16">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 animated-bg" />
+      <div className={`fixed inset-0 -z-10 ${prefersReducedMotion ? '' : 'animated-bg'}`} />
 
       {/* Hero Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
           >
             <h1 className="text-6xl md:text-8xl font-bold text-gradient mb-6 font-serif">
               Get in Touch
@@ -111,11 +113,11 @@ export default function ContactPage() {
               return (
                 <motion.div
                   key={method.title}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -10, scale: 1.02 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+                  whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+                  transition={prefersReducedMotion ? undefined : { duration: 0.6, delay: index * 0.1 }}
+                  viewport={prefersReducedMotion ? undefined : { once: true }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
                   className="group"
                 >
                   <div className="glass rounded-2xl p-8 border border-white/10 text-center group-hover:border-blue-500/30 transition-all duration-300 h-full">
@@ -135,8 +137,8 @@ export default function ContactPage() {
                       href={method.href}
                       target={method.href.startsWith('http') ? '_blank' : undefined}
                       rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                      whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                      whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                       className={`inline-flex items-center px-6 py-3 bg-gradient-to-r ${method.color} text-white font-semibold rounded-full neon-glow transition-all duration-300`}
                     >
                       {method.action}
@@ -154,10 +156,10 @@ export default function ContactPage() {
       <section className="py-16 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <div className="text-center mb-12">
@@ -287,8 +289,8 @@ export default function ContactPage() {
                 <motion.button
                   type="submit"
                   disabled={isSubmitting || isSubmitted}
-                  whileHover={{ scale: isSubmitting || isSubmitted ? 1 : 1.05 }}
-                  whileTap={{ scale: isSubmitting || isSubmitted ? 1 : 0.95 }}
+                  whileHover={prefersReducedMotion ? undefined : { scale: isSubmitting || isSubmitted ? 1 : 1.05 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: isSubmitting || isSubmitted ? 1 : 0.95 }}
                   className={`inline-flex items-center px-10 py-4 text-white text-lg font-semibold rounded-full transition-all duration-300 ${
                     isSubmitted
                       ? 'bg-green-500 neon-glow'
@@ -325,10 +327,10 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              initial={prefersReducedMotion ? false : { opacity: 0, x: -50 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
+              transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+              viewport={prefersReducedMotion ? undefined : { once: true }}
             >
               <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
                 Let&apos;s Connect
@@ -356,10 +358,10 @@ export default function ContactPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              initial={prefersReducedMotion ? false : { opacity: 0, x: 50 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
+              transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+              viewport={prefersReducedMotion ? undefined : { once: true }}
               className="glass rounded-3xl p-8 border border-white/10"
             >
               <h3 className="text-2xl font-bold text-white mb-6">

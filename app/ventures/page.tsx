@@ -8,6 +8,7 @@ import {
   Calendar, ArrowRight, Filter
 } from 'lucide-react'
 import { CalendlyModal } from '@/components/CalendlyModal'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 
@@ -121,6 +122,7 @@ export default function VenturesPage() {
   const [selectedVenture, setSelectedVenture] = useState<string | null>(null)
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   const filteredVentures = selectedCategory === 'All' 
     ? ventures 
@@ -129,7 +131,7 @@ export default function VenturesPage() {
   useEffect(() => {
     let ctx: any
     const run = async () => {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion) {
         const { gsap } = await import('gsap')
         const { ScrollTrigger } = await import('gsap/ScrollTrigger')
         gsap.registerPlugin(ScrollTrigger)
@@ -154,20 +156,20 @@ export default function VenturesPage() {
     }
     run()
     return () => ctx && ctx.revert()
-  }, [selectedCategory])
+  }, [selectedCategory, prefersReducedMotion])
 
   return (
     <div ref={containerRef} className="relative min-h-screen pt-16">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 animated-bg" />
+      <div className={`fixed inset-0 -z-10 ${prefersReducedMotion ? '' : 'animated-bg'}`} />
 
       {/* Hero Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
           >
             <h1 className="text-6xl md:text-8xl font-bold text-gradient mb-6 font-serif">
               Our Ventures
@@ -191,8 +193,8 @@ export default function VenturesPage() {
               <motion.button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   selectedCategory === category
                     ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white neon-glow'
@@ -213,10 +215,10 @@ export default function VenturesPage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={selectedCategory}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+              exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+              transition={prefersReducedMotion ? undefined : { duration: 0.3 }}
               className="grid grid-cols-1 lg:grid-cols-2 gap-8"
             >
               {filteredVentures.map((venture, index) => {
@@ -225,7 +227,7 @@ export default function VenturesPage() {
                   <motion.div
                     key={venture.id}
                     className="venture-card group"
-                    whileHover={{ y: -10, scale: 1.02 }}
+                    whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
                     onClick={() => setSelectedVenture(venture.id)}
                   >
                     <div className={`relative glass rounded-3xl p-8 border ${venture.borderColor} overflow-hidden cursor-pointer transition-all duration-300 group-hover:border-blue-500/50`}>
@@ -272,11 +274,8 @@ export default function VenturesPage() {
                         {/* CTA */}
                         <div className="flex items-center justify-end">
                           <motion.div
-                            initial={{ x: -10, opacity: 0 }}
-                            animate={{
-                              x: 0,
-                              opacity: 1
-                            }}
+                            initial={prefersReducedMotion ? false : { x: -10, opacity: 0 }}
+                            animate={prefersReducedMotion ? undefined : { x: 0, opacity: 1 }}
                             className="flex items-center text-sm text-gray-400 group-hover:text-white"
                           >
                             Learn more <ArrowRight size={16} className="ml-2" />
@@ -299,16 +298,16 @@ export default function VenturesPage() {
       <AnimatePresence>
         {selectedVenture && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+            exit={prefersReducedMotion ? undefined : { opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={() => setSelectedVenture(null)}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              initial={prefersReducedMotion ? false : { scale: 0.8, opacity: 0 }}
+              animate={prefersReducedMotion ? undefined : { scale: 1, opacity: 1 }}
+              exit={prefersReducedMotion ? undefined : { scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-4xl w-full max-h-[90vh] overflow-y-auto glass rounded-3xl p-8 border border-white/10"
             >
@@ -379,7 +378,7 @@ export default function VenturesPage() {
                     <div className="flex gap-4 justify-center">
                       <motion.button
                         onClick={() => setIsCalendlyOpen(true)}
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
                         className="flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
                       >
                         <Calendar size={20} className="mr-2" />
@@ -404,10 +403,10 @@ export default function VenturesPage() {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
               Ready to Invest?
@@ -418,8 +417,8 @@ export default function VenturesPage() {
             
             <motion.button
               onClick={() => setIsCalendlyOpen(true)}
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule Investment Call

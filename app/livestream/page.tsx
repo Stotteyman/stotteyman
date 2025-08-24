@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Play, Users, TrendingUp, Award, Calendar, ExternalLink } from 'lucide-react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 
@@ -89,11 +90,12 @@ const achievements = [
 
 export default function LivestreamPage() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     let ctx: any
     const run = async () => {
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (!prefersReducedMotion) {
         const { gsap } = await import('gsap')
         const { ScrollTrigger } = await import('gsap/ScrollTrigger')
         gsap.registerPlugin(ScrollTrigger)
@@ -133,23 +135,23 @@ export default function LivestreamPage() {
     }
     run()
     return () => ctx && ctx.revert()
-  }, [])
+  }, [prefersReducedMotion])
 
   return (
     <div ref={containerRef} className="relative min-h-screen pt-16">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 animated-bg" />
+      <div className={`fixed inset-0 -z-10 ${prefersReducedMotion ? '' : 'animated-bg'}`} />
 
       {/* Hero Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
           >
             <div className="relative inline-block mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 animate-pulse" />
+              <div className={`absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 ${prefersReducedMotion ? '' : 'animate-pulse'}`} />
               <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center neon-glow">
                 <Play size={48} className="text-white ml-2" />
               </div>
@@ -173,10 +175,10 @@ export default function LivestreamPage() {
       <section className="achievements-section py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-20"
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
@@ -194,7 +196,7 @@ export default function LivestreamPage() {
                 <motion.div
                   key={achievement.title}
                   className="achievement-card group"
-                  whileHover={{ y: -10, scale: 1.02 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
                 >
                   <div className="glass rounded-2xl p-8 border border-white/10 text-center group-hover:border-purple-500/30 transition-all duration-300 h-full">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl mb-6 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
@@ -220,10 +222,10 @@ export default function LivestreamPage() {
       <section className="collaborators-section py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-20"
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
@@ -239,7 +241,7 @@ export default function LivestreamPage() {
               <motion.div
                 key={collab.name}
                 className="collab-card group"
-                whileHover={{ y: -10, scale: 1.02 }}
+                whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
               >
                 <div className="glass rounded-2xl p-6 border border-white/10 group-hover:border-purple-500/30 transition-all duration-300 h-full">
                   {/* Header */}
@@ -276,10 +278,10 @@ export default function LivestreamPage() {
       <section className="py-32 relative">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <div className="text-center mb-12">
@@ -295,8 +297,8 @@ export default function LivestreamPage() {
             <div className="text-center">
               <motion.a
                 href="#"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                 className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300"
               >
                 Explore IRL History
@@ -311,10 +313,10 @@ export default function LivestreamPage() {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
           >
             <h2 className="text-5xl md:text-7xl font-bold text-gradient mb-6">
               Join the Movement
@@ -327,8 +329,8 @@ export default function LivestreamPage() {
               href="https://calendly.com/garymccullouch"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(139, 92, 246, 0.6)' }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05, boxShadow: '0 0 40px rgba(139, 92, 246, 0.6)' }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule Partnership Call

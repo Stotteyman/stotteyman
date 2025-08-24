@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, Clock, ArrowRight, Search, Tag, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 import { blogPosts } from "./posts"
 
@@ -14,6 +15,7 @@ export default function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredPosts, setFilteredPosts] = useState(blogPosts)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     let filtered = blogPosts
@@ -39,15 +41,15 @@ export default function BlogPage() {
   return (
     <div className="relative min-h-screen pt-16">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 animated-bg" />
+      <div className={`fixed inset-0 -z-10 ${prefersReducedMotion ? '' : 'animated-bg'}`} />
 
       {/* Hero Section */}
       <section className="py-32 relative overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
           >
             <h1 className="text-6xl md:text-8xl font-bold text-gradient mb-6 font-serif">
               Insights & Ideas
@@ -85,8 +87,8 @@ export default function BlogPage() {
                 <motion.button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                  whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     selectedCategory === category
                       ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white neon-glow'
@@ -106,10 +108,10 @@ export default function BlogPage() {
         <section className="py-16 relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+              viewport={prefersReducedMotion ? undefined : { once: true }}
               className="glass rounded-3xl overflow-hidden border border-white/10 group hover:border-blue-500/30 transition-all duration-300"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
@@ -180,20 +182,20 @@ export default function BlogPage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={`${selectedCategory}-${searchTerm}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+              exit={prefersReducedMotion ? undefined : { opacity: 0 }}
+              transition={prefersReducedMotion ? undefined : { duration: 0.3 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
               {regularPosts.map((post, index) => (
                 <motion.article
                   key={post.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -10, scale: 1.02 }}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+                  whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+                  transition={prefersReducedMotion ? undefined : { duration: 0.6, delay: index * 0.1 }}
+                  viewport={prefersReducedMotion ? undefined : { once: true }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
                   className="group"
                 >
                   <div className="glass rounded-2xl overflow-hidden border border-white/10 group-hover:border-blue-500/30 transition-all duration-300 h-full flex flex-col">
@@ -256,8 +258,8 @@ export default function BlogPage() {
 
           {filteredPosts.length === 0 && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={prefersReducedMotion ? undefined : { opacity: 1 }}
               className="text-center py-20"
             >
               <div className="text-6xl mb-4">🔍</div>
@@ -272,10 +274,10 @@ export default function BlogPage() {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
@@ -293,8 +295,8 @@ export default function BlogPage() {
                 className="flex-1 px-6 py-3 glass rounded-full border border-white/20 text-white placeholder-gray-400 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
               />
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                 className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-full neon-glow transition-all duration-300"
               >
                 Subscribe

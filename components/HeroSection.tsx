@@ -4,17 +4,19 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowDown, Sparkles } from 'lucide-react'
 import { CalendlyModal } from './CalendlyModal'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 export function HeroSection() {
     const logoRef = useRef<HTMLDivElement>(null)
     const textRef = useRef<HTMLDivElement>(null)
     const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
+    const prefersReducedMotion = usePrefersReducedMotion()
 
     useEffect(() => {
         let tl: any
         let floatingAnim: any
         const run = async () => {
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (!prefersReducedMotion) {
                 const { gsap } = await import('gsap')
                 const { ScrollTrigger } = await import('gsap/ScrollTrigger')
                 gsap.registerPlugin(ScrollTrigger)
@@ -52,7 +54,7 @@ export function HeroSection() {
             tl?.kill()
             floatingAnim?.kill()
         }
-    }, [])
+    }, [prefersReducedMotion])
 
     return (
         <>
@@ -68,9 +70,9 @@ export function HeroSection() {
                     className="mb-12 relative"
                 >
                     <div className="relative inline-block">
-                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 animate-pulse" />
+                        <div className={`absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 ${prefersReducedMotion ? '' : 'animate-pulse'}`} />
                         <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center neon-glow">
-                            <Sparkles size={48} className="text-white animate-pulse" />
+                            <Sparkles size={48} className={`text-white ${prefersReducedMotion ? '' : 'animate-pulse'}`} />
                         </div>
                     </div>
                 </motion.div>
@@ -98,8 +100,8 @@ export function HeroSection() {
                 <div className="hero-cta mt-12 flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <motion.button
                         onClick={() => setIsCalendlyOpen(true)}
-                        whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={prefersReducedMotion ? undefined : { scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                         className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300"
                     >
                         Schedule Investment Call
@@ -107,8 +109,8 @@ export function HeroSection() {
 
                     <motion.a
                         href="/ventures"
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                        whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                         className="px-8 py-4 glass border border-white/20 text-white text-lg font-semibold rounded-full hover:border-blue-500/50 transition-all duration-300"
                     >
                         Explore Ventures
@@ -117,8 +119,8 @@ export function HeroSection() {
 
                 {/* Scroll Indicator */}
                 <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
+                    animate={prefersReducedMotion ? undefined : { y: [0, 10, 0] }}
+                    transition={prefersReducedMotion ? undefined : { duration: 2, repeat: Infinity }}
                     className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
                 >
                     <ArrowDown size={32} className="text-gray-400" />
@@ -126,8 +128,8 @@ export function HeroSection() {
             </div>
 
             {/* Ambient Orbs */}
-            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl animate-float" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+            <div className={`absolute top-1/4 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl ${prefersReducedMotion ? '' : 'animate-float'}`} />
+            <div className={`absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl ${prefersReducedMotion ? '' : 'animate-float'}`} style={{ animationDelay: '2s' }} />
         </section>
         <CalendlyModal
             isOpen={isCalendlyOpen}

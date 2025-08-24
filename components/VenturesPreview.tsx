@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, ArrowRight, Palette, Leaf, Users, Smartphone, Video } from 'lucide-react'
 import Link from 'next/link'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const ventures = [
   {
@@ -66,6 +67,7 @@ const ventures = [
 export function VenturesPreview() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null)
   const [selectedCard, setSelectedCard] = useState<string | null>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -74,17 +76,17 @@ export function VenturesPreview() {
         return (
           <motion.div
             key={venture.id}
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.1 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.6, delay: index * 0.1 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="venture-card group relative"
             onMouseEnter={() => setHoveredCard(venture.id)}
             onMouseLeave={() => setHoveredCard(null)}
           >
             <motion.button
               type="button"
-              whileHover={{ y: -10, scale: 1.02 }}
+              whileHover={prefersReducedMotion ? undefined : { y: -10, scale: 1.02 }}
               className={`relative h-80 glass rounded-2xl p-6 border ${venture.borderColor} overflow-hidden transition-all duration-300`}
               onClick={() => setSelectedCard(venture.id)}
               aria-label={`Learn more about ${venture.name}`}
@@ -94,8 +96,8 @@ export function VenturesPreview() {
               
               {/* Icon */}
               <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
+                whileHover={prefersReducedMotion ? undefined : { rotate: 360 }}
+                transition={prefersReducedMotion ? undefined : { duration: 0.6 }}
                 className={`w-16 h-16 ${venture.bgColor} rounded-xl flex items-center justify-center mb-6 relative z-10`}
               >
                 <Icon size={32} className={`bg-gradient-to-r ${venture.color} bg-clip-text text-transparent`} />
@@ -124,8 +126,8 @@ export function VenturesPreview() {
 
                 {/* Hover Arrow */}
                 <motion.div
-                  initial={{ x: -10, opacity: 0 }}
-                  animate={{ 
+                  initial={prefersReducedMotion ? false : { x: -10, opacity: 0 }}
+                  animate={prefersReducedMotion ? undefined : {
                     x: hoveredCard === venture.id ? 0 : -10,
                     opacity: hoveredCard === venture.id ? 1 : 0
                   }}
@@ -146,16 +148,16 @@ export function VenturesPreview() {
       <AnimatePresence>
         {selectedCard && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+            exit={prefersReducedMotion ? undefined : { opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             onClick={() => setSelectedCard(null)}
           >
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+              initial={prefersReducedMotion ? false : { scale: 0.8, opacity: 0 }}
+              animate={prefersReducedMotion ? undefined : { scale: 1, opacity: 1 }}
+              exit={prefersReducedMotion ? undefined : { scale: 0.8, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               className="relative max-w-2xl w-full glass rounded-2xl p-8"
             >
@@ -212,10 +214,10 @@ export function VenturesPreview() {
 
       {/* View All Button */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-        viewport={{ once: true }}
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+        whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+        transition={prefersReducedMotion ? undefined : { duration: 0.6, delay: 0.5 }}
+        viewport={prefersReducedMotion ? undefined : { once: true }}
         className="col-span-full flex justify-center mt-12"
       >
         <Link

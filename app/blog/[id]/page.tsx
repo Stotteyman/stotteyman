@@ -6,11 +6,13 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { blogPosts } from "../posts"
 import { sanitizeHtml } from '@/lib/sanitizeHtml'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 
 
 export default function BlogPostPage({ params }: { params: { id: string } }) {
   const post = blogPosts.find(p => p.id === parseInt(params.id))
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   if (!post) {
     notFound()
@@ -19,7 +21,7 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
   return (
     <div className="relative min-h-screen pt-16">
       {/* Background */}
-      <div className="fixed inset-0 -z-10 animated-bg" />
+      <div className={`fixed inset-0 -z-10 ${prefersReducedMotion ? '' : 'animated-bg'}`} />
 
       {/* Back Button */}
       <section className="py-8 relative">
@@ -38,9 +40,9 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       <section className="py-16 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.article
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             {/* Category & Tags */}
@@ -83,8 +85,8 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
             {/* Share Button */}
             <div className="flex justify-end mb-8">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+                whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
                 className="flex items-center px-4 py-2 glass border border-white/20 text-gray-300 hover:text-white hover:border-blue-500/50 rounded-full transition-all duration-300"
               >
                 <Share2 size={16} className="mr-2" />
@@ -122,10 +124,10 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       <section className="py-16 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="text-center mb-12"
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
@@ -152,10 +154,10 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
       <section className="py-32 relative">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 50 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? undefined : { duration: 0.8 }}
+            viewport={prefersReducedMotion ? undefined : { once: true }}
             className="glass rounded-3xl p-8 md:p-12 border border-white/10"
           >
             <h2 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
@@ -169,8 +171,8 @@ export default function BlogPostPage({ params }: { params: { id: string } }) {
               href="https://calendly.com/garymccullouch"
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05, boxShadow: '0 0 40px rgba(59, 130, 246, 0.6)' }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule a Call

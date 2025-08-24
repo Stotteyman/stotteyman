@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useEffect } from 'react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 interface CalendlyModalProps {
   isOpen: boolean
@@ -10,6 +11,7 @@ interface CalendlyModalProps {
 }
 
 export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
+  const prefersReducedMotion = usePrefersReducedMotion()
   useEffect(() => {
     if (!isOpen) return
 
@@ -27,16 +29,16 @@ export function CalendlyModal({ isOpen, onClose }: CalendlyModalProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={prefersReducedMotion ? false : { opacity: 0 }}
+          animate={prefersReducedMotion ? undefined : { opacity: 1 }}
+          exit={prefersReducedMotion ? undefined : { opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
+            initial={prefersReducedMotion ? false : { scale: 0.8, opacity: 0 }}
+            animate={prefersReducedMotion ? undefined : { scale: 1, opacity: 1 }}
+            exit={prefersReducedMotion ? undefined : { scale: 0.8, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-4xl h-[80vh] glass rounded-2xl overflow-hidden"
             role="dialog"

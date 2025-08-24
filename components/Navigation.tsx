@@ -5,11 +5,13 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { CalendlyModal } from './CalendlyModal'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,8 +33,8 @@ export function Navigation() {
   return (
     <>
       <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        initial={prefersReducedMotion ? false : { y: -100 }}
+        animate={prefersReducedMotion ? undefined : { y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled ? 'glass-dark backdrop-blur-md' : 'bg-transparent'
         }`}
@@ -42,7 +44,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
               className="text-2xl font-bold text-gradient"
             >
               Stotteyman
@@ -63,8 +65,8 @@ export function Navigation() {
             ))}
             <motion.button
               onClick={() => setIsCalendlyOpen(true)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={prefersReducedMotion ? undefined : { scale: 1.05 }}
+              whileTap={prefersReducedMotion ? undefined : { scale: 0.95 }}
               className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-medium neon-glow transition-all duration-300"
             >
               Book a Call
@@ -86,9 +88,9 @@ export function Navigation() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, height: 0 }}
+            animate={prefersReducedMotion ? undefined : { opacity: 1, height: 'auto' }}
+            exit={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
             className="md:hidden glass-dark backdrop-blur-md border-t border-white/10"
           >
             <div className="px-4 py-6 space-y-4">
