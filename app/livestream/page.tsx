@@ -151,7 +151,7 @@ export default function LivestreamPage() {
             <div className="relative inline-block mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-3xl opacity-30 animate-pulse" />
               <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center neon-glow">
-                <Play size={48} className="text-white ml-2" />
+                <Play size={48} className="text-white ml-2" aria-hidden="true" focusable="false" />
               </div>
             </div>
 
@@ -198,7 +198,7 @@ export default function LivestreamPage() {
                 >
                   <div className="glass rounded-2xl p-8 border border-white/10 text-center group-hover:border-purple-500/30 transition-all duration-300 h-full">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl mb-6 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
-                      <Icon size={32} className="text-white" />
+                      <Icon size={32} className="text-white" aria-hidden="true" focusable="false" />
                     </div>
                     
                     <h3 className="text-2xl font-bold text-white mb-4">
@@ -245,7 +245,7 @@ export default function LivestreamPage() {
                   {/* Header */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                      <Play size={20} className="text-white ml-0.5" />
+                      <Play size={20} className="text-white ml-0.5" aria-hidden="true" focusable="false" />
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium bg-purple-500/10 border border-purple-500/30 px-3 py-1 rounded-full">
@@ -300,7 +300,7 @@ export default function LivestreamPage() {
                 className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-full neon-glow transition-all duration-300"
               >
                 Explore IRL History
-                <ExternalLink size={20} className="ml-2" />
+                <ExternalLink size={20} className="ml-2" aria-hidden="true" focusable="false" />
               </motion.a>
             </div>
           </motion.div>
@@ -332,7 +332,7 @@ export default function LivestreamPage() {
               className="inline-flex items-center px-10 py-5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
             >
               Schedule Partnership Call
-              <Calendar size={24} className="ml-3" />
+              <Calendar size={24} className="ml-3" aria-hidden="true" focusable="false" />
             </motion.a>
           </motion.div>
         </div>

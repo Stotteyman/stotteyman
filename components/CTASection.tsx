@@ -27,7 +27,7 @@ export function CTASection() {
             transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mb-8 neon-glow"
           >
-            <Sparkles size={32} className="text-white" />
+            <Sparkles size={32} className="text-white" aria-hidden="true" focusable="false" />
           </motion.div>
 
           {/* Heading */}
@@ -52,9 +52,9 @@ export function CTASection() {
                 whileTap={{ scale: 0.95 }}
                 className="group flex items-center px-10 py-5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xl font-semibold rounded-full neon-glow transition-all duration-300"
               >
-                <Calendar size={24} className="mr-3" />
+                <Calendar size={24} className="mr-3" aria-hidden="true" focusable="false" />
                 Book Investment Call
-                <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" />
+                <ArrowRight size={20} className="ml-3 group-hover:translate-x-1 transition-transform duration-300" aria-hidden="true" focusable="false" />
               </motion.button>
             
             <motion.a

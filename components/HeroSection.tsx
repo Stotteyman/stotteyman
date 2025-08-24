@@ -70,7 +70,7 @@ export function HeroSection() {
                     <div className="relative inline-block">
                         <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-3xl opacity-30 animate-pulse" />
                         <div className="relative w-32 h-32 mx-auto bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center neon-glow">
-                            <Sparkles size={48} className="text-white animate-pulse" />
+                            <Sparkles size={48} className="text-white animate-pulse" aria-hidden="true" focusable="false" />
                         </div>
                     </div>
                 </motion.div>
@@ -120,8 +120,9 @@ export function HeroSection() {
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+                    aria-label="Scroll down"
                 >
-                    <ArrowDown size={32} className="text-gray-400" />
+                    <ArrowDown size={32} className="text-gray-400" aria-hidden="true" focusable="false" />
                 </motion.div>
             </div>
 
