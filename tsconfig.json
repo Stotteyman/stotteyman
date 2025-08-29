@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "es6"],
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "ES2022", "webworker"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -18,11 +18,62 @@
         "name": "next"
       }
     ],
+    // Next.js 15.5.0 enhanced TypeScript settings
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": false,
+    "allowArbitraryExtensions": false,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/hooks/*": ["./hooks/*"],
+      "@/types/*": ["./types/*"],
+      "@/utils/*": ["./utils/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/animations/*": ["./animations/*"],
+      "@/app/*": ["./app/*"],
+      "@/config/*": ["./lib/config/*"],
+      "@/security/*": ["./lib/security/*"],
+      "@/performance/*": ["./lib/performance/*"],
+      "@/particles/*": ["./lib/particles/*"],
+      "@/ui/*": ["./components/ui/*"],
+      "@/forms/*": ["./components/forms/*"],
+      "@/layout/*": ["./components/layout/*"],
+      "@/sections/*": ["./components/sections/*"]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "noImplicitOverride": true,
+    "useDefineForClassFields": true,
+    // Enhanced strict type checking for Next.js 15.5.0
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    // Additional type safety
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "verbatimModuleSyntax": true,
+    // Performance optimizations
+    "assumeChangesOnlyAffectDirectDependencies": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "legacy"]
+  "include": [
+    "next-env.d.ts", 
+    "**/*.ts", 
+    "**/*.tsx", 
+    ".next/types/**/*.ts",
+    "types/**/*.ts"
+  ],
+  "exclude": ["node_modules", "legacy", ".next", "out"]
 }

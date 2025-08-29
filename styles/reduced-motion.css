@@ -1,0 +1,245 @@
+/**
+ * CSS fallback animations and reduced motion styles
+ */
+
+/* Global reduced motion styles */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Disable specific animation types for reduced motion */
+.reduce-motion .particle-system,
+.reduce-motion .morphing-background,
+.reduce-motion .parallax-scroll {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Essential animations that should still work with reduced motion */
+.reduce-motion .essential-animation {
+  animation-duration: 0.2s !important;
+  transition-duration: 0.2s !important;
+}
+
+/* Fallback styles for when animations are disabled */
+.reduced-motion .scroll-animation-wrapper,
+.reduced-motion .stagger-item {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* CSS-only fallback animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
+}
+
+/* Fallback animation classes */
+.fallback-fade-in {
+  animation: fadeIn var(--fallback-duration, 0.3s) ease-out;
+}
+
+.fallback-slide-up {
+  animation: slideUp var(--fallback-duration, 0.3s) ease-out;
+}
+
+.fallback-scale-in {
+  animation: scaleIn var(--fallback-duration, 0.3s) ease-out;
+}
+
+/* Reduced motion specific styles */
+.enable-motion .animation-element {
+  transition: all var(--animation-duration, 0.6s) var(--animation-easing, ease-out);
+}
+
+.reduce-motion .animation-element {
+  transition: opacity 0.1s linear;
+}
+
+/* Focus indicators that work with reduced motion */
+.reduce-motion *:focus {
+  outline: 2px solid var(--focus-color, #0066cc);
+  outline-offset: 2px;
+  transition: outline-color 0.1s linear;
+}
+
+/* Loading states for reduced motion */
+.reduce-motion .loading-spinner {
+  animation: none;
+}
+
+.reduce-motion .loading-spinner::after {
+  content: "Loading...";
+  display: block;
+  text-align: center;
+  color: var(--text-color, #333);
+}
+
+/* Button states for reduced motion */
+.reduce-motion .interactive-button:hover {
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reduce-motion .interactive-button:active {
+  transform: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Card hover effects for reduced motion */
+.reduce-motion .glassmorphic-card:hover {
+  transform: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation animations for reduced motion */
+.reduce-motion .navigation {
+  transform: none !important;
+  transition: background-color 0.1s linear;
+}
+
+/* Modal animations for reduced motion */
+.reduce-motion .modal-overlay {
+  animation: fadeIn 0.1s linear;
+}
+
+.reduce-motion .modal-content {
+  animation: none;
+  transform: none;
+}
+
+/* Toast notifications for reduced motion */
+.reduce-motion .toast {
+  animation: slideUp 0.1s linear;
+}
+
+/* Progress indicators */
+.reduce-motion .progress-bar {
+  transition: width 0.1s linear;
+}
+
+/* Tooltip animations */
+.reduce-motion .tooltip {
+  animation: fadeIn 0.1s linear;
+  transform: none;
+}
+
+/* Dropdown animations */
+.reduce-motion .dropdown-menu {
+  animation: fadeIn 0.1s linear;
+  transform: none;
+}
+
+/* Accordion animations */
+.reduce-motion .accordion-content {
+  transition: height 0.1s linear;
+}
+
+/* Tab animations */
+.reduce-motion .tab-content {
+  animation: fadeIn 0.1s linear;
+}
+
+/* Image loading animations */
+.reduce-motion .optimized-image {
+  transition: opacity 0.1s linear;
+}
+
+/* Form field animations */
+.reduce-motion .form-field {
+  transition: border-color 0.1s linear, box-shadow 0.1s linear;
+}
+
+.reduce-motion .form-field label {
+  transition: transform 0.1s linear, color 0.1s linear;
+}
+
+/* Utility classes for reduced motion */
+.reduce-motion .no-animation {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+.reduce-motion .instant-transition {
+  transition-duration: 0.01ms !important;
+}
+
+.reduce-motion .linear-only {
+  animation-timing-function: linear !important;
+  transition-timing-function: linear !important;
+}
+
+/* Media query for system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable complex animations */
+  .particle-system,
+  .morphing-background,
+  .parallax-scroll,
+  .magnetic-cursor {
+    display: none;
+  }
+  
+  /* Ensure content is visible */
+  .scroll-animation-wrapper,
+  .stagger-item {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .reduce-motion *:focus {
+    outline: 3px solid;
+    outline-offset: 3px;
+  }
+}
+
+/* Print styles - disable all animations */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

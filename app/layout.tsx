@@ -1,12 +1,7 @@
 import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google'
-import dynamic from 'next/dynamic'
-import './globals.css'
+import '@/app/globals.css'
 import { Navigation } from '@/components/Navigation'
-
-const FloatingCTA = dynamic(
-  () => import('@/components/FloatingCTA').then((mod) => mod.FloatingCTA),
-  { ssr: false }
-)
+import { ClientWrapper } from '@/components/ClientWrapper'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -36,7 +31,7 @@ export default function RootLayout({
         <main id="main" className="relative min-h-screen">
           {children}
         </main>
-        <FloatingCTA />
+        <ClientWrapper />
       </body>
     </html>
   )
