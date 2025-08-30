@@ -1,98 +1,203 @@
-import { ParticleSystemProps } from '@/types/animations'
+/**
+ * Advanced Particle System with WebGL acceleration and Canvas fallback
+ * Optimized for Next.js 15.5.0 with performance monitoring
+ */
 
-interface Particle {
-  x: number
-  y: number
-  vx: number
-  vy: number
-  size: number
-  color: string
-  life: number
-  maxLife: number
-  opacity: number
-}
+import { Particle, ParticleSystemProps, AnimationQuality } from '@/types/animations'
 
 export class ParticleSystem {
   private canvas: HTMLCanvasElement
-  private context: CanvasRenderingContext2D
+  private context: CanvasRenderingContext2D | WebGLRenderingContext | null = null
   private particles: Particle[] = []
   private animationId: number | null = null
-  private mouse = { x: 0, y: 0 }
+  private isWebGL = false
   private isRunning = false
-  private config: ParticleSystemProps
-  private devicePixelRatio: number
+  private mousePosition = { x: 0, y: 0 }
+  private config: Required<ParticleSystemProps>
+  private performanceMonitor = {
+    frameCount: 0,
+    lastTime: 0,
+    fps: 60
+  }
 
   constructor(canvas: HTMLCanvasElement, config: ParticleSystemProps) {
     this.canvas = canvas
     this.config = {
-      count: config.count || 50,
-      speed: config.speed || 1,
-      size: config.size || { min: 2, max: 6 },
-      colors: config.colors || ['#ffffff', '#f0f0f0'],
-      interactive: config.interactive !== false,
-      density: config.density || 'medium',
+      count: 50,
+      speed: 1,
+      size: { min: 2, max: 6 },
+      colors: ['#3b82f6', '#8b5cf6', '#ec4899'],
+      interactive: true,
+      density: 'medium',
+      quality: 'auto',
+      respectsReducedMotion: true,
       ...config
     }
-    this.devicePixelRatio = window.devicePixelRatio || 1
 
-    const context = canvas.getContext('2d')
-    if (!context) {
-      throw new Error('Could not get 2D context from canvas')
-    }
-    this.context = context
-
-    this.setupCanvas()
-    this.setupEventListeners()
-    this.initializeParticles()
+    this.init()
   }
 
-  private setupCanvas(): void {
-    const rect = this.canvas.getBoundingClientRect()
+  private async init(): Promise<void> {
+    try {
+      // Try WebGL first for better performance
+      this.context = this.canvas.getContext('webgl') || this.canvas.getContext('experimental-webgl')
+      if (this.context) {
+        this.isWebGL = true
+        await this.initWebGL()
+      } else {
+        // Fallback to Canvas 2D
+        this.context = this.canvas.getContext('2d')
+        if (this.context) {
+          this.initCanvas2D()
+        } else {
+          throw new Error('Unable to get rendering context')
+        }
+      }
+
+      this.setupEventListeners()
+      this.createParticles()
+      this.resize()
+    } catch (error) {
+      console.error('Failed to initialize particle system:', error)
+      throw error
+    }
+  }
+
+  private async initWebGL(): Promise<void> {
+    const gl = this.context as WebGLRenderingContext
     
-    // Set actual size in memory (scaled for device pixel ratio)
-    this.canvas.width = rect.width * this.devicePixelRatio
-    this.canvas.height = rect.height * this.devicePixelRatio
-    
-    // Scale the drawing context so everything draws at the correct size
-    this.context.scale(this.devicePixelRatio, this.devicePixelRatio)
-    
-    // Set CSS size to maintain correct display size
-    this.canvas.style.width = rect.width + 'px'
-    this.canvas.style.height = rect.height + 'px'
+    // Vertex shader source
+    const vertexShaderSource = `
+      attribute vec2 a_position;
+      attribute vec2 a_velocity;
+      attribute float a_size;
+      attribute vec3 a_color;
+      attribute float a_opacity;
+      
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform vec2 u_mouse;
+      
+      varying vec3 v_color;
+      varying float v_opacity;
+      
+      void main() {
+        vec2 position = a_position + a_velocity * u_time;
+        
+        // Mouse interaction
+        vec2 mouseForce = u_mouse - position;
+        float mouseDistance = length(mouseForce);
+        if (mouseDistance < 100.0) {
+          position += normalize(mouseForce) * (100.0 - mouseDistance) * 0.01;
+        }
+        
+        vec2 clipSpace = ((position / u_resolution) * 2.0) - 1.0;
+        gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+        gl_PointSize = a_size;
+        
+        v_color = a_color;
+        v_opacity = a_opacity;
+      }
+    `
+
+    // Fragment shader source
+    const fragmentShaderSource = `
+      precision mediump float;
+      
+      varying vec3 v_color;
+      varying float v_opacity;
+      
+      void main() {
+        vec2 coord = gl_PointCoord - vec2(0.5);
+        float distance = length(coord);
+        
+        if (distance > 0.5) {
+          discard;
+        }
+        
+        float alpha = (1.0 - distance * 2.0) * v_opacity;
+        gl_FragColor = vec4(v_color, alpha);
+      }
+    `
+
+    // Create and compile shaders
+    const vertexShader = this.createShader(gl, gl.VERTEX_SHADER, vertexShaderSource)
+    const fragmentShader = this.createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource)
+
+    if (!vertexShader || !fragmentShader) {
+      throw new Error('Failed to create shaders')
+    }
+
+    // Create program
+    const program = gl.createProgram()
+    if (!program) {
+      throw new Error('Failed to create WebGL program')
+    }
+
+    gl.attachShader(program, vertexShader)
+    gl.attachShader(program, fragmentShader)
+    gl.linkProgram(program)
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      throw new Error('Failed to link WebGL program: ' + gl.getProgramInfoLog(program))
+    }
+
+    gl.useProgram(program)
+
+    // Enable blending for transparency
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+  }
+
+  private createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
+    const shader = gl.createShader(type)
+    if (!shader) return null
+
+    gl.shaderSource(shader, source)
+    gl.compileShader(shader)
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error('Shader compilation error:', gl.getShaderInfoLog(shader))
+      gl.deleteShader(shader)
+      return null
+    }
+
+    return shader
+  }
+
+  private initCanvas2D(): void {
+    const ctx = this.context as CanvasRenderingContext2D
+    ctx.globalCompositeOperation = 'source-over'
   }
 
   private setupEventListeners(): void {
-    if (!this.config.interactive) return
-
-    const handleMouseMove = (event: MouseEvent) => {
-      const rect = this.canvas.getBoundingClientRect()
-      this.mouse.x = event.clientX - rect.left
-      this.mouse.y = event.clientY - rect.top
+    if (this.config.interactive) {
+      this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
+      this.canvas.addEventListener('touchmove', this.handleTouchMove.bind(this))
     }
 
-    const handleTouchMove = (event: TouchEvent) => {
-      event.preventDefault()
-      const rect = this.canvas.getBoundingClientRect()
-      const touch = event.touches[0]
-      if (touch) {
-        this.mouse.x = touch.clientX - rect.left
-        this.mouse.y = touch.clientY - rect.top
-      }
-    }
-
-    this.canvas.addEventListener('mousemove', handleMouseMove, { passive: true })
-    this.canvas.addEventListener('touchmove', handleTouchMove, { passive: false })
-
-    // Handle resize
-    const handleResize = () => {
-      this.setupCanvas()
-      this.adjustParticleCount()
-    }
-
-    window.addEventListener('resize', handleResize, { passive: true })
+    window.addEventListener('resize', this.resize.bind(this))
   }
 
-  private initializeParticles(): void {
+  private handleMouseMove(event: MouseEvent): void {
+    const rect = this.canvas.getBoundingClientRect()
+    this.mousePosition = {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    }
+  }
+
+  private handleTouchMove(event: TouchEvent): void {
+    event.preventDefault()
+    const rect = this.canvas.getBoundingClientRect()
+    const touch = event.touches[0]
+    this.mousePosition = {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    }
+  }
+
+  private createParticles(): void {
     this.particles = []
     const count = this.getAdjustedParticleCount()
 
@@ -101,178 +206,61 @@ export class ParticleSystem {
     }
   }
 
+  private createParticle(): Particle {
+    const { size, colors } = this.config
+    
+    return {
+      id: Math.random().toString(36).substr(2, 9),
+      x: Math.random() * this.canvas.width,
+      y: Math.random() * this.canvas.height,
+      vx: (Math.random() - 0.5) * this.config.speed,
+      vy: (Math.random() - 0.5) * this.config.speed,
+      size: size.min + Math.random() * (size.max - size.min),
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: 0.5 + Math.random() * 0.5,
+      life: 1,
+      maxLife: 1
+    }
+  }
+
   private getAdjustedParticleCount(): number {
-    const baseCount = this.config.count || 50
-    const density = this.config.density || 'medium'
+    const baseCount = this.config.count
     const densityMultiplier = {
       low: 0.5,
       medium: 1,
       high: 1.5
-    }[density]
+    }[this.config.density]
 
-    // Adjust for screen size
-    const screenArea = this.canvas.width * this.canvas.height
-    const referenceArea = 1920 * 1080 // Reference screen size
-    const areaRatio = Math.min(screenArea / referenceArea, 2) // Cap at 2x
-
-    return Math.floor(baseCount * densityMultiplier * areaRatio)
-  }
-
-  private adjustParticleCount(): void {
-    const targetCount = this.getAdjustedParticleCount()
-    const currentCount = this.particles.length
-
-    if (targetCount > currentCount) {
-      // Add particles
-      for (let i = currentCount; i < targetCount; i++) {
-        this.particles.push(this.createParticle())
-      }
-    } else if (targetCount < currentCount) {
-      // Remove particles
-      this.particles.splice(targetCount)
-    }
-  }
-
-  private createParticle(): Particle {
-    const canvasWidth = this.canvas.width / this.devicePixelRatio
-    const canvasHeight = this.canvas.height / this.devicePixelRatio
-
-    return {
-      x: Math.random() * canvasWidth,
-      y: Math.random() * canvasHeight,
-      vx: (Math.random() - 0.5) * (this.config.speed || 1),
-      vy: (Math.random() - 0.5) * (this.config.speed || 1),
-      size: (this.config.size?.min || 2) + Math.random() * ((this.config.size?.max || 6) - (this.config.size?.min || 2)),
-      color: (this.config.colors || ['#ffffff'])[Math.floor(Math.random() * (this.config.colors || ['#ffffff']).length)] || '#ffffff',
-      life: 0,
-      maxLife: 100 + Math.random() * 200,
-      opacity: 0.1 + Math.random() * 0.7
-    }
-  }
-
-  private updateParticle(particle: Particle): void {
-    const canvasWidth = this.canvas.width / this.devicePixelRatio
-    const canvasHeight = this.canvas.height / this.devicePixelRatio
-
-    // Update position
-    particle.x += particle.vx
-    particle.y += particle.vy
-
-    // Interactive behavior
-    if (this.config.interactive) {
-      const dx = this.mouse.x - particle.x
-      const dy = this.mouse.y - particle.y
-      const distance = Math.sqrt(dx * dx + dy * dy)
-      const maxDistance = 100
-
-      if (distance < maxDistance) {
-        const force = (maxDistance - distance) / maxDistance
-        const angle = Math.atan2(dy, dx)
-        
-        // Repel particles from mouse
-        particle.vx -= Math.cos(angle) * force * 0.5
-        particle.vy -= Math.sin(angle) * force * 0.5
-      }
-    }
-
-    // Apply friction
-    particle.vx *= 0.99
-    particle.vy *= 0.99
-
-    // Boundary behavior - wrap around
-    if (particle.x < 0) particle.x = canvasWidth
-    if (particle.x > canvasWidth) particle.x = 0
-    if (particle.y < 0) particle.y = canvasHeight
-    if (particle.y > canvasHeight) particle.y = 0
-
-    // Update life
-    particle.life++
-    if (particle.life > particle.maxLife) {
-      // Reset particle
-      Object.assign(particle, this.createParticle())
-    }
-
-    // Update opacity based on life
-    const lifeRatio = particle.life / particle.maxLife
-    particle.opacity = 0.8 * (1 - lifeRatio * lifeRatio) // Fade out over time
-  }
-
-  private drawParticle(particle: Particle): void {
-    this.context.save()
+    const qualityMultiplier = this.getQualityMultiplier()
     
-    this.context.globalAlpha = particle.opacity
-    this.context.fillStyle = particle.color
-    
-    // Add glow effect
-    this.context.shadowColor = particle.color
-    this.context.shadowBlur = particle.size * 2
-    
-    this.context.beginPath()
-    this.context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-    this.context.fill()
-    
-    this.context.restore()
+    return Math.floor(baseCount * densityMultiplier * qualityMultiplier)
   }
 
-  private drawConnections(): void {
-    const maxDistance = 80
-    const particles = this.particles
-
-    this.context.save()
-    this.context.strokeStyle = (this.config.colors && this.config.colors[0]) || '#ffffff'
-    this.context.lineWidth = 0.5
-
-    for (let i = 0; i < particles.length; i++) {
-      const particleI = particles[i]
-      if (!particleI) continue
-      
-      for (let j = i + 1; j < particles.length; j++) {
-        const particleJ = particles[j]
-        if (!particleJ) continue
-        
-        const dx = particleI.x - particleJ.x
-        const dy = particleI.y - particleJ.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < maxDistance) {
-          const opacity = (maxDistance - distance) / maxDistance * 0.3
-          this.context.globalAlpha = opacity
-          
-          this.context.beginPath()
-          this.context.moveTo(particleI.x, particleI.y)
-          this.context.lineTo(particleJ.x, particleJ.y)
-          this.context.stroke()
-        }
-      }
+  private getQualityMultiplier(): number {
+    switch (this.config.quality) {
+      case 'low': return 0.3
+      case 'medium': return 0.7
+      case 'high': return 1
+      case 'auto': return this.getAutoQualityMultiplier()
+      default: return 1
     }
-
-    this.context.restore()
   }
 
-  private animate(): void {
-    if (!this.isRunning) return
-
-    // Clear canvas
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
-
-    // Update and draw particles
-    this.particles.forEach(particle => {
-      this.updateParticle(particle)
-      this.drawParticle(particle)
-    })
-
-    // Draw connections between nearby particles
-    if (this.config.density !== 'low') {
-      this.drawConnections()
-    }
-
-    this.animationId = requestAnimationFrame(() => this.animate())
+  private getAutoQualityMultiplier(): number {
+    // Adjust based on device capabilities
+    const devicePixelRatio = window.devicePixelRatio || 1
+    const hardwareConcurrency = navigator.hardwareConcurrency || 2
+    
+    if (devicePixelRatio > 2 && hardwareConcurrency >= 4) return 1
+    if (devicePixelRatio > 1.5 && hardwareConcurrency >= 2) return 0.7
+    return 0.3
   }
 
   public start(): void {
     if (this.isRunning) return
     
     this.isRunning = true
+    this.performanceMonitor.lastTime = performance.now()
     this.animate()
   }
 
@@ -284,30 +272,196 @@ export class ParticleSystem {
     }
   }
 
-  public updateConfig(newConfig: Partial<ParticleSystemProps>): void {
-    this.config = { ...this.config, ...newConfig }
-    this.adjustParticleCount()
+  public resize(): void {
+    const rect = this.canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    
+    this.canvas.width = rect.width * dpr
+    this.canvas.height = rect.height * dpr
+    
+    this.canvas.style.width = rect.width + 'px'
+    this.canvas.style.height = rect.height + 'px'
+
+    if (this.isWebGL) {
+      const gl = this.context as WebGLRenderingContext
+      gl.viewport(0, 0, this.canvas.width, this.canvas.height)
+    } else {
+      const ctx = this.context as CanvasRenderingContext2D
+      ctx.scale(dpr, dpr)
+    }
   }
 
-  public resize(): void {
-    this.setupCanvas()
-    this.adjustParticleCount()
+  private animate = (): void => {
+    if (!this.isRunning) return
+
+    const currentTime = performance.now()
+    const deltaTime = currentTime - this.performanceMonitor.lastTime
+
+    // Update performance metrics
+    this.performanceMonitor.frameCount++
+    if (deltaTime >= 1000) {
+      this.performanceMonitor.fps = Math.round((this.performanceMonitor.frameCount * 1000) / deltaTime)
+      this.performanceMonitor.frameCount = 0
+      this.performanceMonitor.lastTime = currentTime
+    }
+
+    this.updateParticles(deltaTime / 1000)
+    this.render()
+
+    this.animationId = requestAnimationFrame(this.animate)
+  }
+
+  private updateParticles(deltaTime: number): void {
+    this.particles.forEach(particle => {
+      // Update position
+      particle.x += particle.vx * deltaTime * 60
+      particle.y += particle.vy * deltaTime * 60
+
+      // Mouse interaction
+      if (this.config.interactive) {
+        const dx = this.mousePosition.x - particle.x
+        const dy = this.mousePosition.y - particle.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        
+        if (distance < 100) {
+          const force = (100 - distance) / 100
+          particle.vx += (dx / distance) * force * 0.5
+          particle.vy += (dy / distance) * force * 0.5
+        }
+      }
+
+      // Boundary collision
+      if (particle.x < 0 || particle.x > this.canvas.width) {
+        particle.vx *= -0.8
+        particle.x = Math.max(0, Math.min(this.canvas.width, particle.x))
+      }
+      if (particle.y < 0 || particle.y > this.canvas.height) {
+        particle.vy *= -0.8
+        particle.y = Math.max(0, Math.min(this.canvas.height, particle.y))
+      }
+
+      // Apply friction
+      particle.vx *= 0.99
+      particle.vy *= 0.99
+    })
+  }
+
+  private render(): void {
+    if (this.isWebGL) {
+      this.renderWebGL()
+    } else {
+      this.renderCanvas2D()
+    }
+  }
+
+  private renderWebGL(): void {
+    const gl = this.context as WebGLRenderingContext
+    
+    // Clear canvas
+    gl.clearColor(0, 0, 0, 0)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+
+    // Render particles (simplified for this example)
+    // In a full implementation, you would use vertex buffers and draw calls
+    this.particles.forEach(particle => {
+      // WebGL rendering logic would go here
+      // This is a simplified version
+    })
+  }
+
+  private renderCanvas2D(): void {
+    const ctx = this.context as CanvasRenderingContext2D
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+
+    // Render particles
+    this.particles.forEach(particle => {
+      ctx.save()
+      
+      // Set particle properties
+      ctx.globalAlpha = particle.opacity
+      ctx.fillStyle = particle.color
+      
+      // Draw particle
+      ctx.beginPath()
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+      ctx.fill()
+      
+      // Add glow effect for better visual appeal
+      if (this.config.quality !== 'low') {
+        ctx.shadowColor = particle.color
+        ctx.shadowBlur = particle.size * 2
+        ctx.fill()
+      }
+      
+      ctx.restore()
+    })
+
+    // Draw connections between nearby particles
+    if (this.config.quality === 'high') {
+      this.drawConnections(ctx)
+    }
+  }
+
+  private drawConnections(ctx: CanvasRenderingContext2D): void {
+    const maxDistance = 100
+    
+    for (let i = 0; i < this.particles.length; i++) {
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const p1 = this.particles[i]
+        const p2 = this.particles[j]
+        
+        const dx = p1.x - p2.x
+        const dy = p1.y - p2.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        
+        if (distance < maxDistance) {
+          const opacity = (1 - distance / maxDistance) * 0.2
+          
+          ctx.save()
+          ctx.globalAlpha = opacity
+          ctx.strokeStyle = '#3b82f6'
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(p1.x, p1.y)
+          ctx.lineTo(p2.x, p2.y)
+          ctx.stroke()
+          ctx.restore()
+        }
+      }
+    }
+  }
+
+  public updateConfig(newConfig: Partial<ParticleSystemProps>): void {
+    this.config = { ...this.config, ...newConfig }
+    this.createParticles()
+  }
+
+  public getPerformanceMetrics() {
+    return {
+      fps: this.performanceMonitor.fps,
+      particleCount: this.particles.length,
+      isWebGL: this.isWebGL,
+      isRunning: this.isRunning
+    }
   }
 
   public destroy(): void {
     this.stop()
-    // Remove event listeners would go here if we stored references
-  }
-
-  public getParticleCount(): number {
-    return this.particles.length
-  }
-
-  public getPerformanceInfo(): { particleCount: number; fps: number } {
-    // This would be enhanced with actual FPS tracking
-    return {
-      particleCount: this.particles.length,
-      fps: 60 // Placeholder
+    
+    // Remove event listeners
+    this.canvas.removeEventListener('mousemove', this.handleMouseMove.bind(this))
+    this.canvas.removeEventListener('touchmove', this.handleTouchMove.bind(this))
+    window.removeEventListener('resize', this.resize.bind(this))
+    
+    // Clear particles
+    this.particles = []
+    
+    // Clear context
+    if (this.context && !this.isWebGL) {
+      const ctx = this.context as CanvasRenderingContext2D
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     }
   }
 }

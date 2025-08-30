@@ -1,372 +1,430 @@
+/**
+ * Animation Error Boundary Component
+ * Graceful fallbacks for animation failures with comprehensive error handling
+ */
+
 'use client'
 
-import React, { Component, ReactNode, ErrorInfo } from 'react'
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+import { AnimationError, AnimationFallback, FallbackConfig } from '@/types/animations'
 
-interface Props {
+interface AnimationErrorBoundaryState {
+  hasError: boolean
+  error: Error | null
+  errorInfo: ErrorInfo | null
+  fallbackType: 'css' | 'static' | 'simplified' | null
+  retryCount: number
+}
+
+interface AnimationErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
-  onError?: (error: Error, errorInfo: ErrorInfo) => void
+  onError?: (error: AnimationError) => void
+  maxRetries?: number
+  enableRetry?: boolean
+  fallbackStrategy?: 'css' | 'static' | 'simplified' | 'auto'
+  componentName?: string
+  animationId?: string
 }
 
-interface State {
-  hasError: boolean
-  error?: Error
-  fallbackMode: 'css' | 'static' | 'simplified'
-  retryCount: number
-  errorId: string
-}
+export class AnimationErrorBoundary extends Component<
+  AnimationErrorBoundaryProps,
+  AnimationErrorBoundaryState
+> {
+  private retryTimeoutId: NodeJS.Timeout | null = null
 
-export class AnimationErrorBoundary extends Component<Props, State> {
-  constructor(props: Props) {
+  constructor(props: AnimationErrorBoundaryProps) {
     super(props)
     this.state = {
       hasError: false,
-      fallbackMode: 'css',
-      retryCount: 0,
-      errorId: ''
+      error: null,
+      errorInfo: null,
+      fallbackType: null,
+      retryCount: 0
     }
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
-    // Determine fallback mode based on error type
-    let fallbackMode: 'css' | 'static' | 'simplified' = 'css'
-    
-    if (error.message.includes('WebGL') || error.message.includes('canvas')) {
-      fallbackMode = 'css'
-    } else if (error.message.includes('GSAP') || error.message.includes('framer-motion') || error.message.includes('animation')) {
-      fallbackMode = 'simplified'
-    } else if (error.message.includes('three') || error.message.includes('particle')) {
-      fallbackMode = 'static'
-    } else {
-      fallbackMode = 'css'
-    }
-
-    const errorId = `anim_error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-
+  static getDerivedStateFromError(error: Error): Partial<AnimationErrorBoundaryState> {
     return {
       hasError: true,
-      error,
-      fallbackMode,
-      errorId
+      error
     }
   }
 
-  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Animation error caught by boundary:', error, errorInfo)
-    
-    // Report error to monitoring service
-    this.reportError(error, errorInfo)
-    
-    // Call custom error handler if provided
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo)
-    }
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    this.setState({
+      errorInfo
+    })
 
-    // Apply fallback animations
-    this.applyFallback()
-  }
-
-  private reportError(error: Error, errorInfo: ErrorInfo) {
-    const errorData = {
-      errorId: this.state.errorId,
-      error: error.message,
-      stack: error.stack,
-      componentStack: errorInfo.componentStack,
-      fallbackMode: this.state.fallbackMode,
-      retryCount: this.state.retryCount,
-      userAgent: navigator.userAgent,
-      url: window.location.href,
-      timestamp: new Date().toISOString(),
-      deviceInfo: {
-        webGL: !!document.createElement('canvas').getContext('webgl'),
-        devicePixelRatio: window.devicePixelRatio,
-        screenSize: `${screen.width}x${screen.height}`,
-        viewportSize: `${window.innerWidth}x${window.innerHeight}`
+    const animationError: AnimationError = {
+      id: this.props.animationId || `error-${Date.now()}`,
+      type: this.categorizeError(error),
+      message: error.message,
+      component: this.props.componentName,
+      timestamp: new Date(),
+      severity: this.determineSeverity(error),
+      context: {
+        componentStack: errorInfo.componentStack,
+        errorBoundary: 'AnimationErrorBoundary',
+        retryCount: this.state.retryCount,
+        userAgent: navigator.userAgent,
+        url: window.location.href
       }
     }
 
-    // Log to console in development
+    // Report error to monitoring service
+    this.reportError(animationError)
+
+    // Call custom error handler
+    if (this.props.onError) {
+      this.props.onError(animationError)
+    }
+
+    // Determine fallback strategy
+    const fallbackType = this.determineFallbackStrategy(error)
+    this.setState({ fallbackType })
+
+    // Auto-retry if enabled and within limits
+    if (this.props.enableRetry && this.state.retryCount < (this.props.maxRetries || 3)) {
+      this.scheduleRetry()
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.retryTimeoutId) {
+      clearTimeout(this.retryTimeoutId)
+    }
+  }
+
+  private categorizeError(error: Error): AnimationError['type'] {
+    const message = error.message.toLowerCase()
+    
+    if (message.includes('webgl') || message.includes('canvas')) {
+      return 'compatibility'
+    }
+    if (message.includes('memory') || message.includes('heap')) {
+      return 'resource'
+    }
+    if (message.includes('timeout') || message.includes('slow')) {
+      return 'timeout'
+    }
+    if (message.includes('fps') || message.includes('frame')) {
+      return 'performance'
+    }
+    
+    return 'compatibility'
+  }
+
+  private determineSeverity(error: Error): AnimationError['severity'] {
+    const message = error.message.toLowerCase()
+    
+    if (message.includes('critical') || message.includes('fatal')) {
+      return 'critical'
+    }
+    if (message.includes('memory') || message.includes('crash')) {
+      return 'high'
+    }
+    if (message.includes('performance') || message.includes('slow')) {
+      return 'medium'
+    }
+    
+    return 'low'
+  }
+
+  private determineFallbackStrategy(error: Error): 'css' | 'static' | 'simplified' {
+    if (this.props.fallbackStrategy && this.props.fallbackStrategy !== 'auto') {
+      return this.props.fallbackStrategy
+    }
+
+    const message = error.message.toLowerCase()
+    
+    // WebGL or complex animation errors -> static fallback
+    if (message.includes('webgl') || message.includes('three') || message.includes('canvas')) {
+      return 'static'
+    }
+    
+    // Performance issues -> simplified animations
+    if (message.includes('performance') || message.includes('fps') || message.includes('slow')) {
+      return 'simplified'
+    }
+    
+    // Default to CSS fallback
+    return 'css'
+  }
+
+  private reportError(error: AnimationError) {
+    // Report to console in development
     if (process.env.NODE_ENV === 'development') {
-      console.group('🚨 Animation Error Boundary')
-      console.error('Error:', error)
-      console.error('Error Info:', errorInfo)
-      console.error('Error Data:', errorData)
+      console.group('🎭 Animation Error Boundary')
+      console.error('Animation Error:', error)
+      console.error('Original Error:', this.state.error)
+      console.error('Error Info:', this.state.errorInfo)
       console.groupEnd()
     }
 
-    // Send to error reporting service in production
+    // Report to monitoring service in production
     if (process.env.NODE_ENV === 'production') {
+      // This would integrate with your error reporting service (Sentry, etc.)
       try {
-        fetch('/api/analytics', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            event: 'animation_error_boundary',
-            data: errorData
+        if (window.gtag) {
+          window.gtag('event', 'exception', {
+            description: error.message,
+            fatal: error.severity === 'critical',
+            custom_map: {
+              animation_id: error.id,
+              component: error.component,
+              error_type: error.type
+            }
           })
-        }).catch(() => {
-          // Silently fail - don't let error reporting break the app
-        })
-      } catch {
-        // Silently fail
-      }
-    }
-
-    // Store error in localStorage for debugging
-    try {
-      const storedErrors = JSON.parse(localStorage.getItem('animation_errors') || '[]')
-      storedErrors.push(errorData)
-      // Keep only last 10 errors
-      if (storedErrors.length > 10) {
-        storedErrors.shift()
-      }
-      localStorage.setItem('animation_errors', JSON.stringify(storedErrors))
-    } catch {
-      // Silently fail
-    }
-  }
-
-  private applyFallback() {
-    if (typeof window === 'undefined') return
-
-    const { fallbackMode } = this.state
-
-    switch (fallbackMode) {
-      case 'css':
-        this.applyCSSFallback()
-        break
-      case 'simplified':
-        this.applySimplifiedFallback()
-        break
-      case 'static':
-        this.applyStaticFallback()
-        break
-    }
-  }
-
-  private applyCSSFallback() {
-    // Add CSS-only animations as fallback
-    const style = document.createElement('style')
-    style.textContent = `
-      .animation-fallback {
-        transition: all 0.3s ease-out !important;
-      }
-      
-      .animation-fallback.fade-in {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-      }
-      
-      .animation-fallback.slide-in {
-        transform: translateX(0) !important;
-      }
-      
-      .animation-fallback:hover {
-        transform: scale(1.05) !important;
-      }
-      
-      @media (prefers-reduced-motion: reduce) {
-        .animation-fallback {
-          transition: none !important;
-          transform: none !important;
         }
+      } catch (reportingError) {
+        console.warn('Failed to report animation error:', reportingError)
       }
-    `
-    document.head.appendChild(style)
-
-    // Apply fallback classes to animated elements
-    const animatedElements = document.querySelectorAll('[class*="animate"], [class*="motion"]')
-    animatedElements.forEach(element => {
-      element.classList.add('animation-fallback', 'fade-in')
-    })
+    }
   }
 
-  private applySimplifiedFallback() {
-    // Use basic CSS transitions instead of complex animations
-    const animatedElements = document.querySelectorAll('[class*="animate"], [class*="motion"]')
-    animatedElements.forEach(element => {
-      if (element instanceof HTMLElement) {
-        element.style.transition = 'opacity 0.3s ease, transform 0.3s ease'
-        element.style.opacity = '1'
-        element.style.transform = 'translateY(0) scale(1)'
-      }
-    })
-  }
-
-  private applyStaticFallback() {
-    // Remove all animations and show static content
-    const animatedElements = document.querySelectorAll('[class*="animate"], [class*="motion"]')
-    animatedElements.forEach(element => {
-      if (element instanceof HTMLElement) {
-        element.style.transition = 'none'
-        element.style.animation = 'none'
-        element.style.opacity = '1'
-        element.style.transform = 'none'
-      }
-    })
-  }
-
-  private handleRetry = () => {
-    if (this.state.retryCount < 3) {
+  private scheduleRetry() {
+    const delay = Math.min(1000 * Math.pow(2, this.state.retryCount), 10000) // Exponential backoff
+    
+    this.retryTimeoutId = setTimeout(() => {
       this.setState(prevState => ({
         hasError: false,
-        error: undefined,
+        error: null,
+        errorInfo: null,
+        fallbackType: null,
         retryCount: prevState.retryCount + 1
       }))
+    }, delay)
+  }
+
+  private handleManualRetry = () => {
+    this.setState({
+      hasError: false,
+      error: null,
+      errorInfo: null,
+      fallbackType: null,
+      retryCount: 0
+    })
+  }
+
+  private renderFallback(): ReactNode {
+    const { fallback } = this.props
+    const { fallbackType, error } = this.state
+
+    // Custom fallback provided
+    if (fallback) {
+      return fallback
+    }
+
+    // Default fallbacks based on strategy
+    switch (fallbackType) {
+      case 'static':
+        return <StaticFallback error={error} onRetry={this.handleManualRetry} />
+      case 'simplified':
+        return <SimplifiedFallback error={error} onRetry={this.handleManualRetry} />
+      case 'css':
+      default:
+        return <CSSFallback error={error} onRetry={this.handleManualRetry} />
     }
   }
 
-  private handleReportIssue = () => {
-    const errorData = {
-      errorId: this.state.errorId,
-      error: this.state.error?.message,
-      fallbackMode: this.state.fallbackMode,
-      retryCount: this.state.retryCount
-    }
-    
-    // Open issue reporting (could be a modal, external link, etc.)
-    console.log('Report issue:', errorData)
-    
-    // You could integrate with your issue tracking system here
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('report-animation-issue', {
-        detail: errorData
-      }))
-    }
-  }
-
-  override render() {
+  render() {
     if (this.state.hasError) {
-      // Show custom fallback if provided
-      if (this.props.fallback) {
-        return (
-          <div className="animation-error-wrapper">
-            {this.props.fallback}
-            {process.env.NODE_ENV === 'development' && (
-              <div className="error-debug-info">
-                <details>
-                  <summary>Animation Error Debug Info</summary>
-                  <pre>{JSON.stringify({
-                    error: this.state.error?.message,
-                    fallbackMode: this.state.fallbackMode,
-                    retryCount: this.state.retryCount,
-                    errorId: this.state.errorId
-                  }, null, 2)}</pre>
-                </details>
-              </div>
-            )}
-          </div>
-        )
-      }
-
-      // Default fallback with retry option
-      return (
-        <div className="animation-error-fallback">
-          {this.state.fallbackMode === 'static' ? (
-            <div className="static-content">
-              {this.props.children}
-            </div>
-          ) : (
-            <div className={`fallback-${this.state.fallbackMode}`}>
-              {this.props.children}
-            </div>
-          )}
-          
-          {/* Error recovery UI */}
-          {process.env.NODE_ENV === 'development' && (
-            <div className="error-recovery-ui" style={{
-              position: 'fixed',
-              bottom: '20px',
-              right: '20px',
-              background: '#ff6b6b',
-              color: 'white',
-              padding: '12px',
-              borderRadius: '8px',
-              fontSize: '14px',
-              zIndex: 9999,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-            }}>
-              <div>Animation Error ({this.state.fallbackMode} fallback)</div>
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-                {this.state.retryCount < 3 && (
-                  <button
-                    onClick={this.handleRetry}
-                    style={{
-                      background: 'rgba(255,255,255,0.2)',
-                      border: '1px solid rgba(255,255,255,0.3)',
-                      color: 'white',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '12px'
-                    }}
-                  >
-                    Retry ({3 - this.state.retryCount} left)
-                  </button>
-                )}
-                <button
-                  onClick={this.handleReportIssue}
-                  style={{
-                    background: 'rgba(255,255,255,0.2)',
-                    border: '1px solid rgba(255,255,255,0.3)',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '12px'
-                  }}
-                >
-                  Report
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )
+      return this.renderFallback()
     }
 
     return this.props.children
   }
 }
 
-// Higher-order component for wrapping components with animation error boundary
+/**
+ * CSS-only fallback component
+ */
+interface FallbackProps {
+  error: Error | null
+  onRetry: () => void
+}
+
+function CSSFallback({ error, onRetry }: FallbackProps) {
+  return (
+    <div className="animation-fallback css-fallback">
+      <div className="fallback-content">
+        <div className="fallback-animation">
+          {/* Simple CSS animation as fallback */}
+          <div className="css-pulse"></div>
+        </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fallback-debug">
+            <p className="text-sm text-gray-600">Animation Error (CSS Fallback)</p>
+            <button 
+              onClick={onRetry}
+              className="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
+              Retry Animation
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Static fallback component
+ */
+function StaticFallback({ error, onRetry }: FallbackProps) {
+  return (
+    <div className="animation-fallback static-fallback">
+      <div className="fallback-content">
+        <div className="static-placeholder">
+          {/* Static visual representation */}
+          <div className="static-gradient"></div>
+        </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fallback-debug">
+            <p className="text-sm text-gray-600">Animation Error (Static Fallback)</p>
+            <button 
+              onClick={onRetry}
+              className="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
+              Retry Animation
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Simplified animation fallback component
+ */
+function SimplifiedFallback({ error, onRetry }: FallbackProps) {
+  return (
+    <div className="animation-fallback simplified-fallback">
+      <div className="fallback-content">
+        <div className="simplified-animation">
+          {/* Simplified animation with reduced complexity */}
+          <div className="simple-fade-in"></div>
+        </div>
+        {process.env.NODE_ENV === 'development' && (
+          <div className="fallback-debug">
+            <p className="text-sm text-gray-600">Animation Error (Simplified Fallback)</p>
+            <button 
+              onClick={onRetry}
+              className="text-blue-600 hover:text-blue-800 text-sm underline"
+            >
+              Retry Animation
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Hook for using animation error boundary context
+ */
+export function useAnimationErrorHandler() {
+  const reportError = (error: AnimationError) => {
+    // This would integrate with your global error handling system
+    console.error('Animation Error:', error)
+  }
+
+  const createFallback = (config: FallbackConfig): AnimationFallback => {
+    return {
+      type: config.type || 'css',
+      config,
+      reason: 'Error boundary triggered'
+    }
+  }
+
+  return {
+    reportError,
+    createFallback
+  }
+}
+
+/**
+ * Higher-order component for wrapping components with animation error boundary
+ */
 export function withAnimationErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  fallback?: ReactNode
+  errorBoundaryProps?: Partial<AnimationErrorBoundaryProps>
 ) {
   return function WrappedComponent(props: P) {
     return (
-      <AnimationErrorBoundary fallback={fallback}>
+      <AnimationErrorBoundary {...errorBoundaryProps}>
         <Component {...props} />
       </AnimationErrorBoundary>
     )
   }
 }
 
-// Hook for handling animation errors in functional components
-export function useAnimationErrorHandler() {
-  const handleError = (error: Error) => {
-    console.error('Animation error:', error)
+/**
+ * Animation error reporter utility
+ */
+export class AnimationErrorReporter {
+  private static instance: AnimationErrorReporter
+  private errors: AnimationError[] = []
+  private maxErrors = 100
+
+  static getInstance(): AnimationErrorReporter {
+    if (!AnimationErrorReporter.instance) {
+      AnimationErrorReporter.instance = new AnimationErrorReporter()
+    }
+    return AnimationErrorReporter.instance
+  }
+
+  report(error: AnimationError) {
+    this.errors.push(error)
     
-    // Emit custom event for global error handling
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('animation-error', {
-        detail: { error }
-      }))
+    // Keep only recent errors
+    if (this.errors.length > this.maxErrors) {
+      this.errors = this.errors.slice(-this.maxErrors)
     }
+
+    // Send to monitoring service
+    this.sendToMonitoring(error)
   }
 
-  const createSafeAnimation = async (animationFn: () => Promise<any>) => {
-    try {
-      return await animationFn()
-    } catch (error) {
-      handleError(error as Error)
-      return null
-    }
+  getErrors(): AnimationError[] {
+    return [...this.errors]
   }
 
-  return {
-    handleError,
-    createSafeAnimation
+  getErrorsByType(type: AnimationError['type']): AnimationError[] {
+    return this.errors.filter(error => error.type === type)
+  }
+
+  getErrorsByComponent(component: string): AnimationError[] {
+    return this.errors.filter(error => error.component === component)
+  }
+
+  clearErrors() {
+    this.errors = []
+  }
+
+  private sendToMonitoring(error: AnimationError) {
+    // Implementation would depend on your monitoring service
+    if (process.env.NODE_ENV === 'production') {
+      // Example: Send to Sentry, DataDog, etc.
+      try {
+        fetch('/api/errors/animation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(error)
+        }).catch(err => {
+          console.warn('Failed to send error to monitoring service:', err)
+        })
+      } catch (err) {
+        console.warn('Error reporting failed:', err)
+      }
+    }
   }
 }
+
+// Global error reporter instance
+export const animationErrorReporter = AnimationErrorReporter.getInstance()

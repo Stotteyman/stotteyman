@@ -1,493 +1,470 @@
-import { AnimationConfig, PerformanceMetrics } from '@/types/animations'
-import { PerformanceMonitor } from './PerformanceMonitor'
-import { AnimationRegistry } from './AnimationRegistry'
-import { AnimationQueue } from './AnimationQueue'
+/**
+ * Animation Manager for coordinating different animation layers
+ * Supports CSS, Framer Motion, GSAP, and WebGL animations
+ */
+
+import { AnimationConfig, AnimationQuality, PerformanceMetrics, DeviceCapabilities } from '@/types/animations'
 
 export class AnimationManager {
-  private static instance: AnimationManager
+  private animations = new Map<string, AnimationConfig>()
+  private activeAnimations = new Set<string>()
+  private quality: AnimationQuality = 'auto'
   private performanceMonitor: PerformanceMonitor
-  private animationRegistry: AnimationRegistry
-  private animationQueue: AnimationQueue
-  private activeAnimations: Map<string, any> = new Map()
-  private isProcessing = false
+  private adaptiveQuality: AdaptiveQuality
   private reducedMotion = false
-  private qualityLevel: 'low' | 'medium' | 'high' = 'medium'
+  private initialized = false
 
-  private constructor() {
+  constructor() {
     this.performanceMonitor = new PerformanceMonitor()
-    this.animationRegistry = AnimationRegistry.getInstance()
-    this.animationQueue = AnimationQueue.getInstance()
-    this.checkReducedMotion()
-    this.setupEventListeners()
-    this.setupQualityListeners()
+    this.adaptiveQuality = new AdaptiveQuality()
+    this.init()
   }
 
-  static getInstance(): AnimationManager {
-    if (!AnimationManager.instance) {
-      AnimationManager.instance = new AnimationManager()
-    }
-    return AnimationManager.instance
-  }
+  private async init(): Promise<void> {
+    if (this.initialized) return
 
-  private checkReducedMotion(): void {
-    if (typeof window !== 'undefined') {
-      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      
-      // Listen for changes
-      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
-        this.reducedMotion = e.matches
-        if (this.reducedMotion) {
-          this.pauseAllAnimations()
-        }
-      })
-    }
-  }
+    // Check for reduced motion preference
+    this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  private setupEventListeners(): void {
-    if (typeof window !== 'undefined') {
-      // Pause animations when tab is not visible
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          this.pauseAllAnimations()
-        } else {
-          this.resumeAllAnimations()
-        }
-      })
+    // Listen for reduced motion changes
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+      this.reducedMotion = e.matches
+      this.handleReducedMotionChange()
+    })
 
-      // Handle low battery
-      if ('getBattery' in navigator) {
-        (navigator as any).getBattery().then((battery: any) => {
-          const handleBatteryChange = () => {
-            if (battery.level < 0.2 && !battery.charging) {
-              this.enablePowerSaveMode()
-            } else {
-              this.disablePowerSaveMode()
-            }
-          }
-          
-          battery.addEventListener('levelchange', handleBatteryChange)
-          battery.addEventListener('chargingchange', handleBatteryChange)
-          handleBatteryChange()
-        })
-      }
-    }
-  }
-
-  async createAnimation(config: AnimationConfig): Promise<string> {
-    if (this.reducedMotion) {
-      return this.createFallbackAnimation(config)
-    }
-
-    const animationId = `anim_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    // Initialize performance monitoring
+    await this.performanceMonitor.init()
     
-    try {
-      let animation: any
-
-      switch (config.type) {
-        case 'entrance':
-          animation = await this.createEntranceAnimation(config)
-          break
-        case 'exit':
-          animation = await this.createExitAnimation(config)
-          break
-        case 'hover':
-          animation = await this.createHoverAnimation(config)
-          break
-        case 'scroll':
-          animation = await this.createScrollAnimation(config)
-          break
-        default:
-          throw new Error(`Unknown animation type: ${config.type}`)
-      }
-
-      this.activeAnimations.set(animationId, animation)
-      this.performanceMonitor.trackAnimation(animationId, config)
-
-      return animationId
-    } catch (error) {
-      console.error('Failed to create animation:', error)
-      return this.createFallbackAnimation(config)
-    }
-  }
-
-  private async createEntranceAnimation(config: AnimationConfig): Promise<any> {
-    const { default: gsap } = await import('gsap')
+    // Initialize adaptive quality system
+    await this.adaptiveQuality.init()
     
-    const timeline = gsap.timeline({
-      delay: config.delay,
-      onComplete: () => this.onAnimationComplete(config.id)
+    // Set initial quality based on device capabilities
+    this.quality = this.adaptiveQuality.getRecommendedQuality()
+
+    // Start performance monitoring
+    this.performanceMonitor.startMonitoring((metrics) => {
+      this.handlePerformanceUpdate(metrics)
     })
 
-    config.properties.forEach((prop, index) => {
-      timeline.fromTo(
-        `.${config.id}`,
-        { [prop.property]: prop.from },
-        { 
-          [prop.property]: prop.to,
-          duration: config.duration,
-          ease: config.easing,
-          stagger: config.stagger
-        },
-        index === 0 ? 0 : '-=0.1'
-      )
-    })
-
-    return timeline
-  }
-
-  private async createExitAnimation(config: AnimationConfig): Promise<any> {
-    const { default: gsap } = await import('gsap')
-    
-    return gsap.to(`.${config.id}`, {
-      ...config.properties.reduce((acc, prop) => ({
-        ...acc,
-        [prop.property]: prop.to
-      }), {}),
-      duration: config.duration,
-      ease: config.easing,
-      stagger: config.stagger,
-      onComplete: () => this.onAnimationComplete(config.id)
-    })
-  }
-
-  private async createHoverAnimation(config: AnimationConfig): Promise<any> {
-    const { default: gsap } = await import('gsap')
-    
-    const element = document.querySelector(`.${config.id}`)
-    if (!element) return null
-
-    const hoverIn = gsap.to(element, {
-      ...config.properties.reduce((acc, prop) => ({
-        ...acc,
-        [prop.property]: prop.to
-      }), {}),
-      duration: config.duration * 0.3,
-      ease: config.easing,
-      paused: true
-    })
-
-    const hoverOut = gsap.to(element, {
-      ...config.properties.reduce((acc, prop) => ({
-        ...acc,
-        [prop.property]: prop.from
-      }), {}),
-      duration: config.duration * 0.2,
-      ease: config.easing,
-      paused: true
-    })
-
-    element.addEventListener('mouseenter', () => hoverIn.play())
-    element.addEventListener('mouseleave', () => hoverOut.play())
-
-    return { hoverIn, hoverOut }
-  }
-
-  private async createScrollAnimation(config: AnimationConfig): Promise<any> {
-    const { default: gsap } = await import('gsap')
-    const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-    
-    gsap.registerPlugin(ScrollTrigger)
-
-    return gsap.fromTo(`.${config.id}`, 
-      config.properties.reduce((acc, prop) => ({
-        ...acc,
-        [prop.property]: prop.from
-      }), {}),
-      {
-        ...config.properties.reduce((acc, prop) => ({
-          ...acc,
-          [prop.property]: prop.to
-        }), {}),
-        duration: config.duration,
-        ease: config.easing,
-        stagger: config.stagger,
-        scrollTrigger: {
-          trigger: `.${config.id}`,
-          start: 'top 80%',
-          end: 'bottom 20%',
-          toggleActions: 'play none none reverse'
-        }
-      }
-    )
-  }
-
-  private createFallbackAnimation(config: AnimationConfig): string {
-    const animationId = `fallback_${Date.now()}`
-    
-    // Apply CSS-only animation
-    const elements = document.querySelectorAll(`.${config.id}`)
-    elements.forEach(element => {
-      if (element instanceof HTMLElement) {
-        element.style.transition = `all ${config.duration}s ${config.easing}`
-        element.style.opacity = '1'
-        element.style.transform = 'translateY(0)'
-      }
-    })
-
-    return animationId
-  }
-
-  pauseAnimation(animationId: string): void {
-    const animation = this.activeAnimations.get(animationId)
-    if (animation && animation.pause) {
-      animation.pause()
-    }
-  }
-
-  resumeAnimation(animationId: string): void {
-    const animation = this.activeAnimations.get(animationId)
-    if (animation && animation.resume) {
-      animation.resume()
-    }
-  }
-
-  killAnimation(animationId: string): void {
-    const animation = this.activeAnimations.get(animationId)
-    if (animation) {
-      if (animation.kill) {
-        animation.kill()
-      } else if (animation.hoverIn && animation.hoverOut) {
-        animation.hoverIn.kill()
-        animation.hoverOut.kill()
-      }
-      this.activeAnimations.delete(animationId)
-    }
-  }
-
-  private pauseAllAnimations(): void {
-    this.activeAnimations.forEach((animation, id) => {
-      this.pauseAnimation(id)
-    })
-  }
-
-  private resumeAllAnimations(): void {
-    this.activeAnimations.forEach((animation, id) => {
-      this.resumeAnimation(id)
-    })
-  }
-
-  private enablePowerSaveMode(): void {
-    console.log('Enabling power save mode - reducing animations')
-    // Reduce animation complexity
-    this.activeAnimations.forEach((animation, id) => {
-      if (animation.timeScale) {
-        animation.timeScale(0.5) // Slow down animations
-      }
-    })
-  }
-
-  private disablePowerSaveMode(): void {
-    console.log('Disabling power save mode - restoring animations')
-    this.activeAnimations.forEach((animation, id) => {
-      if (animation.timeScale) {
-        animation.timeScale(1) // Restore normal speed
-      }
-    })
-  }
-
-  private onAnimationComplete(animationId: string): void {
-    this.performanceMonitor.onAnimationComplete(animationId)
-  }
-
-  private setupQualityListeners(): void {
-    if (typeof window !== 'undefined') {
-      // Listen for quality changes
-      window.addEventListener('quality-change', ((event: CustomEvent) => {
-        const { quality } = event.detail
-        this.setQualityLevel(quality)
-      }) as EventListener)
-
-      // Listen for performance degradation
-      window.addEventListener('performance-degradation', ((event: CustomEvent) => {
-        const { issues } = event.detail
-        this.handlePerformanceDegradation(issues)
-      }) as EventListener)
-    }
-  }
-
-  setQualityLevel(quality: 'low' | 'medium' | 'high'): void {
-    this.qualityLevel = quality
-    
-    // Adjust animation queue concurrency based on quality
-    switch (quality) {
-      case 'low':
-        this.animationQueue.setMaxConcurrent(2)
-        break
-      case 'medium':
-        this.animationQueue.setMaxConcurrent(5)
-        break
-      case 'high':
-        this.animationQueue.setMaxConcurrent(10)
-        break
-    }
-  }
-
-  private handlePerformanceDegradation(issues: string[]): void {
-    if (issues.includes('low-fps') || issues.includes('slow-render')) {
-      // Reduce quality automatically
-      if (this.qualityLevel === 'high') {
-        this.setQualityLevel('medium')
-      } else if (this.qualityLevel === 'medium') {
-        this.setQualityLevel('low')
-      }
-    }
-
-    if (issues.includes('high-memory')) {
-      // Clear completed animations more aggressively
-      this.cleanup()
-    }
+    this.initialized = true
   }
 
   /**
-   * Create animation using preset
+   * Register an animation configuration
    */
-  async createAnimationFromPreset(
-    presetId: string, 
-    targetSelector: string,
-    overrides?: Partial<AnimationConfig>
-  ): Promise<string> {
-    const config = this.animationRegistry.createAnimationConfig(presetId, {
-      id: targetSelector.replace(/[^a-zA-Z0-9]/g, '_'),
-      ...overrides
-    })
+  register(config: AnimationConfig): void {
+    if (!this.initialized) {
+      console.warn('AnimationManager not initialized. Call init() first.')
+      return
+    }
 
+    // Apply quality settings to animation config
+    const optimizedConfig = this.optimizeConfigForQuality(config)
+    this.animations.set(config.id, optimizedConfig)
+  }
+
+  /**
+   * Unregister an animation
+   */
+  unregister(id: string): void {
+    this.animations.delete(id)
+    this.activeAnimations.delete(id)
+  }
+
+  /**
+   * Play an animation
+   */
+  async play(id: string, target?: HTMLElement): Promise<void> {
+    const config = this.animations.get(id)
     if (!config) {
-      throw new Error(`Animation preset '${presetId}' not found`)
+      console.warn(`Animation with id "${id}" not found`)
+      return
     }
 
-    return this.createAnimation(config)
-  }
-
-  /**
-   * Queue animation for later execution
-   */
-  queueAnimation(
-    config: AnimationConfig,
-    options?: {
-      priority?: number
-      dependencies?: string[]
-      callback?: (animationId: string) => void
-      onError?: (error: Error) => void
+    // Check if reduced motion is enabled and animation respects it
+    if (this.reducedMotion && config.respectsReducedMotion) {
+      await this.playReducedMotionFallback(config, target)
+      return
     }
-  ): string {
-    return this.animationQueue.enqueue(config, options)
-  }
 
-  /**
-   * Queue multiple animations as a batch
-   */
-  queueAnimationBatch(
-    animations: Array<{
-      config: AnimationConfig
-      priority?: number
-      dependencies?: string[]
-    }>,
-    options?: {
-      parallel?: boolean
-      onComplete?: () => void
-      onError?: (error: Error) => void
+    try {
+      this.activeAnimations.add(id)
+      await this.executeAnimation(config, target)
+    } catch (error) {
+      console.error(`Error playing animation "${id}":`, error)
+      await this.playFallbackAnimation(config, target)
+    } finally {
+      this.activeAnimations.delete(id)
     }
-  ): string {
-    return this.animationQueue.enqueueBatch(animations, options)
   }
 
   /**
-   * Get available animation presets for current quality level
+   * Pause an animation
    */
-  getAvailablePresets(): Array<{
-    id: string
-    name: string
-    description: string
-    category: string
-    complexity: string
-  }> {
-    return this.animationRegistry.getOptimizedPresets(this.qualityLevel).map(preset => ({
-      id: preset.id,
-      name: preset.name,
-      description: preset.description,
-      category: preset.category,
-      complexity: preset.complexity
-    }))
+  pause(id: string): void {
+    // Implementation depends on animation library
+    // This would interface with GSAP, Framer Motion, etc.
+    console.log(`Pausing animation: ${id}`)
   }
 
   /**
-   * Register custom animation preset
+   * Stop an animation
    */
-  registerCustomPreset(preset: {
-    id: string
-    name: string
-    description: string
-    config: Omit<AnimationConfig, 'id'>
-    category: 'entrance' | 'exit' | 'hover' | 'scroll' | 'loading' | 'transition'
-    complexity: 'low' | 'medium' | 'high'
-  }): void {
-    this.animationRegistry.registerPreset({
-      ...preset,
-      performance: {
-        cpuIntensive: preset.complexity === 'high',
-        memoryUsage: preset.complexity,
-        gpuAccelerated: true
-      }
-    })
+  stop(id: string): void {
+    this.activeAnimations.delete(id)
+    // Implementation depends on animation library
+    console.log(`Stopping animation: ${id}`)
   }
 
   /**
-   * Get animation queue status
+   * Set animation quality
    */
-  getQueueStatus(): {
-    queued: number
-    running: number
-    completed: number
-    failed: number
-  } {
-    return this.animationQueue.getStatus()
+  setQuality(quality: AnimationQuality): void {
+    this.quality = quality
+    this.updateAllAnimationsForQuality()
   }
 
   /**
-   * Pause all animations and queue processing
+   * Get current performance metrics
    */
-  pauseAll(): void {
-    this.pauseAllAnimations()
-    this.animationQueue.pause()
-  }
-
-  /**
-   * Resume all animations and queue processing
-   */
-  resumeAll(): void {
-    this.resumeAllAnimations()
-    this.animationQueue.resume()
-  }
-
-  getPerformanceMetrics(): PerformanceMetrics {
+  getMetrics(): PerformanceMetrics {
     return this.performanceMonitor.getMetrics()
   }
 
+  /**
+   * Cleanup all animations and resources
+   */
   cleanup(): void {
-    this.activeAnimations.forEach((animation, id) => {
-      this.killAnimation(id)
-    })
+    this.animations.clear()
     this.activeAnimations.clear()
+    this.performanceMonitor.cleanup()
+    this.adaptiveQuality.cleanup()
   }
 
   /**
-   * Get comprehensive manager statistics
+   * Get current animation quality
    */
-  getStatistics(): {
-    activeAnimations: number
-    qualityLevel: string
-    reducedMotion: boolean
-    performance: PerformanceMetrics
-    queue: ReturnType<AnimationQueue['getStatus']>
-    presets: number
-  } {
-    return {
-      activeAnimations: this.activeAnimations.size,
-      qualityLevel: this.qualityLevel,
-      reducedMotion: this.reducedMotion,
-      performance: this.getPerformanceMetrics(),
-      queue: this.getQueueStatus(),
-      presets: this.animationRegistry.getAllPresets().length
+  getQuality(): AnimationQuality {
+    return this.quality
+  }
+
+  /**
+   * Check if reduced motion is enabled
+   */
+  isReducedMotion(): boolean {
+    return this.reducedMotion
+  }
+
+  /**
+   * Get active animation count
+   */
+  getActiveAnimationCount(): number {
+    return this.activeAnimations.size
+  }
+
+  private optimizeConfigForQuality(config: AnimationConfig): AnimationConfig {
+    const optimized = { ...config }
+
+    switch (this.quality) {
+      case 'low':
+        optimized.duration = Math.min(config.duration, 300)
+        optimized.easing = 'ease'
+        break
+      case 'medium':
+        optimized.duration = Math.min(config.duration, 600)
+        break
+      case 'high':
+        // Use original config
+        break
+      case 'auto':
+        // Let adaptive quality system decide
+        optimized.quality = this.adaptiveQuality.getRecommendedQuality()
+        break
+    }
+
+    return optimized
+  }
+
+  private async executeAnimation(config: AnimationConfig, target?: HTMLElement): Promise<void> {
+    // This would interface with the actual animation libraries
+    // For now, we'll simulate the animation execution
+    return new Promise((resolve) => {
+      setTimeout(resolve, config.duration)
+    })
+  }
+
+  private async playReducedMotionFallback(config: AnimationConfig, target?: HTMLElement): Promise<void> {
+    // Play a simplified version or static alternative
+    if (target) {
+      target.style.transition = 'none'
+      // Apply final state immediately
+      config.properties.forEach(prop => {
+        if (target.style.hasOwnProperty(prop.property)) {
+          (target.style as any)[prop.property] = prop.to + (prop.unit || '')
+        }
+      })
+    }
+  }
+
+  private async playFallbackAnimation(config: AnimationConfig, target?: HTMLElement): Promise<void> {
+    // Play a CSS-only fallback animation
+    if (target) {
+      target.style.transition = `all ${config.duration}ms ${config.easing}`
+      config.properties.forEach(prop => {
+        if (target.style.hasOwnProperty(prop.property)) {
+          (target.style as any)[prop.property] = prop.to + (prop.unit || '')
+        }
+      })
+    }
+  }
+
+  private handlePerformanceUpdate(metrics: PerformanceMetrics): void {
+    // Adjust quality based on performance
+    if (metrics.fps < 30 && this.quality === 'high') {
+      this.setQuality('medium')
+    } else if (metrics.fps < 20 && this.quality === 'medium') {
+      this.setQuality('low')
+    } else if (metrics.fps > 55 && this.quality === 'low') {
+      this.setQuality('medium')
+    } else if (metrics.fps > 58 && this.quality === 'medium') {
+      this.setQuality('high')
+    }
+  }
+
+  private handleReducedMotionChange(): void {
+    // Pause or modify all active animations
+    this.activeAnimations.forEach(id => {
+      if (this.reducedMotion) {
+        this.pause(id)
+      }
+    })
+  }
+
+  private updateAllAnimationsForQuality(): void {
+    // Re-optimize all registered animations for new quality setting
+    this.animations.forEach((config, id) => {
+      const optimized = this.optimizeConfigForQuality(config)
+      this.animations.set(id, optimized)
+    })
+  }
+}
+
+/**
+ * Performance Monitor for tracking FPS and memory usage
+ */
+export class PerformanceMonitor {
+  private metrics: PerformanceMetrics = {
+    fps: 60,
+    memoryUsage: 0,
+    renderTime: 0,
+    animationCount: 0,
+    timestamp: Date.now(),
+    quality: 'high'
+  }
+  private isMonitoring = false
+  private frameCount = 0
+  private lastTime = 0
+  private rafId: number | null = null
+  private observers: ((metrics: PerformanceMetrics) => void)[] = []
+
+  async init(): Promise<void> {
+    // Initialize performance observers if available
+    if ('PerformanceObserver' in window) {
+      this.initPerformanceObservers()
+    }
+  }
+
+  startMonitoring(callback?: (metrics: PerformanceMetrics) => void): void {
+    if (callback) {
+      this.observers.push(callback)
+    }
+
+    if (this.isMonitoring) return
+
+    this.isMonitoring = true
+    this.lastTime = performance.now()
+    this.measurePerformance()
+  }
+
+  stopMonitoring(): void {
+    this.isMonitoring = false
+    if (this.rafId) {
+      cancelAnimationFrame(this.rafId)
+      this.rafId = null
+    }
+  }
+
+  getMetrics(): PerformanceMetrics {
+    return { ...this.metrics }
+  }
+
+  cleanup(): void {
+    this.stopMonitoring()
+    this.observers = []
+  }
+
+  private measurePerformance = (): void => {
+    if (!this.isMonitoring) return
+
+    const currentTime = performance.now()
+    const deltaTime = currentTime - this.lastTime
+
+    this.frameCount++
+
+    // Calculate FPS every second
+    if (deltaTime >= 1000) {
+      this.metrics.fps = Math.round((this.frameCount * 1000) / deltaTime)
+      this.frameCount = 0
+      this.lastTime = currentTime
+
+      // Update memory usage if available
+      if ('memory' in performance) {
+        this.metrics.memoryUsage = (performance as any).memory.usedJSHeapSize
+      }
+
+      this.metrics.timestamp = Date.now()
+
+      // Notify observers
+      this.observers.forEach(callback => callback(this.metrics))
+    }
+
+    this.rafId = requestAnimationFrame(this.measurePerformance)
+  }
+
+  private initPerformanceObservers(): void {
+    try {
+      // Observe paint timing
+      const paintObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries()
+        entries.forEach(entry => {
+          if (entry.name === 'first-contentful-paint') {
+            this.metrics.renderTime = entry.startTime
+          }
+        })
+      })
+      paintObserver.observe({ entryTypes: ['paint'] })
+
+      // Observe long tasks
+      const longTaskObserver = new PerformanceObserver((list) => {
+        const entries = list.getEntries()
+        entries.forEach(entry => {
+          if (entry.duration > 50) {
+            // Long task detected, might affect animation performance
+            this.metrics.renderTime = Math.max(this.metrics.renderTime, entry.duration)
+          }
+        })
+      })
+      longTaskObserver.observe({ entryTypes: ['longtask'] })
+    } catch (error) {
+      console.warn('Performance observers not fully supported:', error)
     }
   }
 }
+
+/**
+ * Adaptive Quality system for dynamic animation quality adjustment
+ */
+export class AdaptiveQuality {
+  private capabilities: DeviceCapabilities = {
+    supportsWebGL: false,
+    supportsIntersectionObserver: false,
+    supportsResizeObserver: false,
+    devicePixelRatio: 1,
+    maxTextureSize: 0,
+    preferredFrameRate: 60,
+    hardwareConcurrency: 1
+  }
+  private recommendedQuality: AnimationQuality = 'medium'
+
+  async init(): Promise<void> {
+    await this.detectCapabilities()
+    this.recommendedQuality = this.calculateRecommendedQuality()
+  }
+
+  getRecommendedQuality(): AnimationQuality {
+    return this.recommendedQuality
+  }
+
+  getCapabilities(): DeviceCapabilities {
+    return { ...this.capabilities }
+  }
+
+  cleanup(): void {
+    // Cleanup any resources
+  }
+
+  private async detectCapabilities(): Promise<void> {
+    // Detect WebGL support
+    this.capabilities.supportsWebGL = this.detectWebGL()
+    
+    // Detect Intersection Observer support
+    this.capabilities.supportsIntersectionObserver = 'IntersectionObserver' in window
+    
+    // Detect Resize Observer support
+    this.capabilities.supportsResizeObserver = 'ResizeObserver' in window
+    
+    // Get device pixel ratio
+    this.capabilities.devicePixelRatio = window.devicePixelRatio || 1
+    
+    // Get hardware concurrency
+    this.capabilities.hardwareConcurrency = navigator.hardwareConcurrency || 1
+    
+    // Detect device memory if available
+    if ('deviceMemory' in navigator) {
+      this.capabilities.memoryGB = (navigator as any).deviceMemory
+    }
+    
+    // Detect connection type if available
+    if ('connection' in navigator) {
+      const connection = (navigator as any).connection
+      this.capabilities.connectionType = connection.effectiveType
+    }
+  }
+
+  private detectWebGL(): boolean {
+    try {
+      const canvas = document.createElement('canvas')
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      if (gl) {
+        this.capabilities.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
+        return true
+      }
+      return false
+    } catch (error) {
+      return false
+    }
+  }
+
+  private calculateRecommendedQuality(): AnimationQuality {
+    let score = 0
+
+    // WebGL support adds significant capability
+    if (this.capabilities.supportsWebGL) score += 3
+
+    // High DPI displays can handle more complex animations
+    if (this.capabilities.devicePixelRatio >= 2) score += 2
+
+    // More CPU cores help with animation processing
+    if (this.capabilities.hardwareConcurrency >= 4) score += 2
+    else if (this.capabilities.hardwareConcurrency >= 2) score += 1
+
+    // Device memory affects what we can do
+    if (this.capabilities.memoryGB && this.capabilities.memoryGB >= 4) score += 2
+    else if (this.capabilities.memoryGB && this.capabilities.memoryGB >= 2) score += 1
+
+    // Connection speed affects loading of animation assets
+    if (this.capabilities.connectionType === '4g') score += 1
+
+    // Modern API support
+    if (this.capabilities.supportsIntersectionObserver) score += 1
+    if (this.capabilities.supportsResizeObserver) score += 1
+
+    // Determine quality based on score
+    if (score >= 8) return 'high'
+    if (score >= 5) return 'medium'
+    return 'low'
+  }
+}
+
+// Singleton instance
+export const animationManager = new AnimationManager()

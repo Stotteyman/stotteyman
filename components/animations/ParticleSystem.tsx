@@ -1,283 +1,268 @@
+/**
+ * React Particle System Component
+ * WebGL-accelerated particle system with Canvas fallback
+ */
+
 'use client'
 
-import { useEffect, useRef, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
+import { ParticleSystem as ParticleSystemCore } from '@/lib/particles/ParticleSystem'
 import { ParticleSystemProps } from '@/types/animations'
-import { ParticleSystem as ParticleSystemClass } from '@/lib/particles/ParticleSystem'
-import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useReducedMotion } from '@/hooks/useAdaptiveQuality'
 import { AnimationErrorBoundary } from './AnimationErrorBoundary'
 
-interface ParticleSystemComponentProps extends Partial<ParticleSystemProps> {
+interface ParticleSystemComponentProps extends ParticleSystemProps {
   className?: string
   style?: React.CSSProperties
+  width?: number
+  height?: number
+  autoStart?: boolean
+  onError?: (error: Error) => void
+  fallbackComponent?: React.ComponentType
 }
 
-export function ParticleSystem({
-  count = 50,
-  speed = 1,
-  size = { min: 1, max: 3 },
-  colors = ['#3b82f6', '#8b5cf6', '#ec4899'],
-  interactive = true,
-  density = 'medium',
-  className = '',
-  style = {}
-}: ParticleSystemComponentProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const particleSystemRef = useRef<ParticleSystemClass | null>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  
-  const { qualitySettings, canUseAdvancedEffects } = useAdaptiveQuality()
-  const prefersReducedMotion = useReducedMotion()
+export interface ParticleSystemRef {
+  start: () => void
+  stop: () => void
+  updateConfig: (config: Partial<ParticleSystemProps>) => void
+  getMetrics: () => any
+  destroy: () => void
+}
 
-  // Adjust config based on quality settings
-  const adjustedConfig: ParticleSystemProps = useMemo(() => ({
-    count: prefersReducedMotion ? 0 : Math.floor(count * (qualitySettings.particleCount / 100)),
-    speed: prefersReducedMotion ? 0 : speed * 0.5,
-    size,
-    colors,
-    interactive: interactive && canUseAdvancedEffects,
-    density: qualitySettings.animationComplexity === 'low' ? 'low' : density
-  }), [count, speed, size, colors, interactive, density, prefersReducedMotion, qualitySettings, canUseAdvancedEffects])
+const ParticleSystemComponent = forwardRef<ParticleSystemRef, ParticleSystemComponentProps>(
+  ({
+    className = '',
+    style = {},
+    width,
+    height,
+    autoStart = true,
+    onError,
+    fallbackComponent: FallbackComponent,
+    ...particleConfig
+  }, ref) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const particleSystemRef = useRef<ParticleSystemCore | null>(null)
+    const [isInitialized, setIsInitialized] = useState(false)
+    const [error, setError] = useState<Error | null>(null)
+    const reducedMotion = useReducedMotion()
 
-  useEffect(() => {
-    if (!canvasRef.current || prefersReducedMotion) return
+    // Expose methods through ref
+    useImperativeHandle(ref, () => ({
+      start: () => particleSystemRef.current?.start(),
+      stop: () => particleSystemRef.current?.stop(),
+      updateConfig: (config: Partial<ParticleSystemProps>) => {
+        particleSystemRef.current?.updateConfig(config)
+      },
+      getMetrics: () => particleSystemRef.current?.getPerformanceMetrics(),
+      destroy: () => particleSystemRef.current?.destroy()
+    }))
 
-    try {
-      const particleSystem = new ParticleSystemClass(canvasRef.current, adjustedConfig)
-      particleSystemRef.current = particleSystem
-      
-      particleSystem.start()
-      setIsInitialized(true)
-      setError(null)
+    useEffect(() => {
+      if (!canvasRef.current || reducedMotion) return
+
+      const initializeParticleSystem = async () => {
+        try {
+          const canvas = canvasRef.current!
+          const particleSystem = new ParticleSystemCore(canvas, {
+            respectsReducedMotion: true,
+            ...particleConfig
+          })
+
+          particleSystemRef.current = particleSystem
+
+          if (autoStart) {
+            particleSystem.start()
+          }
+
+          setIsInitialized(true)
+          setError(null)
+        } catch (err) {
+          const error = err instanceof Error ? err : new Error('Failed to initialize particle system')
+          setError(error)
+          if (onError) {
+            onError(error)
+          }
+        }
+      }
+
+      initializeParticleSystem()
 
       return () => {
-        particleSystem.destroy()
-        particleSystemRef.current = null
+        if (particleSystemRef.current) {
+          particleSystemRef.current.destroy()
+          particleSystemRef.current = null
+        }
       }
-    } catch (err) {
-      console.error('Failed to initialize particle system:', err)
-      setError(err instanceof Error ? err.message : 'Unknown error')
-      return undefined
-    }
-  }, [adjustedConfig, prefersReducedMotion, canUseAdvancedEffects])
+    }, [reducedMotion, autoStart, onError])
 
-  // Update config when quality changes
-  useEffect(() => {
-    if (particleSystemRef.current && isInitialized) {
-      particleSystemRef.current.updateConfig(adjustedConfig)
-    }
-  }, [adjustedConfig, isInitialized])
-
-  // Handle resize
-  useEffect(() => {
-    const handleResize = () => {
-      if (particleSystemRef.current) {
-        particleSystemRef.current.resize()
+    // Update config when props change
+    useEffect(() => {
+      if (particleSystemRef.current && isInitialized) {
+        particleSystemRef.current.updateConfig(particleConfig)
       }
-    }
+    }, [particleConfig, isInitialized])
 
-    window.addEventListener('resize', handleResize, { passive: true })
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Handle visibility changes
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!particleSystemRef.current) return
-
-      if (document.hidden) {
-        particleSystemRef.current.stop()
-      } else {
-        particleSystemRef.current.start()
+    // Handle reduced motion
+    if (reducedMotion) {
+      if (FallbackComponent) {
+        return <FallbackComponent />
       }
+      return (
+        <div 
+          className={`particle-system-static ${className}`}
+          style={{
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1))',
+            ...style,
+            width: width || '100%',
+            height: height || '200px'
+          }}
+        />
+      )
     }
 
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
-  }, [])
+    // Handle errors
+    if (error) {
+      if (FallbackComponent) {
+        return <FallbackComponent />
+      }
+      return (
+        <div 
+          className={`particle-system-error ${className}`}
+          style={{
+            background: 'linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#6b7280',
+            fontSize: '0.875rem',
+            ...style,
+            width: width || '100%',
+            height: height || '200px'
+          }}
+        >
+          Particle system unavailable
+        </div>
+      )
+    }
 
-  if (prefersReducedMotion) {
     return (
-      <div 
-        className={`particle-system-fallback ${className}`}
-        style={style}
-      >
-        {/* Static decorative elements as fallback */}
-        <div className="static-particles">
-          {Array.from({ length: Math.min(count, 10) }).map((_, i) => (
-            <div
-              key={i}
-              className="static-particle"
-              style={{
-                position: 'absolute',
-                width: `${size.min + Math.random() * (size.max - size.min)}px`,
-                height: `${size.min + Math.random() * (size.max - size.min)}px`,
-                backgroundColor: colors[i % colors.length],
-                borderRadius: '50%',
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                opacity: 0.3
-              }}
-            />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className={`particle-system-error ${className}`} style={style}>
-        <div className="error-message">
-          <p>Unable to load particle system</p>
-          {process.env.NODE_ENV === 'development' && (
-            <small>{error}</small>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <AnimationErrorBoundary
-      fallback={
-        <div className={`particle-system-fallback ${className}`} style={style}>
-          <div className="fallback-gradient" />
-        </div>
-      }
-    >
       <canvas
         ref={canvasRef}
         className={`particle-system ${className}`}
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: interactive ? 'auto' : 'none',
-          ...style
+          display: 'block',
+          ...style,
+          width: width || '100%',
+          height: height || '200px'
         }}
-        aria-hidden="true"
+        width={width}
+        height={height}
       />
-    </AnimationErrorBoundary>
-  )
-}
-
-// WebGL-enhanced particle system for high-end devices
-export function WebGLParticleSystem(props: ParticleSystemComponentProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const particleSystemRef = useRef<any>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  
-  const { qualitySettings, canUseWebGL } = useAdaptiveQuality()
-  const prefersReducedMotion = useReducedMotion()
-
-  // Fall back to canvas version if WebGL not available
-  if (!canUseWebGL) {
-    return <ParticleSystem {...props} />
+    )
   }
+)
 
-  const adjustedConfig: ParticleSystemProps = useMemo(() => ({
-    count: prefersReducedMotion ? 0 : Math.floor((props.count || 50) * (qualitySettings.particleCount / 100)),
-    speed: prefersReducedMotion ? 0 : (props.speed || 1) * 0.5,
-    size: props.size || { min: 1, max: 3 },
-    colors: props.colors || ['#3b82f6', '#8b5cf6', '#ec4899'],
-    interactive: (props.interactive !== false) && qualitySettings.enableAdvancedEffects,
-    density: qualitySettings.animationComplexity === 'low' ? 'low' : (props.density || 'medium')
-  }), [props, prefersReducedMotion, qualitySettings])
+ParticleSystemComponent.displayName = 'ParticleSystem'
 
-  useEffect(() => {
-    if (!canvasRef.current || prefersReducedMotion) return
-
-    const initWebGLSystem = async () => {
-      try {
-        const { WebGLParticleSystem } = await import('@/lib/particles/WebGLParticleSystem')
-        
-        if (!WebGLParticleSystem.isSupported()) {
-          throw new Error('WebGL not supported')
-        }
-
-        const particleSystem = new WebGLParticleSystem(canvasRef.current!, adjustedConfig)
-        particleSystemRef.current = particleSystem
-        
-        particleSystem.start()
-        setIsInitialized(true)
-        setError(null)
-
-        return () => {
-          particleSystem.destroy()
-          particleSystemRef.current = null
-        }
-      } catch (err) {
-        console.error('Failed to initialize WebGL particle system:', err)
-        setError(err instanceof Error ? err.message : 'Unknown error')
-        return undefined
-      }
-    }
-
-    initWebGLSystem()
-  }, [adjustedConfig, prefersReducedMotion])
-
-  if (prefersReducedMotion || error) {
-    return <ParticleSystem {...props} />
-  }
-
-  return (
+// Wrapped with error boundary
+export const ParticleSystem = React.forwardRef<ParticleSystemRef, ParticleSystemComponentProps>(
+  (props, ref) => (
     <AnimationErrorBoundary
-      fallback={<ParticleSystem {...props} />}
+      componentName="ParticleSystem"
+      animationId="particle-system"
+      fallbackStrategy="static"
     >
-      <canvas
-        ref={canvasRef}
-        className={`webgl-particle-system ${props.className || ''}`}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          pointerEvents: props.interactive ? 'auto' : 'none',
-          ...props.style
-        }}
-        aria-hidden="true"
-      />
+      <ParticleSystemComponent {...props} ref={ref} />
     </AnimationErrorBoundary>
   )
-}
+)
 
-// Preset configurations
+ParticleSystem.displayName = 'ParticleSystem'
+
+/**
+ * Preset particle system configurations
+ */
 export const ParticlePresets = {
-  subtle: {
-    count: 20,
+  stars: {
+    count: 100,
     speed: 0.5,
-    size: { min: 1, max: 2 },
-    colors: ['#3b82f6', '#8b5cf6'],
-    density: 'low' as const
+    size: { min: 1, max: 3 },
+    colors: ['#ffffff', '#f0f9ff', '#dbeafe'],
+    interactive: false,
+    density: 'high' as const
   },
   
-  standard: {
-    count: 50,
-    speed: 1,
-    size: { min: 1, max: 3 },
-    colors: ['#3b82f6', '#8b5cf6', '#ec4899'],
+  fireflies: {
+    count: 30,
+    speed: 0.3,
+    size: { min: 3, max: 6 },
+    colors: ['#fbbf24', '#f59e0b', '#d97706'],
+    interactive: true,
     density: 'medium' as const
   },
   
-  intense: {
-    count: 100,
-    speed: 2,
+  bubbles: {
+    count: 20,
+    speed: 0.8,
+    size: { min: 5, max: 15 },
+    colors: ['#3b82f6', '#1d4ed8', '#1e40af'],
+    interactive: true,
+    density: 'low' as const
+  },
+  
+  snow: {
+    count: 80,
+    speed: 1.2,
     size: { min: 2, max: 5 },
-    colors: ['#3b82f6', '#8b5cf6', '#ec4899', '#06d6a0'],
+    colors: ['#ffffff', '#f8fafc', '#e2e8f0'],
+    interactive: false,
     density: 'high' as const
   },
   
   cosmic: {
-    count: 75,
-    speed: 0.8,
-    size: { min: 1, max: 4 },
-    colors: ['#ffffff', '#3b82f6', '#8b5cf6', '#ec4899'],
+    count: 60,
+    speed: 0.4,
+    size: { min: 2, max: 8 },
+    colors: ['#8b5cf6', '#a855f7', '#9333ea', '#7c3aed'],
+    interactive: true,
     density: 'medium' as const
+  },
+  
+  matrix: {
+    count: 150,
+    speed: 2,
+    size: { min: 1, max: 2 },
+    colors: ['#10b981', '#059669', '#047857'],
+    interactive: false,
+    density: 'high' as const
+  }
+}
+
+/**
+ * Hook for using particle system
+ */
+export function useParticleSystem(config: ParticleSystemProps) {
+  const particleRef = useRef<ParticleSystemRef>(null)
+  const [metrics, setMetrics] = useState(null)
+
+  const start = () => particleRef.current?.start()
+  const stop = () => particleRef.current?.stop()
+  const updateConfig = (newConfig: Partial<ParticleSystemProps>) => {
+    particleRef.current?.updateConfig(newConfig)
+  }
+
+  const getMetrics = () => {
+    const currentMetrics = particleRef.current?.getMetrics()
+    setMetrics(currentMetrics)
+    return currentMetrics
+  }
+
+  return {
+    particleRef,
+    start,
+    stop,
+    updateConfig,
+    getMetrics,
+    metrics
   }
 }

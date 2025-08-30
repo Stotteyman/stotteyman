@@ -1,370 +1,386 @@
+/**
+ * Scroll Animation Components
+ * Reusable components for various scroll-triggered animations
+ */
+
 'use client'
 
-import { useEffect, useRef, ReactNode, useState } from 'react'
-import { useAdvancedScrollAnimations } from '@/hooks/useAdvancedScrollAnimations'
-import { ScrollAnimationConfig } from '@/types/animations'
-import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
+import React, { ReactNode, useEffect, useRef } from 'react'
+import { useAdvancedScrollAnimations, useStaggeredScrollAnimation, useParallaxScroll, useTextRevealAnimation } from '@/hooks/useAdvancedScrollAnimations'
+import { useReducedMotion } from '@/hooks/useAdaptiveQuality'
 
-interface ScrollAnimationsProps {
+interface ScrollRevealProps {
   children: ReactNode
-  config?: Partial<ScrollAnimationConfig>
   className?: string
-  trigger?: 'viewport' | 'scroll' | 'hover'
-  stagger?: number
+  animation?: 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right' | 'scale' | 'rotate'
+  duration?: number
   delay?: number
+  threshold?: number
+  triggerOnce?: boolean
 }
 
-export function ScrollAnimations({
+export function ScrollReveal({
   children,
-  config,
   className = '',
-  trigger = 'viewport',
-  stagger = 0,
-  delay = 0
-}: ScrollAnimationsProps) {
+  animation = 'fade-up',
+  duration = 0.8,
+  delay = 0,
+  threshold = 0.1,
+  triggerOnce = true
+}: ScrollRevealProps) {
   const elementRef = useRef<HTMLDivElement>(null)
-  const [isVisible, setIsVisible] = useState(false)
-  const { registerElement, unregisterElement, isLoaded } = useAdvancedScrollAnimations()
-  const { shouldReduceMotion, quality } = useAdaptiveQuality()
+  const reducedMotion = useReducedMotion()
 
   useEffect(() => {
-    const element = elementRef.current
-    if (!element || !isLoaded) return
+    if (reducedMotion || !elementRef.current) return
 
-    // Skip animations if reduced motion is preferred
-    if (shouldReduceMotion) {
-      setIsVisible(true)
-      element.style.opacity = '1'
-      element.style.transform = 'none'
-      return
-    }
-
-    // Add delay if specified
-    const timeoutId = setTimeout(() => {
-      registerElement(element, config)
-      
-      // Set up intersection observer for visibility
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          setIsVisible(entry.isIntersecting)
-        },
-        { threshold: 0.1 }
-      )
-      
-      observer.observe(element)
-      
-      return () => {
-        observer.disconnect()
-      }
-    }, delay)
-
-    return () => {
-      clearTimeout(timeoutId)
-      if (element) {
-        unregisterElement(element)
-      }
-    }
-  }, [isLoaded, registerElement, unregisterElement, config, delay, shouldReduceMotion])
-
-  const getInitialStyles = () => {
-    if (shouldReduceMotion) {
-      return { opacity: 1, transform: 'none' }
-    }
-    
-    const intensity = quality === 'low' ? 0.5 : quality === 'high' ? 1.5 : 1
-    return {
-      opacity: 0,
-      transform: `translateY(${30 * intensity}px) scale(${0.95 + (0.05 * (1 - intensity))})`
-    }
-  }
-
-  return (
-    <div
-      ref={elementRef}
-      className={`scroll-animation-wrapper ${className} ${isVisible ? 'in-view' : ''}`}
-      style={getInitialStyles()}
-      aria-hidden={!isVisible}
-    >
-      {children}
-    </div>
-  )
-}
-
-interface StaggeredAnimationsProps {
-  children: ReactNode[]
-  staggerDelay?: number
-  className?: string
-  direction?: 'up' | 'down' | 'left' | 'right'
-}
-
-export function StaggeredAnimations({
-  children,
-  staggerDelay = 0.1,
-  className = '',
-  direction = 'up'
-}: StaggeredAnimationsProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [isInView, setIsInView] = useState(false)
-  const { isLoaded } = useAdvancedScrollAnimations()
-  const { shouldReduceMotion, quality } = useAdaptiveQuality()
-
-  useEffect(() => {
-    if (!isLoaded || !containerRef.current) return
-
-    const initializeStaggered = async () => {
+    const initializeAnimation = async () => {
       try {
-        const container = containerRef.current
-        if (!container) return
-
-        // Skip animations if reduced motion is preferred
-        if (shouldReduceMotion) {
-          const elements = container.children
-          Array.from(elements).forEach((element) => {
-            if (element instanceof HTMLElement) {
-              element.style.opacity = '1'
-              element.style.transform = 'none'
-            }
-          })
-          setIsInView(true)
-          return
-        }
-
-        const { default: gsap } = await import('gsap')
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-        
-        gsap.registerPlugin(ScrollTrigger)
-
-        const elements = container.children
-        if (!elements) return
-
-        // Adjust animation based on quality
-        const qualityMultiplier = quality === 'low' ? 0.5 : quality === 'high' ? 1.5 : 1
-        const adjustedStagger = staggerDelay * (quality === 'low' ? 0.5 : 1)
-        
-        // Set initial state
-        gsap.set(elements, {
-          opacity: 0,
-          y: direction === 'up' ? 50 * qualityMultiplier : direction === 'down' ? -50 * qualityMultiplier : 0,
-          x: direction === 'left' ? 50 * qualityMultiplier : direction === 'right' ? -50 * qualityMultiplier : 0,
-          scale: 0.9 + (0.1 * (1 - qualityMultiplier))
-        })
-
-        // Create staggered animation
-        gsap.to(elements, {
-          opacity: 1,
-          y: 0,
-          x: 0,
-          scale: 1,
-          duration: 0.8 * qualityMultiplier,
-          stagger: adjustedStagger,
-          ease: quality === 'low' ? 'power1.out' : 'power2.out',
-          scrollTrigger: {
-            trigger: container,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse',
-            onEnter: () => setIsInView(true),
-            onLeave: () => setIsInView(false),
-            onEnterBack: () => setIsInView(true),
-            onLeaveBack: () => setIsInView(false)
-          }
-        })
-      } catch (error) {
-        console.error('Failed to initialize staggered animations:', error)
-        
-        // Fallback CSS animation
-        const elements = containerRef.current?.children
-        if (elements) {
-          Array.from(elements).forEach((element, index) => {
-            if (element instanceof HTMLElement) {
-              setTimeout(() => {
-                element.style.transition = 'all 0.6s ease-out'
-                element.style.opacity = '1'
-                element.style.transform = 'translateY(0) scale(1)'
-              }, index * staggerDelay * 1000)
-            }
-          })
-          setIsInView(true)
-        }
-      }
-    }
-
-    initializeStaggered()
-  }, [isLoaded, staggerDelay, direction, shouldReduceMotion, quality])
-
-  return (
-    <div 
-      ref={containerRef} 
-      className={`staggered-animations ${className} ${isInView ? 'in-view' : ''}`}
-      role="group"
-      aria-label="Animated content group"
-    >
-      {children.map((child, index) => (
-        <div 
-          key={index} 
-          className="stagger-item"
-          style={{ 
-            opacity: shouldReduceMotion ? 1 : 0,
-            transform: shouldReduceMotion ? 'none' : undefined
-          }}
-        >
-          {child}
-        </div>
-      ))}
-    </div>
-  )
-}
-
-interface ParallaxScrollProps {
-  children: ReactNode
-  speed?: number
-  direction?: 'vertical' | 'horizontal'
-  className?: string
-}
-
-export function ParallaxScroll({
-  children,
-  speed = 0.5,
-  direction = 'vertical',
-  className = ''
-}: ParallaxScrollProps) {
-  const elementRef = useRef<HTMLDivElement>(null)
-  const { isLoaded } = useAdvancedScrollAnimations()
-
-  useEffect(() => {
-    if (!isLoaded || !elementRef.current) return
-
-    const initializeParallax = async () => {
-      try {
-        const { default: gsap } = await import('gsap')
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        const gsap = (await import('gsap')).gsap
+        const ScrollTrigger = (await import('gsap/ScrollTrigger')).ScrollTrigger
         
         gsap.registerPlugin(ScrollTrigger)
 
         const element = elementRef.current
         if (!element) return
 
-        gsap.to(element, {
-          [direction === 'vertical' ? 'yPercent' : 'xPercent']: -100 * speed,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: element,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: true
-          }
+        // Set initial state based on animation type
+        const initialState = getInitialState(animation)
+        const finalState = getFinalState(animation)
+
+        gsap.set(element, initialState)
+
+        ScrollTrigger.create({
+          trigger: element,
+          start: `top ${100 - threshold * 100}%`,
+          onEnter: () => {
+            gsap.to(element, {
+              ...finalState,
+              duration,
+              delay,
+              ease: 'power2.out'
+            })
+          },
+          once: triggerOnce
         })
       } catch (error) {
-        console.error('Failed to initialize parallax:', error)
+        console.error('Failed to initialize scroll reveal:', error)
+        // Fallback to CSS animation
+        if (elementRef.current) {
+          elementRef.current.classList.add('scroll-reveal-fallback')
+        }
       }
     }
 
-    initializeParallax()
-  }, [isLoaded, speed, direction])
+    initializeAnimation()
+  }, [animation, duration, delay, threshold, triggerOnce, reducedMotion])
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>
+  }
 
   return (
-    <div
-      ref={elementRef}
-      className={`parallax-scroll ${className}`}
-      style={{
-        willChange: 'transform'
-      }}
-    >
+    <div ref={elementRef} className={className}>
       {children}
     </div>
   )
 }
 
-interface RevealTextProps {
-  text: string
+interface StaggeredRevealProps {
+  children: ReactNode
   className?: string
-  animationType?: 'fade' | 'slide' | 'typewriter'
-  delay?: number
+  itemSelector?: string
+  stagger?: number
+  duration?: number
+  animation?: 'fade-up' | 'fade-down' | 'scale' | 'slide-left' | 'slide-right'
 }
 
-export function RevealText({
-  text,
+export function StaggeredReveal({
+  children,
   className = '',
-  animationType = 'slide',
-  delay = 0
-}: RevealTextProps) {
-  const textRef = useRef<HTMLDivElement>(null)
-  const { isLoaded } = useAdvancedScrollAnimations()
+  itemSelector = '.stagger-item',
+  stagger = 0.1,
+  duration = 0.6,
+  animation = 'fade-up'
+}: StaggeredRevealProps) {
+  const { containerRef, isVisible } = useStaggeredScrollAnimation(itemSelector, {
+    duration,
+    stagger,
+    from: getInitialState(animation),
+    to: getFinalState(animation)
+  })
+  const reducedMotion = useReducedMotion()
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>
+  }
+
+  return (
+    <div ref={containerRef as any} className={`${className} ${isVisible ? 'staggered-visible' : ''}`}>
+      {children}
+    </div>
+  )
+}
+
+interface ParallaxElementProps {
+  children: ReactNode
+  className?: string
+  speed?: number
+  direction?: 'vertical' | 'horizontal'
+  disabled?: boolean
+}
+
+export function ParallaxElement({
+  children,
+  className = '',
+  speed = 0.5,
+  direction = 'vertical',
+  disabled = false
+}: ParallaxElementProps) {
+  const { elementRef } = useParallaxScroll(speed, direction)
+  const reducedMotion = useReducedMotion()
+
+  if (reducedMotion || disabled) {
+    return <div className={className}>{children}</div>
+  }
+
+  return (
+    <div ref={elementRef as any} className={className}>
+      {children}
+    </div>
+  )
+}
+
+interface TextRevealProps {
+  children: ReactNode
+  className?: string
+  animation?: 'typewriter' | 'fade-up' | 'split-chars' | 'split-words'
+  as?: keyof JSX.IntrinsicElements
+}
+
+export function TextReveal({
+  children,
+  className = '',
+  animation = 'fade-up',
+  as: Component = 'div'
+}: TextRevealProps) {
+  const { textRef, isRevealed } = useTextRevealAnimation(animation)
+  const reducedMotion = useReducedMotion()
+
+  if (reducedMotion) {
+    return <Component className={className}>{children}</Component>
+  }
+
+  return (
+    <Component 
+      ref={textRef as any} 
+      className={`${className} ${isRevealed ? 'text-revealed' : ''}`}
+    >
+      {children}
+    </Component>
+  )
+}
+
+interface ScrollProgressProps {
+  className?: string
+  height?: string
+  backgroundColor?: string
+  progressColor?: string
+}
+
+export function ScrollProgress({
+  className = '',
+  height = '4px',
+  backgroundColor = 'rgba(255, 255, 255, 0.1)',
+  progressColor = '#3b82f6'
+}: ScrollProgressProps) {
+  const progressRef = useRef<HTMLDivElement>(null)
+  const reducedMotion = useReducedMotion()
 
   useEffect(() => {
-    if (!isLoaded || !textRef.current) return
+    if (reducedMotion) return
 
-    const initializeTextReveal = async () => {
-      try {
-        const { default: gsap } = await import('gsap')
-        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
-        
-        gsap.registerPlugin(ScrollTrigger)
+    const updateProgress = () => {
+      if (!progressRef.current) return
 
-        const element = textRef.current
-        if (!element) return
+      const scrollTop = window.pageYOffset
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercent = (scrollTop / docHeight) * 100
 
-        // Split text into characters or words
-        const words = text.split(' ')
-        element.innerHTML = words
-          .map(word => `<span class="word">${word}</span>`)
-          .join(' ')
+      progressRef.current.style.width = `${Math.min(scrollPercent, 100)}%`
+    }
 
-        const wordElements = element.querySelectorAll('.word')
+    const throttledUpdate = throttle(updateProgress, 16)
+    window.addEventListener('scroll', throttledUpdate, { passive: true })
+    
+    // Initial update
+    updateProgress()
 
-        // Set initial state based on animation type
-        switch (animationType) {
-          case 'fade':
-            gsap.set(wordElements, { opacity: 0 })
-            break
-          case 'slide':
-            gsap.set(wordElements, { opacity: 0, y: 30 })
-            break
-          case 'typewriter':
-            gsap.set(wordElements, { opacity: 0 })
-            break
-        }
+    return () => {
+      window.removeEventListener('scroll', throttledUpdate)
+    }
+  }, [reducedMotion])
 
-        // Create reveal animation
-        const timeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: element,
-            start: 'top 80%',
-            toggleActions: 'play none none reverse'
-          }
-        })
+  if (reducedMotion) return null
 
-        const animationProps: any = {
-          opacity: 1,
-          duration: animationType === 'typewriter' ? 0.05 : 0.6,
-          stagger: animationType === 'typewriter' ? 0.05 : 0.1,
-          ease: 'power2.out',
-          delay
-        }
-        
-        if (animationType === 'slide') {
-          animationProps.y = 0
-        }
-        
-        timeline.to(wordElements, animationProps)
-      } catch (error) {
-        console.error('Failed to initialize text reveal:', error)
-        
-        // Fallback: just show the text
-        if (textRef.current) {
-          textRef.current.textContent = text
-          textRef.current.style.opacity = '1'
-        }
+  return (
+    <div 
+      className={`fixed top-0 left-0 w-full z-50 ${className}`}
+      style={{ height, backgroundColor }}
+    >
+      <div
+        ref={progressRef}
+        className="h-full transition-all duration-150 ease-out"
+        style={{ backgroundColor: progressColor, width: '0%' }}
+      />
+    </div>
+  )
+}
+
+interface InfiniteScrollProps {
+  children: ReactNode
+  className?: string
+  speed?: number
+  direction?: 'left' | 'right'
+  pauseOnHover?: boolean
+}
+
+export function InfiniteScroll({
+  children,
+  className = '',
+  speed = 50,
+  direction = 'left',
+  pauseOnHover = true
+}: InfiniteScrollProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (reducedMotion || !containerRef.current) return
+
+    const container = containerRef.current
+    const content = container.firstElementChild as HTMLElement
+    if (!content) return
+
+    // Clone content for seamless loop
+    const clone = content.cloneNode(true) as HTMLElement
+    container.appendChild(clone)
+
+    const animationName = `infinite-scroll-${direction}`
+    const keyframes = `
+      @keyframes ${animationName} {
+        0% { transform: translateX(${direction === 'left' ? '0%' : '-100%'}); }
+        100% { transform: translateX(${direction === 'left' ? '-100%' : '0%'}); }
+      }
+    `
+
+    // Add keyframes to document
+    const style = document.createElement('style')
+    style.textContent = keyframes
+    document.head.appendChild(style)
+
+    // Apply animation
+    content.style.animation = `${animationName} ${speed}s linear infinite`
+    clone.style.animation = `${animationName} ${speed}s linear infinite`
+
+    // Pause on hover if enabled
+    if (pauseOnHover) {
+      const handleMouseEnter = () => {
+        content.style.animationPlayState = 'paused'
+        clone.style.animationPlayState = 'paused'
+      }
+
+      const handleMouseLeave = () => {
+        content.style.animationPlayState = 'running'
+        clone.style.animationPlayState = 'running'
+      }
+
+      container.addEventListener('mouseenter', handleMouseEnter)
+      container.addEventListener('mouseleave', handleMouseLeave)
+
+      return () => {
+        container.removeEventListener('mouseenter', handleMouseEnter)
+        container.removeEventListener('mouseleave', handleMouseLeave)
+        document.head.removeChild(style)
       }
     }
 
-    initializeTextReveal()
-  }, [isLoaded, text, animationType, delay])
+    return () => {
+      document.head.removeChild(style)
+    }
+  }, [speed, direction, pauseOnHover, reducedMotion])
+
+  if (reducedMotion) {
+    return <div className={className}>{children}</div>
+  }
 
   return (
-    <div
-      ref={textRef}
-      className={`reveal-text ${className}`}
-      style={{ opacity: 0 }}
-    />
+    <div 
+      ref={containerRef}
+      className={`overflow-hidden whitespace-nowrap ${className}`}
+      style={{ display: 'flex' }}
+    >
+      <div style={{ display: 'flex', minWidth: '100%' }}>
+        {children}
+      </div>
+    </div>
   )
+}
+
+// Helper functions
+function getInitialState(animation: string): Record<string, any> {
+  switch (animation) {
+    case 'fade-up':
+      return { opacity: 0, y: 50 }
+    case 'fade-down':
+      return { opacity: 0, y: -50 }
+    case 'fade-left':
+      return { opacity: 0, x: 50 }
+    case 'fade-right':
+      return { opacity: 0, x: -50 }
+    case 'scale':
+      return { opacity: 0, scale: 0.8 }
+    case 'rotate':
+      return { opacity: 0, rotation: 10 }
+    case 'slide-left':
+      return { x: -100 }
+    case 'slide-right':
+      return { x: 100 }
+    default:
+      return { opacity: 0, y: 50 }
+  }
+}
+
+function getFinalState(animation: string): Record<string, any> {
+  switch (animation) {
+    case 'fade-up':
+    case 'fade-down':
+      return { opacity: 1, y: 0 }
+    case 'fade-left':
+    case 'fade-right':
+      return { opacity: 1, x: 0 }
+    case 'scale':
+      return { opacity: 1, scale: 1 }
+    case 'rotate':
+      return { opacity: 1, rotation: 0 }
+    case 'slide-left':
+    case 'slide-right':
+      return { x: 0 }
+    default:
+      return { opacity: 1, y: 0 }
+  }
+}
+
+function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean
+  return function (this: any, ...args: Parameters<T>) {
+    if (!inThrottle) {
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
+    }
+  }
 }

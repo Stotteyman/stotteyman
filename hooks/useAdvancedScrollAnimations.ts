@@ -1,409 +1,475 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { ScrollAnimationConfig } from '@/types/animations'
-import { useAdaptiveQuality } from './useAdaptiveQuality'
+/**
+ * Advanced scroll animations hook with Intersection Observer and GSAP ScrollTrigger
+ * Optimized for performance with Next.js 15.5.0
+ */
 
-interface ScrollAnimationReturn {
-  isLoaded: boolean
-  progress: number
-  direction: 'up' | 'down'
-  isInView: boolean
-  velocity: number
-  isScrolling: boolean
-  registerElement: (element: HTMLElement, config?: Partial<ScrollAnimationConfig>) => void
-  unregisterElement: (element: HTMLElement) => void
-  pauseAnimations: () => void
-  resumeAnimations: () => void
-  refreshAnimations: () => void
-}
+import { useEffect, useRef, useState, useCallback } from 'react'
+import { ScrollAnimationConfig, ScrollAnimationHookReturn } from '@/types/animations'
 
 export function useAdvancedScrollAnimations(
-  configs: ScrollAnimationConfig[] = []
-): ScrollAnimationReturn {
+  configs: ScrollAnimationConfig[]
+): ScrollAnimationHookReturn {
   const [isLoaded, setIsLoaded] = useState(false)
   const [progress, setProgress] = useState(0)
   const [direction, setDirection] = useState<'up' | 'down'>('down')
   const [isInView, setIsInView] = useState(false)
   const [velocity, setVelocity] = useState(0)
-  const [isScrolling, setIsScrolling] = useState(false)
   
-  const { shouldReduceMotion, canUseAdvancedEffects, quality } = useAdaptiveQuality()
+  const scrollTriggerRefs = useRef<any[]>([])
   const lastScrollY = useRef(0)
-  const lastScrollTime = useRef(0)
-  const scrollTimeout = useRef<NodeJS.Timeout>()
-  const animationsRef = useRef<Map<HTMLElement, any>>(new Map())
-  const observerRef = useRef<IntersectionObserver | null>(null)
-  const gsapRef = useRef<any>(null)
-  const scrollTriggerRef = useRef<any>(null)
-  const isPaused = useRef(false)
+  const lastScrollTime = useRef(Date.now())
+  const rafId = useRef<number>()
 
-  // Initialize GSAP and ScrollTrigger
   useEffect(() => {
+    let gsap: any
+    let ScrollTrigger: any
+
     const initializeGSAP = async () => {
       try {
-        const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
-          import('gsap'),
-          import('gsap/ScrollTrigger')
-        ])
+        // Dynamic import for better code splitting
+        const gsapModule = await import('gsap')
+        const scrollTriggerModule = await import('gsap/ScrollTrigger')
         
+        gsap = gsapModule.gsap
+        ScrollTrigger = scrollTriggerModule.ScrollTrigger
+        
+        // Register ScrollTrigger plugin
         gsap.registerPlugin(ScrollTrigger)
-        gsapRef.current = gsap
-        scrollTriggerRef.current = ScrollTrigger
+        
+        // Initialize scroll triggers
+        initializeScrollTriggers(gsap, ScrollTrigger)
         setIsLoaded(true)
       } catch (error) {
         console.error('Failed to load GSAP:', error)
-        // Fallback to CSS animations
+        // Fallback to Intersection Observer
+        initializeFallbackScrollAnimations()
         setIsLoaded(true)
       }
     }
 
     initializeGSAP()
-  }, [])
-
-  // Set up intersection observer for viewport detection
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInView(true)
-            triggerEntranceAnimation(entry.target as HTMLElement)
-          } else {
-            setIsInView(false)
-          }
-        })
-      },
-      {
-        threshold: [0, 0.1, 0.5, 0.9, 1],
-        rootMargin: '-10% 0px -10% 0px'
-      }
-    )
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect()
+      // Cleanup scroll triggers
+      scrollTriggerRefs.current.forEach(trigger => {
+        if (trigger && trigger.kill) {
+          trigger.kill()
+        }
+      })
+      scrollTriggerRefs.current = []
+      
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current)
       }
     }
-  }, [])
+  }, [configs])
 
-  // Set up enhanced scroll tracking with velocity and throttling
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    let ticking = false
-
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const currentTime = performance.now()
-          const currentScrollY = window.scrollY
-          const deltaY = currentScrollY - lastScrollY.current
-          const deltaTime = currentTime - lastScrollTime.current
-          
-          // Calculate velocity (pixels per millisecond)
-          const currentVelocity = deltaTime > 0 ? Math.abs(deltaY / deltaTime) : 0
-          setVelocity(currentVelocity)
-          
-          // Update direction
-          const newDirection = deltaY > 0 ? 'down' : 'up'
-          if (newDirection !== direction && Math.abs(deltaY) > 1) {
-            setDirection(newDirection)
-          }
-          
-          // Calculate scroll progress
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-          const currentProgress = maxScroll > 0 ? Math.min(currentScrollY / maxScroll, 1) : 0
-          setProgress(currentProgress)
-          
-          // Update scroll state
-          setIsScrolling(true)
-          clearTimeout(scrollTimeout.current)
-          scrollTimeout.current = setTimeout(() => {
-            setIsScrolling(false)
-            setVelocity(0)
-          }, 150)
-          
-          lastScrollY.current = currentScrollY
-          lastScrollTime.current = currentTime
-          ticking = false
+  const initializeScrollTriggers = useCallback((gsap: any, ScrollTrigger: any) => {
+    configs.forEach((config, index) => {
+      try {
+        const trigger = ScrollTrigger.create({
+          trigger: config.trigger,
+          start: config.start,
+          end: config.end,
+          scrub: config.scrub,
+          pin: config.pin,
+          markers: config.markers || false,
+          refreshPriority: config.refreshPriority || 0,
+          onUpdate: (self: any) => {
+            setProgress(self.progress)
+            setDirection(self.direction > 0 ? 'down' : 'up')
+            
+            // Calculate velocity
+            const currentTime = Date.now()
+            const currentScrollY = window.scrollY
+            const timeDelta = currentTime - lastScrollTime.current
+            const scrollDelta = currentScrollY - lastScrollY.current
+            
+            if (timeDelta > 0) {
+              setVelocity(Math.abs(scrollDelta / timeDelta))
+            }
+            
+            lastScrollY.current = currentScrollY
+            lastScrollTime.current = currentTime
+          },
+          onEnter: () => setIsInView(true),
+          onLeave: () => setIsInView(false),
+          onEnterBack: () => setIsInView(true),
+          onLeaveBack: () => setIsInView(false),
+          animation: config.animation
         })
-        ticking = true
+
+        scrollTriggerRefs.current[index] = trigger
+      } catch (error) {
+        console.error(`Error creating scroll trigger for config ${index}:`, error)
       }
-    }
+    })
+  }, [configs])
 
-    // Use passive listener for better performance
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      clearTimeout(scrollTimeout.current)
-    }
-  }, [direction])
-
-  // Initialize configured animations
-  useEffect(() => {
-    if (!isLoaded || !gsapRef.current || !scrollTriggerRef.current) return
+  const initializeFallbackScrollAnimations = useCallback(() => {
+    // Fallback using Intersection Observer for basic scroll animations
+    const observers: IntersectionObserver[] = []
 
     configs.forEach((config) => {
-      createScrollAnimation(config)
+      const element = document.querySelector(config.trigger)
+      if (!element) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            setIsInView(entry.isIntersecting)
+            setProgress(entry.intersectionRatio)
+          })
+        },
+        {
+          threshold: [0, 0.25, 0.5, 0.75, 1],
+          rootMargin: '0px'
+        }
+      )
+
+      observer.observe(element)
+      observers.push(observer)
     })
 
-    return () => {
-      // Cleanup all scroll triggers
-      scrollTriggerRef.current?.getAll().forEach((trigger: any) => {
-        trigger.kill()
-      })
-    }
-  }, [isLoaded, configs])
-
-  const createScrollAnimation = useCallback((config: ScrollAnimationConfig) => {
-    if (!gsapRef.current || !scrollTriggerRef.current || isPaused.current) return
-
-    const elements = document.querySelectorAll(config.trigger)
-    
-    elements.forEach((element) => {
-      // Skip if reduced motion is preferred
-      if (shouldReduceMotion) {
-        element.classList.add('animate-in')
-        return
-      }
-
-      // Adjust animation complexity based on quality
-      const animationProps = getQualityAdjustedProps()
+    // Track scroll direction and velocity
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      const currentTime = Date.now()
       
-      const animation = gsapRef.current.fromTo(
-        element,
-        {
-          opacity: 0,
-          y: animationProps.translateY,
-          scale: animationProps.scale,
-          rotationX: canUseAdvancedEffects ? animationProps.rotationX : 0
-        },
-        {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          rotationX: 0,
-          duration: animationProps.duration,
-          ease: animationProps.easing,
-          scrollTrigger: {
-            trigger: element,
-            start: config.start || 'top 80%',
-            end: config.end || 'bottom 20%',
-            scrub: config.scrub || false,
-            pin: config.pin || false,
-            toggleActions: 'play none none reverse',
-            refreshPriority: quality === 'high' ? 0 : 1,
-            fastScrollEnd: quality === 'low',
-            onEnter: () => {
-              element.classList.add('animate-in')
-            },
-            onLeave: () => {
-              element.classList.remove('animate-in')
-            },
-            onEnterBack: () => {
-              element.classList.add('animate-in')
-            },
-            onLeaveBack: () => {
-              element.classList.remove('animate-in')
-            }
-          }
-        }
-      )
-
-      animationsRef.current.set(element as HTMLElement, animation)
-    })
-  }, [shouldReduceMotion, canUseAdvancedEffects, quality])
-
-  const getQualityAdjustedProps = useCallback(() => {
-    switch (quality) {
-      case 'low':
-        return {
-          translateY: 20,
-          scale: 0.98,
-          rotationX: 0,
-          duration: 0.4,
-          easing: 'power1.out'
-        }
-      case 'medium':
-        return {
-          translateY: 35,
-          scale: 0.95,
-          rotationX: 5,
-          duration: 0.6,
-          easing: 'power2.out'
-        }
-      case 'high':
-        return {
-          translateY: 50,
-          scale: 0.9,
-          rotationX: 10,
-          duration: 1,
-          easing: 'power3.out'
-        }
-      default:
-        return {
-          translateY: 35,
-          scale: 0.95,
-          rotationX: 5,
-          duration: 0.6,
-          easing: 'power2.out'
-        }
-    }
-  }, [quality])
-
-  const triggerEntranceAnimation = useCallback((element: HTMLElement) => {
-    if (!gsapRef.current) {
-      // Fallback CSS animation
-      element.style.transition = 'all 0.6s ease-out'
-      element.style.opacity = '1'
-      element.style.transform = 'translateY(0) scale(1)'
-      return
-    }
-
-    // Check if element already has animation
-    if (animationsRef.current.has(element)) return
-
-    const animation = gsapRef.current.fromTo(
-      element,
-      {
-        opacity: 0,
-        y: 30,
-        scale: 0.95
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.8,
-        ease: 'power2.out'
+      setDirection(currentScrollY > lastScrollY.current ? 'down' : 'up')
+      
+      const timeDelta = currentTime - lastScrollTime.current
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY.current)
+      
+      if (timeDelta > 0) {
+        setVelocity(scrollDelta / timeDelta)
       }
-    )
-
-    animationsRef.current.set(element, animation)
-  }, [])
-
-  const registerElement = useCallback((
-    element: HTMLElement, 
-    config?: Partial<ScrollAnimationConfig>
-  ) => {
-    if (!observerRef.current) return
-
-    // Add element to intersection observer
-    observerRef.current.observe(element)
-
-    // Create custom animation if config provided
-    if (config && gsapRef.current && scrollTriggerRef.current) {
-      const fullConfig: ScrollAnimationConfig = {
-        trigger: '',
-        start: 'top 80%',
-        end: 'bottom 20%',
-        scrub: false,
-        pin: false,
-        animation: null,
-        ...config
-      }
-
-      const animation = gsapRef.current.fromTo(
-        element,
-        {
-          opacity: 0,
-          y: 50,
-          ...config.animation?.from
-        },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power2.out',
-          ...config.animation?.to,
-          scrollTrigger: {
-            trigger: element,
-            start: fullConfig.start,
-            end: fullConfig.end,
-            scrub: fullConfig.scrub,
-            pin: fullConfig.pin,
-            toggleActions: 'play none none reverse'
-          }
-        }
-      )
-
-      animationsRef.current.set(element, animation)
-    }
-  }, [])
-
-  const unregisterElement = useCallback((element: HTMLElement) => {
-    if (observerRef.current) {
-      observerRef.current.unobserve(element)
+      
+      lastScrollY.current = currentScrollY
+      lastScrollTime.current = currentTime
     }
 
-    const animation = animationsRef.current.get(element)
-    if (animation) {
-      animation.kill()
-      animationsRef.current.delete(element)
-    }
-  }, [])
+    const throttledScroll = throttle(handleScroll, 16) // ~60fps
+    window.addEventListener('scroll', throttledScroll, { passive: true })
 
-  const pauseAnimations = useCallback(() => {
-    isPaused.current = true
-    if (scrollTriggerRef.current) {
-      scrollTriggerRef.current.getAll().forEach((trigger: any) => {
-        if (trigger.animation) {
-          trigger.animation.pause()
-        }
-      })
+    // Cleanup function for fallback
+    return () => {
+      observers.forEach(observer => observer.disconnect())
+      window.removeEventListener('scroll', throttledScroll)
     }
-  }, [])
-
-  const resumeAnimations = useCallback(() => {
-    isPaused.current = false
-    if (scrollTriggerRef.current) {
-      scrollTriggerRef.current.getAll().forEach((trigger: any) => {
-        if (trigger.animation) {
-          trigger.animation.resume()
-        }
-      })
-    }
-  }, [])
-
-  const refreshAnimations = useCallback(() => {
-    if (scrollTriggerRef.current) {
-      scrollTriggerRef.current.refresh()
-    }
-  }, [])
-
-  // Listen for quality changes
-  useEffect(() => {
-    const handleQualityChange = (event: CustomEvent) => {
-      const { quality: newQuality } = event.detail
-      if (newQuality === 'paused') {
-        pauseAnimations()
-      } else {
-        resumeAnimations()
-        // Refresh animations with new quality settings
-        refreshAnimations()
-      }
-    }
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('quality-change', handleQualityChange as EventListener)
-      return () => {
-        window.removeEventListener('quality-change', handleQualityChange as EventListener)
-      }
-    }
-  }, [pauseAnimations, resumeAnimations, refreshAnimations])
+  }, [configs])
 
   return {
     isLoaded,
     progress,
     direction,
     isInView,
-    velocity,
-    isScrolling,
-    registerElement,
-    unregisterElement,
-    pauseAnimations,
-    resumeAnimations,
-    refreshAnimations
+    velocity
+  }
+}
+
+/**
+ * Hook for staggered scroll animations
+ */
+export function useStaggeredScrollAnimation(
+  selector: string,
+  animationConfig: {
+    duration?: number
+    delay?: number
+    stagger?: number
+    ease?: string
+    from?: Record<string, any>
+    to?: Record<string, any>
+  } = {}
+) {
+  const [isVisible, setIsVisible] = useState(false)
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const containerRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const initializeStaggeredAnimation = async () => {
+      try {
+        const gsap = (await import('gsap')).gsap
+        const ScrollTrigger = (await import('gsap/ScrollTrigger')).ScrollTrigger
+        
+        gsap.registerPlugin(ScrollTrigger)
+
+        if (!containerRef.current) return
+
+        const elements = containerRef.current.querySelectorAll(selector)
+        if (elements.length === 0) return
+
+        // Set initial state
+        gsap.set(elements, animationConfig.from || { opacity: 0, y: 50 })
+
+        // Create scroll trigger for staggered animation
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: 'top 80%',
+          onEnter: () => {
+            if (!hasAnimated) {
+              setIsVisible(true)
+              setHasAnimated(true)
+              
+              gsap.to(elements, {
+                ...animationConfig.to || { opacity: 1, y: 0 },
+                duration: animationConfig.duration || 0.6,
+                delay: animationConfig.delay || 0,
+                stagger: animationConfig.stagger || 0.1,
+                ease: animationConfig.ease || 'power2.out'
+              })
+            }
+          }
+        })
+      } catch (error) {
+        console.error('Failed to initialize staggered animation:', error)
+        // Fallback to simple visibility toggle
+        initializeFallbackStaggered()
+      }
+    }
+
+    const initializeFallbackStaggered = () => {
+      if (!containerRef.current) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !hasAnimated) {
+              setIsVisible(true)
+              setHasAnimated(true)
+              
+              // Simple CSS-based staggered animation
+              const elements = entry.target.querySelectorAll(selector)
+              elements.forEach((element, index) => {
+                setTimeout(() => {
+                  element.classList.add('animate-in')
+                }, index * (animationConfig.stagger || 100))
+              })
+            }
+          })
+        },
+        { threshold: 0.1 }
+      )
+
+      observer.observe(containerRef.current)
+
+      return () => observer.disconnect()
+    }
+
+    initializeStaggeredAnimation()
+  }, [selector, animationConfig, hasAnimated])
+
+  return {
+    containerRef,
+    isVisible,
+    hasAnimated
+  }
+}
+
+/**
+ * Hook for parallax scroll effects
+ */
+export function useParallaxScroll(
+  speed: number = 0.5,
+  direction: 'vertical' | 'horizontal' = 'vertical'
+) {
+  const elementRef = useRef<HTMLElement>(null)
+  const [offset, setOffset] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!elementRef.current) return
+
+      const scrolled = window.pageYOffset
+      const rate = scrolled * -speed
+
+      if (direction === 'vertical') {
+        setOffset(rate)
+        elementRef.current.style.transform = `translateY(${rate}px)`
+      } else {
+        setOffset(rate)
+        elementRef.current.style.transform = `translateX(${rate}px)`
+      }
+    }
+
+    const throttledScroll = throttle(handleScroll, 16)
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', throttledScroll)
+    }
+  }, [speed, direction])
+
+  return {
+    elementRef,
+    offset
+  }
+}
+
+/**
+ * Hook for scroll-triggered text reveal animations
+ */
+export function useTextRevealAnimation(
+  animationType: 'typewriter' | 'fade-up' | 'split-chars' | 'split-words' = 'fade-up'
+) {
+  const textRef = useRef<HTMLElement>(null)
+  const [isRevealed, setIsRevealed] = useState(false)
+
+  useEffect(() => {
+    const initializeTextReveal = async () => {
+      try {
+        const gsap = (await import('gsap')).gsap
+        const ScrollTrigger = (await import('gsap/ScrollTrigger')).ScrollTrigger
+        const SplitText = (await import('gsap/SplitText')).SplitText
+        
+        gsap.registerPlugin(ScrollTrigger, SplitText)
+
+        if (!textRef.current) return
+
+        let animation: any
+
+        switch (animationType) {
+          case 'typewriter':
+            animation = createTypewriterAnimation(gsap, ScrollTrigger, textRef.current)
+            break
+          case 'split-chars':
+            animation = createSplitCharsAnimation(gsap, ScrollTrigger, SplitText, textRef.current)
+            break
+          case 'split-words':
+            animation = createSplitWordsAnimation(gsap, ScrollTrigger, SplitText, textRef.current)
+            break
+          default:
+            animation = createFadeUpAnimation(gsap, ScrollTrigger, textRef.current)
+        }
+
+        return () => {
+          if (animation && animation.kill) {
+            animation.kill()
+          }
+        }
+      } catch (error) {
+        console.error('Failed to initialize text reveal:', error)
+        // Fallback to simple fade-in
+        initializeFallbackTextReveal()
+      }
+    }
+
+    const initializeFallbackTextReveal = () => {
+      if (!textRef.current) return
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setIsRevealed(true)
+              entry.target.classList.add('text-revealed')
+            }
+          })
+        },
+        { threshold: 0.1 }
+      )
+
+      observer.observe(textRef.current)
+
+      return () => observer.disconnect()
+    }
+
+    initializeTextReveal()
+  }, [animationType])
+
+  return {
+    textRef,
+    isRevealed
+  }
+}
+
+// Helper functions for text animations
+function createTypewriterAnimation(gsap: any, ScrollTrigger: any, element: HTMLElement) {
+  const text = element.textContent || ''
+  element.textContent = ''
+
+  return ScrollTrigger.create({
+    trigger: element,
+    start: 'top 80%',
+    onEnter: () => {
+      let i = 0
+      const timer = setInterval(() => {
+        element.textContent = text.slice(0, i + 1)
+        i++
+        if (i >= text.length) {
+          clearInterval(timer)
+        }
+      }, 50)
+    }
+  })
+}
+
+function createSplitCharsAnimation(gsap: any, ScrollTrigger: any, SplitText: any, element: HTMLElement) {
+  const split = new SplitText(element, { type: 'chars' })
+  gsap.set(split.chars, { opacity: 0, y: 50 })
+
+  return ScrollTrigger.create({
+    trigger: element,
+    start: 'top 80%',
+    onEnter: () => {
+      gsap.to(split.chars, {
+        opacity: 1,
+        y: 0,
+        duration: 0.05,
+        stagger: 0.02,
+        ease: 'power2.out'
+      })
+    }
+  })
+}
+
+function createSplitWordsAnimation(gsap: any, ScrollTrigger: any, SplitText: any, element: HTMLElement) {
+  const split = new SplitText(element, { type: 'words' })
+  gsap.set(split.words, { opacity: 0, y: 30 })
+
+  return ScrollTrigger.create({
+    trigger: element,
+    start: 'top 80%',
+    onEnter: () => {
+      gsap.to(split.words, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: 'power2.out'
+      })
+    }
+  })
+}
+
+function createFadeUpAnimation(gsap: any, ScrollTrigger: any, element: HTMLElement) {
+  gsap.set(element, { opacity: 0, y: 50 })
+
+  return ScrollTrigger.create({
+    trigger: element,
+    start: 'top 80%',
+    onEnter: () => {
+      gsap.to(element, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      })
+    }
+  })
+}
+
+// Utility function for throttling
+function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
+  let inThrottle: boolean
+  return function (this: any, ...args: Parameters<T>) {
+    if (!inThrottle) {
+      func.apply(this, args)
+      inThrottle = true
+      setTimeout(() => (inThrottle = false), limit)
+    }
   }
 }
