@@ -7,7 +7,7 @@
 
 import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react'
 import { ParticleSystem as ParticleSystemCore } from '@/lib/particles/ParticleSystem'
-import { ParticleSystemProps } from '@/types/animations'
+import type { ParticleSystemProps } from '@/types/animations'
 import { useReducedMotion } from '@/hooks/useAdaptiveQuality'
 import { AnimationErrorBoundary } from './AnimationErrorBoundary'
 
@@ -241,7 +241,7 @@ export const ParticlePresets = {
 /**
  * Hook for using particle system
  */
-export function useParticleSystem(config: ParticleSystemProps) {
+export function useParticleSystem() {
   const particleRef = useRef<ParticleSystemRef>(null)
   const [metrics, setMetrics] = useState(null)
 

@@ -2,7 +2,7 @@
  * WebGL-accelerated particle system for high-performance rendering
  */
 
-import { ParticleSystemProps } from '@/types/animations'
+import type { ParticleSystemProps } from '@/types/animations'
 
 interface WebGLParticle {
   x: number

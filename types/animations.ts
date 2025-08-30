@@ -124,9 +124,18 @@ export interface ScrollAnimationConfig {
   end: string
   scrub: boolean | number
   pin: boolean
-  animation: GSAPTimeline
+  animation: {
+    to?: GSAPAnimationVars
+    from?: GSAPAnimationVars
+    duration?: number
+    ease?: string
+    delay?: number
+    stagger?: number
+  }
   markers?: boolean
   refreshPriority?: number
+  type?: 'scroll'
+  properties?: string[]
 }
 
 export interface ScrollAnimationHookReturn {
@@ -226,6 +235,20 @@ export interface GSAPTimeline {
   progress(value: number): GSAPTimeline
   duration(): number
   duration(value: number): GSAPTimeline
+}
+
+// GSAP animation variables interface
+export interface GSAPAnimationVars {
+  duration?: number
+  ease?: string
+  delay?: number
+  stagger?: number
+  opacity?: number
+  x?: number | string
+  y?: number | string
+  scale?: number
+  rotation?: number
+  [key: string]: any
 }
 
 // Framer Motion specific types

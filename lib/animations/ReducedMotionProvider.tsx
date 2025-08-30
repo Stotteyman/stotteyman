@@ -13,7 +13,7 @@ interface ReducedMotionContextType {
   setReducedMotion: (enabled: boolean) => void
   getAnimationDuration: (defaultDuration: number) => number
   getAnimationEasing: (defaultEasing: string) => string
-  shouldAnimate: (animationType?: 'essential' | 'decorative') => boolean
+  shouldAnimate: (animationType?: 'essential' | 'decorative' | 'informational') => boolean
   animationSettings: {
     enableParticles: boolean
     enableParallax: boolean

@@ -10,7 +10,7 @@ export interface UseReducedMotionReturn {
   setReducedMotion: (enabled: boolean) => void
   getAnimationDuration: (defaultDuration: number) => number
   getAnimationEasing: (defaultEasing: string) => string
-  shouldAnimate: (animationType?: 'essential' | 'decorative') => boolean
+  shouldAnimate: (animationType?: 'essential' | 'decorative' | 'informational') => boolean
 }
 
 export function useReducedMotion(): UseReducedMotionReturn {
@@ -102,14 +102,15 @@ export function useReducedMotion(): UseReducedMotionReturn {
     return defaultEasing
   }
 
-  const shouldAnimate = (animationType: 'essential' | 'decorative' = 'decorative'): boolean => {
+  const shouldAnimate = (animationType: 'essential' | 'decorative' | 'informational' = 'decorative'): boolean => {
     if (!prefersReducedMotion) {
       return true
     }
     
-    // Allow essential animations even with reduced motion
+    // Allow essential and informational animations even with reduced motion
     // Essential animations are those that convey important information
-    return animationType === 'essential'
+    // Informational animations provide UI feedback
+    return animationType === 'essential' || animationType === 'informational'
   }
 
   return {

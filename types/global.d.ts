@@ -4,6 +4,7 @@ declare global {
   interface Window {
     gsap?: typeof import('gsap')
     ScrollTrigger?: typeof import('gsap/ScrollTrigger')
+    gtag?: (...args: any[]) => void
     performance: Performance & {
       memory?: {
         usedJSHeapSize: number

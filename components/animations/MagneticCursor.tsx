@@ -7,23 +7,15 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 interface MagneticCursorProps {
   children?: React.ReactNode
   className?: string
-  strength?: number
   size?: number
   showTrail?: boolean
-  color?: string
-  blendMode?: 'difference' | 'multiply' | 'screen' | 'overlay' | 'normal'
-  elasticity?: number
 }
 
 export function MagneticCursor({
   children,
   className = '',
-  strength = 0.3,
   size = 20,
-  showTrail = true,
-  color = 'white',
-  blendMode = 'difference',
-  elasticity = 0.2
+  showTrail = true
 }: MagneticCursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null)
   const [isVisible, setIsVisible] = useState(false)
@@ -183,7 +175,7 @@ export function MagneticCursor({
       </motion.div>
 
       {/* Trail particles */}
-      {showTrail && trailParticles.map((particle, index) => (
+      {showTrail && trailParticles.map((particle) => (
         <motion.div
           key={particle.id}
           className="cursor-trail-particle"
@@ -222,7 +214,7 @@ export function MagneticCursor({
 
 // Hook for magnetic attraction effect
 export function useMagneticEffect(strength: number = 0.3) {
-  const elementRef = useRef<HTMLElement>(null)
+  const elementRef = useRef<any>(null)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
@@ -230,13 +222,14 @@ export function useMagneticEffect(strength: number = 0.3) {
 
     const element = elementRef.current
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: Event) => {
+      const mouseEvent = e as MouseEvent
       const rect = element.getBoundingClientRect()
       const centerX = rect.left + rect.width / 2
       const centerY = rect.top + rect.height / 2
       
-      const deltaX = e.clientX - centerX
-      const deltaY = e.clientY - centerY
+      const deltaX = mouseEvent.clientX - centerX
+      const deltaY = mouseEvent.clientY - centerY
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
       const maxDistance = Math.max(rect.width, rect.height)
       
@@ -270,7 +263,7 @@ interface MagneticElementProps {
   children: React.ReactNode
   strength?: number
   className?: string
-  as?: keyof JSX.IntrinsicElements
+  as?: 'div' | 'span' | 'button' | 'a'
 }
 
 export function MagneticElement({
@@ -306,17 +299,13 @@ export function MagneticElement({
 // Cursor context for global cursor management
 interface CursorContextType {
   setCursorVariant: (variant: 'default' | 'hover' | 'click' | 'text') => void
-  setCursorText: (text: string) => void
 }
 
 const CursorContext = React.createContext<CursorContextType | null>(null)
 
 export function CursorProvider({ children }: { children: React.ReactNode }) {
-  const [cursorVariant, setCursorVariant] = useState<'default' | 'hover' | 'click' | 'text'>('default')
-  const [cursorText, setCursorText] = useState('')
-
   return (
-    <CursorContext.Provider value={{ setCursorVariant, setCursorText }}>
+    <CursorContext.Provider value={{ setCursorVariant: () => {} }}>
       <MagneticCursor />
       {children}
     </CursorContext.Provider>

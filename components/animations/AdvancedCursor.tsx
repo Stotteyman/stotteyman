@@ -5,7 +5,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState, useCallback } from 'react'
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
 
@@ -56,40 +56,7 @@ export function AdvancedCursor({
   const cursorX = useSpring(mouseX, getSpringConfig())
   const cursorY = useSpring(mouseY, getSpringConfig())
 
-  // Cursor transformations
-  const cursorScale = useTransform(
-    [cursorX, cursorY],
-    () => {
-      switch (cursorState.variant) {
-        case 'hover':
-          return 1.5
-        case 'click':
-          return 0.8
-        case 'text':
-          return 0.6
-        case 'drag':
-          return 1.2
-        case 'disabled':
-          return 0.5
-        default:
-          return 1
-      }
-    }
-  )
-
-  const cursorOpacity = useTransform(
-    [cursorX, cursorY],
-    () => {
-      switch (cursorState.variant) {
-        case 'disabled':
-          return 0.3
-        case 'loading':
-          return 0.8
-        default:
-          return 0.6
-      }
-    }
-  )
+  // Cursor transformations - removed unused MotionValues
 
   // Ripple effect on click
   const createRipple = useCallback((x: number, y: number) => {
@@ -236,9 +203,7 @@ export function AdvancedCursor({
           top: cursorY,
           pointerEvents: 'none',
           zIndex: 9999,
-          mixBlendMode: cursorState.variant === 'text' ? 'normal' : 'difference'
-        }}
-        style={{
+          mixBlendMode: cursorState.variant === 'text' ? 'normal' : 'difference',
           scale: isVisible ? 1 : 0,
           opacity: isVisible ? 0.6 : 0
         }}
@@ -396,7 +361,7 @@ export function EnhancedMagneticElement({
   as?: keyof JSX.IntrinsicElements
   attractionType?: 'pull' | 'repel' | 'orbit'
 }) {
-  const elementRef = useRef<HTMLElement>(null)
+  const elementRef = useRef<HTMLDivElement>(null)
   const { prefersReducedMotion } = useReducedMotion()
   const { canUseWebGL } = useAdaptiveQuality()
 

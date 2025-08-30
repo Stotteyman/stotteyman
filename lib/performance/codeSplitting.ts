@@ -1,6 +1,7 @@
 'use client'
 
-import { lazy, ComponentType, LazyExoticComponent } from 'react'
+import { lazy } from 'react'
+import type { ComponentType, LazyExoticComponent } from 'react'
 
 export interface CodeSplittingConfig {
   routeBasedSplitting: boolean

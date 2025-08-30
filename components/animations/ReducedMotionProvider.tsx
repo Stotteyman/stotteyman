@@ -5,8 +5,9 @@
 
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { ReducedMotionConfig, FallbackAnimationConfig, StaticAlternativeConfig } from '@/types/animations'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import type { ReducedMotionConfig, FallbackAnimationConfig, StaticAlternativeConfig } from '@/types/animations'
 
 interface ReducedMotionContextType {
   reducedMotion: boolean

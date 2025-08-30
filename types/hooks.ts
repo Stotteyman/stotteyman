@@ -2,7 +2,7 @@
  * Hook type definitions for Next.js 15.5.0 upgrade
  */
 
-import { RefObject } from 'react'
+import type { RefObject } from 'react'
 
 // Performance hooks
 export interface UsePerformanceMonitorOptions {

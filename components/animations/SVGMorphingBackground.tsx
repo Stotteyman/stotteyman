@@ -4,8 +4,8 @@
 
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { MorphingBackgroundProps } from '@/types/animations'
+import { useEffect, useRef, useCallback } from 'react'
+import type { MorphingBackgroundProps } from '@/types/animations'
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from './AnimationErrorBoundary'
@@ -19,13 +19,14 @@ interface SVGMorphingBackgroundProps extends Partial<MorphingBackgroundProps> {
 
 export function SVGMorphingBackground({
   shapes = [
-    { type: 'blob', size: 300, position: { x: 20, y: 20 }, morphSpeed: 1 },
-    { type: 'blob', size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8 }
+    { type: 'blob', size: 300, position: { x: 20, y: 20 }, morphSpeed: 1, complexity: 0.7 },
+    { type: 'blob', size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8, complexity: 0.8 }
   ],
   colors = {
     primary: ['#3b82f6', '#1d4ed8'],
     secondary: ['#8b5cf6', '#7c3aed'],
-    accent: ['#ec4899', '#db2777']
+    accent: ['#ec4899', '#db2777'],
+    gradients: []
   },
   animationSpeed = 1,
   blendMode = 'multiply',
@@ -35,9 +36,8 @@ export function SVGMorphingBackground({
   gradientAnimation = true
 }: SVGMorphingBackgroundProps) {
   const svgRef = useRef<SVGSVGElement>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
   
-  const { qualitySettings, canUseAdvancedEffects } = useAdaptiveQuality()
+  const { quality, canUseWebGL } = useAdaptiveQuality()
   const { prefersReducedMotion } = useReducedMotion()
 
   // Generate organic blob paths
@@ -77,15 +77,15 @@ export function SVGMorphingBackground({
   // Generate multiple path variations for morphing
   const generateMorphPaths = useCallback((size: number, count: number = 3): string[] => {
     const paths: string[] = []
-    const complexity = qualitySettings.animationComplexity === 'low' ? 6 : 
-                      qualitySettings.animationComplexity === 'high' ? 12 : 8
+    const complexity = quality === 'low' ? 6 : 
+                      quality === 'high' ? 12 : 8
     
     for (let i = 0; i < count; i++) {
       paths.push(generateBlobPath(size, complexity))
     }
     
     return paths
-  }, [generateBlobPath, qualitySettings.animationComplexity])
+  }, [generateBlobPath, quality])
 
   useEffect(() => {
     if (!svgRef.current || prefersReducedMotion) return
@@ -109,7 +109,6 @@ export function SVGMorphingBackground({
           createSVGShape(svg, defs, shape, colors, index, gsap)
         })
 
-        setIsInitialized(true)
       } catch (error) {
         console.error('Failed to initialize SVG morphing background:', error)
         createStaticSVGFallback()
@@ -117,7 +116,7 @@ export function SVGMorphingBackground({
     }
 
     initializeSVGMorphing()
-  }, [shapes, colors, animationSpeed, canUseAdvancedEffects, prefersReducedMotion])
+  }, [shapes, colors, animationSpeed, canUseWebGL, prefersReducedMotion])
 
   const createSVGShape = useCallback((
     svg: SVGSVGElement,
@@ -182,15 +181,15 @@ export function SVGMorphingBackground({
     svg.appendChild(path)
 
     // Animate the shape if advanced effects are enabled
-    if (canUseAdvancedEffects && pathMorphing) {
+    if (canUseWebGL && pathMorphing) {
       animateSVGShape(gsap, path, shape, index)
     }
 
     // Animate gradient if enabled
-    if (gradientAnimation && qualitySettings.animationComplexity !== 'low') {
+    if (gradientAnimation && quality !== 'low') {
       animateGradient(gsap, gradient, shape.morphSpeed)
     }
-  }, [generateBlobPath, blendMode, canUseAdvancedEffects, pathMorphing, gradientAnimation, qualitySettings.animationComplexity])
+  }, [generateBlobPath, blendMode, canUseWebGL, pathMorphing, gradientAnimation, quality])
 
   const animateSVGShape = useCallback((gsap: any, path: SVGPathElement, shape: any, index: number) => {
     const morphPaths = generateMorphPaths(shape.size, 4)
@@ -199,7 +198,7 @@ export function SVGMorphingBackground({
     // Path morphing animation
     const tl = gsap.timeline({ repeat: -1, yoyo: true })
     
-    morphPaths.forEach((morphPath, i) => {
+    morphPaths.forEach((morphPath) => {
       tl.to(path, {
         attr: { d: morphPath },
         duration: duration,
@@ -277,7 +276,7 @@ export function SVGMorphingBackground({
       circle.setAttribute('cx', `${shape.position.x}%`)
       circle.setAttribute('cy', `${shape.position.y}%`)
       circle.setAttribute('r', `${shape.size / 2}`)
-      circle.setAttribute('fill', colorSet[0])
+      circle.setAttribute('fill', colorSet[0] || '#3b82f6')
       circle.setAttribute('opacity', '0.4')
       circle.setAttribute('filter', 'blur(20px)')
       circle.style.mixBlendMode = blendMode

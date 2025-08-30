@@ -1,6 +1,6 @@
 'use client'
 
-import { WebVitalsMetrics } from './webVitals'
+import type { WebVitalsMetrics } from './webVitals'
 
 export interface StoredMetrics extends WebVitalsMetrics {
   id: string

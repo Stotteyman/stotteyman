@@ -3,7 +3,7 @@
  * Optimized for Next.js 15.5.0 with performance monitoring
  */
 
-import { Particle, ParticleSystemProps, AnimationQuality } from '@/types/animations'
+import type { Particle, ParticleSystemProps, AnimationQuality } from '@/types/animations'
 
 export class ParticleSystem {
   private canvas: HTMLCanvasElement

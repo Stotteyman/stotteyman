@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { MorphingBackgroundProps, ShapeConfig, ColorPalette } from '@/types/animations'
+import type { MorphingBackgroundProps, ShapeConfig, ColorPalette } from '@/types/animations'
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from './AnimationErrorBoundary'
@@ -13,14 +13,15 @@ interface MorphingBackgroundComponentProps extends Partial<MorphingBackgroundPro
 
 export function MorphingBackground({
   shapes = [
-    { type: 'blob', size: 300, position: { x: 20, y: 20 }, morphSpeed: 1 },
-    { type: 'blob', size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8 },
-    { type: 'blob', size: 250, position: { x: 60, y: 80 }, morphSpeed: 1.2 }
+    { type: 'blob', size: 300, position: { x: 20, y: 20 }, morphSpeed: 1, complexity: 0.5 },
+    { type: 'blob', size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8, complexity: 0.7 },
+    { type: 'blob', size: 250, position: { x: 60, y: 80 }, morphSpeed: 1.2, complexity: 0.6 }
   ],
   colors = {
     primary: ['#3b82f6', '#1d4ed8'],
     secondary: ['#8b5cf6', '#7c3aed'],
-    accent: ['#ec4899', '#db2777']
+    accent: ['#ec4899', '#db2777'],
+    gradients: []
   },
   animationSpeed = 1,
   blendMode = 'multiply',
@@ -29,9 +30,8 @@ export function MorphingBackground({
 }: MorphingBackgroundComponentProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<number | null>(null)
-  const [isInitialized, setIsInitialized] = useState(false)
   
-  const { qualitySettings, canUseAdvancedEffects } = useAdaptiveQuality()
+  const { quality, canUseWebGL } = useAdaptiveQuality()
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
@@ -49,12 +49,11 @@ export function MorphingBackground({
           const shapeElement = createShapeElement(shape, colors, index)
           container.appendChild(shapeElement)
           
-          if (canUseAdvancedEffects) {
+          if (canUseWebGL) {
             animateShape(gsap, shapeElement, shape, animationSpeed)
           }
         })
 
-        setIsInitialized(true)
       } catch (error) {
         console.error('Failed to initialize morphing background:', error)
         createStaticFallback()
@@ -69,7 +68,7 @@ export function MorphingBackground({
         cancelAnimationFrame(currentAnimation)
       }
     }
-  }, [shapes, colors, animationSpeed, canUseAdvancedEffects, prefersReducedMotion])
+  }, [shapes, colors, animationSpeed, canUseWebGL, prefersReducedMotion])
 
   const createShapeElement = useCallback((shape: ShapeConfig, colors: ColorPalette, index: number): HTMLElement => {
     const element = document.createElement('div')
@@ -98,7 +97,7 @@ export function MorphingBackground({
 
   const animateShape = (gsap: any, element: HTMLElement, shape: ShapeConfig, speed: number) => {
     // Adjust animation complexity based on quality
-    const complexity = qualitySettings.animationComplexity
+    const complexity = quality
     const duration = complexity === 'low' ? 8 : complexity === 'high' ? 3 : 5
     
     // Create morphing animation
@@ -262,7 +261,8 @@ export function ScrollMorphingBackground(props: MorphingBackgroundComponentProps
   const dynamicColors = {
     primary: props.colors?.primary || ['#3b82f6', '#1d4ed8'],
     secondary: props.colors?.secondary || ['#8b5cf6', '#7c3aed'],
-    accent: props.colors?.accent || ['#ec4899', '#db2777']
+    accent: props.colors?.accent || ['#ec4899', '#db2777'],
+    gradients: []
   }
 
   // Shift hue based on scroll
@@ -284,13 +284,14 @@ export function ScrollMorphingBackground(props: MorphingBackgroundComponentProps
 export const MorphingPresets = {
   subtle: {
     shapes: [
-      { type: 'blob' as const, size: 200, position: { x: 10, y: 10 }, morphSpeed: 0.5 },
-      { type: 'blob' as const, size: 150, position: { x: 90, y: 80 }, morphSpeed: 0.7 }
+      { type: 'blob' as const, size: 200, position: { x: 10, y: 10 }, morphSpeed: 0.5, complexity: 0.5 },
+      { type: 'blob' as const, size: 150, position: { x: 90, y: 80 }, morphSpeed: 0.7, complexity: 0.6 }
     ],
     colors: {
       primary: ['#3b82f6', '#1d4ed8'],
       secondary: ['#8b5cf6', '#7c3aed'],
-      accent: ['#ec4899', '#db2777']
+      accent: ['#ec4899', '#db2777'],
+      gradients: []
     },
     animationSpeed: 0.5,
     blendMode: 'soft-light' as const
@@ -298,14 +299,15 @@ export const MorphingPresets = {
 
   dynamic: {
     shapes: [
-      { type: 'blob' as const, size: 300, position: { x: 20, y: 20 }, morphSpeed: 1 },
-      { type: 'blob' as const, size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8 },
-      { type: 'blob' as const, size: 250, position: { x: 60, y: 80 }, morphSpeed: 1.2 }
+      { type: 'blob' as const, size: 300, position: { x: 20, y: 20 }, morphSpeed: 1, complexity: 0.7 },
+      { type: 'blob' as const, size: 400, position: { x: 80, y: 60 }, morphSpeed: 0.8, complexity: 0.8 },
+      { type: 'blob' as const, size: 250, position: { x: 60, y: 80 }, morphSpeed: 1.2, complexity: 0.6 }
     ],
     colors: {
       primary: ['#3b82f6', '#1d4ed8'],
       secondary: ['#8b5cf6', '#7c3aed'],
-      accent: ['#ec4899', '#db2777']
+      accent: ['#ec4899', '#db2777'],
+      gradients: []
     },
     animationSpeed: 1,
     blendMode: 'multiply' as const
@@ -313,15 +315,16 @@ export const MorphingPresets = {
 
   intense: {
     shapes: [
-      { type: 'blob' as const, size: 400, position: { x: 15, y: 15 }, morphSpeed: 1.5 },
-      { type: 'blob' as const, size: 500, position: { x: 85, y: 25 }, morphSpeed: 1.2 },
-      { type: 'blob' as const, size: 350, position: { x: 50, y: 75 }, morphSpeed: 1.8 },
-      { type: 'blob' as const, size: 300, position: { x: 25, y: 85 }, morphSpeed: 1.0 }
+      { type: 'blob' as const, size: 400, position: { x: 15, y: 15 }, morphSpeed: 1.5, complexity: 0.9 },
+      { type: 'blob' as const, size: 500, position: { x: 85, y: 25 }, morphSpeed: 1.2, complexity: 0.8 },
+      { type: 'blob' as const, size: 350, position: { x: 50, y: 75 }, morphSpeed: 1.8, complexity: 0.7 },
+      { type: 'blob' as const, size: 300, position: { x: 25, y: 85 }, morphSpeed: 1.0, complexity: 0.6 }
     ],
     colors: {
       primary: ['#ff6b6b', '#ee5a24'],
       secondary: ['#a55eea', '#8b5cf6'],
-      accent: ['#26de81', '#20bf6b']
+      accent: ['#26de81', '#20bf6b'],
+      gradients: []
     },
     animationSpeed: 1.5,
     blendMode: 'screen' as const

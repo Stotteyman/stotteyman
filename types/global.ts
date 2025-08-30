@@ -5,6 +5,9 @@
 // Next.js 15.5.0 specific types
 declare global {
   interface Window {
+    // Google Analytics
+    gtag?: (...args: any[]) => void
+    
     // Performance monitoring
     __PERFORMANCE_MONITOR__?: {
       fps: number

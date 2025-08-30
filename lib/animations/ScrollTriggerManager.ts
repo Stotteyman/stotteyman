@@ -2,7 +2,7 @@
  * ScrollTrigger Manager - Advanced scroll animation management with performance optimization
  */
 
-import { ScrollAnimationConfig } from '@/types/animations'
+import type { ScrollAnimationConfig } from '@/types/animations'
 import { PerformanceMonitor } from './PerformanceMonitor'
 import { AdaptiveQuality } from './AdaptiveQuality'
 

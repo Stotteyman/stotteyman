@@ -1,7 +1,8 @@
 'use client'
 
-import { ReactNode, useEffect, useState } from 'react'
-import { useMotionPreference } from '@/hooks/useReducedMotion'
+import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from './AnimationErrorBoundary'
 
 interface MotionWrapperProps {
@@ -21,7 +22,7 @@ export function MotionWrapper({
   staticFallback,
   className = ''
 }: MotionWrapperProps) {
-  const { shouldReduceMotion } = useMotionPreference()
+  const { prefersReducedMotion } = useReducedMotion()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export function MotionWrapper({
   }
 
   const renderContent = () => {
-    if (shouldReduceMotion) {
+    if (prefersReducedMotion) {
       // Show reduced motion version or static fallback
       return reducedAnimation || staticFallback || children
     }
@@ -50,8 +51,8 @@ export function MotionWrapper({
   return (
     <AnimationErrorBoundary fallback={fallback}>
       <div 
-        className={`motion-wrapper ${shouldReduceMotion ? 'reduced-motion' : 'full-motion'} ${className}`}
-        data-motion-preference={shouldReduceMotion ? 'reduced' : 'full'}
+        className={`motion-wrapper ${prefersReducedMotion ? 'reduced-motion' : 'full-motion'} ${className}`}
+        data-motion-preference={prefersReducedMotion ? 'reduced' : 'full'}
       >
         {renderContent()}
       </div>
@@ -72,10 +73,10 @@ export function ConditionalAnimation({
   fallback,
   className = ''
 }: ConditionalAnimationProps) {
-  const { shouldReduceMotion } = useMotionPreference()
+  const { prefersReducedMotion } = useReducedMotion()
   
   // Don't animate if motion is reduced or condition is false
-  const shouldAnimate = !shouldReduceMotion && condition
+  const shouldAnimate = !prefersReducedMotion && condition
 
   if (!shouldAnimate) {
     return (
@@ -100,21 +101,13 @@ interface MotionToggleProps {
 
 export function MotionToggle({ className = '' }: MotionToggleProps) {
   const { 
-    shouldReduceMotion, 
-    systemPreference, 
-    userOverride,
-    setMotionPreference,
-    clearMotionPreference
-  } = useMotionPreference()
+    prefersReducedMotion, 
+    setReducedMotion
+  } = useReducedMotion()
 
   const handleToggle = () => {
-    if (userOverride !== null) {
-      // Clear user override to use system preference
-      clearMotionPreference()
-    } else {
-      // Set user override opposite to current state
-      setMotionPreference(!shouldReduceMotion)
-    }
+    // Toggle reduced motion preference
+    setReducedMotion(!prefersReducedMotion)
   }
 
   return (
@@ -122,29 +115,23 @@ export function MotionToggle({ className = '' }: MotionToggleProps) {
       <button
         onClick={handleToggle}
         className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
-        aria-label={`${shouldReduceMotion ? 'Enable' : 'Disable'} animations`}
+        aria-label={`${prefersReducedMotion ? 'Enable' : 'Disable'} animations`}
       >
         <div className="flex items-center gap-2">
           <div 
             className={`w-4 h-4 rounded-full transition-colors ${
-              shouldReduceMotion ? 'bg-red-500' : 'bg-green-500'
+              prefersReducedMotion ? 'bg-red-500' : 'bg-green-500'
             }`}
           />
           <span className="text-sm text-white">
-            Animations {shouldReduceMotion ? 'Off' : 'On'}
+            Animations {prefersReducedMotion ? 'Off' : 'On'}
           </span>
         </div>
         
-        {userOverride !== null && (
-          <span className="text-xs text-gray-400">
-            (Override)
-          </span>
-        )}
+
       </button>
       
-      <div className="text-xs text-gray-500 mt-1">
-        System: {systemPreference ? 'Reduced' : 'Full'} motion
-      </div>
+
     </div>
   )
 }

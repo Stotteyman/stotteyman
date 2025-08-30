@@ -1,6 +1,6 @@
 'use client'
 
-import { WebVitalsMetrics, PerformanceThresholds } from './webVitals'
+import type { WebVitalsMetrics, PerformanceThresholds } from './webVitals'
 
 export interface PerformanceAlert {
   id: string

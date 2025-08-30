@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Send, CheckCircle, AlertCircle, Loader2, User, Mail, MessageSquare, Briefcase } from 'lucide-react'
+import { Send, CheckCircle, AlertCircle, Loader2, User, MessageSquare, Briefcase } from 'lucide-react'
 import { FormField } from '../ui/FormField'
 import { InteractiveButton } from '../ui/InteractiveButton'
 import { GlassmorphicCard } from '../ui/GlassmorphicCard'

@@ -100,14 +100,18 @@ export function HeroSection() {
                 <>
                     <MorphingBackground
                         shapes={[
-                            { type: 'blob', size: 400, position: { x: 20, y: 20 }, morphSpeed: 0.8 },
-                            { type: 'blob', size: 500, position: { x: 80, y: 60 }, morphSpeed: 1.2 },
-                            { type: 'blob', size: 300, position: { x: 60, y: 80 }, morphSpeed: 1.0 }
+                            { type: 'blob', size: 400, position: { x: 20, y: 20 }, morphSpeed: 0.8, complexity: 3 },
+                            { type: 'blob', size: 500, position: { x: 80, y: 60 }, morphSpeed: 1.2, complexity: 4 },
+                            { type: 'blob', size: 300, position: { x: 60, y: 80 }, morphSpeed: 1.0, complexity: 3 }
                         ]}
                         colors={{
                             primary: ['#3b82f6', '#1d4ed8'],
                             secondary: ['#8b5cf6', '#7c3aed'],
-                            accent: ['#ec4899', '#db2777']
+                            accent: ['#ec4899', '#db2777'],
+                            gradients: [
+                                { id: 'gradient1', colors: ['#3b82f6', '#8b5cf6'], direction: 45, type: 'linear' },
+                                { id: 'gradient2', colors: ['#8b5cf6', '#ec4899'], direction: 135, type: 'linear' }
+                            ]
                         }}
                         animationSpeed={0.6}
                         blendMode="multiply"

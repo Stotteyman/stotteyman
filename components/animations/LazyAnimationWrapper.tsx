@@ -39,7 +39,7 @@ export function LazyAnimationWrapper({
   const [isLoaded, setIsLoaded] = useState(false)
   const elementRef = useRef<HTMLDivElement>(null)
   const prefersReducedMotion = useReducedMotion()
-  const { canUseAdvancedEffects } = useAdaptiveQuality()
+  const { canUseWebGL } = useAdaptiveQuality()
 
   // Intersection Observer for visibility detection
   useEffect(() => {
@@ -74,7 +74,7 @@ export function LazyAnimationWrapper({
 
   // Preload animations when they become visible
   useEffect(() => {
-    if (isVisible && !isLoaded && canUseAdvancedEffects) {
+    if (isVisible && !isLoaded && canUseWebGL) {
       // Simulate loading time for heavy animations
       const loadTimer = setTimeout(() => {
         setIsLoaded(true)
@@ -85,7 +85,7 @@ export function LazyAnimationWrapper({
     
     // Return undefined for other code paths
     return undefined
-  }, [isVisible, isLoaded, canUseAdvancedEffects])
+  }, [isVisible, isLoaded, canUseWebGL])
 
   const getAnimationVariants = () => {
     if (prefersReducedMotion || animationType === 'none') {
@@ -189,10 +189,10 @@ export function LazyMorphingWrapper(props: any) {
 // Hook for preloading animations
 export function useAnimationPreloader() {
   const [preloadedComponents, setPreloadedComponents] = useState<Set<string>>(new Set())
-  const { canUseAdvancedEffects } = useAdaptiveQuality()
+  const { canUseWebGL } = useAdaptiveQuality()
 
   const preloadAnimation = async (componentName: string) => {
-    if (!canUseAdvancedEffects || preloadedComponents.has(componentName)) {
+    if (!canUseWebGL || preloadedComponents.has(componentName)) {
       return
     }
 

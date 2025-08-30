@@ -5,8 +5,9 @@
 
 'use client'
 
-import React, { ReactNode, useEffect, useRef } from 'react'
-import { useAdvancedScrollAnimations, useStaggeredScrollAnimation, useParallaxScroll, useTextRevealAnimation } from '@/hooks/useAdvancedScrollAnimations'
+import React, { useEffect, useRef } from 'react'
+import type { ReactNode } from 'react'
+import { useStaggeredScrollAnimation, useParallaxScroll, useTextRevealAnimation } from '@/hooks/useAdvancedScrollAnimations'
 import { useReducedMotion } from '@/hooks/useAdaptiveQuality'
 
 interface ScrollRevealProps {
@@ -155,7 +156,7 @@ interface TextRevealProps {
   children: ReactNode
   className?: string
   animation?: 'typewriter' | 'fade-up' | 'split-chars' | 'split-words'
-  as?: keyof JSX.IntrinsicElements
+  as?: 'div' | 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
 export function TextReveal({

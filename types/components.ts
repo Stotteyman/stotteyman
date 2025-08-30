@@ -115,7 +115,7 @@ export interface EnhancedInputProps extends InputHTMLAttributes<HTMLInputElement
 }
 
 export interface ContactFormProps extends FormHTMLAttributes<HTMLFormElement>, AnimatedComponentProps {
-  onSubmit?: (data: ContactFormData) => Promise<void>
+  onFormSubmit?: (data: ContactFormData) => Promise<void>
   loading?: boolean
   success?: boolean
   error?: string
@@ -188,7 +188,7 @@ export interface SkeletonProps extends AnimatedComponentProps {
   width?: string | number
   height?: string | number
   variant?: 'text' | 'rectangular' | 'circular'
-  animation?: 'pulse' | 'wave' | 'none'
+  skeletonAnimation?: 'pulse' | 'wave' | 'none'
   lines?: number
   spacing?: number
 }

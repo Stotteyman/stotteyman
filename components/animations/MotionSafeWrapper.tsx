@@ -54,8 +54,9 @@ export function MotionSafeWrapper({
     if (!elementRef.current) return
 
     observerRef.current = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
+      (entries) => {
+        const entry = entries[0]
+        if (entry?.isIntersecting) {
           setIsVisible(true)
           onAnimationStart?.()
           

@@ -5,8 +5,9 @@
 
 'use client'
 
-import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { AnimationError, AnimationFallback, FallbackConfig } from '@/types/animations'
+import React, { Component } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
+import type { AnimationError, AnimationFallback, FallbackConfig } from '@/types/animations'
 
 interface AnimationErrorBoundaryState {
   hasError: boolean
@@ -51,7 +52,7 @@ export class AnimationErrorBoundary extends Component<
     }
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       errorInfo
     })
@@ -60,7 +61,7 @@ export class AnimationErrorBoundary extends Component<
       id: this.props.animationId || `error-${Date.now()}`,
       type: this.categorizeError(error),
       message: error.message,
-      component: this.props.componentName,
+      component: this.props.componentName || 'Unknown',
       timestamp: new Date(),
       severity: this.determineSeverity(error),
       context: {
@@ -90,7 +91,7 @@ export class AnimationErrorBoundary extends Component<
     }
   }
 
-  componentWillUnmount() {
+  override componentWillUnmount() {
     if (this.retryTimeoutId) {
       clearTimeout(this.retryTimeoutId)
     }
@@ -209,7 +210,7 @@ export class AnimationErrorBoundary extends Component<
 
   private renderFallback(): ReactNode {
     const { fallback } = this.props
-    const { fallbackType, error } = this.state
+    const { fallbackType } = this.state
 
     // Custom fallback provided
     if (fallback) {
@@ -219,16 +220,16 @@ export class AnimationErrorBoundary extends Component<
     // Default fallbacks based on strategy
     switch (fallbackType) {
       case 'static':
-        return <StaticFallback error={error} onRetry={this.handleManualRetry} />
+        return <StaticFallback onRetry={this.handleManualRetry} />
       case 'simplified':
-        return <SimplifiedFallback error={error} onRetry={this.handleManualRetry} />
+        return <SimplifiedFallback onRetry={this.handleManualRetry} />
       case 'css':
       default:
-        return <CSSFallback error={error} onRetry={this.handleManualRetry} />
+        return <CSSFallback onRetry={this.handleManualRetry} />
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return this.renderFallback()
     }
@@ -245,7 +246,7 @@ interface FallbackProps {
   onRetry: () => void
 }
 
-function CSSFallback({ error, onRetry }: FallbackProps) {
+function CSSFallback({ onRetry }: Omit<FallbackProps, 'error'>) {
   return (
     <div className="animation-fallback css-fallback">
       <div className="fallback-content">
@@ -272,7 +273,7 @@ function CSSFallback({ error, onRetry }: FallbackProps) {
 /**
  * Static fallback component
  */
-function StaticFallback({ error, onRetry }: FallbackProps) {
+function StaticFallback({ onRetry }: Omit<FallbackProps, 'error'>) {
   return (
     <div className="animation-fallback static-fallback">
       <div className="fallback-content">
@@ -299,7 +300,7 @@ function StaticFallback({ error, onRetry }: FallbackProps) {
 /**
  * Simplified animation fallback component
  */
-function SimplifiedFallback({ error, onRetry }: FallbackProps) {
+function SimplifiedFallback({ onRetry }: Omit<FallbackProps, 'error'>) {
   return (
     <div className="animation-fallback simplified-fallback">
       <div className="fallback-content">
@@ -334,7 +335,7 @@ export function useAnimationErrorHandler() {
 
   const createFallback = (config: FallbackConfig): AnimationFallback => {
     return {
-      type: config.type || 'css',
+      type: 'css',
       config,
       reason: 'Error boundary triggered'
     }
