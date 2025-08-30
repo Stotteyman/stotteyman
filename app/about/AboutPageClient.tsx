@@ -196,7 +196,7 @@ export default function AboutPageClient() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => {
+            {values.map((value) => {
               const Icon = value.icon
               return (
                 <motion.div
@@ -247,7 +247,7 @@ export default function AboutPageClient() {
             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500 to-purple-500" />
             
             <div className="space-y-12">
-              {milestones.map((milestone, index) => (
+              {milestones.map((milestone) => (
                 <motion.div
                   key={milestone.year}
                   className="milestone-item relative flex items-start"

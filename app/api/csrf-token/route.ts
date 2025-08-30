@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { setCSRFCookie } from '@/lib/security/csrfProtection'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const response = NextResponse.json({ success: true })
     const token = setCSRFCookie(response)

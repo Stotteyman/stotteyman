@@ -33,7 +33,7 @@
       "@/styles/*": ["./styles/*"],
       "@/animations/*": ["./animations/*"],
       "@/app/*": ["./app/*"],
-      "@/config/*": ["./lib/config/*"],
+      "@/config/*": ["./config/*"],
       "@/security/*": ["./lib/security/*"],
       "@/performance/*": ["./lib/performance/*"],
       "@/particles/*": ["./lib/particles/*"],

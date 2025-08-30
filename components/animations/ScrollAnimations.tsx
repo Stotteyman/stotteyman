@@ -327,6 +327,94 @@ export function InfiniteScroll({
   )
 }
 
+interface RevealTextProps {
+  text: string
+  className?: string
+  animationType?: 'slide' | 'fade' | 'typewriter'
+  delay?: number
+  speed?: number
+}
+
+export function RevealText({
+  text,
+  className = '',
+  animationType = 'slide',
+  delay = 0,
+  speed = 0.05
+}: RevealTextProps) {
+  const textRef = useRef<HTMLDivElement>(null)
+  const reducedMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (reducedMotion || !textRef.current) return
+
+    const initializeAnimation = async () => {
+      try {
+        const gsap = (await import('gsap')).gsap
+        
+        const element = textRef.current
+        if (!element) return
+
+        // Set initial state based on animation type
+        if (animationType === 'slide') {
+          gsap.set(element, { y: 50, opacity: 0 })
+          gsap.to(element, {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            delay,
+            ease: 'power2.out'
+          })
+        } else if (animationType === 'fade') {
+          gsap.set(element, { opacity: 0 })
+          gsap.to(element, {
+            opacity: 1,
+            duration: 1,
+            delay,
+            ease: 'power2.out'
+          })
+        } else if (animationType === 'typewriter') {
+          // Typewriter effect
+          const chars = text.split('')
+          element.innerHTML = ''
+          
+          chars.forEach((char, index) => {
+            const span = document.createElement('span')
+            span.textContent = char
+            span.style.opacity = '0'
+            element.appendChild(span)
+            
+            gsap.to(span, {
+              opacity: 1,
+              duration: 0.05,
+              delay: delay + (index * speed),
+              ease: 'none'
+            })
+          })
+        }
+      } catch (error) {
+        console.error('Failed to initialize text reveal:', error)
+        // Fallback to CSS animation
+        if (textRef.current) {
+          textRef.current.classList.add('text-reveal-fallback')
+        }
+      }
+    }
+
+    initializeAnimation()
+  }, [text, animationType, delay, speed, reducedMotion])
+
+  if (reducedMotion) {
+    return <div className={className}>{text}</div>
+  }
+
+  return (
+    <div ref={textRef} className={className}>
+      {text}
+    </div>
+  )
+}
+
 // Helper functions
 function getInitialState(animation: string): Record<string, any> {
   switch (animation) {

@@ -188,7 +188,7 @@ export default function LivestreamPageClient() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {achievements.map((achievement, index) => {
+            {achievements.map((achievement) => {
               const Icon = achievement.icon
               return (
                 <motion.div
@@ -235,7 +235,7 @@ export default function LivestreamPageClient() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {collaborators.map((collab, index) => (
+            {collaborators.map((collab) => (
               <motion.div
                 key={collab.name}
                 className="collab-card group"

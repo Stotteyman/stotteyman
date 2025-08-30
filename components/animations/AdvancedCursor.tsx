@@ -27,8 +27,6 @@ interface AdvancedCursorProps {
 export function AdvancedCursor({
   showRipples = true,
   showParticles = true,
-  magneticStrength = 0.3,
-  trailLength = 8,
   className = ''
 }: AdvancedCursorProps) {
   const [cursorState, setCursorState] = useState<CursorState>({ variant: 'default' })
@@ -37,7 +35,7 @@ export function AdvancedCursor({
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; vx: number; vy: number; life: number }>>([])
   
   const { prefersReducedMotion } = useReducedMotion()
-  const { canUseAdvancedEffects } = useAdaptiveQuality()
+  const { canUseWebGL } = useAdaptiveQuality()
 
   // Mouse tracking
   const mouseX = useMotionValue(0)
@@ -61,7 +59,7 @@ export function AdvancedCursor({
   // Cursor transformations
   const cursorScale = useTransform(
     [cursorX, cursorY],
-    ([x, y]) => {
+    () => {
       switch (cursorState.variant) {
         case 'hover':
           return 1.5
@@ -81,7 +79,7 @@ export function AdvancedCursor({
 
   const cursorOpacity = useTransform(
     [cursorX, cursorY],
-    ([x, y]) => {
+    () => {
       switch (cursorState.variant) {
         case 'disabled':
           return 0.3
@@ -95,7 +93,7 @@ export function AdvancedCursor({
 
   // Ripple effect on click
   const createRipple = useCallback((x: number, y: number) => {
-    if (!showRipples || !canUseAdvancedEffects) return
+    if (!showRipples || !canUseWebGL) return
     
     const rippleId = Date.now() + Math.random()
     setRipples(prev => [...prev, { id: rippleId, x, y, timestamp: Date.now() }])
@@ -104,11 +102,11 @@ export function AdvancedCursor({
     setTimeout(() => {
       setRipples(prev => prev.filter(r => r.id !== rippleId))
     }, 1000)
-  }, [showRipples, canUseAdvancedEffects])
+  }, [showRipples, canUseWebGL])
 
   // Particle burst effect
   const createParticleBurst = useCallback((x: number, y: number) => {
-    if (!showParticles || !canUseAdvancedEffects) return
+    if (!showParticles || !canUseWebGL) return
     
     const particleCount = 6
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({
@@ -121,7 +119,7 @@ export function AdvancedCursor({
     }))
     
     setParticles(prev => [...prev, ...newParticles])
-  }, [showParticles, canUseAdvancedEffects])
+  }, [showParticles, canUseWebGL])
 
   // Mouse event handlers
   useEffect(() => {
@@ -215,7 +213,7 @@ export function AdvancedCursor({
     }
   }, [mouseX, mouseY, prefersReducedMotion, createRipple, createParticleBurst, showParticles])
 
-  if (prefersReducedMotion || !canUseAdvancedEffects) {
+  if (prefersReducedMotion || !canUseWebGL) {
     return null
   }
 
@@ -240,9 +238,9 @@ export function AdvancedCursor({
           zIndex: 9999,
           mixBlendMode: cursorState.variant === 'text' ? 'normal' : 'difference'
         }}
-        animate={{
-          scale: isVisible ? cursorScale : 0,
-          opacity: isVisible ? cursorOpacity : 0
+        style={{
+          scale: isVisible ? 1 : 0,
+          opacity: isVisible ? 0.6 : 0
         }}
         transition={{ duration: 0.15 }}
       >
@@ -400,7 +398,7 @@ export function EnhancedMagneticElement({
 }) {
   const elementRef = useRef<HTMLElement>(null)
   const { prefersReducedMotion } = useReducedMotion()
-  const { canUseAdvancedEffects } = useAdaptiveQuality()
+  const { canUseWebGL } = useAdaptiveQuality()
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -408,7 +406,7 @@ export function EnhancedMagneticElement({
   const rotateY = useMotionValue(0)
 
   useEffect(() => {
-    if (prefersReducedMotion || !canUseAdvancedEffects || !elementRef.current) return
+    if (prefersReducedMotion || !canUseWebGL || !elementRef.current) return
 
     const element = elementRef.current
 
@@ -463,9 +461,9 @@ export function EnhancedMagneticElement({
       element.removeEventListener('mousemove', handleMouseMove)
       element.removeEventListener('mouseleave', handleMouseLeave)
     }
-  }, [strength, distance, attractionType, prefersReducedMotion, canUseAdvancedEffects, x, y, rotateX, rotateY])
+  }, [strength, distance, attractionType, prefersReducedMotion, canUseWebGL, x, y, rotateX, rotateY])
 
-  if (prefersReducedMotion || !canUseAdvancedEffects) {
+  if (prefersReducedMotion || !canUseWebGL) {
     return (
       <Component className={`magnetic-element static ${className}`}>
         {children}

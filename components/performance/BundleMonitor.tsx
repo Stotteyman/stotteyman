@@ -233,7 +233,7 @@ export function BundleMonitor({
               <div className="text-center py-12 text-gray-500">
                 <Package size={48} className="mx-auto mb-4 opacity-50" />
                 <p>No bundle analysis available</p>
-                <p className="text-sm">Click "Analyze" to run bundle analysis</p>
+                <p className="text-sm">Click &quot;Analyze&quot; to run bundle analysis</p>
               </div>
             )}
           </motion.div>

@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // Next.js 15.5.0 optimizations
-    optimizeCss: true,
-    optimizeServerReact: true,
     optimizePackageImports: [
       'framer-motion',
       'lucide-react',
@@ -13,39 +10,10 @@ const nextConfig = {
       'dompurify'
     ],
     webVitalsAttribution: ['CLS', 'LCP', 'FCP', 'FID', 'TTFB', 'INP'],
-    scrollRestoration: true,
-    largePageDataBytes: 128 * 1000, // 128KB
-    // Memory optimization
-    memoryBasedWorkersCount: true,
-    // Enhanced caching
-    staleTimes: {
-      dynamic: 30,
-      static: 180,
-    },
-    // Enhanced React optimizations
-    reactCompiler: process.env.NODE_ENV === 'production',
-    // Improved build performance
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
-    // Enhanced static optimization
-    gzipSize: true,
-    // Improved tree shaking
-    esmExternals: 'loose',
-    // Enhanced caching
-    cacheComponents: true,
     serverActions: {
       allowedOrigins: ['localhost:3000', process.env.VERCEL_URL || ''],
       bodySizeLimit: '2mb',
     },
-    // Enhanced build performance
-    useWasmBinary: true, // Use WebAssembly for faster builds
-    forceSwcTransforms: true, // Force SWC for all transforms
-    // Improved hydration
-    clientRouterFilter: true,
-    clientRouterFilterRedirects: true,
-    // Enhanced streaming
-    appDocumentPreloading: true,
-    optimisticClientCache: true,
   },
   serverExternalPackages: ['canvas', 'sharp'],
   transpilePackages: ['three', 'gsap'],

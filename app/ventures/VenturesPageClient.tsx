@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Palette, Leaf, Users, Smartphone, Video,
-  ExternalLink,
   Calendar, ArrowRight, Filter
 } from 'lucide-react'
 import { CalendlyModal } from '@/components/CalendlyModal'
@@ -220,7 +219,7 @@ export default function VenturesPageClient() {
               transition={{ duration: 0.3 }}
               className="grid grid-cols-1 lg:grid-cols-2 gap-8"
             >
-              {filteredVentures.map((venture, index) => {
+              {filteredVentures.map((venture) => {
                 const Icon = venture.icon
                 return (
                   <motion.div

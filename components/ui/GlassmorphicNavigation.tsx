@@ -31,53 +31,32 @@ export function GlassmorphicNavigation({
   items,
   logo,
   actions,
-  variant = 'sticky',
+  variant = 'default',
   blur = 20,
   opacity = 0.1,
-  hideOnScroll = false,
   className = ''
 }: GlassmorphicNavigationProps) {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isVisible, setIsVisible] = useState(true)
-  const navRef = useRef<HTMLElement>(null)
   const { prefersReducedMotion } = useReducedMotion()
-  
   const { scrollY } = useScroll()
-  const lastScrollY = useRef(0)
+  const [isScrolled, setIsScrolled] = useState(false)
 
-  // Transform blur based on scroll
-  const dynamicBlur = useTransform(
+  // Move useTransform hooks outside conditional rendering
+  const dynamicOpacity = useTransform(scrollY, [0, 100], [opacity, opacity * 2])
+  const dynamicBlur = useTransform(scrollY, [0, 100], [`blur(${blur}px)`, `blur(${blur + 10}px)`])
+  const scrollProgressWidth = useTransform(
     scrollY,
-    [0, 100],
-    [blur * 0.5, blur]
-  )
-
-  const dynamicOpacity = useTransform(
-    scrollY,
-    [0, 100],
-    [opacity * 0.5, opacity]
+    [0, typeof document !== 'undefined' ? document.documentElement.scrollHeight - window.innerHeight : 0],
+    ['0%', '100%']
   )
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
-      
-      setIsScrolled(currentScrollY > 10)
-      
-      if (hideOnScroll) {
-        if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
-          setIsVisible(false)
-        } else {
-          setIsVisible(true)
-        }
-      }
-      
-      lastScrollY.current = currentScrollY
+      setIsScrolled(window.scrollY > 50)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [hideOnScroll])
+  }, [])
 
   const getVariantStyles = () => {
     const baseStyles = {
@@ -140,22 +119,22 @@ export function GlassmorphicNavigation({
   return (
     <AnimationErrorBoundary>
       <motion.nav
-        ref={navRef}
-        className={`glassmorphic-navigation ${variant} ${className}`}
+        className={`glassmorphic-nav ${className}`}
         style={{
-          position: variant === 'floating' ? 'fixed' : variant === 'fixed' ? 'fixed' : 'sticky',
-          top: variant === 'floating' ? '0' : '0',
-          left: variant === 'floating' ? '50%' : '0',
-          right: variant === 'floating' ? 'auto' : '0',
-          transform: variant === 'floating' ? 'translateX(-50%)' : 'none',
-          zIndex: 50,
-          ...getVariantStyles(),
-          backdropFilter: prefersReducedMotion ? `blur(${blur}px)` : undefined,
-          WebkitBackdropFilter: prefersReducedMotion ? `blur(${blur}px)` : undefined
+          backdropFilter: dynamicBlur,
+          WebkitBackdropFilter: dynamicBlur,
+          background: `rgba(255, 255, 255, ${dynamicOpacity})`,
+          borderRadius: variant === 'floating' ? '50px' : '0'
         }}
-        variants={navVariants}
-        animate={isVisible ? 'visible' : 'hidden'}
-        initial="visible"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ 
+          y: 0, 
+          opacity: 1,
+          transition: { 
+            duration: prefersReducedMotion ? 0.1 : 0.4,
+            ease: 'easeOut'
+          }
+        }}
       >
         {/* Enhanced blur effect based on scroll */}
         {!prefersReducedMotion && (
@@ -164,10 +143,7 @@ export function GlassmorphicNavigation({
             style={{
               backdropFilter: dynamicBlur,
               WebkitBackdropFilter: dynamicBlur,
-              background: useTransform(
-                [dynamicOpacity],
-                ([opacity]) => `rgba(255, 255, 255, ${opacity})`
-              ),
+              background: `rgba(255, 255, 255, ${dynamicOpacity})`,
               borderRadius: variant === 'floating' ? '50px' : '0'
             }}
           />
@@ -263,11 +239,7 @@ export function GlassmorphicNavigation({
           <motion.div
             className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500"
             style={{
-              width: useTransform(
-                scrollY,
-                [0, document.documentElement.scrollHeight - window.innerHeight],
-                ['0%', '100%']
-              )
+              width: scrollProgressWidth
             }}
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
