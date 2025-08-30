@@ -7,11 +7,8 @@ const nextConfig = {
     optimizePackageImports: [
       'framer-motion',
       'lucide-react',
-      '@radix-ui/react-icons',
       'gsap',
       'lottie-react',
-      'react-intersection-observer',
-      'use-gesture',
       'three',
       'dompurify'
     ],
@@ -25,33 +22,6 @@ const nextConfig = {
       dynamic: 30,
       static: 180,
     },
-    // Next.js 15.5.0 specific features
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
-    // Enhanced bundling
-    bundlePagesRouterDependencies: true,
-    // Improved static generation
-    staticWorkerRequestDeduping: true,
-    // Enhanced middleware
-    middlewareSourceMaps: process.env.NODE_ENV === 'development',
-    // Performance improvements
-    serverMinification: true,
-    serverSourceMaps: process.env.NODE_ENV === 'development',
-    // Enhanced image optimization
-    nextScriptWorkers: true,
-    // Next.js 15.5.0 enhanced features
-    turbotrace: {
-      logLevel: 'error',
-      logDetail: true,
-      showAll: false,
-      contextDirectory: process.cwd(),
-    },
     // Enhanced React optimizations
     reactCompiler: process.env.NODE_ENV === 'production',
     // Improved build performance
@@ -59,20 +29,12 @@ const nextConfig = {
     parallelServerCompiles: true,
     // Enhanced static optimization
     gzipSize: true,
-    // Advanced caching strategies
-    incrementalCacheHandlerPath: process.env.NODE_ENV === 'production' ? require.resolve('./lib/cache-handler.js') : undefined,
     // Improved tree shaking
     esmExternals: 'loose',
-    // Enhanced font optimization
-    fontLoaders: [
-      { loader: '@next/font/google', options: { subsets: ['latin'] } },
-    ],
-    // Next.js 15.5.0 new features
-    ppr: process.env.NODE_ENV === 'production', // Partial Prerendering
-    dynamicIO: true, // Dynamic IO for better streaming
-    reactOwnerStack: process.env.NODE_ENV === 'development', // Better error traces
+    // Enhanced caching
+    cacheComponents: true,
     serverActions: {
-      allowedOrigins: ['localhost:3000', process.env.VERCEL_URL],
+      allowedOrigins: ['localhost:3000', process.env.VERCEL_URL || ''],
       bodySizeLimit: '2mb',
     },
     // Enhanced build performance
@@ -84,10 +46,6 @@ const nextConfig = {
     // Enhanced streaming
     appDocumentPreloading: true,
     optimisticClientCache: true,
-    // Better error handling
-    strictNextHead: true,
-    // Enhanced security
-    serverComponentsExternalPackages: ['canvas', 'sharp', 'sqlite3'],
   },
   serverExternalPackages: ['canvas', 'sharp'],
   transpilePackages: ['three', 'gsap'],
@@ -105,17 +63,10 @@ const nextConfig = {
     reactRemoveProperties: process.env.NODE_ENV === 'production' ? {
       properties: ['^data-testid', '^data-cy']
     } : false,
-    // Enhanced SWC optimizations
-    styledComponents: false,
-    emotion: false,
   },
   modularizeImports: {
     'lucide-react': {
       transform: 'lucide-react/dist/esm/icons/{{kebabCase member}}',
-      skipDefaultConversion: true,
-    },
-    '@radix-ui/react-icons': {
-      transform: '@radix-ui/react-icons/dist/{{member}}.js',
       skipDefaultConversion: true,
     },
     'framer-motion': {
@@ -141,73 +92,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Next.js 15.5.0 enhanced image features
-    loader: 'default',
-    loaderFile: '',
-    domains: [],
-    path: '/_next/image',
-    // Enhanced quality and performance
-    quality: 85,
-    priority: false,
-    loading: 'lazy',
-    // Advanced optimization
-    unoptimized: false,
-    // Enhanced AVIF support with better compression
-    experimentalLayout: 'responsive',
-    // Improved caching with stale-while-revalidate
-    cacheTTL: 31536000, // 1 year
-    // Enhanced responsive images
-    breakpoints: [640, 768, 1024, 1280, 1536],
-    // Advanced image processing with Next.js 15.5.0
-    sharp: {
-      quality: 85,
-      progressive: true,
-      optimizeScans: true,
-      mozjpeg: true,
-      // Enhanced AVIF encoding
-      avif: {
-        quality: 80,
-        speed: 4,
-        chromaSubsampling: '4:2:0',
-      },
-      // Enhanced WebP encoding
-      webp: {
-        quality: 85,
-        effort: 4,
-        lossless: false,
-      },
-      // Enhanced JPEG encoding
-      jpeg: {
-        quality: 85,
-        progressive: true,
-        mozjpeg: true,
-        trellisQuantisation: true,
-        overshootDeringing: true,
-        optimizeScans: true,
-      },
-      // Enhanced PNG encoding
-      png: {
-        quality: 90,
-        compressionLevel: 9,
-        adaptiveFiltering: true,
-        palette: true,
-      },
-    },
-    // Enhanced loading strategies
-    placeholder: 'blur',
-    blurDataURL: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=',
-    // Next.js 15.5.0 new image features
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    // Enhanced responsive loading
-    sizes: '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
-    // Improved performance monitoring
-    onLoad: process.env.NODE_ENV === 'development' ? (result) => {
-      console.log('Image loaded:', result.naturalWidth, 'x', result.naturalHeight)
-    } : undefined,
-    onError: process.env.NODE_ENV === 'development' ? (error) => {
-      console.error('Image error:', error)
-    } : undefined,
   },
   async headers() {
     return [
@@ -269,11 +153,6 @@ const nextConfig = {
       },
     ]
   },
-  webpack: (config, context) => {
-    // Use enhanced webpack configuration
-    const { enhanceWebpackConfig } = require('./lib/config/webpack.config.js')
-    return enhanceWebpackConfig(config, context)
-  },
   // Enhanced performance settings
   poweredByHeader: false,
   compress: true,
@@ -288,11 +167,8 @@ const nextConfig = {
   },
   // Enable static optimization
   staticPageGenerationTimeout: 60,
-  // Next.js 15.5.0 specific optimizations
-  swcMinify: true,
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
-  optimizeFonts: true,
   // Enhanced output configuration
   output: 'standalone',
   // Improved build performance
@@ -303,7 +179,6 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   // Enhanced caching
-  cacheHandler: process.env.NODE_ENV === 'production' ? require.resolve('./lib/cache-handler.js') : undefined,
   cacheMaxMemorySize: 50 * 1024 * 1024, // 50MB
 }
 
