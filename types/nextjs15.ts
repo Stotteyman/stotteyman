@@ -3,7 +3,7 @@
  * Comprehensive types for all Next.js 15.5.0 features and optimizations
  */
 
-import type { NextConfig } from 'next'
+// import type { NextConfig } from 'next'
 import type { ImageProps } from 'next/image'
 import type { Metadata } from 'next'
 
@@ -178,7 +178,7 @@ export interface EnhancedMetadata extends Metadata {
     unavailable_after?: string
     'max-video-preview'?: number | 'none'
     'max-image-preview'?: 'none' | 'standard' | 'large'
-    'max-snippet'?: number | 'none'
+    'max-snippet'?: number
   }
   // Enhanced Open Graph
   openGraph?: {
@@ -320,7 +320,7 @@ export type MiddlewareFunction = (
 ) => NextResponse | Response | Promise<NextResponse | Response> | void | Promise<void>
 
 // Server Actions Types for Next.js 15.5.0
-export type ServerAction<T = any, R = any> = (formData: FormData) => Promise<R>
+export type ServerAction<R = any> = (formData: FormData) => Promise<R>
 
 export interface ServerActionResult<T = any> {
   success: boolean

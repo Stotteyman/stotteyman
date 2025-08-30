@@ -5,15 +5,15 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { ScrollTriggerManager } from '@/lib/animations/ScrollTriggerManager'
-import { ScrollAnimationPresets, ScrollPreset } from '@/lib/animations/ScrollAnimationPresets'
+import { ScrollAnimationPresets } from '@/lib/animations/ScrollAnimationPresets'
+import type { ScrollPreset } from '@/lib/animations/ScrollAnimationPresets'
 import { useAdaptiveQuality } from './useAdaptiveQuality'
-import { ScrollAnimationConfig } from '@/types/animations'
+import type { ScrollAnimationConfig } from '@/types/animations'
 
 export interface UseScrollAnimationSystemOptions {
   enablePresets?: boolean
   enableBatching?: boolean
   enablePerformanceMonitoring?: boolean
-  defaultQuality?: 'low' | 'medium' | 'high'
 }
 
 export interface ScrollAnimationSystemReturn {
@@ -53,8 +53,7 @@ export function useScrollAnimationSystem(
   const {
     enablePresets = true,
     enableBatching = true,
-    enablePerformanceMonitoring = true,
-    defaultQuality = 'medium'
+    enablePerformanceMonitoring = true
   } = options
 
   const [isInitialized, setIsInitialized] = useState(false)
@@ -65,6 +64,8 @@ export function useScrollAnimationSystem(
 
   // Initialize the scroll animation system
   useEffect(() => {
+    let cleanup: (() => void) | undefined
+
     const initialize = async () => {
       try {
         scrollManagerRef.current = ScrollTriggerManager.getInstance()
@@ -78,7 +79,7 @@ export function useScrollAnimationSystem(
             }
           }, 1000)
 
-          return () => clearInterval(interval)
+          cleanup = () => clearInterval(interval)
         }
       } catch (error) {
         console.error('Failed to initialize scroll animation system:', error)
@@ -86,6 +87,10 @@ export function useScrollAnimationSystem(
     }
 
     initialize()
+
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [enablePerformanceMonitoring])
 
   // Create animation from configuration
@@ -101,9 +106,10 @@ export function useScrollAnimationSystem(
     if (shouldReduceMotion) {
       // Apply final state immediately
       if (config.properties) {
-        config.properties.forEach(prop => {
+        config.properties.forEach((prop) => {
           if (element instanceof HTMLElement) {
-            (element.style as any)[prop.property] = prop.to
+            // For ScrollAnimationConfig, properties is AnimationProperty[], so we apply the 'to' value
+            (element.style as any)[prop.property] = prop.to + (prop.unit || '')
           }
         })
       }
@@ -123,7 +129,7 @@ export function useScrollAnimationSystem(
       throw new Error('Presets are disabled')
     }
 
-    const adjustedConfig = ScrollAnimationPresets.getQualityAdjustedConfig(presetId, quality)
+    const adjustedConfig = ScrollAnimationPresets.getQualityAdjustedConfig(presetId, quality === 'auto' ? 'medium' : quality)
     if (!adjustedConfig) {
       throw new Error(`Preset '${presetId}' not found`)
     }
@@ -157,7 +163,7 @@ export function useScrollAnimationSystem(
     elements: Element[],
     presetId: string
   ): Promise<string[]> => {
-    const adjustedConfig = ScrollAnimationPresets.getQualityAdjustedConfig(presetId, quality)
+    const adjustedConfig = ScrollAnimationPresets.getQualityAdjustedConfig(presetId, quality === 'auto' ? 'medium' : quality)
     if (!adjustedConfig) {
       throw new Error(`Preset '${presetId}' not found`)
     }
@@ -173,7 +179,7 @@ export function useScrollAnimationSystem(
   // Get available presets based on current quality
   const getAvailablePresets = useCallback((): ScrollPreset[] => {
     if (!enablePresets) return []
-    return ScrollAnimationPresets.getOptimizedPresets(quality)
+    return ScrollAnimationPresets.getOptimizedPresets(quality === 'auto' ? 'medium' : quality)
   }, [enablePresets, quality])
 
   // Search presets
@@ -292,7 +298,9 @@ export function useScrollAnimationSystem(
   ): (() => void) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        callback(entry.isIntersecting)
+        if (entry) {
+          callback(entry.isIntersecting)
+        }
       },
       {
         threshold: [0, 0.1, 0.5, 0.9, 1],
@@ -312,6 +320,8 @@ export function useScrollAnimationSystem(
 
   // Listen for quality changes
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const handleQualityChange = (event: CustomEvent) => {
       const { quality: newQuality } = event.detail
       
@@ -323,11 +333,9 @@ export function useScrollAnimationSystem(
       }
     }
 
-    if (typeof window !== 'undefined') {
-      window.addEventListener('quality-change', handleQualityChange as EventListener)
-      return () => {
-        window.removeEventListener('quality-change', handleQualityChange as EventListener)
-      }
+    window.addEventListener('quality-change', handleQualityChange as EventListener)
+    return () => {
+      window.removeEventListener('quality-change', handleQualityChange as EventListener)
     }
   }, [pauseAll, resumeAll, refresh])
 
@@ -363,7 +371,7 @@ export function useScrollAnimationSystem(
     // State
     isInitialized,
     statistics,
-    quality,
+    quality: quality === 'auto' ? 'medium' : quality,
     
     // Utilities
     registerElement,

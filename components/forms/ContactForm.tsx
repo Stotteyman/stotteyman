@@ -263,7 +263,7 @@ export function ContactForm() {
               type="submit"
               variant="primary"
               size="lg"
-              animation="magnetic"
+              buttonAnimation="magnetic"
               loadingState={isSubmitting}
               disabled={isSubmitting}
               className="w-full"

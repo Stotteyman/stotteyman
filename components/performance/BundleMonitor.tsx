@@ -8,19 +8,16 @@ import {
   CheckCircle, 
   TrendingUp, 
   TrendingDown,
-  FileText,
   Zap,
   RefreshCw,
-  Download,
-  Upload,
   BarChart3
 } from 'lucide-react'
 import { 
-  BundleAnalysisResult, 
-  BundleBudget, 
-  BudgetViolation,
-  BundleRecommendation,
   getBundleAnalyzer 
+} from '@/lib/performance/bundleAnalysis'
+import type {
+  BundleAnalysisResult,
+  BudgetViolation
 } from '@/lib/performance/bundleAnalysis'
 
 interface BundleMonitorProps {
@@ -65,6 +62,7 @@ export function BundleMonitor({
       const interval = setInterval(runAnalysis, refreshInterval)
       return () => clearInterval(interval)
     }
+    return undefined
   }, [autoRefresh, refreshInterval])
 
   const formatSize = (bytes: number) => {
@@ -367,15 +365,15 @@ export function BundleMonitor({
                         </span>
                       </div>
                       
-                      {index < history.length - 1 && (
+                      {index < history.length - 1 && result.stats.totalSize !== undefined && history[history.length - 2 - index]?.stats.totalSize !== undefined && (
                         <div className="flex items-center gap-2 text-sm">
-                          {result.stats.totalSize > history[history.length - 2 - index].stats.totalSize ? (
+                          {result.stats.totalSize > history[history.length - 2 - index]!.stats.totalSize ? (
                             <TrendingUp size={16} className="text-red-400" />
                           ) : (
                             <TrendingDown size={16} className="text-green-400" />
                           )}
                           <span className="text-gray-400">
-                            {formatSize(Math.abs(result.stats.totalSize - history[history.length - 2 - index].stats.totalSize))}
+                            {formatSize(Math.abs(result.stats.totalSize - history[history.length - 2 - index]!.stats.totalSize))}
                           </span>
                         </div>
                       )}
@@ -384,7 +382,7 @@ export function BundleMonitor({
                     <div className="grid grid-cols-3 gap-4 text-sm">
                       <div>
                         <div className="text-gray-400">Total Size</div>
-                        <div className="text-white font-medium">{formatSize(result.stats.totalSize)}</div>
+                        <div className="text-white font-medium">{formatSize(result.stats.totalSize || 0)}</div>
                       </div>
                       <div>
                         <div className="text-gray-400">Chunks</div>

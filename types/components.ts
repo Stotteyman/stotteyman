@@ -3,8 +3,8 @@
  * Enhanced UI components with animation and accessibility support
  */
 
-import { ReactNode, ComponentType, HTMLAttributes, ButtonHTMLAttributes, InputHTMLAttributes, FormHTMLAttributes } from 'react'
-import { AnimationConfig, AnimationQuality, FramerMotionVariants, FramerMotionTransition } from './animations'
+import type { ReactNode, ComponentType, HTMLAttributes, ButtonHTMLAttributes, InputHTMLAttributes, FormHTMLAttributes } from 'react'
+import type { AnimationConfig, AnimationQuality, FramerMotionVariants, FramerMotionTransition } from './animations'
 
 // Base component props
 export interface BaseComponentProps {
@@ -17,7 +17,7 @@ export interface BaseComponentProps {
 }
 
 // Animation-enhanced component props
-export interface AnimatedComponentProps extends BaseComponentProps {
+export interface AnimatedComponentProps {
   animation?: AnimationConfig
   variants?: FramerMotionVariants
   transition?: FramerMotionTransition
@@ -30,7 +30,7 @@ export interface AnimatedComponentProps extends BaseComponentProps {
 export interface InteractiveButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, AnimatedComponentProps {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive'
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  animation?: 'ripple' | 'magnetic' | 'morph' | 'pulse' | 'none'
+  buttonAnimation?: 'ripple' | 'magnetic' | 'morph' | 'pulse' | 'none'
   hapticFeedback?: boolean
   loadingState?: boolean
   loading?: boolean
@@ -38,7 +38,7 @@ export interface InteractiveButtonProps extends ButtonHTMLAttributes<HTMLButtonE
   fullWidth?: boolean
   leftIcon?: ReactNode
   rightIcon?: ReactNode
-  onClick?: () => void | Promise<void>
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>
 }
 
 // Card component interfaces
@@ -110,7 +110,7 @@ export interface EnhancedInputProps extends InputHTMLAttributes<HTMLInputElement
   rightIcon?: ReactNode
   floating?: boolean
   variant?: 'default' | 'filled' | 'outlined' | 'underlined'
-  validation?: ValidationRule[]
+  validation?: FormValidationRule[]
   realTimeValidation?: boolean
 }
 
@@ -141,7 +141,7 @@ export interface FormField {
   label: string
   placeholder?: string
   required?: boolean
-  validation?: ValidationRule[]
+  validation?: FormValidationRule[]
   options?: SelectOption[]
 }
 
@@ -151,11 +151,23 @@ export interface SelectOption {
   disabled?: boolean
 }
 
-export interface ValidationRule {
+export interface FormValidationRule {
   type: 'required' | 'email' | 'minLength' | 'maxLength' | 'pattern' | 'custom'
   value?: any
   message: string
   validator?: (value: any) => boolean
+}
+
+export interface FormFieldProps {
+  label: string
+  name: string
+  type?: 'text' | 'email' | 'password' | 'textarea' | 'tel' | 'url'
+  placeholder?: string
+  required?: boolean
+  error?: string | undefined
+  value: string
+  onChange: (value: string) => void
+  className?: string
 }
 
 // Modal and overlay interfaces

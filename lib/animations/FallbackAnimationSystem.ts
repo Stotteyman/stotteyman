@@ -17,7 +17,7 @@ export class FallbackAnimationSystem {
   private static instance: FallbackAnimationSystem
   private styleSheet: CSSStyleSheet | null = null
   private animations: Map<string, FallbackAnimationConfig> = new Map()
-  private isInitialized = false
+  // private isInitialized = false
 
   private constructor() {
     this.initialize()
@@ -41,7 +41,6 @@ export class FallbackAnimationSystem {
 
     // Register default fallback animations
     this.registerDefaultAnimations()
-    this.isInitialized = true
   }
 
   private registerDefaultAnimations(): void {
@@ -413,9 +412,11 @@ export class FallbackAnimationSystem {
   ): void {
     elements.forEach((element, index) => {
       const animationName = animationNames[index % animationNames.length]
-      setTimeout(() => {
-        this.applyAnimation(element, animationName)
-      }, index * delay * 1000)
+      if (animationName) {
+        setTimeout(() => {
+          this.applyAnimation(element, animationName)
+        }, index * delay * 1000)
+      }
     })
   }
 
@@ -482,7 +483,6 @@ export class FallbackAnimationSystem {
     }
     this.animations.clear()
     this.styleSheet = null
-    this.isInitialized = false
     FallbackAnimationSystem.instance = null as any
   }
 }

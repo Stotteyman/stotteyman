@@ -30,34 +30,42 @@ export function useReducedMotion(): UseReducedMotionReturn {
     setPrefersReducedMotion(initialState)
     
     // Update CSS custom property for global access
-    document.documentElement.style.setProperty(
-      '--prefers-reduced-motion', 
-      initialState ? '1' : '0'
-    )
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty(
+        '--prefers-reduced-motion', 
+        initialState ? '1' : '0'
+      )
+    }
 
     // Listen for changes in system preference
     const handleChange = (e: MediaQueryListEvent) => {
       if (userOverride === null) {
         setPrefersReducedMotion(e.matches)
-        document.documentElement.style.setProperty(
-          '--prefers-reduced-motion', 
-          e.matches ? '1' : '0'
-        )
+        if (typeof document !== 'undefined') {
+          document.documentElement.style.setProperty(
+            '--prefers-reduced-motion', 
+            e.matches ? '1' : '0'
+          )
+        }
       }
     }
 
     mediaQuery.addEventListener('change', handleChange)
 
     // Check for saved user preference
-    const savedPreference = localStorage.getItem('reduced-motion-preference')
-    if (savedPreference !== null) {
-      const preference = savedPreference === 'true'
-      setUserOverride(preference)
-      setPrefersReducedMotion(preference)
-      document.documentElement.style.setProperty(
-        '--prefers-reduced-motion', 
-        preference ? '1' : '0'
-      )
+    if (typeof localStorage !== 'undefined') {
+      const savedPreference = localStorage.getItem('reduced-motion-preference')
+      if (savedPreference !== null) {
+        const preference = savedPreference === 'true'
+        setUserOverride(preference)
+        setPrefersReducedMotion(preference)
+        if (typeof document !== 'undefined') {
+          document.documentElement.style.setProperty(
+            '--prefers-reduced-motion', 
+            preference ? '1' : '0'
+          )
+        }
+      }
     }
 
     return () => {
@@ -70,13 +78,17 @@ export function useReducedMotion(): UseReducedMotionReturn {
     setPrefersReducedMotion(enabled)
     
     // Save preference to localStorage
-    localStorage.setItem('reduced-motion-preference', enabled.toString())
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('reduced-motion-preference', enabled.toString())
+    }
     
     // Update CSS custom property
-    document.documentElement.style.setProperty(
-      '--prefers-reduced-motion', 
-      enabled ? '1' : '0'
-    )
+    if (typeof document !== 'undefined') {
+      document.documentElement.style.setProperty(
+        '--prefers-reduced-motion', 
+        enabled ? '1' : '0'
+      )
+    }
     
     // Dispatch custom event for other components to listen
     if (typeof window !== 'undefined') {

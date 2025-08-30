@@ -1,6 +1,6 @@
 # Stotteyman Enterprises LLC - Investor Website
 
-A cutting-edge, futuristic investor-facing website showcasing Gary Lee McCullouch Jr.'s venture portfolio and entrepreneurial journey.
+A cutting-edge, futuristic investor-facing website showcasing Stotteyman's venture portfolio and entrepreneurial journey.
 
 ## 🚀 Features
 

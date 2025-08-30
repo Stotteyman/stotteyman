@@ -18,13 +18,6 @@ export * from './security'
 // Global type augmentations for Next.js 15.5.0
 declare global {
   interface Window {
-    // Performance monitoring
-    __PERFORMANCE_MONITOR__?: {
-      metrics: import('./performance').PerformanceMetrics[]
-      isMonitoring: boolean
-      startTime: number
-    }
-    
     // Animation system
     __ANIMATION_MANAGER__?: {
       animations: Map<string, import('./animations').AnimationConfig>

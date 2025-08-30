@@ -218,7 +218,7 @@ export class SessionManager {
     return crypto.randomBytes(32).toString('hex')
   }
 
-  static setSession(response: NextResponse, sessionData: any): void {
+  static setSession(response: NextResponse, _sessionData: any): void {
     const sessionId = this.generateSessionId()
     const expiresAt = new Date(Date.now() + this.SESSION_TIMEOUT)
     

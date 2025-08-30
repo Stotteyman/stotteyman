@@ -48,7 +48,7 @@ export interface BundleBudget {
 
 export interface BundleAnalysisResult {
   stats: BundleStats
-  budgets: BundgetViolation[]
+  budgets: BudgetViolation[]
   recommendations: BundleRecommendation[]
   score: number
   timestamp: Date
@@ -290,7 +290,7 @@ export class BundleAnalyzer {
 
   private generateRecommendations(
     stats: BundleStats, 
-    chunks: BundleChunk[], 
+    _chunks: BundleChunk[], 
     modules: BundleModule[]
   ): BundleRecommendation[] {
     const recommendations: BundleRecommendation[] = []
@@ -408,7 +408,7 @@ export class BundleAnalyzer {
 
   public getLatestAnalysis(): BundleAnalysisResult | null {
     return this.analysisHistory.length > 0 
-      ? this.analysisHistory[this.analysisHistory.length - 1] 
+      ? this.analysisHistory[this.analysisHistory.length - 1]!
       : null
   }
 

@@ -1,12 +1,12 @@
-import { PerformanceMetrics, PerformanceThresholds, AnimationConfig } from '@/types/animations'
+import type { AnimationPerformanceMetrics, AnimationPerformanceThresholds, AnimationConfig } from '@/types/animations'
 
 export class PerformanceMonitor {
-  private metrics: PerformanceMetrics[] = []
-  private thresholds: PerformanceThresholds = {
+  private metrics: AnimationPerformanceMetrics[] = []
+  private thresholds: AnimationPerformanceThresholds = {
     minFPS: 30,
     maxMemoryUsage: 100 * 1024 * 1024, // 100MB
     maxRenderTime: 16.67, // 60fps = 16.67ms per frame
-    maxAnimationCount: 50 // Maximum concurrent animations
+    degradationThreshold: 0.8
   }
   private animationTracking: Map<string, { startTime: number; config: AnimationConfig }> = new Map()
   private frameCount = 0
@@ -62,12 +62,13 @@ export class PerformanceMonitor {
       memoryUsage = (window.performance as any).memory.usedJSHeapSize
     }
 
-    const metrics: PerformanceMetrics = {
+    const metrics: AnimationPerformanceMetrics = {
       fps: Math.round(averageFPS * 100) / 100,
       memoryUsage,
       renderTime: 1000 / averageFPS, // ms per frame
       animationCount: this.animationTracking.size,
-      timestamp: currentTime
+      timestamp: currentTime,
+      quality: 'medium' // Default quality
     }
 
     this.metrics.push(metrics)
@@ -84,7 +85,7 @@ export class PerformanceMonitor {
     this.reportMetrics(metrics)
   }
 
-  private checkThresholds(metrics: PerformanceMetrics): void {
+  private checkThresholds(metrics: AnimationPerformanceMetrics): void {
     const issues: string[] = []
 
     if (metrics.fps < this.thresholds.minFPS) {
@@ -105,7 +106,7 @@ export class PerformanceMonitor {
     }
   }
 
-  private triggerPerformanceDegradation(metrics: PerformanceMetrics): void {
+  private triggerPerformanceDegradation(metrics: AnimationPerformanceMetrics): void {
     // Emit custom event for performance degradation
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('performance-degradation', {
@@ -114,7 +115,7 @@ export class PerformanceMonitor {
     }
   }
 
-  private getPerformanceIssues(metrics: PerformanceMetrics): string[] {
+  private getPerformanceIssues(metrics: AnimationPerformanceMetrics): string[] {
     const issues: string[] = []
     
     if (metrics.fps < this.thresholds.minFPS) {
@@ -130,7 +131,7 @@ export class PerformanceMonitor {
     return issues
   }
 
-  private async reportMetrics(metrics: PerformanceMetrics): Promise<void> {
+  private async reportMetrics(metrics: AnimationPerformanceMetrics): Promise<void> {
     try {
       // Only report in production and occasionally to avoid spam
       if (process.env.NODE_ENV === 'production' && Math.random() < 0.1) {
@@ -164,14 +165,15 @@ export class PerformanceMonitor {
     }
   }
 
-  getMetrics(): PerformanceMetrics {
+  getMetrics(): AnimationPerformanceMetrics {
     if (this.metrics.length === 0) {
       return {
         fps: 60,
         memoryUsage: 0,
         renderTime: 16.67,
         animationCount: 0,
-        timestamp: performance.now()
+        timestamp: performance.now(),
+        quality: 'medium'
       }
     }
     
@@ -179,7 +181,7 @@ export class PerformanceMonitor {
     return lastMetric!
   }
 
-  getAverageMetrics(sampleCount = 10): PerformanceMetrics {
+  getAverageMetrics(sampleCount = 10): AnimationPerformanceMetrics {
     const recentMetrics = this.metrics.slice(-sampleCount)
     
     if (recentMetrics.length === 0) {
@@ -192,9 +194,10 @@ export class PerformanceMonitor {
         memoryUsage: acc.memoryUsage + metric.memoryUsage,
         renderTime: acc.renderTime + metric.renderTime,
         animationCount: acc.animationCount + metric.animationCount,
-        timestamp: Math.max(acc.timestamp, metric.timestamp)
+        timestamp: Math.max(acc.timestamp, metric.timestamp),
+        quality: metric.quality // Use the quality from the last metric
       }),
-      { fps: 0, memoryUsage: 0, renderTime: 0, animationCount: 0, timestamp: 0 }
+      { fps: 0, memoryUsage: 0, renderTime: 0, animationCount: 0, timestamp: 0, quality: 'medium' as const }
     )
 
     const count = recentMetrics.length
@@ -203,11 +206,12 @@ export class PerformanceMonitor {
       memoryUsage: Math.round(averages.memoryUsage / count),
       renderTime: Math.round((averages.renderTime / count) * 100) / 100,
       animationCount: Math.round(averages.animationCount / count),
-      timestamp: averages.timestamp
+      timestamp: averages.timestamp,
+      quality: averages.quality
     }
   }
 
-  setThresholds(thresholds: Partial<PerformanceThresholds>): void {
+  setThresholds(thresholds: Partial<AnimationPerformanceThresholds>): void {
     this.thresholds = { ...this.thresholds, ...thresholds }
   }
 

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AlertCircle, Check, Eye, EyeOff } from 'lucide-react'
-import { FormFieldProps } from '@/types/components'
+import type { FormFieldProps } from '@/types/components'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 export function FormField({

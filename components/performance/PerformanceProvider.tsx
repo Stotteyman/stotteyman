@@ -1,7 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { WebVitalsMetrics, PerformanceThresholds, DEFAULT_THRESHOLDS } from '@/lib/performance/webVitals'
+import { DEFAULT_THRESHOLDS } from '@/lib/performance/webVitals'
+import type { WebVitalsMetrics, PerformanceThresholds } from '@/lib/performance/webVitals'
 import { useWebVitals } from '@/hooks/useWebVitals'
 
 interface PerformanceContextType {

@@ -22,6 +22,11 @@ export default function ClientPage() {
   console.log('ClientPage is rendering')
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     let ctx: any
     const run = async () => {
       try {
@@ -82,13 +87,15 @@ export default function ClientPage() {
       } catch (error) {
         console.error('GSAP loading error:', error)
         // Ensure content is visible even if GSAP fails
-        const elements = document.querySelectorAll('.venture-card, .reveal-text')
-        elements.forEach(el => {
-          if (el instanceof HTMLElement) {
-            el.style.opacity = '1'
-            el.style.transform = 'translateY(0)'
-          }
-        })
+        if (typeof document !== 'undefined') {
+          const elements = document.querySelectorAll('.venture-card, .reveal-text')
+          elements.forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.opacity = '1'
+              el.style.transform = 'translateY(0)'
+            }
+          })
+        }
       }
     }
     run()

@@ -10,10 +10,10 @@ export class ParticleSystem {
   private context: CanvasRenderingContext2D | WebGLRenderingContext | null = null
   private particles: Particle[] = []
   private animationId: number | null = null
-  private isWebGL = false
-  private isRunning = false
-  private mousePosition = { x: 0, y: 0 }
+  private mouseX = 0
+  private mouseY = 0
   private config: Required<ParticleSystemProps>
+  private fps = 60
   private performanceMonitor = {
     frameCount: 0,
     lastTime: 0,

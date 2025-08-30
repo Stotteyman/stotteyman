@@ -14,7 +14,8 @@ import {
   Bell,
   BellOff
 } from 'lucide-react'
-import { PerformanceAlert, getPerformanceAlerting } from '@/lib/performance/alerting'
+import { getPerformanceAlerting } from '@/lib/performance/alerting'
+import type { PerformanceAlert } from '@/lib/performance/alerting'
 import { usePerformance } from './PerformanceProvider'
 
 interface PerformanceAlertsProps {
@@ -60,6 +61,7 @@ export function PerformanceAlerts({
 
       return unsubscribe
     }
+    return undefined
   }, [thresholds, isEnabled, maxVisible, autoHide, hideDelay])
 
   // Check metrics for alerts

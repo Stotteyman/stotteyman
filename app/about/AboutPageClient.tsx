@@ -119,7 +119,7 @@ export default function AboutPageClient() {
             </div>
 
             <h1 className="text-6xl md:text-8xl font-bold text-gradient mb-6 font-serif">
-              Gary Lee McCullouch Jr.
+              Stotteyman
             </h1>
             
             <p className="text-2xl md:text-3xl text-gray-300 mb-8 leading-relaxed">
@@ -149,29 +149,29 @@ export default function AboutPageClient() {
             </h2>
             
             <div className="prose prose-lg prose-invert max-w-none">
-              <p className="text-xl text-gray-300 leading-relaxed mb-6">
-                Gary&apos;s entrepreneurial journey began with a simple yet powerful belief: 
-                that innovation thrives at the intersection of creativity, technology, and authentic community building.
-              </p>
+                             <p className="text-xl text-gray-300 leading-relaxed mb-6">
+                 Stotteyman&apos;s entrepreneurial journey began with a simple yet powerful belief: 
+                 that innovation thrives at the intersection of creativity, technology, and authentic community building.
+               </p>
               
-              <p className="text-lg text-gray-400 leading-relaxed mb-6">
-                Through years of building diverse ventures—from creative studios to cannabis tech, 
-                from community platforms to cultural archives—Gary has developed a unique perspective 
-                on identifying and nurturing opportunities that others might overlook.
-              </p>
+                             <p className="text-lg text-gray-400 leading-relaxed mb-6">
+                 Through years of building diverse ventures—from creative studios to cannabis tech, 
+                 from community platforms to cultural archives—Stotteyman has developed a unique perspective 
+                 on identifying and nurturing opportunities that others might overlook.
+               </p>
               
-              <p className="text-lg text-gray-400 leading-relaxed mb-6">
-                His approach combines strategic vision with hands-on execution, always maintaining 
-                focus on sustainable growth and meaningful impact. Each venture under the Stotteyman 
-                Enterprises umbrella reflects this philosophy: innovative, community-driven, and 
-                positioned for long-term success.
-              </p>
+                             <p className="text-lg text-gray-400 leading-relaxed mb-6">
+                 Our approach combines strategic vision with hands-on execution, always maintaining 
+                 focus on sustainable growth and meaningful impact. Each venture under the Stotteyman 
+                 Enterprises umbrella reflects this philosophy: innovative, community-driven, and 
+                 positioned for long-term success.
+               </p>
               
-              <p className="text-lg text-gray-400 leading-relaxed">
-                Today, Gary continues to push boundaries, exploring new frontiers in AI, 
-                livestream culture, and emerging technologies while building a portfolio 
-                of ventures that represent the future of their respective industries.
-              </p>
+                             <p className="text-lg text-gray-400 leading-relaxed">
+                 Today, Stotteyman continues to push boundaries, exploring new frontiers in AI, 
+                 livestream culture, and emerging technologies while building a portfolio 
+                 of ventures that represent the future of their respective industries.
+               </p>
             </div>
           </motion.div>
         </div>

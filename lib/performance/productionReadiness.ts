@@ -52,7 +52,7 @@ export class ProductionReadinessChecker {
         category: 'performance',
         status: bundleSize < 250000 ? 'pass' : bundleSize < 500000 ? 'warning' : 'fail',
         message: `Bundle size: ${this.formatBytes(bundleSize)}`,
-        details: bundleSize > 250000 ? 'Consider code splitting and tree shaking' : undefined,
+        details: bundleSize > 250000 ? 'Consider code splitting and tree shaking' : 'Bundle size is optimal',
         impact: 'high',
         autoFixable: false
       })
@@ -71,7 +71,7 @@ export class ProductionReadinessChecker {
     if (typeof window !== 'undefined') {
       const vitals = await this.checkWebVitals()
       Object.entries(vitals).forEach(([metric, value]) => {
-        const thresholds = this.getWebVitalsThresholds()[metric as keyof typeof vitals]
+        const thresholds = this.getWebVitalsThresholds()[metric as keyof ReturnType<typeof this.getWebVitalsThresholds>]
         if (thresholds && value !== null) {
           this.checks.push({
             name: `Core Web Vitals - ${metric.toUpperCase()}`,
@@ -92,7 +92,7 @@ export class ProductionReadinessChecker {
       category: 'performance',
       status: imageOptimization.optimized ? 'pass' : 'warning',
       message: `${imageOptimization.optimizedCount}/${imageOptimization.totalCount} images optimized`,
-      details: imageOptimization.optimized ? undefined : 'Some images could be further optimized',
+      details: imageOptimization.optimized ? 'All images are optimized' : 'Some images could be further optimized',
       impact: 'medium',
       autoFixable: true
     })
@@ -130,7 +130,7 @@ export class ProductionReadinessChecker {
       category: 'security',
       status: cspCheck.valid ? 'pass' : 'fail',
       message: cspCheck.message,
-      details: cspCheck.details,
+      details: cspCheck.details || 'No additional details available',
       impact: 'critical',
       autoFixable: false
     })
@@ -219,7 +219,7 @@ export class ProductionReadinessChecker {
       category: 'functionality',
       status: jsErrors.count === 0 ? 'pass' : jsErrors.count < 5 ? 'warning' : 'fail',
       message: `${jsErrors.count} JavaScript errors detected`,
-      details: jsErrors.count > 0 ? jsErrors.errors.slice(0, 3).join(', ') : undefined,
+      details: jsErrors.count > 0 ? jsErrors.errors.slice(0, 3).join(', ') : 'No JavaScript errors detected',
       impact: 'high',
       autoFixable: false
     })

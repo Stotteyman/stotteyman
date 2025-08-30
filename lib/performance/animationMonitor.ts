@@ -157,9 +157,12 @@ export class AnimationPerformanceMonitor {
   }
 
   public getCurrentMetrics(): AnimationMetrics | null {
-    return this.metricsHistory.length > 0 
-      ? this.metricsHistory[this.metricsHistory.length - 1] 
-      : null
+    if (this.metricsHistory.length === 0) {
+      return null
+    }
+    const lastIndex = this.metricsHistory.length - 1
+    const lastMetrics = this.metricsHistory[lastIndex]
+    return lastMetrics || null
   }
 
   public getMetricsHistory(): AnimationMetrics[] {

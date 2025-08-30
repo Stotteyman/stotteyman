@@ -3,8 +3,8 @@
  */
 
 import { useState, useEffect } from 'react'
-import { AnimationQuality, DeviceCapabilities, AdaptiveQualityHookReturn } from '@/types/animations'
-import { animationManager } from '@/lib/animations/AnimationManager'
+import type { AnimationQuality, DeviceCapabilities, AdaptiveQualityHookReturn } from '@/types/animations'
+import { getAnimationManager } from '@/lib/animations/AnimationManager'
 
 export function useAdaptiveQuality(): AdaptiveQualityHookReturn {
   const [quality, setQuality] = useState<AnimationQuality>('medium')
@@ -23,84 +23,90 @@ export function useAdaptiveQuality(): AdaptiveQualityHookReturn {
 
   useEffect(() => {
     const initializeQualitySystem = async () => {
-      // Wait for animation manager to initialize
-      await new Promise(resolve => setTimeout(resolve, 100))
-      
-      // Get initial quality and capabilities
-      const initialQuality = animationManager.getQuality()
-      const deviceCapabilities = detectDeviceCapabilities()
-      const reducedMotion = checkReducedMotionPreference()
-      
-      setQuality(initialQuality)
-      setCapabilities(deviceCapabilities)
-      setShouldReduceMotion(reducedMotion)
-      setCanUseWebGL(deviceCapabilities.supportsWebGL)
-      setRecommendedFPS(calculateRecommendedFPS(deviceCapabilities))
-
-      // Listen for performance changes
-      const performanceObserver = (metrics: any) => {
-        updateQualityBasedOnPerformance(metrics)
+      // Only run on client side
+      if (typeof window === 'undefined') {
+        return () => {}
       }
 
-      // Listen for reduced motion preference changes
-      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-      const handleReducedMotionChange = (e: MediaQueryListEvent) => {
-        setShouldReduceMotion(e.matches)
-        if (e.matches) {
-          setQuality('low')
+      try {
+        // Wait for animation manager to initialize
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
+        // Get initial quality and capabilities
+        const animationManager = getAnimationManager()
+        const initialQuality = await animationManager.getQuality()
+        const deviceCapabilities = detectDeviceCapabilities()
+        const reducedMotion = checkReducedMotionPreference()
+        
+        setQuality(initialQuality)
+        setCapabilities(deviceCapabilities)
+        setShouldReduceMotion(reducedMotion)
+        setCanUseWebGL(deviceCapabilities.supportsWebGL)
+        setRecommendedFPS(calculateRecommendedFPS(deviceCapabilities))
+
+        // Listen for reduced motion preference changes
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        const handleReducedMotionChange = (e: MediaQueryListEvent) => {
+          setShouldReduceMotion(e.matches)
+          if (e.matches) {
+            setQuality('low')
+          }
         }
-      }
 
-      mediaQuery.addEventListener('change', handleReducedMotionChange)
+        mediaQuery.addEventListener('change', handleReducedMotionChange)
 
-      // Listen for visibility changes to optimize performance
-      const handleVisibilityChange = () => {
-        if (document.hidden) {
-          setQuality('low')
-        } else {
-          setQuality(animationManager.getQuality())
-        }
-      }
-
-      document.addEventListener('visibilitychange', handleVisibilityChange)
-
-      // Listen for battery status changes if available
-      if ('getBattery' in navigator) {
-        (navigator as any).getBattery().then((battery: any) => {
-          const handleBatteryChange = () => {
-            if (battery.level < 0.2 || battery.charging === false) {
-              setQuality('low')
-              setRecommendedFPS(30)
+        // Listen for visibility changes to optimize performance
+        const handleVisibilityChange = async () => {
+          if (document.hidden) {
+            setQuality('low')
+          } else {
+            try {
+              const animationManager = getAnimationManager()
+              const currentQuality = await animationManager.getQuality()
+              setQuality(currentQuality)
+            } catch (error) {
+              console.warn('Failed to get quality from animation manager:', error)
+              setQuality('medium')
             }
           }
+        }
 
-          battery.addEventListener('levelchange', handleBatteryChange)
-          battery.addEventListener('chargingchange', handleBatteryChange)
-        })
-      }
+        document.addEventListener('visibilitychange', handleVisibilityChange)
 
-      // Cleanup function
-      return () => {
-        mediaQuery.removeEventListener('change', handleReducedMotionChange)
-        document.removeEventListener('visibilitychange', handleVisibilityChange)
+        // Listen for battery status changes if available
+        if ('getBattery' in navigator) {
+          (navigator as any).getBattery().then((battery: any) => {
+            const handleBatteryChange = () => {
+              if (battery.level < 0.2 || battery.charging === false) {
+                setQuality('low')
+                setRecommendedFPS(30)
+              }
+            }
+
+            battery.addEventListener('levelchange', handleBatteryChange)
+            battery.addEventListener('chargingchange', handleBatteryChange)
+          })
+        }
+
+        // Cleanup function
+        return () => {
+          mediaQuery.removeEventListener('change', handleReducedMotionChange)
+          document.removeEventListener('visibilitychange', handleVisibilityChange)
+        }
+      } catch (error) {
+        console.error('Failed to initialize quality system:', error)
+        // Set fallback values
+        setQuality('medium')
+        setCapabilities(detectDeviceCapabilities())
+        setShouldReduceMotion(checkReducedMotionPreference())
+        setCanUseWebGL(false)
+        setRecommendedFPS(30)
+        return () => {} // Return empty cleanup function
       }
     }
 
     initializeQualitySystem()
   }, [])
-
-  const updateQualityBasedOnPerformance = (metrics: any) => {
-    if (metrics.fps < 30) {
-      setQuality('low')
-      setRecommendedFPS(30)
-    } else if (metrics.fps < 45) {
-      setQuality('medium')
-      setRecommendedFPS(45)
-    } else if (metrics.fps >= 55) {
-      setQuality('high')
-      setRecommendedFPS(60)
-    }
-  }
 
   return {
     quality,
@@ -112,6 +118,22 @@ export function useAdaptiveQuality(): AdaptiveQualityHookReturn {
 }
 
 function detectDeviceCapabilities(): DeviceCapabilities {
+  // Default values for SSR
+  const defaultCapabilities: DeviceCapabilities = {
+    supportsWebGL: false,
+    supportsIntersectionObserver: false,
+    supportsResizeObserver: false,
+    devicePixelRatio: 1,
+    maxTextureSize: 0,
+    preferredFrameRate: 60,
+    hardwareConcurrency: 1
+  }
+
+  // Return defaults if not in browser environment
+  if (typeof window === 'undefined') {
+    return defaultCapabilities
+  }
+
   const capabilities: DeviceCapabilities = {
     supportsWebGL: detectWebGLSupport(),
     supportsIntersectionObserver: 'IntersectionObserver' in window,
@@ -127,8 +149,8 @@ function detectDeviceCapabilities(): DeviceCapabilities {
     try {
       const canvas = document.createElement('canvas')
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-      if (gl) {
-        capabilities.maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE)
+      if (gl && 'getParameter' in gl) {
+        capabilities.maxTextureSize = (gl as WebGLRenderingContext).getParameter((gl as WebGLRenderingContext).MAX_TEXTURE_SIZE)
       }
     } catch (error) {
       console.warn('Error detecting WebGL capabilities:', error)
@@ -150,6 +172,11 @@ function detectDeviceCapabilities(): DeviceCapabilities {
 }
 
 function detectWebGLSupport(): boolean {
+  // Return false during SSR
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return false
+  }
+
   try {
     const canvas = document.createElement('canvas')
     const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
@@ -160,6 +187,11 @@ function detectWebGLSupport(): boolean {
 }
 
 function checkReducedMotionPreference(): boolean {
+  // Return false during SSR
+  if (typeof window === 'undefined') {
+    return false
+  }
+
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches
 }
 
@@ -194,6 +226,11 @@ export function useReducedMotion(): boolean {
   const [reducedMotion, setReducedMotion] = useState(false)
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     setReducedMotion(mediaQuery.matches)
 
@@ -212,15 +249,20 @@ export function useReducedMotion(): boolean {
  * Hook for performance monitoring
  */
 export function usePerformanceMonitor() {
-  const [metrics, setMetrics] = useState(null)
+  const [metrics, setMetrics] = useState<any>(null)
   const [isMonitoring, setIsMonitoring] = useState(false)
 
   useEffect(() => {
     const startMonitoring = () => {
       setIsMonitoring(true)
-      // Get metrics from animation manager
-      const currentMetrics = animationManager.getMetrics()
-      setMetrics(currentMetrics)
+      try {
+        // Get metrics from animation manager
+        const currentMetrics = getAnimationManager().getMetrics()
+        setMetrics(currentMetrics)
+      } catch (error) {
+        console.warn('Failed to get metrics from animation manager:', error)
+        setMetrics(null)
+      }
     }
 
     const stopMonitoring = () => {
@@ -233,8 +275,12 @@ export function usePerformanceMonitor() {
     // Update metrics periodically
     const interval = setInterval(() => {
       if (isMonitoring) {
-        const currentMetrics = animationManager.getMetrics()
-        setMetrics(currentMetrics)
+        try {
+          const currentMetrics = getAnimationManager().getMetrics()
+          setMetrics(currentMetrics)
+        } catch (error) {
+          console.warn('Failed to get metrics from animation manager:', error)
+        }
       }
     }, 1000)
 

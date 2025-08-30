@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { ScrollAnimationConfig, ScrollAnimationHookReturn } from '@/types/animations'
+import type { ScrollAnimationConfig, ScrollAnimationHookReturn } from '@/types/animations'
 
 export function useAdvancedScrollAnimations(
   configs: ScrollAnimationConfig[]
@@ -21,6 +21,11 @@ export function useAdvancedScrollAnimations(
   const rafId = useRef<number>()
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     let gsap: any
     let ScrollTrigger: any
 
@@ -64,7 +69,7 @@ export function useAdvancedScrollAnimations(
     }
   }, [configs])
 
-  const initializeScrollTriggers = useCallback((gsap: any, ScrollTrigger: any) => {
+  const initializeScrollTriggers = useCallback((_gsap: any, ScrollTrigger: any) => {
     configs.forEach((config, index) => {
       try {
         const trigger = ScrollTrigger.create({
@@ -81,7 +86,7 @@ export function useAdvancedScrollAnimations(
             
             // Calculate velocity
             const currentTime = Date.now()
-            const currentScrollY = window.scrollY
+            const currentScrollY = typeof window !== 'undefined' ? window.scrollY : 0
             const timeDelta = currentTime - lastScrollTime.current
             const scrollDelta = currentScrollY - lastScrollY.current
             
@@ -108,10 +113,12 @@ export function useAdvancedScrollAnimations(
 
   const initializeFallbackScrollAnimations = useCallback(() => {
     // Fallback using Intersection Observer for basic scroll animations
+    if (typeof IntersectionObserver === 'undefined') return
+    
     const observers: IntersectionObserver[] = []
 
     configs.forEach((config) => {
-      const element = document.querySelector(config.trigger)
+              const element = typeof document !== 'undefined' ? document.querySelector(config.trigger) : null
       if (!element) return
 
       const observer = new IntersectionObserver(
@@ -133,7 +140,7 @@ export function useAdvancedScrollAnimations(
 
     // Track scroll direction and velocity
     const handleScroll = () => {
-      const currentScrollY = window.scrollY
+              const currentScrollY = typeof window !== 'undefined' ? window.scrollY : 0
       const currentTime = Date.now()
       
       setDirection(currentScrollY > lastScrollY.current ? 'down' : 'up')
@@ -150,12 +157,16 @@ export function useAdvancedScrollAnimations(
     }
 
     const throttledScroll = throttle(handleScroll, 16) // ~60fps
-    window.addEventListener('scroll', throttledScroll, { passive: true })
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', throttledScroll, { passive: true })
+    }
 
     // Cleanup function for fallback
     return () => {
       observers.forEach(observer => observer.disconnect())
-      window.removeEventListener('scroll', throttledScroll)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', throttledScroll)
+      }
     }
   }, [configs])
 
@@ -230,6 +241,7 @@ export function useStaggeredScrollAnimation(
 
     const initializeFallbackStaggered = () => {
       if (!containerRef.current) return
+      if (typeof IntersectionObserver === 'undefined') return
 
       const observer = new IntersectionObserver(
         (entries) => {
@@ -280,7 +292,7 @@ export function useParallaxScroll(
     const handleScroll = () => {
       if (!elementRef.current) return
 
-      const scrolled = window.pageYOffset
+              const scrolled = typeof window !== 'undefined' ? window.pageYOffset : 0
       const rate = scrolled * -speed
 
       if (direction === 'vertical') {
@@ -293,10 +305,14 @@ export function useParallaxScroll(
     }
 
     const throttledScroll = throttle(handleScroll, 16)
-    window.addEventListener('scroll', throttledScroll, { passive: true })
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', throttledScroll, { passive: true })
+    }
 
     return () => {
-      window.removeEventListener('scroll', throttledScroll)
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('scroll', throttledScroll)
+      }
     }
   }, [speed, direction])
 
@@ -316,6 +332,8 @@ export function useTextRevealAnimation(
   const [isRevealed, setIsRevealed] = useState(false)
 
   useEffect(() => {
+    let cleanup: (() => void) | undefined
+
     const initializeTextReveal = async () => {
       try {
         const gsap = (await import('gsap')).gsap
@@ -342,7 +360,7 @@ export function useTextRevealAnimation(
             animation = createFadeUpAnimation(gsap, ScrollTrigger, textRef.current)
         }
 
-        return () => {
+        cleanup = () => {
           if (animation && animation.kill) {
             animation.kill()
           }
@@ -350,12 +368,13 @@ export function useTextRevealAnimation(
       } catch (error) {
         console.error('Failed to initialize text reveal:', error)
         // Fallback to simple fade-in
-        initializeFallbackTextReveal()
+        cleanup = initializeFallbackTextReveal()
       }
     }
 
-    const initializeFallbackTextReveal = () => {
-      if (!textRef.current) return
+    const initializeFallbackTextReveal = (): (() => void) => {
+      if (!textRef.current) return () => {}
+      if (typeof IntersectionObserver === 'undefined') return () => {}
 
       const observer = new IntersectionObserver(
         (entries) => {
@@ -375,6 +394,10 @@ export function useTextRevealAnimation(
     }
 
     initializeTextReveal()
+
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [animationType])
 
   return {
@@ -384,7 +407,7 @@ export function useTextRevealAnimation(
 }
 
 // Helper functions for text animations
-function createTypewriterAnimation(gsap: any, ScrollTrigger: any, element: HTMLElement) {
+function createTypewriterAnimation(_gsap: any, ScrollTrigger: any, element: HTMLElement) {
   const text = element.textContent || ''
   element.textContent = ''
 

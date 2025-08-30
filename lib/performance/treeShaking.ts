@@ -37,7 +37,7 @@ export interface ModuleDependency {
 }
 
 export class TreeShakingAnalyzer {
-  private moduleMap = new Map<string, ModuleDependency>()
+
   private analysisCache = new Map<string, TreeShakingAnalysis>()
 
   /**
@@ -183,7 +183,7 @@ export class TreeShakingAnalyzer {
       opportunities.push({
         type: 'circular-dependency',
         description: `Circular dependency: ${dep}`,
-        module: dep.split(' -> ')[0],
+        module: dep.split(' -> ')[0] || 'unknown',
         impact: 'high',
         potentialSavings: 5000, // Estimated
         recommendation: `Refactor to remove circular dependency, extract shared code to separate module`
@@ -195,7 +195,7 @@ export class TreeShakingAnalyzer {
       opportunities.push({
         type: 'duplicate-module',
         description: `Duplicate module: ${module}`,
-        module: module.split(' (')[0],
+        module: module.split(' (')[0] || 'unknown',
         impact: 'high',
         potentialSavings: 8000, // Estimated
         recommendation: `Ensure consistent import patterns and resolve version conflicts`

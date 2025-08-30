@@ -11,8 +11,7 @@ import {
   Shield, 
   AlertTriangle,
   CheckCircle,
-  BarChart3,
-  Settings
+  BarChart3
 } from 'lucide-react'
 
 interface UnifiedMonitoringDashboardProps {

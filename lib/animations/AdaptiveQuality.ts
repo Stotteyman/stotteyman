@@ -2,7 +2,7 @@
  * Adaptive Quality System - Dynamically adjusts animation quality based on device capabilities and performance
  */
 
-import { DeviceCapabilities, PerformanceMetrics } from '@/types/animations'
+import type { DeviceCapabilities, AnimationPerformanceMetrics } from '@/types/animations'
 import { PerformanceMonitor } from './PerformanceMonitor'
 
 export interface QualitySettings {
@@ -193,6 +193,7 @@ export class AdaptiveQuality {
       devicePixelRatio: window.devicePixelRatio || 1,
       maxTextureSize: gl ? gl.getParameter(gl.MAX_TEXTURE_SIZE) : 0,
       preferredFrameRate: this.getPreferredFrameRate(),
+      hardwareConcurrency: navigator.hardwareConcurrency || 1,
       connectionType: connectionSpeed,
       cores: navigator.hardwareConcurrency || 4,
       memory: memoryGB,
@@ -241,13 +242,13 @@ export class AdaptiveQuality {
     else score += 1
 
     // Memory
-    if (this.deviceCapabilities.memory >= 8) score += 3
-    else if (this.deviceCapabilities.memory >= 4) score += 2
+    if (this.deviceCapabilities.memory && this.deviceCapabilities.memory >= 8) score += 3
+    else if (this.deviceCapabilities.memory && this.deviceCapabilities.memory >= 4) score += 2
     else score += 1
 
     // CPU cores
-    if (this.deviceCapabilities.cores >= 8) score += 2
-    else if (this.deviceCapabilities.cores >= 4) score += 1
+    if (this.deviceCapabilities.cores && this.deviceCapabilities.cores >= 8) score += 2
+    else if (this.deviceCapabilities.cores && this.deviceCapabilities.cores >= 4) score += 1
 
     // WebGL support
     if (this.deviceCapabilities.supportsWebGL2) score += 2
@@ -315,7 +316,7 @@ export class AdaptiveQuality {
     })
   }
 
-  private handlePerformanceDegradation(detail: { metrics: PerformanceMetrics; issues: string[] }): void {
+  private handlePerformanceDegradation(detail: { metrics: AnimationPerformanceMetrics; issues: string[] }): void {
     const now = Date.now()
     if (now - this.lastAdjustment < this.adjustmentCooldown) {
       return // Too soon to adjust again

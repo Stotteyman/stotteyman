@@ -68,8 +68,8 @@ export class AnimationErrorBoundary extends Component<
         componentStack: errorInfo.componentStack,
         errorBoundary: 'AnimationErrorBoundary',
         retryCount: this.state.retryCount,
-        userAgent: navigator.userAgent,
-        url: window.location.href
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+        url: typeof window !== 'undefined' ? window.location.href : 'unknown'
       }
     }
 
@@ -167,8 +167,8 @@ export class AnimationErrorBoundary extends Component<
     if (process.env.NODE_ENV === 'production') {
       // This would integrate with your error reporting service (Sentry, etc.)
       try {
-        if (window.gtag) {
-          window.gtag('event', 'exception', {
+            if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'exception', {
             description: error.message,
             fatal: error.severity === 'critical',
             custom_map: {

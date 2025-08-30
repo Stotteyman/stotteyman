@@ -3,45 +3,43 @@
  * Provides sophisticated queuing, prioritization, and batch processing
  */
 
-import { AnimationConfig } from '@/types/animations'
-import { AnimationManager } from './AnimationManager'
+import type { AnimationConfig } from '@/types/animations'
+import { getAnimationManager } from './AnimationManager'
 
 export interface QueuedAnimation {
   id: string
   config: AnimationConfig
   priority: number
   dependencies: string[]
-  callback?: (animationId: string) => void
-  onError?: (error: Error) => void
   retryCount: number
   maxRetries: number
   createdAt: number
   scheduledAt?: number
+  callback?: (animationId: string) => void
+  onError?: (error: Error) => void
 }
 
 export interface AnimationBatch {
   id: string
   animations: QueuedAnimation[]
   parallel: boolean
+  createdAt: number
   onComplete?: () => void
   onError?: (error: Error) => void
-  createdAt: number
 }
 
 export class AnimationQueue {
-  private static instance: AnimationQueue
+  private static instance: AnimationQueue | null = null
   private queue: QueuedAnimation[] = []
-  private batches: Map<string, AnimationBatch> = new Map()
   private running: Map<string, Promise<string>> = new Map()
+  private batches: Map<string, AnimationBatch> = new Map()
   private completed: Set<string> = new Set()
   private failed: Set<string> = new Set()
-  private animationManager: AnimationManager
   private isProcessing = false
   private maxConcurrent = 5
   private processingInterval: NodeJS.Timeout | null = null
 
   private constructor() {
-    this.animationManager = AnimationManager.getInstance()
     this.startProcessing()
   }
 
@@ -70,11 +68,11 @@ export class AnimationQueue {
       config,
       priority: options.priority || 0,
       dependencies: options.dependencies || [],
-      callback: options.callback,
-      onError: options.onError,
       retryCount: 0,
       maxRetries: options.maxRetries || 3,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      ...(options.callback && { callback: options.callback }),
+      ...(options.onError && { onError: options.onError })
     }
 
     // Insert in priority order (higher priority first)
@@ -113,20 +111,20 @@ export class AnimationQueue {
       config: anim.config,
       priority: anim.priority || 0,
       dependencies: anim.dependencies || [],
-      callback: anim.callback,
-      onError: anim.onError,
       retryCount: 0,
       maxRetries: anim.maxRetries || 3,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      ...(anim.callback && { callback: anim.callback }),
+      ...(anim.onError && { onError: anim.onError })
     }))
 
     const batch: AnimationBatch = {
       id: batchId,
       animations: queuedAnimations,
       parallel: options.parallel || false,
-      onComplete: options.onComplete,
-      onError: options.onError,
-      createdAt: Date.now()
+      createdAt: Date.now(),
+      ...(options.onComplete && { onComplete: options.onComplete }),
+      ...(options.onError && { onError: options.onError })
     }
 
     this.batches.set(batchId, batch)
@@ -138,10 +136,14 @@ export class AnimationQueue {
         this.queue.push(anim)
       })
     } else {
-      // For sequential execution, create dependencies
+      // For sequential execution, add animations in order
       queuedAnimations.forEach((anim, index) => {
         if (index > 0) {
-          anim.dependencies.push(queuedAnimations[index - 1]!.id)
+          // Add dependency on previous animation
+          const prevAnimation = queuedAnimations[index - 1]
+          if (prevAnimation) {
+            anim.dependencies.push(prevAnimation.id)
+          }
         }
         this.queue.push(anim)
       })
@@ -175,8 +177,13 @@ export class AnimationQueue {
     this.failed.clear()
     
     // Cancel running animations
-    this.running.forEach((promise, id) => {
-      this.animationManager.killAnimation(id)
+    this.running.forEach(async (_promise, id) => {
+      try {
+        const animationManager = getAnimationManager()
+        await animationManager.stop(id)
+      } catch (error) {
+        console.warn('Failed to stop animation:', error)
+      }
     })
     this.running.clear()
   }
@@ -277,7 +284,8 @@ export class AnimationQueue {
     // Start animation
     try {
       nextAnimation.scheduledAt = Date.now()
-      const animationPromise = this.animationManager.createAnimation(nextAnimation.config)
+      const animationManager = getAnimationManager()
+      const animationPromise = animationManager.play(nextAnimation.id).then(() => nextAnimation.id)
       this.running.set(nextAnimation.id, animationPromise)
 
       const animationId = await animationPromise
@@ -389,6 +397,6 @@ export class AnimationQueue {
   destroy(): void {
     this.pause()
     this.clear()
-    AnimationQueue.instance = null as any
+    AnimationQueue.instance = null
   }
 }

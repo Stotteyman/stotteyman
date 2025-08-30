@@ -2,8 +2,9 @@
  * Animation Recovery System - Intelligent error recovery and fallback management
  */
 
-import { AnimationError } from './AnimationErrorHandler'
-import { AnimationErrorReporter, RecoveryAttempt } from './AnimationErrorReporter'
+import type { AnimationError } from './AnimationErrorHandler'
+import { AnimationErrorReporter } from './AnimationErrorReporter'
+import type { RecoveryAttempt } from './AnimationErrorReporter'
 import { FallbackAnimationSystem } from './FallbackAnimationSystem'
 
 export interface RecoveryStrategy {
@@ -52,7 +53,7 @@ export class AnimationRecoverySystem {
       name: 'webgl-recovery',
       priority: 10,
       condition: (error) => error.type === 'webgl',
-      execute: async (error) => {
+      execute: async (_error) => {
         try {
           // Attempt to restore WebGL context
           const canvas = document.createElement('canvas')
@@ -87,7 +88,7 @@ export class AnimationRecoverySystem {
       name: 'memory-relief',
       priority: 9,
       condition: (error) => error.type === 'memory',
-      execute: async (error) => {
+      execute: async (_error) => {
         try {
           // Clear animation caches
           this.clearAnimationCaches()
@@ -141,7 +142,7 @@ export class AnimationRecoverySystem {
       name: 'performance-degradation',
       priority: 7,
       condition: (error) => error.type === 'performance',
-      execute: async (error) => {
+      execute: async (_error) => {
         try {
           // Reduce animation complexity
           document.documentElement.classList.add('performance-degraded')
@@ -170,7 +171,7 @@ export class AnimationRecoverySystem {
     this.registerStrategy({
       name: 'css-fallback',
       priority: 6,
-      condition: (error) => true, // Universal fallback
+      condition: (_error) => true, // Universal fallback
       execute: async (error) => {
         try {
           // Enable CSS-only animations
@@ -219,8 +220,8 @@ export class AnimationRecoverySystem {
     this.registerStrategy({
       name: 'static-mode',
       priority: 1,
-      condition: (error) => true, // Last resort
-      execute: async (error) => {
+      condition: (_error) => true, // Last resort
+      execute: async (_error) => {
         try {
           // Disable all animations
           document.documentElement.classList.add('static-mode')
@@ -331,7 +332,25 @@ export class AnimationRecoverySystem {
     })
   }
 
-  private applyFallbackAnimation(element: Element, error: AnimationError): void {
+  private mapStrategyNameToType(strategyName: string): 'fallback' | 'retry' | 'disable' | 'reduce-quality' | 'restart' {
+    switch (strategyName) {
+      case 'webgl-recovery':
+      case 'css-fallback':
+        return 'fallback'
+      case 'library-reload':
+      case 'component-restart':
+        return 'retry'
+      case 'static-mode':
+        return 'disable'
+      case 'memory-relief':
+      case 'performance-degradation':
+        return 'reduce-quality'
+      default:
+        return 'fallback'
+    }
+  }
+
+  private applyFallbackAnimation(element: Element, _error: AnimationError): void {
     // Determine appropriate fallback based on element and error
     const classList = Array.from(element.classList)
     
@@ -384,7 +403,7 @@ export class AnimationRecoverySystem {
         // Record attempt
         const attempt: RecoveryAttempt = {
           errorId: error.id,
-          strategy: strategy.name,
+          strategy: this.mapStrategyNameToType(strategy.name),
           success,
           timestamp: Date.now(),
           details: { attempts: state.attempts + 1 }

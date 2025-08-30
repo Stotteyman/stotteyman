@@ -3,7 +3,6 @@
  */
 
 import type { ScrollAnimationConfig } from '@/types/animations'
-import { PerformanceMonitor } from './PerformanceMonitor'
 import { AdaptiveQuality } from './AdaptiveQuality'
 
 export interface ScrollTriggerInstance {
@@ -23,14 +22,13 @@ export interface ScrollBatch {
   id: string
   triggers: ScrollTriggerInstance[]
   priority: number
-  onComplete?: () => void
+  onComplete?: (() => void) | undefined
 }
 
 export class ScrollTriggerManager {
   private static instance: ScrollTriggerManager
   private triggers: Map<string, ScrollTriggerInstance> = new Map()
   private batches: Map<string, ScrollBatch> = new Map()
-  private performanceMonitor: PerformanceMonitor
   private adaptiveQuality: AdaptiveQuality
   private gsap: any = null
   private ScrollTrigger: any = null
@@ -39,7 +37,6 @@ export class ScrollTriggerManager {
   private refreshTimeout: NodeJS.Timeout | null = null
 
   private constructor() {
-    this.performanceMonitor = new PerformanceMonitor()
     this.adaptiveQuality = AdaptiveQuality.getInstance()
     this.initialize()
   }
@@ -135,8 +132,6 @@ export class ScrollTriggerManager {
   }
 
   private adjustTriggersForQuality(quality: 'low' | 'medium' | 'high'): void {
-    const settings = this.adaptiveQuality.getCurrentSettings()
-
     this.triggers.forEach((trigger) => {
       if (!trigger.animation) return
 
@@ -197,11 +192,10 @@ export class ScrollTriggerManager {
 
     const triggerId = options.id || `trigger_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const quality = this.adaptiveQuality.getCurrentQuality()
-    const settings = this.adaptiveQuality.getCurrentSettings()
 
     try {
       // Adjust config based on quality
-      const adjustedConfig = this.adjustConfigForQuality(config, quality, settings)
+      const adjustedConfig = this.adjustConfigForQuality(config, quality)
 
       // Create GSAP animation
       const animation = this.createAnimation(element, adjustedConfig)
@@ -236,8 +230,7 @@ export class ScrollTriggerManager {
 
   private adjustConfigForQuality(
     config: ScrollAnimationConfig,
-    quality: 'low' | 'medium' | 'high',
-    settings: any
+    quality: 'low' | 'medium' | 'high'
   ): ScrollAnimationConfig {
     const adjusted = { ...config }
 
@@ -324,7 +317,7 @@ export class ScrollTriggerManager {
     }
   }
 
-  private onTriggerUpdate(element: Element, self: any): void {
+  private onTriggerUpdate(element: Element, _self: any): void {
     // Track performance metrics
     const trigger = this.findTriggerByElement(element)
     if (trigger) {
@@ -332,7 +325,7 @@ export class ScrollTriggerManager {
     }
   }
 
-  private onTriggerRefresh(element: Element): void {
+  private onTriggerRefresh(_element: Element): void {
     // Handle refresh events
   }
 
@@ -366,7 +359,7 @@ export class ScrollTriggerManager {
       id: batchId,
       triggers: [],
       priority: 0,
-      onComplete: options.onComplete
+      ...(options.onComplete && { onComplete: options.onComplete })
     }
 
     const promises = elements.map(async ({ element, config, priority = 0 }, index) => {

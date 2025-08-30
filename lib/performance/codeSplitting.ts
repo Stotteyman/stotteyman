@@ -44,7 +44,7 @@ export class CodeSplittingManager {
     importFn: () => Promise<{ default: T }>,
     options: LazyComponentOptions = {}
   ): LazyExoticComponent<T> {
-    const { fallback, preload = false, chunkName, webpackChunkName } = options
+    const { fallback: _fallback, preload = false, chunkName, webpackChunkName } = options
 
     // Create cache key
     const cacheKey = chunkName || importFn.toString()
@@ -60,7 +60,7 @@ export class CodeSplittingManager {
       : importFn
 
     // Create lazy component
-    const LazyComponent = lazy(enhancedImportFn as any)
+    const LazyComponent = lazy(enhancedImportFn as any) as LazyExoticComponent<T>
 
     // Preload if requested
     if (preload) {
@@ -156,7 +156,7 @@ export class CodeSplittingManager {
     } = {}
   ): Promise<T> {
     const { 
-      threshold = this.config.dynamicImportThreshold,
+      threshold: _threshold = this.config.dynamicImportThreshold,
       fallback,
       timeout = 10000 
     } = options
@@ -223,7 +223,7 @@ export class CodeSplittingManager {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const element = entry.target as HTMLElement
-            const preloadRoute = element.dataset.preloadRoute
+            const preloadRoute = element.dataset['preloadRoute']
             
             if (preloadRoute && !this.preloadedChunks.has(preloadRoute)) {
               this.preloadRouteComponent(preloadRoute)
@@ -268,16 +268,18 @@ export class CodeSplittingManager {
 
       if (unloadedRoutes.length > 0) {
         const route = unloadedRoutes[0]
-        this.preloadRouteComponent(route).then(() => {
-          // Schedule next preload
-          if (unloadedRoutes.length > 1) {
-            requestIdleCallback(preloadIdleChunks)
-          }
-        })
+        if (route) {
+          this.preloadRouteComponent(route).then(() => {
+            // Schedule next preload
+            if (unloadedRoutes.length > 1) {
+              requestIdleCallback(preloadIdleChunks)
+            }
+          })
+        }
       }
-    }
 
-    requestIdleCallback(preloadIdleChunks)
+      requestIdleCallback(preloadIdleChunks)
+    }
   }
 
   private getComponentPathForRoute(route: string): string | null {
@@ -367,7 +369,7 @@ export function getCodeSplittingManager(config?: Partial<CodeSplittingConfig>): 
 // Utility functions for common patterns
 export function createLazyPage(importFn: () => Promise<any>, chunkName?: string) {
   const manager = getCodeSplittingManager()
-  return manager.createLazyComponent(importFn, { chunkName })
+  return manager.createLazyComponent(importFn, { ...(chunkName && { chunkName }) })
 }
 
 export function preloadRoute(route: string) {

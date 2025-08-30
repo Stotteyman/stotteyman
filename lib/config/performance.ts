@@ -40,7 +40,7 @@ export const defaultPerformanceConfig: PerformanceConfig = {
   monitoring: {
     enabled: process.env.NODE_ENV === 'production',
     sampleRate: 0.1, // 10% sampling rate
-    reportingEndpoint: process.env.PERFORMANCE_ENDPOINT,
+    ...(process.env['PERFORMANCE_ENDPOINT'] && { reportingEndpoint: process.env['PERFORMANCE_ENDPOINT'] }),
   },
   thresholds: {
     fcp: 1800, // 1.8s

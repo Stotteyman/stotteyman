@@ -1,7 +1,7 @@
 import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google'
 import '@/app/globals.css'
 import { Navigation } from '@/components/Navigation'
-import { ClientWrapper } from '@/components/ClientWrapper'
+// import { ClientWrapper } from '@/components/ClientWrapper'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -31,7 +31,7 @@ export default function RootLayout({
         <main id="main" className="relative min-h-screen">
           {children}
         </main>
-        <ClientWrapper />
+        {/* <ClientWrapper /> */}
       </body>
     </html>
   )

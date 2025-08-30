@@ -44,6 +44,11 @@ export function ReducedMotionProvider({
   }
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof window === 'undefined') {
+      return
+    }
+
     // Check system preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     
@@ -86,6 +91,11 @@ export function ReducedMotionProvider({
   }, [defaultConfig])
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof document === 'undefined') {
+      return
+    }
+
     // Apply global CSS class for reduced motion
     document.documentElement.classList.toggle('reduce-motion', reducedMotion)
     document.documentElement.classList.toggle('animations-disabled', !animationsEnabled)

@@ -4,7 +4,8 @@
 
 'use client'
 
-import { useState, useEffect, ReactNode } from 'react'
+import { useState, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from '../animations/AnimationErrorBoundary'

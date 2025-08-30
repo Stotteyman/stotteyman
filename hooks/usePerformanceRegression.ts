@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { WebVitalsMetrics } from '@/lib/performance/webVitals'
+import type { WebVitalsMetrics } from '@/lib/performance/webVitals'
 import { getMetricsStorage } from '@/lib/performance/metricsStorage'
 
 export interface RegressionDetection {
@@ -67,7 +67,7 @@ export function usePerformanceRegression(
       }
 
       // Calculate baseline values (median of historical data)
-      const baselineValues: Record<string, number> = {}
+      const baselineValues: Partial<Record<keyof Omit<WebVitalsMetrics, 'timestamp' | 'sessionId' | 'url'>, number>> = {}
       const metrics = ['fcp', 'lcp', 'cls', 'fid', 'ttfb'] as const
 
       metrics.forEach(metric => {
@@ -78,9 +78,9 @@ export function usePerformanceRegression(
         if (values.length >= fullConfig.minSamples) {
           values.sort((a, b) => a - b)
           const mid = Math.floor(values.length / 2)
-          baselineValues[metric] = values.length % 2 === 0
-            ? (values[mid - 1] + values[mid]) / 2
-            : values[mid]
+          ;(baselineValues as any)[metric] = values.length % 2 === 0
+            ? (values[mid - 1]! + values[mid]!) / 2
+            : values[mid]!
         }
       })
 

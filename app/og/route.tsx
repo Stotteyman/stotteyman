@@ -19,7 +19,7 @@ export async function GET() {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ fontSize: 80, marginBottom: 20 }}>Gary Lee McCullouch Jr.</div>
+        <div style={{ fontSize: 80, marginBottom: 20 }}>Stotteyman</div>
         <div>Startup Genius & Visionary Investor</div>
       </div>
     ),

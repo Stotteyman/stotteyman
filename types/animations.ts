@@ -30,7 +30,7 @@ export interface AnimationProperty {
 }
 
 // Performance monitoring interfaces
-export interface PerformanceMetrics {
+export interface AnimationPerformanceMetrics {
   fps: number
   memoryUsage: number
   renderTime: number
@@ -39,7 +39,7 @@ export interface PerformanceMetrics {
   quality: AnimationQuality
 }
 
-export interface PerformanceThresholds {
+export interface AnimationPerformanceThresholds {
   minFPS: number
   maxMemoryUsage: number
   maxRenderTime: number
@@ -49,14 +49,20 @@ export interface PerformanceThresholds {
 // Device capabilities interface
 export interface DeviceCapabilities {
   supportsWebGL: boolean
+  supportsWebGL2?: boolean
   supportsIntersectionObserver: boolean
   supportsResizeObserver: boolean
+  supportsWebP?: boolean
+  supportsAVIF?: boolean
   devicePixelRatio: number
   maxTextureSize: number
   preferredFrameRate: number
   hardwareConcurrency: number
   memoryGB?: number
   connectionType?: string
+  cores?: number
+  memory?: number
+  gpu?: string
 }
 
 // Particle system interfaces
@@ -124,6 +130,10 @@ export interface ScrollAnimationConfig {
   end: string
   scrub: boolean | number
   pin: boolean
+  duration?: number
+  easing?: string
+  delay?: number
+  stagger?: number
   animation: {
     to?: GSAPAnimationVars
     from?: GSAPAnimationVars
@@ -135,7 +145,7 @@ export interface ScrollAnimationConfig {
   markers?: boolean
   refreshPriority?: number
   type?: 'scroll'
-  properties?: string[]
+  properties?: AnimationProperty[]
 }
 
 export interface ScrollAnimationHookReturn {
@@ -216,7 +226,7 @@ export interface AnimationManager {
   pause(id: string): void
   stop(id: string): void
   setQuality(quality: AnimationQuality): void
-  getMetrics(): PerformanceMetrics
+  getMetrics(): AnimationPerformanceMetrics
   cleanup(): void
 }
 

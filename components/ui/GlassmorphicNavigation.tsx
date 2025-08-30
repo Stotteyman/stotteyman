@@ -4,7 +4,7 @@
 
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from '../animations/AnimationErrorBoundary'
@@ -31,7 +31,7 @@ export function GlassmorphicNavigation({
   items,
   logo,
   actions,
-  variant = 'default',
+  variant = 'sticky',
   blur = 20,
   opacity = 0.1,
   className = ''
@@ -58,63 +58,9 @@ export function GlassmorphicNavigation({
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const getVariantStyles = () => {
-    const baseStyles = {
-      backdropFilter: `blur(${blur}px)`,
-      WebkitBackdropFilter: `blur(${blur}px)`,
-      background: `rgba(255, 255, 255, ${opacity})`,
-      border: '1px solid rgba(255, 255, 255, 0.2)',
-      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-    }
 
-    switch (variant) {
-      case 'floating':
-        return {
-          ...baseStyles,
-          borderRadius: '50px',
-          margin: '16px',
-          maxWidth: 'calc(100% - 32px)'
-        }
-      
-      case 'fixed':
-        return {
-          ...baseStyles,
-          borderRadius: '0',
-          borderLeft: 'none',
-          borderRight: 'none',
-          borderTop: 'none'
-        }
-      
-      case 'sticky':
-      default:
-        return {
-          ...baseStyles,
-          borderRadius: '0',
-          borderLeft: 'none',
-          borderRight: 'none',
-          borderTop: 'none'
-        }
-    }
-  }
 
-  const navVariants = {
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: prefersReducedMotion ? 0.1 : 0.3,
-        ease: 'easeOut'
-      }
-    },
-    hidden: {
-      y: -100,
-      opacity: 0,
-      transition: {
-        duration: prefersReducedMotion ? 0.1 : 0.2,
-        ease: 'easeIn'
-      }
-    }
-  }
+
 
   return (
     <AnimationErrorBoundary>

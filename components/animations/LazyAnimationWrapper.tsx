@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, Suspense, lazy } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useAdaptiveQuality } from '@/hooks/useAdaptiveQuality'
@@ -17,10 +17,6 @@ interface LazyAnimationWrapperProps {
   onVisible?: () => void
   onHidden?: () => void
 }
-
-// Lazy loaded animation components
-const LazyParticleSystem = lazy(() => import('./ParticleSystem').then(mod => ({ default: mod.ParticleSystem })))
-const LazyMorphingBackground = lazy(() => import('./MorphingBackground').then(mod => ({ default: mod.MorphingBackground })))
 
 export function LazyAnimationWrapper({
   children,
@@ -83,7 +79,6 @@ export function LazyAnimationWrapper({
       return () => clearTimeout(loadTimer)
     }
     
-    // Return undefined for other code paths
     return undefined
   }, [isVisible, isLoaded, canUseWebGL])
 
@@ -98,8 +93,8 @@ export function LazyAnimationWrapper({
     switch (animationType) {
       case 'slide':
         return {
-          hidden: { opacity: 0, y: 50 },
-          visible: { opacity: 1, y: 0 }
+          hidden: { opacity: 0, x: -50 },
+          visible: { opacity: 1, x: 0 }
         }
       case 'scale':
         return {
@@ -115,92 +110,50 @@ export function LazyAnimationWrapper({
     }
   }
 
-  const variants = getAnimationVariants()
+  const animationVariants = getAnimationVariants()
+
+  if (prefersReducedMotion) {
+    return <div className={className}>{children}</div>
+  }
 
   return (
     <div ref={elementRef} className={className}>
       <AnimatePresence mode="wait">
-        {hasBeenVisible ? (
+        {isVisible && (
           <motion.div
-            key="content"
             initial="hidden"
-            animate={isVisible ? "visible" : "hidden"}
+            animate="visible"
             exit="hidden"
-            variants={variants}
+            variants={animationVariants}
             transition={{
-              duration: prefersReducedMotion ? 0 : 0.6,
-              delay: prefersReducedMotion ? 0 : delay,
-              ease: "easeOut"
+              duration: 0.6,
+              delay,
+              ease: [0.4, 0, 0.2, 1]
             }}
           >
-            <Suspense fallback={fallback}>
-              {children}
-            </Suspense>
+            {isLoaded ? (
+              <Suspense fallback={fallback}>
+                {children}
+              </Suspense>
+            ) : (
+              fallback
+            )}
           </motion.div>
-        ) : (
-          fallback && (
-            <motion.div
-              key="fallback"
-              initial="visible"
-              exit="hidden"
-              variants={variants}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-            >
-              {fallback}
-            </motion.div>
-          )
         )}
       </AnimatePresence>
     </div>
   )
 }
 
-// Specialized lazy wrappers for heavy animation components
-export function LazyParticleWrapper(props: any) {
-  return (
-    <LazyAnimationWrapper
-      animationType="fade"
-      threshold={0.2}
-      rootMargin="100px"
-      fallback={<div className="w-full h-full bg-transparent" />}
-    >
-      <Suspense fallback={null}>
-        <LazyParticleSystem {...props} />
-      </Suspense>
-    </LazyAnimationWrapper>
-  )
-}
-
-export function LazyMorphingWrapper(props: any) {
-  return (
-    <LazyAnimationWrapper
-      animationType="scale"
-      threshold={0.1}
-      rootMargin="150px"
-      fallback={<div className="w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl" />}
-    >
-      <Suspense fallback={null}>
-        <LazyMorphingBackground {...props} />
-      </Suspense>
-    </LazyAnimationWrapper>
-  )
-}
-
-// Hook for preloading animations
+// Animation preloader hook
 export function useAnimationPreloader() {
   const [preloadedComponents, setPreloadedComponents] = useState<Set<string>>(new Set())
-  const { canUseWebGL } = useAdaptiveQuality()
 
   const preloadAnimation = async (componentName: string) => {
-    if (!canUseWebGL || preloadedComponents.has(componentName)) {
-      return
-    }
+    if (preloadedComponents.has(componentName)) return
 
     try {
       switch (componentName) {
-        case 'particles':
-          await import('./ParticleSystem')
-          break
         case 'morphing':
           await import('./MorphingBackground')
           break
@@ -219,7 +172,7 @@ export function useAnimationPreloader() {
   }
 
   const preloadCriticalAnimations = async () => {
-    const criticalAnimations = ['magnetic', 'particles']
+    const criticalAnimations = ['magnetic']
     await Promise.all(criticalAnimations.map(preloadAnimation))
   }
 
@@ -274,8 +227,6 @@ export class AnimationLoader {
 
   private async createLoadingPromise(name: string): Promise<any> {
     switch (name) {
-      case 'particles':
-        return import('./ParticleSystem')
       case 'morphing':
         return import('./MorphingBackground')
       case 'magnetic':

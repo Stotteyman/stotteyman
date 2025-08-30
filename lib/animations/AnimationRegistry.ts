@@ -3,7 +3,7 @@
  * Provides a unified interface for managing animation presets and custom animations
  */
 
-import { AnimationConfig, AnimationProperty } from '@/types/animations'
+import type { AnimationConfig } from '@/types/animations'
 
 export interface AnimationPreset {
   id: string
@@ -383,7 +383,7 @@ export class AnimationRegistry {
       errors.push('Duration must be greater than 0')
     }
 
-    if (config.delay < 0) {
+    if (config.delay && config.delay < 0) {
       errors.push('Delay cannot be negative')
     }
 

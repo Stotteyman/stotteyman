@@ -236,6 +236,12 @@ export function SVGMorphingBackground({
   }, [generateMorphPaths, animationSpeed])
 
   const animateGradient = useCallback((gsap: any, gradient: SVGRadialGradientElement, morphSpeed: number) => {
+    // Safety check for GSAP availability
+    if (!gsap || typeof gsap.to !== 'function') {
+      console.warn('GSAP not available for gradient animation')
+      return
+    }
+
     // Animate gradient center
     gsap.to(gradient, {
       attr: {

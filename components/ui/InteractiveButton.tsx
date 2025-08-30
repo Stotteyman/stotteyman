@@ -3,14 +3,14 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
-import { InteractiveButtonProps } from '@/types/components'
+import type { InteractiveButtonProps } from '@/types/components'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { MagneticElement } from '../animations/MagneticCursor'
 
 export function InteractiveButton({
   variant = 'primary',
   size = 'md',
-  animation = 'ripple',
+  buttonAnimation = 'ripple',
   hapticFeedback = false,
   loadingState = false,
   onClick,
@@ -33,7 +33,7 @@ export function InteractiveButton({
     }
 
     // Ripple effect
-    if (animation === 'ripple' && !prefersReducedMotion) {
+    if (buttonAnimation === 'ripple' && !prefersReducedMotion) {
       const rect = buttonRef.current?.getBoundingClientRect()
       if (rect) {
         const x = e.clientX - rect.left
@@ -89,7 +89,7 @@ export function InteractiveButton({
   const getAnimationProps = () => {
     if (prefersReducedMotion) return {}
 
-    switch (animation) {
+    switch (buttonAnimation) {
       case 'magnetic':
         return {}
       case 'morph':
@@ -108,9 +108,9 @@ export function InteractiveButton({
     }
   }
 
-  const ButtonComponent = animation === 'magnetic' ? MagneticElement : motion.button
+  const ButtonComponent = buttonAnimation === 'magnetic' ? MagneticElement : motion.button
 
-  const buttonProps = animation === 'magnetic' 
+  const buttonProps = buttonAnimation === 'magnetic' 
     ? { strength: 0.2, as: 'button' as const }
     : getAnimationProps()
 
@@ -125,7 +125,7 @@ export function InteractiveButton({
       {...buttonProps}
     >
       {/* Ripple effects */}
-      {animation === 'ripple' && ripples.map((ripple) => (
+      {buttonAnimation === 'ripple' && ripples.map((ripple) => (
         <motion.span
           key={ripple.id}
           className="absolute bg-white/30 rounded-full pointer-events-none"

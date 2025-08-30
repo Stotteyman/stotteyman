@@ -2,7 +2,7 @@
  * Advanced Animation Error Reporting and Recovery System
  */
 
-import { AnimationError } from './AnimationErrorHandler'
+import type { AnimationError } from './AnimationErrorHandler'
 
 export interface ErrorReport {
   id: string
@@ -142,14 +142,14 @@ export class AnimationErrorReporter {
     const details: Record<string, any> = {}
 
     if (event instanceof MouseEvent) {
-      details.coordinates = { x: event.clientX, y: event.clientY }
-      details.button = event.button
+      details['coordinates'] = { x: event.clientX, y: event.clientY }
+      details['button'] = event.button
     }
 
     if (event instanceof KeyboardEvent) {
-      details.key = event.key
-      details.code = event.code
-      details.modifiers = {
+      details['key'] = event.key
+      details['code'] = event.code
+      details['modifiers'] = {
         ctrl: event.ctrlKey,
         alt: event.altKey,
         shift: event.shiftKey,
@@ -158,14 +158,14 @@ export class AnimationErrorReporter {
     }
 
     if (event.type === 'scroll') {
-      details.scrollPosition = {
+      details['scrollPosition'] = {
         x: window.scrollX,
         y: window.scrollY
       }
     }
 
     if (event.type === 'resize') {
-      details.windowSize = {
+      details['windowSize'] = {
         width: window.innerWidth,
         height: window.innerHeight
       }
@@ -344,7 +344,9 @@ export class AnimationErrorReporter {
 
       // Group by date
       const date = new Date(report.timestamp).toISOString().split('T')[0]
-      errorsByDate.set(date, (errorsByDate.get(date) || 0) + report.errors.length)
+      if (date) {
+        errorsByDate.set(date, (errorsByDate.get(date) || 0) + report.errors.length)
+      }
 
       // Analyze system correlations
       const webglKey = report.systemInfo.webGLSupport ? 'webgl-supported' : 'webgl-not-supported'

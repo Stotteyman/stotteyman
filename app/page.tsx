@@ -1,13 +1,5 @@
-import { HeroSection } from '@/components/HeroSection'
-import { VenturesPreview } from '@/components/VenturesPreview'
-import { CTASection } from '@/components/CTASection'
+import ClientPage from './ClientPage'
 
 export default function HomePage() {
-  return (
-    <>
-      <HeroSection />
-      <VenturesPreview />
-      <CTASection />
-    </>
-  )
+  return <ClientPage />
 }

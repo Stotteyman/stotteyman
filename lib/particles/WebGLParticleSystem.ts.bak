@@ -29,9 +29,9 @@ export class WebGLParticleSystem {
   private positionBuffer: WebGLBuffer | null = null
   private colorBuffer: WebGLBuffer | null = null
   private sizeBuffer: WebGLBuffer | null = null
-  private positions: Float32Array
-  private colors: Float32Array
-  private sizes: Float32Array
+  private positions!: Float32Array
+  private colors!: Float32Array
+  private sizes!: Float32Array
 
   // Shader sources
   private vertexShaderSource = `
@@ -87,12 +87,12 @@ export class WebGLParticleSystem {
   constructor(canvas: HTMLCanvasElement, config: ParticleSystemProps) {
     this.canvas = canvas
     this.config = {
-      count: config.count || 50,
-      speed: config.speed || 1,
-      size: config.size || { min: 2, max: 6 },
-      colors: config.colors || ['#ffffff', '#f0f0f0'],
-      interactive: config.interactive !== false,
-      density: config.density || 'medium',
+      count: 50,
+      speed: 1,
+      size: { min: 2, max: 6 },
+      colors: ['#ffffff', '#f0f0f0'],
+      interactive: true,
+      density: 'medium',
       ...config
     }
 

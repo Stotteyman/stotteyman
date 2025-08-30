@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { WebVitalsMetrics, WebVitalsCollector, getWebVitalsCollector, PerformanceThresholds } from '@/lib/performance/webVitals'
+import { WebVitalsCollector, getWebVitalsCollector } from '@/lib/performance/webVitals'
+import type { WebVitalsMetrics, PerformanceThresholds } from '@/lib/performance/webVitals'
 import { getMetricsStorage } from '@/lib/performance/metricsStorage'
 
 export interface UseWebVitalsOptions {

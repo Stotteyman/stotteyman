@@ -2,7 +2,7 @@
  * Scroll Animation Presets - Pre-configured scroll animations for common use cases
  */
 
-import { ScrollAnimationConfig } from '@/types/animations'
+import type { ScrollAnimationConfig } from '@/types/animations'
 
 export interface ScrollPreset {
   id: string

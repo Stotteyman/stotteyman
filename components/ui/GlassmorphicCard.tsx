@@ -1,8 +1,8 @@
 'use client'
 
-import { ReactNode, useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { GlassmorphicCardProps } from '@/types/components'
+import type { GlassmorphicCardProps } from '@/types/components'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { AnimationErrorBoundary } from '../animations/AnimationErrorBoundary'
 

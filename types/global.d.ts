@@ -1,9 +1,7 @@
-import { GSAPTimeline } from 'gsap'
-
 declare global {
   interface Window {
-    gsap?: typeof import('gsap')
-    ScrollTrigger?: typeof import('gsap/ScrollTrigger')
+    gsap?: any
+    ScrollTrigger?: any
     gtag?: (...args: any[]) => void
     performance: Performance & {
       memory?: {
