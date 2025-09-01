@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { signOut } from 'next-auth/react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Users, 
   FileText, 
@@ -17,7 +17,9 @@ import {
   Eye,
   Search,
   UserCheck,
-  AlertTriangle
+  AlertTriangle,
+  Menu,
+  X
 } from 'lucide-react'
 
 interface User {
@@ -73,9 +75,9 @@ export default function DashboardClient({ user }: { user: any }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showUserModal, setShowUserModal] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
   const isAdmin = user?.role === 'admin' || user?.role === 'owner'
-  // const isModerator = user?.role === 'moderator' || isAdmin
 
   useEffect(() => {
     if (isAdmin) {
@@ -192,7 +194,10 @@ export default function DashboardClient({ user }: { user: any }) {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading dashboard...</p>
+        </div>
       </div>
     )
   }
@@ -209,7 +214,7 @@ export default function DashboardClient({ user }: { user: any }) {
                 {user.role}
               </span>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               <span className="text-gray-300">{user.email}</span>
               <button
                 onClick={() => signOut()}
@@ -219,13 +224,54 @@ export default function DashboardClient({ user }: { user: any }) {
                 <span>Sign Out</span>
               </button>
             </div>
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+            >
+              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="flex">
+      {/* Mobile User Menu */}
+      <AnimatePresence>
+        {showMobileMenu && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-black/80 backdrop-blur-md border-b border-white/10 overflow-hidden"
+          >
+            <div className="px-4 py-4 space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
+                  <span className="text-blue-400 font-medium">
+                    {user.name?.charAt(0) || user.email.charAt(0)}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-white font-medium">{user.name || 'Admin User'}</p>
+                  <p className="text-gray-400 text-sm">{user.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => signOut()}
+                className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex flex-col lg:flex-row">
         {/* Sidebar */}
-        <aside className="w-64 bg-black/30 backdrop-blur-md border-r border-white/10 min-h-screen">
+        <aside className="lg:w-64 bg-black/30 backdrop-blur-md border-r border-white/10 min-h-screen order-2 lg:order-1">
           <nav className="p-4">
             {tabs.map((tab) => {
               const Icon = tab.icon
@@ -233,14 +279,14 @@ export default function DashboardClient({ user }: { user: any }) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg mb-2 transition-all duration-200 ${
                     activeTab === tab.id
-                      ? 'bg-blue-500/20 text-blue-400'
-                      : 'text-gray-300 hover:bg-white/10'
+                      ? 'bg-blue-500/20 text-blue-400 shadow-lg'
+                      : 'text-gray-300 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
-                  <span>{tab.label}</span>
+                  <span className="text-sm sm:text-base">{tab.label}</span>
                 </button>
               )
             })}
@@ -248,75 +294,75 @@ export default function DashboardClient({ user }: { user: any }) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
           {activeTab === 'overview' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <h2 className="text-3xl font-bold text-white mb-6">Dashboard Overview</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">Dashboard Overview</h2>
               
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Total Users</p>
-                      <p className="text-2xl font-bold text-white">{users.length}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-white">{users.length}</p>
                     </div>
-                    <Users className="w-8 h-8 text-blue-400" />
+                    <Users className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Active Referrals</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl sm:text-2xl font-bold text-white">
                         {referrals.filter(r => r.status === 'active').length}
                       </p>
                     </div>
-                    <Link className="w-8 h-8 text-green-400" />
+                    <Link className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Published Posts</p>
-                      <p className="text-2xl font-bold text-white">
+                      <p className="text-xl sm:text-2xl font-bold text-white">
                         {blogPosts.filter(p => p.status === 'published').length}
                       </p>
                     </div>
-                    <FileText className="w-8 h-8 text-purple-400" />
+                    <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-gray-400 text-sm">Chat Messages</p>
-                      <p className="text-2xl font-bold text-white">{chatMessages.length}</p>
+                      <p className="text-xl sm:text-2xl font-bold text-white">{chatMessages.length}</p>
                     </div>
-                    <MessageSquare className="w-8 h-8 text-pink-400" />
+                    <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-pink-400" />
                   </div>
                 </div>
               </div>
 
               {/* Recent Activity */}
-              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <h3 className="text-xl font-bold text-white mb-4">Recent Activity</h3>
-                <div className="space-y-4">
+              <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Recent Activity</h3>
+                <div className="space-y-3 sm:space-y-4">
                   {users.slice(0, 5).map((user) => (
                     <div key={user.id} className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-                          <UserCheck className="w-4 h-4 text-blue-400" />
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                          <UserCheck className="w-3 h-3 sm:w-4 sm:h-4 text-blue-400" />
                         </div>
                         <div>
-                          <p className="text-white font-medium">{user.name}</p>
-                          <p className="text-gray-400 text-sm">{user.email}</p>
+                          <p className="text-white font-medium text-sm sm:text-base">{user.name}</p>
+                          <p className="text-gray-400 text-xs sm:text-sm">{user.email}</p>
                         </div>
                       </div>
                       <span className={`px-2 py-1 rounded-full text-xs ${getRoleColor(user.role)}`}>
@@ -335,16 +381,16 @@ export default function DashboardClient({ user }: { user: any }) {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-white">User Management</h2>
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">User Management</h2>
+                <div className="relative w-full sm:w-auto">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full sm:w-64 pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -354,16 +400,16 @@ export default function DashboardClient({ user }: { user: any }) {
                   <table className="w-full">
                     <thead className="bg-white/5">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           User
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Role
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Joined
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -376,34 +422,34 @@ export default function DashboardClient({ user }: { user: any }) {
                         )
                         .map((user) => (
                         <tr key={user.id} className="hover:bg-white/5">
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <div className="flex items-center">
                               <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
-                                <span className="text-blue-400 font-medium">
+                                <span className="text-blue-400 font-medium text-sm">
                                   {user.name?.charAt(0) || user.email.charAt(0)}
                                 </span>
                               </div>
                               <div className="ml-3">
-                                <div className="text-white font-medium">{user.name}</div>
-                                <div className="text-gray-400 text-sm">{user.email}</div>
+                                <div className="text-white font-medium text-sm sm:text-base">{user.name}</div>
+                                <div className="text-gray-400 text-xs sm:text-sm">{user.email}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 rounded-full text-xs ${getRoleColor(user.role)}`}>
                               {user.role}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                             {new Date(user.created_at).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <button
                               onClick={() => {
                                 setSelectedUser(user)
                                 setShowUserModal(true)
                               }}
-                              className="text-blue-400 hover:text-blue-300 mr-3"
+                              className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/10 transition-colors"
                             >
                               <Edit className="w-4 h-4" />
                             </button>
@@ -423,8 +469,8 @@ export default function DashboardClient({ user }: { user: any }) {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-white">Referral Management</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">Referral Management</h2>
                 <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                   <Plus className="w-4 h-4" />
                   <span>Add Referral</span>
@@ -436,19 +482,19 @@ export default function DashboardClient({ user }: { user: any }) {
                   <table className="w-full">
                     <thead className="bg-white/5">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Title
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Category
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Created
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -456,33 +502,35 @@ export default function DashboardClient({ user }: { user: any }) {
                     <tbody className="divide-y divide-white/10">
                       {referrals.map((referral) => (
                         <tr key={referral.id} className="hover:bg-white/5">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-white font-medium">{referral.title}</div>
-                            <div className="text-gray-400 text-sm truncate max-w-xs">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <div className="text-white font-medium text-sm sm:text-base">{referral.title}</div>
+                            <div className="text-gray-400 text-xs sm:text-sm truncate max-w-xs">
                               {referral.description}
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300">
                             {referral.category}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(referral.status)}`}>
                               {referral.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                             {new Date(referral.created_at).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button className="text-blue-400 hover:text-blue-300 mr-3">
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteReferral(referral.id)}
-                              className="text-red-400 hover:text-red-300"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <div className="flex space-x-2">
+                              <button className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteReferral(referral.id)}
+                                className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -499,8 +547,8 @@ export default function DashboardClient({ user }: { user: any }) {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-white">Blog Post Management</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+                <h2 className="text-2xl sm:text-3xl font-bold text-white">Blog Post Management</h2>
                 <button className="flex items-center space-x-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                   <Plus className="w-4 h-4" />
                   <span>Add Post</span>
@@ -512,19 +560,19 @@ export default function DashboardClient({ user }: { user: any }) {
                   <table className="w-full">
                     <thead className="bg-white/5">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Title
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Slug
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Status
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Created
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -532,33 +580,35 @@ export default function DashboardClient({ user }: { user: any }) {
                     <tbody className="divide-y divide-white/10">
                       {blogPosts.map((post) => (
                         <tr key={post.id} className="hover:bg-white/5">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-white font-medium">{post.title}</div>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <div className="text-white font-medium text-sm sm:text-base">{post.title}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                             {post.slug}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                             <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(post.status)}`}>
                               {post.status}
                             </span>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                             {new Date(post.created_at).toLocaleDateString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button className="text-blue-400 hover:text-blue-300 mr-3">
-                              <Eye className="w-4 h-4" />
-                            </button>
-                            <button className="text-blue-400 hover:text-blue-300 mr-3">
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteBlogPost(post.id)}
-                              className="text-red-400 hover:text-red-300"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <div className="flex space-x-2">
+                              <button className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                <Eye className="w-4 h-4" />
+                              </button>
+                              <button className="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteBlogPost(post.id)}
+                                className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -575,26 +625,26 @@ export default function DashboardClient({ user }: { user: any }) {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <h2 className="text-3xl font-bold text-white">Chat Management</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Chat Management</h2>
 
               <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-white/5">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Message
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Room
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           User
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="hidden sm:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Time
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -602,20 +652,20 @@ export default function DashboardClient({ user }: { user: any }) {
                     <tbody className="divide-y divide-white/10">
                       {chatMessages.slice(0, 20).map((message) => (
                         <tr key={message.id} className="hover:bg-white/5">
-                          <td className="px-6 py-4">
-                            <div className="text-white max-w-xs truncate">{message.content}</div>
+                          <td className="px-3 sm:px-6 py-4">
+                            <div className="text-white max-w-xs truncate text-sm">{message.content}</div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300">
                             {message.room_id}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300">
                             {message.user_id}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
+                          <td className="hidden sm:table-cell px-3 sm:px-6 py-4 whitespace-nowrap text-gray-300 text-sm">
                             {new Date(message.created_at).toLocaleString()}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <button className="text-red-400 hover:text-red-300">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                            <button className="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-white/10 transition-colors">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </td>
@@ -634,11 +684,11 @@ export default function DashboardClient({ user }: { user: any }) {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              <h2 className="text-3xl font-bold text-white">Admin Settings</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">Admin Settings</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                  <h3 className="text-xl font-bold text-white mb-4">System Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4">System Information</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-gray-400">Total Users:</span>
@@ -655,8 +705,8 @@ export default function DashboardClient({ user }: { user: any }) {
                   </div>
                 </div>
 
-                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                  <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
+                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/10">
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-4">Quick Actions</h3>
                   <div className="space-y-3">
                     <button className="w-full text-left px-4 py-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors">
                       Backup Database
@@ -676,44 +726,52 @@ export default function DashboardClient({ user }: { user: any }) {
       </div>
 
       {/* User Role Modal */}
-      {showUserModal && selectedUser && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <AnimatePresence>
+        {showUserModal && selectedUser && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-800 rounded-xl p-6 w-full max-w-md border border-white/10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
           >
-            <h3 className="text-xl font-bold text-white mb-4">Update User Role</h3>
-            <div className="mb-4">
-              <p className="text-gray-300 mb-2">User: {selectedUser.name}</p>
-              <p className="text-gray-400 text-sm">{selectedUser.email}</p>
-            </div>
-            <div className="space-y-3">
-              {['user', 'moderator', 'admin'].map((role) => (
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-gray-800 rounded-xl p-6 w-full max-w-md border border-white/10"
+            >
+              <h3 className="text-xl font-bold text-white mb-4">Update User Role</h3>
+              <div className="mb-4">
+                <p className="text-gray-300 mb-2">User: {selectedUser.name}</p>
+                <p className="text-gray-400 text-sm">{selectedUser.email}</p>
+              </div>
+              <div className="space-y-3">
+                {['user', 'moderator', 'admin'].map((role) => (
+                  <button
+                    key={role}
+                    onClick={() => handleUserRoleUpdate(selectedUser.id, role)}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                      selectedUser.role === role
+                        ? 'bg-blue-500/20 text-blue-400'
+                        : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                    }`}
+                  >
+                    {role.charAt(0).toUpperCase() + role.slice(1)}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-6 flex justify-end space-x-3">
                 <button
-                  key={role}
-                  onClick={() => handleUserRoleUpdate(selectedUser.id, role)}
-                  className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                    selectedUser.role === role
-                      ? 'bg-blue-500/20 text-blue-400'
-                      : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                  }`}
+                  onClick={() => setShowUserModal(false)}
+                  className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
                 >
-                  {role.charAt(0).toUpperCase() + role.slice(1)}
+                  Cancel
                 </button>
-              ))}
-            </div>
-            <div className="mt-6 flex justify-end space-x-3">
-              <button
-                onClick={() => setShowUserModal(false)}
-                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
+              </div>
+            </motion.div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function GET() {
   try {
+    const sql = getDB()
     const referrals = await sql`
       SELECT 
         id,
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
   try {
     const { title, description, url, category, commission_rate, requirements } = await request.json()
     
+    const sql = getDB()
     const newReferral = await sql`
       INSERT INTO referrals (title, description, url, category, commission_rate, requirements)
       VALUES (${title}, ${description}, ${url}, ${category}, ${commission_rate}, ${requirements})

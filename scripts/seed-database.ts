@@ -1,4 +1,4 @@
-import sql from '../lib/db'
+import { getDB } from '../lib/db'
 import { sampleReferrals } from '../lib/seed-data'
 
 async function seedDatabase() {
@@ -7,6 +7,7 @@ async function seedDatabase() {
 
     // Insert sample referrals
     console.log('📝 Inserting sample referrals...')
+    const sql = getDB()
     for (const referral of sampleReferrals) {
       await sql`
         INSERT INTO referrals (title, description, url, category, commission_rate, requirements, status)

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function GET() {
   try {
@@ -11,6 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const blogPosts = await sql`
       SELECT 
         id,
@@ -44,6 +45,7 @@ export async function POST(request: NextRequest) {
 
     const { title, slug, content, excerpt, featured_image, status } = await request.json()
     
+    const sql = getDB()
     const newBlogPost = await sql`
       INSERT INTO blog_posts (title, slug, content, excerpt, featured_image, status, author_id)
       VALUES (${title}, ${slug}, ${content}, ${excerpt}, ${featured_image}, ${status}, ${(session.user as any).id})

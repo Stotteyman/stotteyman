@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function GET() {
   try {
@@ -11,6 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const users = await sql`
       SELECT 
         id,

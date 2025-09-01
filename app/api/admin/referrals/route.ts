@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function GET() {
   try {
@@ -11,6 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const referrals = await sql`
       SELECT 
         id,
@@ -46,6 +47,7 @@ export async function POST(request: NextRequest) {
 
     const { title, description, url, category, commission_rate, requirements } = await request.json()
     
+    const sql = getDB()
     const newReferral = await sql`
       INSERT INTO referrals (title, description, url, category, commission_rate, requirements, created_by)
       VALUES (${title}, ${description}, ${url}, ${category}, ${commission_rate}, ${requirements}, ${(session.user as any).id})

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function GET() {
   try {
@@ -11,6 +11,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const messages = await sql`
       SELECT 
         cm.id,
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Message content is required' }, { status: 400 })
     }
 
+    const sql = getDB()
     const newMessage = await sql`
       INSERT INTO chat_messages (content, user_id, room_id)
       VALUES (${content}, ${(session.user as any).id}, ${room_id})

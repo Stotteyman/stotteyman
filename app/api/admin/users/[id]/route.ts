@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function PATCH(
   request: NextRequest,
@@ -20,6 +20,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
     }
 
+    const sql = getDB()
     const updatedUser = await sql`
       UPDATE users 
       SET role = ${role}
@@ -52,6 +53,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const deletedUser = await sql`
       DELETE FROM users 
       WHERE id = ${params.id}

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import sql from '@/lib/db'
+import { getDB } from '@/lib/db'
 
 export async function PATCH(
   request: NextRequest,
@@ -16,6 +16,7 @@ export async function PATCH(
 
     const updates = await request.json()
     
+    const sql = getDB()
     const updatedBlogPost = await sql`
       UPDATE blog_posts 
       SET 
@@ -54,6 +55,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const sql = getDB()
     const deletedBlogPost = await sql`
       DELETE FROM blog_posts 
       WHERE id = ${params.id}
