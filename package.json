@@ -25,10 +25,20 @@
     "validate:types": "node scripts/validate-typescript-config.js",
     "deploy:prod": "npm run deploy:check && npm run build && npm start",
     "clean": "rm -rf .next out node_modules/.cache",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db:seed": "tsx scripts/seed-database.ts",
+    "db:setup": "npm run db:seed"
   },
   "dependencies": {
+    "@auth/core": "^0.34.2",
+    "@auth/neon-adapter": "^1.10.0",
+    "@neondatabase/serverless": "^1.0.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/next-auth": "^3.15.0",
+    "@types/socket.io": "^3.0.1",
+    "@types/socket.io-client": "^1.4.36",
     "@types/three": "^0.170.0",
+    "bcryptjs": "^3.0.2",
     "clsx": "^2.1.1",
     "critters": "^0.0.23",
     "csurf": "^1.11.0",
@@ -46,9 +56,12 @@
     "lucide-react": "^0.460.0",
     "markdown-it": "^14.1.0",
     "next": "15.5.0",
+    "next-auth": "^4.24.11",
     "rate-limiter-flexible": "^5.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.4",
     "three": "^0.170.0",
     "web-vitals": "^4.2.4"
@@ -81,6 +94,7 @@
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.4.1",
+    "tsx": "^4.20.5",
     "typescript": "^5.7.2",
     "webpack-bundle-analyzer": "^4.10.2"
   }
