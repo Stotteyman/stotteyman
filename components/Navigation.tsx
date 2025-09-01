@@ -7,8 +7,10 @@ const navItems = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/ventures', label: 'Ventures' },
+  { href: '/referrals', label: 'Referrals' },
   { href: '/livestream', label: 'Livestream' },
   { href: '/blog', label: 'Blog' },
+  { href: '/chat', label: 'Chat' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -48,6 +50,14 @@ export function Navigation() {
             >
               Book a Call
             </button>
+            
+            {/* Dashboard Link for Admins */}
+            <Link
+              href="/dashboard"
+              className="relative px-6 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full font-medium"
+            >
+              Dashboard
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -93,6 +103,14 @@ export function Navigation() {
             >
               Book a Call
             </button>
+            
+            <Link
+              href="/dashboard"
+              onClick={() => setIsOpen(false)}
+              className="block w-full text-center px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-full font-medium mt-2"
+            >
+              Dashboard
+            </Link>
           </div>
         </div>
       )}

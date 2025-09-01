@@ -1,27 +1,24 @@
-import { NextAuthOptions } from 'next-auth'
-import { NeonAdapter } from '@auth/neon-adapter'
+import type { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
-import sql from './db'
 
 export const authOptions: NextAuthOptions = {
-  adapter: NeonAdapter(sql),
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env['GOOGLE_CLIENT_ID']!,
+      clientSecret: process.env['GOOGLE_CLIENT_SECRET']!,
     }),
   ],
   callbacks: {
     async session({ session, user }) {
       if (session.user) {
         session.user.id = user.id
-        session.user.role = user.role
+        session.user.role = (user as any).role || 'user'
       }
       return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role
+        token.role = (user as any).role || 'user'
       }
       return token
     },

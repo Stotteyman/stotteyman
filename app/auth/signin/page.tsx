@@ -2,7 +2,7 @@
 
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Chrome } from 'lucide-react'
 
@@ -11,18 +11,18 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false)
   const [isChecking, setIsChecking] = useState(true)
 
-  useEffect(() => {
-    checkSession()
-  }, [])
-
-  const checkSession = async () => {
+  const checkSession = useCallback(async () => {
     const session = await getSession()
     if (session) {
       router.push('/dashboard')
     } else {
       setIsChecking(false)
     }
-  }
+  }, [router])
+
+  useEffect(() => {
+    checkSession()
+  }, [checkSession])
 
   const handleGoogleSignIn = async () => {
     setLoading(true)
@@ -91,7 +91,7 @@ export default function SignInPage() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-gray-500 text-sm">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <button
               onClick={handleGoogleSignIn}
               className="text-blue-400 hover:text-blue-300 font-medium"

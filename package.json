@@ -25,13 +25,16 @@
     "validate:types": "node scripts/validate-typescript-config.js",
     "deploy:prod": "npm run deploy:check && npm run build && npm start",
     "clean": "rm -rf .next out node_modules/.cache",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "db:seed": "tsx scripts/seed-database.ts",
+    "db:setup": "npm run db:seed"
   },
   "dependencies": {
     "@auth/core": "^0.34.2",
     "@auth/neon-adapter": "^1.10.0",
     "@neondatabase/serverless": "^1.0.1",
     "@types/bcryptjs": "^2.4.6",
+    "@types/next-auth": "^3.15.0",
     "@types/socket.io": "^3.0.1",
     "@types/socket.io-client": "^1.4.36",
     "@types/three": "^0.170.0",
@@ -91,6 +94,7 @@
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.4.1",
+    "tsx": "^4.20.5",
     "typescript": "^5.7.2",
     "webpack-bundle-analyzer": "^4.10.2"
   }

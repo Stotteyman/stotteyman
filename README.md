@@ -1,240 +1,278 @@
-# Stotteyman Enterprises LLC - Investor Website
+# Stotteyman Enterprises - Portfolio & Referral Platform
 
-A cutting-edge, futuristic investor-facing website showcasing Stotteyman's venture portfolio and entrepreneurial journey.
+A modern, mobile-optimized portfolio website with comprehensive admin functionality, referral management, and real-time chat features.
 
 ## 🚀 Features
 
-- **Futuristic Design**: Dark mode-first with neon gradients, glassmorphism, and liquid animations
-- **Advanced Animations**: GSAP and Framer Motion for smooth, professional transitions
-- **Responsive**: Optimized for all devices and screen sizes
-- **SEO Optimized**: Meta tags, OpenGraph, and structured data
-- **Accessibility**: WCAG 2.2 compliant with keyboard navigation and ARIA labels
-- **Performance**: Optimized images, lazy loading, and edge caching ready
+### Core Features
+- **Responsive Design**: Mobile-first approach with app-like experience
+- **Portfolio Showcase**: Professional presentation of work and achievements
+- **Contact Integration**: Easy ways for visitors to get in touch
+- **SEO Optimized**: Built for search engine visibility
 
-## 🏗️ Tech Stack
+### Authentication & User Management
+- **Google OAuth**: Secure authentication with Google accounts
+- **Role-Based Access**: User, Moderator, Admin, and Owner roles
+- **Session Management**: Persistent login sessions
+- **Protected Routes**: Secure access to admin features
 
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: TailwindCSS with custom animations
-- **Animations**: Framer Motion + GSAP
-- **Typography**: Inter, Playfair Display, JetBrains Mono
-- **Deployment**: Netlify-ready with serverless functions
+### Admin Dashboard
+- **User Management**: View, edit, and manage user roles
+- **Content Management**: Manage blog posts and referrals
+- **Analytics Overview**: Dashboard with key metrics
+- **Real-time Updates**: Live data updates and notifications
 
-## 📁 Project Structure
+### Referral System
+- **Referral Deals**: Curated selection of commission opportunities
+- **Category Filtering**: Organized by industry and type
+- **Search Functionality**: Find specific deals quickly
+- **Commission Tracking**: Transparent commission rates and requirements
 
-```
-├── app/
-│   ├── about/page.tsx          # About Gary McCullouch
-│   ├── blog/page.tsx           # AI-driven blog
-│   ├── contact/page.tsx        # Contact & Calendly integration
-│   ├── livestream/page.tsx     # Livestream involvement
-│   ├── ventures/page.tsx       # Portfolio showcase
-│   ├── globals.css             # Global styles
-│   ├── layout.tsx              # Root layout
-│   └── page.tsx                # Homepage
-├── components/
-│   ├── CTASection.tsx          # Call-to-action sections
-│   ├── FloatingCTA.tsx         # Floating Calendly button
-│   ├── HeroSection.tsx         # Homepage hero
-│   ├── LivestreamPreview.tsx   # Livestream showcase
-│   ├── Navigation.tsx          # Main navigation
-│   └── VenturesPreview.tsx     # Ventures preview cards
-└── public/                     # Static assets
-```
+### Real-time Chat
+- **Live Messaging**: Real-time chat with Socket.IO
+- **User Presence**: See who's online
+- **Message History**: Persistent chat history
+- **Mobile Optimized**: Responsive chat interface
 
-## 🎨 Design Features
+### Blog Management
+- **Content Creation**: Rich text blog post creation
+- **Status Management**: Draft, published, and archived states
+- **SEO Optimization**: Slug-based URLs and meta tags
+- **Admin Controls**: Full CRUD operations for blog posts
 
-### Animations
-- **Logo Reveal**: GSAP-powered animated logo entrance
-- **Parallax Scrolling**: Smooth background movement
-- **Hover States**: Interactive elements with micro-animations
-- **Page Transitions**: Seamless navigation between pages
-- **Scroll Triggers**: Content reveals on scroll
+## 🛠️ Technology Stack
 
-### Visual Elements
-- **Glassmorphism**: Translucent cards with backdrop blur
-- **Neon Glows**: Subtle lighting effects on interactive elements
-- **Gradient Text**: Dynamic color transitions
-- **Floating Particles**: Ambient background animations
-- **Grid Overlays**: Futuristic background patterns
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS, Framer Motion
+- **Authentication**: NextAuth.js with Google OAuth
+- **Database**: Neon PostgreSQL with serverless driver
+- **Real-time**: Socket.IO for chat functionality
+- **Deployment**: Netlify (configured)
 
-## 🚀 Getting Started
+## 📋 Prerequisites
 
-### Prerequisites
 - Node.js 18+ 
 - npm or yarn
+- PostgreSQL database (Neon recommended)
+- Google OAuth credentials
 
-### Installation
+## 🚀 Quick Start
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd stotteyman-enterprises
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Run development server**
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
-
-4. **Open in browser**
-   Navigate to `http://localhost:3000`
-
-### Build for Production
-
+### 1. Clone the Repository
 ```bash
-npm run build
-npm start
+git clone <repository-url>
+cd stotteyman-enterprises
 ```
 
-## 🌐 Deployment
-
-### Netlify Deployment
-
-1. **Connect Repository**
-   - Link your Git repository to Netlify
-   - Set build command: `npm run build`
-   - Set publish directory: `.next`
-
-2. **Environment Variables**
-   ```
-   NEXT_PUBLIC_SITE_URL=https://your-domain.com
-   ```
-
-3. **Deploy**
-   - Automatic deployments on git push
-   - Edge functions support for serverless features
-
-## 📱 Pages Overview
-
-### Homepage (`/`)
-- Hero section with animated logo
-- Ventures preview with interactive cards
-- Livestream involvement showcase
-- Call-to-action with Calendly integration
-
-### About (`/about`)
-- Gary's entrepreneurial journey
-- Core values and principles
-- Timeline of achievements
-- Investment philosophy
-
-### Ventures (`/ventures`)
-- Detailed portfolio showcase
-- Interactive venture cards
-- Investment opportunities
-
-### Livestream (`/livestream`)
-- IRL culture involvement
-- Key collaborator profiles
-- Partnership opportunities
-
-### Blog (`/blog`)
-- AI-generated content
-- Category filtering
-- Search functionality
-- Newsletter signup
-
-### Contact (`/contact`)
-- Multiple contact methods
-- Calendly integration
-- Contact form with validation
-- Response time commitments
-
-## 🎯 Key Features
-
-### Calendly Integration
-- Floating CTA button on all pages
-- Modal popup with embedded calendar
-- Direct booking links in navigation
-- Investment-focused scheduling
-
-### Performance Optimizations
-- Image optimization with Next.js
-- Lazy loading for animations
-- Code splitting by route
-- Edge-ready deployment
-
-### Accessibility
-- Keyboard navigation support
-- Screen reader compatibility
-- High contrast ratios
-- ARIA labels and roles
-
-### SEO Features
-- Dynamic meta tags
-- OpenGraph images
-- Structured data markup
-- Sitemap generation
-
-## 🔧 Customization
-
-### Colors
-Edit `tailwind.config.js` to modify the color palette:
-```javascript
-colors: {
-  primary: { /* your colors */ },
-  neon: { /* neon variants */ }
-}
+### 2. Install Dependencies
+```bash
+npm install
 ```
 
-### Animations
-Modify animations in `globals.css` and component files:
-```css
-@keyframes customAnimation {
-  /* your keyframes */
-}
+### 3. Environment Setup
+```bash
+cp .env.example .env.local
 ```
+
+Edit `.env.local` with your configuration:
+```env
+# Database Configuration
+DATABASE_URL="your-neon-postgresql-url"
+
+# NextAuth Configuration
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="generate-a-secure-secret"
+
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# Socket.IO Configuration
+NEXT_PUBLIC_SOCKET_URL="http://localhost:3001"
+```
+
+### 4. Database Setup
+```bash
+# Run the database seeder to create tables and sample data
+npm run db:setup
+```
+
+### 5. Start Development Server
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to see your application.
+
+## 🔧 Configuration
+
+### Google OAuth Setup
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URIs:
+   - `http://localhost:3000/api/auth/callback/google` (development)
+   - `https://yourdomain.com/api/auth/callback/google` (production)
+
+### Database Setup
+1. Create a Neon PostgreSQL database
+2. Copy the connection string to `DATABASE_URL`
+3. Run the seeder: `npm run db:setup`
+
+## 📱 Mobile Optimization
+
+The application is built with a mobile-first approach:
+- Responsive design that works on all screen sizes
+- Touch-friendly interface elements
+- Optimized loading times
+- PWA-ready configuration
+
+## 🔐 Security Features
+
+- **Authentication**: Secure OAuth flow with NextAuth.js
+- **Role-Based Access**: Granular permissions system
+- **Input Validation**: Server-side validation for all inputs
+- **CSRF Protection**: Built-in CSRF protection
+- **Rate Limiting**: API rate limiting for security
+
+## 🎨 Customization
+
+### Styling
+- Modify `tailwind.config.js` for theme customization
+- Update colors in `app/globals.css`
+- Customize components in the `components/` directory
 
 ### Content
-Update venture data in `/app/ventures/page.tsx`:
-```javascript
-const ventures = [
-  // your venture data
-]
+- Update hero section in `components/HeroSection.tsx`
+- Modify navigation in `components/Navigation.tsx`
+- Add new pages in the `app/` directory
+
+### Referrals
+- Add new referral deals through the admin dashboard
+- Update categories in `app/referrals/ReferralsClient.tsx`
+- Modify commission structures as needed
+
+## 📊 Admin Dashboard
+
+Access the admin dashboard at `/dashboard` (requires admin/owner role):
+
+### Features
+- **User Management**: View and modify user roles
+- **Referral Management**: Add, edit, and delete referral deals
+- **Blog Management**: Create and manage blog posts
+- **Chat Moderation**: Monitor and manage chat messages
+- **Analytics**: View system statistics and user activity
+
+### Admin Roles
+- **Owner**: Full system access, can delete users
+- **Admin**: Full content management access
+- **Moderator**: Limited content management
+- **User**: Basic access to public features
+
+## 💬 Chat System
+
+The real-time chat system includes:
+- Live messaging with Socket.IO
+- User presence indicators
+- Message history persistence
+- Mobile-optimized interface
+- Admin moderation tools
+
+## 🚀 Deployment
+
+### Netlify Deployment
+1. Connect your repository to Netlify
+2. Set environment variables in Netlify dashboard
+3. Deploy automatically on push to main branch
+
+### Environment Variables for Production
+```env
+DATABASE_URL="your-production-database-url"
+NEXTAUTH_URL="https://yourdomain.com"
+NEXTAUTH_SECRET="your-production-secret"
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+NEXT_PUBLIC_SOCKET_URL="https://your-socket-server.com"
 ```
 
-## 📊 Analytics & Tracking
+## 📈 Performance
 
-Ready for integration with:
-- Google Analytics 4
-- Facebook Pixel
-- LinkedIn Insight Tag
-- Custom event tracking
+- **Lighthouse Score**: Optimized for 90+ performance score
+- **Bundle Analysis**: Configured with webpack-bundle-analyzer
+- **Image Optimization**: Next.js automatic image optimization
+- **Caching**: Strategic caching for optimal performance
 
-## 🔒 Security Features
+## 🧪 Testing
 
-- Content Security Policy headers
-- XSS protection
-- CSRF protection
-- Secure headers configuration
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run E2E tests
+npm run test:e2e
+
+# Check accessibility
+npm run test:accessibility
+```
+
+## 📝 Scripts
+
+```bash
+# Development
+npm run dev              # Start development server
+npm run dev:turbo        # Start with Turbo mode
+
+# Building
+npm run build            # Build for production
+npm run build:analyze    # Build with bundle analysis
+
+# Database
+npm run db:seed          # Seed database with sample data
+npm run db:setup         # Setup database (alias for db:seed)
+
+# Testing
+npm test                 # Run Jest tests
+npm run test:watch       # Run tests in watch mode
+npm run test:e2e         # Run Playwright E2E tests
+
+# Linting
+npm run lint             # Run ESLint
+npm run lint:fix         # Fix ESLint issues
+
+# Type Checking
+npm run type-check       # Run TypeScript type checking
+```
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Test thoroughly
+4. Add tests if applicable
 5. Submit a pull request
 
 ## 📄 License
 
-This project is proprietary and confidential. All rights reserved by Stotteyman Enterprises LLC.
+This project is licensed under the MIT License.
 
-## 📞 Support
+## 🆘 Support
 
-For technical support or questions:
-- Email: gary@stotteyman.com
-- Schedule a call: https://calendly.com/garymccullouch
+For support and questions:
+- Create an issue in the repository
+- Contact through the website contact form
+- Email: support@stotteyman.com
+
+## 🔄 Updates
+
+Stay updated with the latest features and improvements by:
+- Following the repository
+- Checking the changelog
+- Monitoring the releases page
 
 ---
 
-Built with ❤️ for the future of investment and innovation.
+Built with ❤️ by Stotteyman Enterprises

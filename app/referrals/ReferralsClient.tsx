@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { Search, Filter, ExternalLink, DollarSign, Clock, Tag } from 'lucide-react'
+import { Search, ExternalLink, DollarSign, Clock, Tag } from 'lucide-react'
 
 interface Referral {
   id: string
@@ -34,14 +34,6 @@ export default function ReferralsClient() {
   const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchReferrals()
-  }, [])
-
-  useEffect(() => {
-    filterReferrals()
-  }, [referrals, selectedCategory, searchTerm])
-
   const fetchReferrals = async () => {
     try {
       const response = await fetch('/api/referrals')
@@ -54,7 +46,7 @@ export default function ReferralsClient() {
     }
   }
 
-  const filterReferrals = () => {
+  const filterReferrals = useCallback(() => {
     let filtered = referrals.filter(referral => referral.status === 'active')
 
     if (selectedCategory !== 'All') {
@@ -69,7 +61,15 @@ export default function ReferralsClient() {
     }
 
     setFilteredReferrals(filtered)
-  }
+  }, [referrals, selectedCategory, searchTerm])
+
+  useEffect(() => {
+    fetchReferrals()
+  }, [])
+
+  useEffect(() => {
+    filterReferrals()
+  }, [filterReferrals])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
