@@ -1,23 +1,20 @@
 import { NextResponse } from 'next/server'
-import sql from '@/lib/db'
+import { sampleReferrals } from '@/lib/seed-data'
 
 export async function GET() {
   try {
-    const referrals = await sql`
-      SELECT 
-        id,
-        title,
-        description,
-        url,
-        category,
-        commission_rate,
-        requirements,
-        status,
-        created_at
-      FROM referrals 
-      WHERE status = 'active'
-      ORDER BY created_at DESC
-    `
+    // Return mock data with proper structure
+    const referrals = sampleReferrals.map((referral, index) => ({
+      id: `ref-${index + 1}`,
+      title: referral.title,
+      description: referral.description,
+      url: referral.url,
+      category: referral.category,
+      commission_rate: referral.commission_rate,
+      requirements: referral.requirements,
+      status: referral.status,
+      created_at: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString() // Random date within last 30 days
+    }))
     
     return NextResponse.json(referrals)
   } catch (error) {
