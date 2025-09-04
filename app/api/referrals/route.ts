@@ -30,13 +30,24 @@ export async function POST(request: Request) {
   try {
     const { title, description, url, category, commission_rate, requirements } = await request.json()
     
-    const newReferral = await sql`
-      INSERT INTO referrals (title, description, url, category, commission_rate, requirements)
-      VALUES (${title}, ${description}, ${url}, ${category}, ${commission_rate}, ${requirements})
-      RETURNING *
-    `
+    // Create a new referral object (mock implementation)
+    const newReferral = {
+      id: `ref-${Date.now()}`, // Generate unique ID
+      title,
+      description,
+      url,
+      category,
+      commission_rate,
+      requirements,
+      status: 'active',
+      created_at: new Date().toISOString()
+    }
     
-    return NextResponse.json(newReferral[0])
+    // In a real implementation, you would save this to a database
+    // For now, we'll just return the created object
+    console.log('New referral created:', newReferral)
+    
+    return NextResponse.json(newReferral)
   } catch (error) {
     console.error('Error creating referral:', error)
     return NextResponse.json(
