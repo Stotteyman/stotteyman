@@ -1,0 +1,244 @@
+import { neon } from '@neondatabase/serverless';
+
+// Database connection is optional - app will work in fallback mode without it
+export const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+
+// Database connection wrapper with error handling
+export async function connectDB() {
+  if (!sql) {
+    console.warn('Database not configured - running in fallback mode');
+    return false;
+  }
+  try {
+    await sql`SELECT 1`;
+    return true;
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return false;
+  }
+}
+
+// Player management
+export interface Player {
+  id: string;
+  created_at: Date;
+  nickname?: string;
+  intro_seen: boolean;
+  personality_preset?: any;
+  last_seen?: Date;
+}
+
+export async function createPlayer(nickname?: string): Promise<Player> {
+  if (!sql) {
+    // Fallback: return a mock player
+    return {
+      id: 'fallback-player-' + Date.now(),
+      created_at: new Date(),
+      nickname: nickname || 'Anonymous',
+      intro_seen: false,
+    };
+  }
+  const [player] = await sql`
+    INSERT INTO players (nickname, intro_seen)
+    VALUES (${nickname || null}, false)
+    RETURNING *
+  `;
+  return player as Player;
+}
+
+export async function getPlayer(id: string): Promise<Player | null> {
+  if (!sql) {
+    // Fallback: return a mock player
+    return {
+      id: id,
+      created_at: new Date(),
+      nickname: 'Anonymous',
+      intro_seen: false,
+    };
+  }
+  const [player] = await sql`
+    SELECT * FROM players WHERE id = ${id}
+  `;
+  return (player as Player) || null;
+}
+
+export async function updatePlayerIntroSeen(playerId: string): Promise<void> {
+  if (!sql) {
+    console.log('Database not available - skipping intro seen update');
+    return;
+  }
+  await sql`
+    UPDATE players 
+    SET intro_seen = true, last_seen = NOW()
+    WHERE id = ${playerId}
+  `;
+}
+
+// Session management
+export interface Session {
+  id: string;
+  player_id: string;
+  started_at: Date;
+  ended_at?: Date;
+  device_type?: 'desktop' | 'mobile';
+  user_agent?: string;
+}
+
+export async function createSession(
+  playerId: string,
+  deviceType?: 'desktop' | 'mobile',
+  userAgent?: string
+): Promise<Session> {
+  if (!sql) {
+    // Fallback: return a mock session
+    return {
+      id: 'fallback-session-' + Date.now(),
+      player_id: playerId,
+      started_at: new Date(),
+      device_type: deviceType,
+      user_agent: userAgent,
+    };
+  }
+  const [session] = await sql`
+    INSERT INTO sessions (player_id, device_type, user_agent)
+    VALUES (${playerId}, ${deviceType || null}, ${userAgent || null})
+    RETURNING *
+  `;
+  return session as Session;
+}
+
+export async function endSession(sessionId: string): Promise<void> {
+  if (!sql) {
+    console.log('Database not available - skipping session end');
+    return;
+  }
+  await sql`
+    UPDATE sessions 
+    SET ended_at = NOW()
+    WHERE id = ${sessionId}
+  `;
+}
+
+// Turn management
+export interface Turn {
+  id: string;
+  session_id: string;
+  role: 'user' | 'assistant';
+  content: any;
+  options_shown?: any;
+  chosen_option?: number;
+  emotion?: any;
+  created_at: Date;
+}
+
+export async function createTurn(turn: Omit<Turn, 'id' | 'created_at'>): Promise<Turn> {
+  if (!sql) {
+    // Fallback: return a mock turn
+    return {
+      id: 'fallback-turn-' + Date.now(),
+      ...turn,
+      created_at: new Date(),
+    };
+  }
+  const [newTurn] = await sql`
+    INSERT INTO turns (session_id, role, content, options_shown, chosen_option, emotion)
+    VALUES (${turn.session_id}, ${turn.role}, ${JSON.stringify(turn.content)}, 
+            ${turn.options_shown ? JSON.stringify(turn.options_shown) : null},
+            ${turn.chosen_option || null},
+            ${turn.emotion ? JSON.stringify(turn.emotion) : null})
+    RETURNING *
+  `;
+  return newTurn as Turn;
+}
+
+export async function getRecentTurns(sessionId: string, limit = 10): Promise<Turn[]> {
+  if (!sql) {
+    return []; // Fallback: return empty array
+  }
+  const turns = await sql`
+    SELECT * FROM turns 
+    WHERE session_id = ${sessionId}
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+  `;
+  return (turns as Turn[]).reverse(); // Return in chronological order
+}
+
+// Memory management
+export interface Memory {
+  id: string;
+  player_id: string;
+  key: string;
+  value: any;
+  updated_at: Date;
+}
+
+export async function setMemory(playerId: string, key: string, value: any): Promise<void> {
+  if (!sql) {
+    console.log('Database not available - skipping memory storage');
+    return;
+  }
+  await sql`
+    INSERT INTO memory (player_id, key, value)
+    VALUES (${playerId}, ${key}, ${JSON.stringify(value)})
+    ON CONFLICT (player_id, key) 
+    DO UPDATE SET value = ${JSON.stringify(value)}, updated_at = NOW()
+  `;
+}
+
+export async function getMemory(playerId: string, key: string): Promise<any> {
+  if (!sql) {
+    return null; // Fallback: return null
+  }
+  const [memory] = await sql`
+    SELECT value FROM memory 
+    WHERE player_id = ${playerId} AND key = ${key}
+  `;
+  return memory?.value || null;
+}
+
+export async function getAllMemories(playerId: string): Promise<Memory[]> {
+  if (!sql) {
+    return []; // Fallback: return empty array
+  }
+  const memories = await sql`
+    SELECT * FROM memory 
+    WHERE player_id = ${playerId}
+    ORDER BY updated_at DESC
+  `;
+  return memories as Memory[];
+}
+
+// Flag management
+export interface Flag {
+  id: string;
+  player_id?: string;
+  flag_name: string;
+  flag_value: any;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export async function setFlag(playerId: string | null, flagName: string, flagValue: any): Promise<void> {
+  if (!sql) {
+    console.log('Database not available - skipping flag storage');
+    return;
+  }
+  await sql`
+    INSERT INTO flags (player_id, flag_name, flag_value)
+    VALUES (${playerId}, ${flagName}, ${JSON.stringify(flagValue)})
+    ON CONFLICT (player_id, flag_name) 
+    DO UPDATE SET flag_value = ${JSON.stringify(flagValue)}, updated_at = NOW()
+  `;
+}
+
+export async function getFlag(playerId: string | null, flagName: string): Promise<any> {
+  if (!sql) {
+    return null; // Fallback: return null
+  }
+  const [flag] = await sql`
+    SELECT flag_value FROM flags 
+    WHERE player_id = ${playerId} AND flag_name = ${flagName}
+  `;
+  return flag?.flag_value || null;
+}

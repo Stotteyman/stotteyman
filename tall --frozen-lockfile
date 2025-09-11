@@ -1,0 +1,5 @@
+[33m7128880[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m ghg
+[33m66582d2[m Merge pull request #62 from Stotteyman/cursor/verify-design-and-populate-referrals-page-cf66
+[33m0c92b68[m[33m ([m[1;31morigin/cursor/verify-design-and-populate-referrals-page-cf66[m[33m)[m Replace database query with mock referrals data and update styling
+[33m542ddde[m Merge pull request #61 from Stotteyman/cursor/revamp-website-for-informational-and-mobile-first-experience-22af
+[33mf265bd1[m Refactor project structure and update dependencies for enhanced functionality

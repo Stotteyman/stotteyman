@@ -1,15 +1,26 @@
-import type { MetadataRoute } from 'next'
-import { getPostSlugs } from '@/lib/posts'
+import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://stotteyman.com'
-
-  const routes = ['', '/about', '/ventures', '/livestream', '/blog', '/contact']
-
-  const blogRoutes = getPostSlugs().map((slug) => `/blog/${slug}`)
-
-  return [...routes, ...blogRoutes].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date(),
-  }))
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://stotteyman.com';
+  
+  return [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1,
+    },
+    {
+      url: `${baseUrl}/play`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/menu`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
+  ];
 }

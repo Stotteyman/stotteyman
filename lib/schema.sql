@@ -1,71 +1,88 @@
--- Users table
-CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email VARCHAR(255) UNIQUE NOT NULL,
-  name VARCHAR(255),
-  image VARCHAR(500),
-  role VARCHAR(50) DEFAULT 'user' CHECK (role IN ('user', 'moderator', 'admin', 'owner')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Stotteyman Database Schema
+-- Neon Postgres serverless database
+
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- Players table
+CREATE TABLE IF NOT EXISTS players (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  nickname TEXT,
+  intro_seen BOOLEAN NOT NULL DEFAULT FALSE,
+  personality_preset JSONB,
+  last_seen TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Referrals table
-CREATE TABLE IF NOT EXISTS referrals (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title VARCHAR(255) NOT NULL,
-  description TEXT,
-  url VARCHAR(500),
-  category VARCHAR(100),
-  commission_rate DECIMAL(5,2),
-  requirements TEXT,
-  status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
-  created_by UUID REFERENCES users(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Sessions table
+CREATE TABLE IF NOT EXISTS sessions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  player_id UUID NOT NULL REFERENCES players(id) ON DELETE CASCADE,
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  ended_at TIMESTAMPTZ,
+  device_type TEXT CHECK (device_type IN ('desktop', 'mobile')),
+  user_agent TEXT
 );
 
--- Blog posts table
-CREATE TABLE IF NOT EXISTS blog_posts (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title VARCHAR(255) NOT NULL,
-  slug VARCHAR(255) UNIQUE NOT NULL,
-  content TEXT,
-  excerpt TEXT,
-  featured_image VARCHAR(500),
-  status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
-  author_id UUID REFERENCES users(id),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Turns table (conversation history)
+CREATE TABLE IF NOT EXISTS turns (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  session_id UUID NOT NULL REFERENCES sessions(id) ON DELETE CASCADE,
+  role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+  content JSONB NOT NULL,
+  options_shown JSONB,
+  chosen_option INTEGER,
+  emotion JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Chat messages table
-CREATE TABLE IF NOT EXISTS chat_messages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  content TEXT NOT NULL,
-  user_id UUID REFERENCES users(id),
-  room_id VARCHAR(100) DEFAULT 'general',
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+-- Memory table (AI learning/memory)
+CREATE TABLE IF NOT EXISTS memory (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  player_id UUID NOT NULL REFERENCES players(id) ON DELETE CASCADE,
+  key TEXT NOT NULL,
+  value JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(player_id, key)
 );
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_referrals_status ON referrals(status);
-CREATE INDEX IF NOT EXISTS idx_referrals_category ON referrals(category);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON blog_posts(status);
-CREATE INDEX IF NOT EXISTS idx_chat_messages_room ON chat_messages(room_id);
-CREATE INDEX IF NOT EXISTS idx_chat_messages_created_at ON chat_messages(created_at);
+-- Analytics/Flags table
+CREATE TABLE IF NOT EXISTS flags (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  player_id UUID REFERENCES players(id) ON DELETE CASCADE,
+  flag_name TEXT NOT NULL,
+  flag_value JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
--- Create updated_at trigger function
-CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ language 'plpgsql';
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_sessions_player_id ON sessions(player_id);
+CREATE INDEX IF NOT EXISTS idx_turns_session_id ON turns(session_id);
+CREATE INDEX IF NOT EXISTS idx_turns_created_at ON turns(created_at);
+CREATE INDEX IF NOT EXISTS idx_memory_player_id ON memory(player_id);
+CREATE INDEX IF NOT EXISTS idx_memory_key ON memory(key);
+CREATE INDEX IF NOT EXISTS idx_flags_player_id ON flags(player_id);
+CREATE INDEX IF NOT EXISTS idx_flags_name ON flags(flag_name);
 
--- Create triggers for updated_at
-CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_referrals_updated_at BEFORE UPDATE ON referrals FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON blog_posts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Insert default personality presets
+INSERT INTO players (id, nickname, intro_seen, personality_preset) 
+VALUES (
+  '00000000-0000-0000-0000-000000000000',
+  'Stotteyman',
+  true,
+  '{
+    "name": "Stotteyman",
+    "description": "A sci-fi hacker/computer entity with a mentor/tech-hustle vibe",
+    "traits": ["playful", "actionable", "tech-savvy", "encouraging"],
+    "speech_patterns": {
+      "greeting": "Hey there, digital wanderer. Ready to level up?",
+      "encouragement": "That\'s the spirit! Let\'s hack the system together.",
+      "farewell": "Keep coding, keep growing. The matrix awaits."
+    },
+    "emotion_range": {
+      "arousal": [0.3, 0.9],
+      "valence": [0.4, 0.8]
+    }
+  }'
+) ON CONFLICT (id) DO NOTHING;

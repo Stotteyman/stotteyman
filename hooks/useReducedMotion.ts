@@ -1,136 +1,90 @@
-/**
- * Hook for detecting and respecting user's reduced motion preferences
- */
+import { useState, useEffect } from 'react';
 
-import { useState, useEffect } from 'react'
-
-export interface UseReducedMotionReturn {
-  prefersReducedMotion: boolean
-  isSupported: boolean
-  setReducedMotion: (enabled: boolean) => void
-  getAnimationDuration: (defaultDuration: number) => number
-  getAnimationEasing: (defaultEasing: string) => string
-  shouldAnimate: (animationType?: 'essential' | 'decorative' | 'informational') => boolean
+export interface ReducedMotionState {
+  prefersReducedMotion: boolean;
+  respectMotionPreference: boolean;
 }
 
-export function useReducedMotion(): UseReducedMotionReturn {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
-  const [isSupported, setIsSupported] = useState(false)
-  const [userOverride, setUserOverride] = useState<boolean | null>(null)
+export function useReducedMotion(): ReducedMotionState {
+  const [state, setState] = useState<ReducedMotionState>({
+    prefersReducedMotion: false,
+    respectMotionPreference: true,
+  });
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') {
+      return;
+    }
 
-    // Check if the browser supports prefers-reduced-motion
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-    setIsSupported(true)
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     
-    // Set initial state
-    const initialState = userOverride !== null ? userOverride : mediaQuery.matches
-    setPrefersReducedMotion(initialState)
-    
-    // Update CSS custom property for global access
-    if (typeof document !== 'undefined') {
-      document.documentElement.style.setProperty(
-        '--prefers-reduced-motion', 
-        initialState ? '1' : '0'
-      )
-    }
+    const updatePreference = () => {
+      setState(prev => ({
+        ...prev,
+        prefersReducedMotion: mediaQuery.matches,
+      }));
+    };
 
-    // Listen for changes in system preference
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (userOverride === null) {
-        setPrefersReducedMotion(e.matches)
-        if (typeof document !== 'undefined') {
-          document.documentElement.style.setProperty(
-            '--prefers-reduced-motion', 
-            e.matches ? '1' : '0'
-          )
-        }
-      }
-    }
+    // Set initial value
+    updatePreference();
 
-    mediaQuery.addEventListener('change', handleChange)
-
-    // Check for saved user preference
-    if (typeof localStorage !== 'undefined') {
-      const savedPreference = localStorage.getItem('reduced-motion-preference')
-      if (savedPreference !== null) {
-        const preference = savedPreference === 'true'
-        setUserOverride(preference)
-        setPrefersReducedMotion(preference)
-        if (typeof document !== 'undefined') {
-          document.documentElement.style.setProperty(
-            '--prefers-reduced-motion', 
-            preference ? '1' : '0'
-          )
-        }
-      }
-    }
+    // Listen for changes
+    mediaQuery.addEventListener('change', updatePreference);
 
     return () => {
-      mediaQuery.removeEventListener('change', handleChange)
-    }
-  }, [userOverride])
+      mediaQuery.removeEventListener('change', updatePreference);
+    };
+  }, []);
 
-  const setReducedMotion = (enabled: boolean) => {
-    setUserOverride(enabled)
-    setPrefersReducedMotion(enabled)
-    
-    // Save preference to localStorage
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('reduced-motion-preference', enabled.toString())
-    }
-    
-    // Update CSS custom property
-    if (typeof document !== 'undefined') {
-      document.documentElement.style.setProperty(
-        '--prefers-reduced-motion', 
-        enabled ? '1' : '0'
-      )
-    }
-    
-    // Dispatch custom event for other components to listen
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('reduced-motion-change', {
-        detail: { prefersReducedMotion: enabled }
-      }))
-    }
+  return state;
+}
+
+// Helper function to get animation duration based on motion preference
+export function getAnimationDuration(
+  normalDuration: number,
+  reducedDuration: number = 0,
+  respectMotionPreference: boolean = true
+): number {
+  if (!respectMotionPreference) {
+    return normalDuration;
   }
 
-  const getAnimationDuration = (defaultDuration: number): number => {
-    if (prefersReducedMotion) {
-      // Reduce duration significantly or make instant
-      return Math.min(defaultDuration * 0.1, 0.2)
-    }
-    return defaultDuration
+  const mediaQuery = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : { matches: false };
+
+  return mediaQuery.matches ? reducedDuration : normalDuration;
+}
+
+// Helper function to conditionally apply animations
+export function shouldAnimate(
+  respectMotionPreference: boolean = true
+): boolean {
+  if (!respectMotionPreference) {
+    return true;
   }
 
-  const getAnimationEasing = (defaultEasing: string): string => {
-    if (prefersReducedMotion) {
-      // Use linear easing for reduced motion
-      return 'linear'
-    }
-    return defaultEasing
+  const mediaQuery = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : { matches: false };
+
+  return !mediaQuery.matches;
+}
+
+// CSS class helper for reduced motion
+export function getMotionClasses(
+  normalClass: string,
+  reducedClass: string = '',
+  respectMotionPreference: boolean = true
+): string {
+  if (!respectMotionPreference) {
+    return normalClass;
   }
 
-  const shouldAnimate = (animationType: 'essential' | 'decorative' | 'informational' = 'decorative'): boolean => {
-    if (!prefersReducedMotion) {
-      return true
-    }
-    
-    // Allow essential and informational animations even with reduced motion
-    // Essential animations are those that convey important information
-    // Informational animations provide UI feedback
-    return animationType === 'essential' || animationType === 'informational'
-  }
+  const mediaQuery = typeof window !== 'undefined' 
+    ? window.matchMedia('(prefers-reduced-motion: reduce)')
+    : { matches: false };
 
-  return {
-    prefersReducedMotion,
-    isSupported,
-    setReducedMotion,
-    getAnimationDuration,
-    getAnimationEasing,
-    shouldAnimate
-  }
+  return mediaQuery.matches ? reducedClass : normalClass;
 }
