@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverComponentsExternalPackages: ['@neondatabase/serverless'],
+  trailingSlash: true,
+  serverExternalPackages: ['@neondatabase/serverless'],
+  generateBuildId: async () => {
+    return 'build-' + Date.now();
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if

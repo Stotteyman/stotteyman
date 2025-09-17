@@ -1,13 +1,13 @@
 {
-  "name": "Stotteyman - AI-Powered Digital Mentor",
+  "name": "Stotteyman - Life is what you make it",
   "short_name": "Stotteyman",
-  "description": "An immersive, game-like experience featuring an AI-powered wireframe talking head that learns and adapts.",
+  "description": "Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.",
   "start_url": "/",
-  "display": "fullscreen",
-  "background_color": "#0a0a0a",
-  "theme_color": "#00ffff",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "any",
-  "categories": ["games", "education", "entertainment"],
+  "categories": ["portfolio", "creative", "technology"],
   "icons": [
     {
       "src": "/favicon-16x16.png",

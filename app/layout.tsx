@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Orbitron, Fira_Code } from 'next/font/google';
+import Providers from '@/components/providers';
 import './globals.css';
 
 const orbitron = Orbitron({ 
@@ -18,28 +19,27 @@ const firaCode = Fira_Code({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Stotteyman - AI-Powered Digital Mentor',
+    default: 'Stotteyman - Life is what you make it',
     template: '%s | Stotteyman',
   },
-  description: 'An immersive, game-like experience featuring an AI-powered wireframe talking head that learns and adapts. Built with Next.js, Three.js, and cutting-edge web technologies.',
+  description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
   keywords: [
-    'AI',
-    'mentor',
-    'game',
-    'interactive',
-    'wireframe',
-    '3D',
-    'Next.js',
-    'Three.js',
-    'WebGL',
-    'WebAudio',
-    'TTS',
-    'gamepad',
-    'accessibility',
+    'portfolio',
+    'creative technologist',
+    'design',
+    'development',
+    'minimal design',
+    'interactive portfolio',
+    'life is what you make it',
+    'stotteyman',
+    'creative work',
+    'digital art',
+    'web development',
+    'design thinking',
   ],
-  authors: [{ name: 'Stotteyman Enterprises' }],
-  creator: 'Stotteyman Enterprises',
-  publisher: 'Stotteyman Enterprises',
+  authors: [{ name: 'Gary Lee McCullouch Jr' }],
+  creator: 'Gary Lee McCullouch Jr',
+  publisher: 'Gary Lee McCullouch Jr',
   formatDetection: {
     email: false,
     address: false,
@@ -53,23 +53,23 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    title: 'Stotteyman - AI-Powered Digital Mentor',
-    description: 'An immersive, game-like experience featuring an AI-powered wireframe talking head that learns and adapts.',
+    title: 'Stotteyman - Life is what you make it',
+    description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
     siteName: 'Stotteyman',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Stotteyman - AI-Powered Digital Mentor',
+        alt: 'Stotteyman - Life is what you make it',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Stotteyman - AI-Powered Digital Mentor',
-    description: 'An immersive, game-like experience featuring an AI-powered wireframe talking head that learns and adapts.',
-    images: ['/og-image.jpg'],
+    title: 'Stotteyman - Life is what you make it',
+    description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
+    images: ['/og-image.svg'],
     creator: '@stotteyman',
   },
   robots: {
@@ -96,16 +96,47 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${orbitron.variable} ${firaCode.variable}`}>
       <head>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#0a0a0a" />
+        <meta name="theme-color" content="#000000" />
+        <meta name="msapplication-TileColor" content="#000000" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="font-sans antialiased bg-dark-900 text-white overflow-hidden">
-        {children}
+      <body className="font-sans antialiased bg-black text-white h-screen overflow-hidden">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "Stotteyman",
+              "description": "Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.",
+              "url": "https://stotteyman.com",
+              "applicationCategory": "Portfolio",
+              "operatingSystem": "Web Browser",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "creator": {
+                "@type": "Person",
+                "name": "Gary Lee McCullouch Jr"
+              },
+              "keywords": "portfolio, creative technologist, design, development, minimal design, interactive portfolio, life is what you make it",
+              "browserRequirements": "Requires JavaScript. Requires HTML5.",
+              "softwareVersion": "1.0.0",
+              "datePublished": "2024-01-01",
+              "dateModified": new Date().toISOString().split('T')[0]
+            })
+          }}
+        />
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

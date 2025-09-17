@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 async function setupDatabase() {
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_eV6EhsW7OHDT@ep-flat-shadow-aeydq17l-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require';
   
   if (!databaseUrl) {
     console.error('❌ DATABASE_URL environment variable is required');
@@ -33,19 +33,22 @@ async function setupDatabase() {
       .map(stmt => stmt.trim())
       .filter(stmt => stmt.length > 0 && !stmt.startsWith('--'));
     
-    // Execute each statement
+    // Execute each statement using raw SQL
     for (const statement of statements) {
       if (statement.trim()) {
         try {
-          await sql.unsafe(statement);
+          // Use raw SQL execution with proper escaping
+          await sql([statement]);
           console.log(`✅ Executed: ${statement.substring(0, 50)}...`);
         } catch (error) {
           // Ignore errors for statements that might already exist
           if (error.message.includes('already exists') || 
-              error.message.includes('duplicate key')) {
+              error.message.includes('duplicate key') ||
+              error.message.includes('already exists')) {
             console.log(`⚠️  Skipped (already exists): ${statement.substring(0, 50)}...`);
           } else {
             console.error(`❌ Error executing statement: ${error.message}`);
+            console.error(`Statement: ${statement}`);
             throw error;
           }
         }

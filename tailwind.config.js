@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       colors: {
         neon: {
+          orange: '#ff8c00',
           cyan: '#00ffff',
           pink: '#ff00ff',
           green: '#00ff00',
@@ -35,8 +36,8 @@ module.exports = {
       },
       keyframes: {
         'glow-pulse': {
-          '0%': { boxShadow: '0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff' },
-          '100%': { boxShadow: '0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff' },
+          '0%': { boxShadow: '0 0 5px #ff8c00, 0 0 10px #ff8c00, 0 0 15px #ff8c00' },
+          '100%': { boxShadow: '0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 30px #ff8c00' },
         },
         'scan-line': {
           '0%': { transform: 'translateY(-100vh)' },
@@ -54,7 +55,7 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'grid-pattern': 'linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px)',
+        'grid-pattern': 'linear-gradient(rgba(255,140,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,140,0,0.1) 1px, transparent 1px)',
       },
       backgroundSize: {
         'grid': '20px 20px',

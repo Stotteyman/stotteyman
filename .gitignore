@@ -70,3 +70,4 @@ Desktop.ini
 *.tmp
 *.temp
 tall*
+/generated/prisma
