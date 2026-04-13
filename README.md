@@ -23,7 +23,7 @@ An immersive, game-like website featuring an AI-powered wireframe talking head t
 - **Styling**: TailwindCSS with custom neon theme
 - **Audio**: WebAudio API, Web Speech API
 - **Testing**: Vitest, Playwright, Lighthouse CI
-- **Deployment**: Netlify with OpenNext adapter
+- **Deployment**: Netlify with `@netlify/plugin-nextjs`
 
 ## 📦 Installation
 
@@ -120,8 +120,8 @@ pnpm lighthouse
 1. **Connect your repository** to Netlify
 2. **Set build settings**:
    - Build command: `pnpm build`
-   - Publish directory: `.next`
-   - Node version: `18`
+   - Publish directory: leave blank
+   - Node version: `20`
 3. **Add environment variables** in Netlify dashboard
 4. **Deploy!**
 

@@ -18,8 +18,8 @@ This guide covers deploying Stotteyman to various platforms with optimal configu
 2. **Build Settings**
    ```
    Build command: pnpm build
-   Publish directory: .next
-   Node version: 18
+   Publish directory: leave blank
+   Node version: 20
    ```
 
 3. **Environment Variables**

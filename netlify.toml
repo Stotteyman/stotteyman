@@ -1,23 +1,12 @@
 [build]
-  command = "npx next build"
+  command = "pnpm build"
 
 [build.environment]
   NODE_VERSION = "20"
   PNPM_VERSION = "9.0.0"
 
-[functions]
-  directory = "netlify/functions"
-
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 # Headers for security and performance
 [[headers]]

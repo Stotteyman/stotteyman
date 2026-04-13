@@ -40,6 +40,9 @@ pnpm-debug.log*
 .netlify/
 netlify/functions-serve/
 
+# local Neon config
+.neon
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
