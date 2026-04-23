@@ -31,8 +31,9 @@ export default function HomePage() {
 
   const handleNavigate = (page: string) => {
     if (page === 'blog') {
-      // Redirect to /blog route
       window.location.href = '/blog';
+    } else if (page === 'stream') {
+      window.location.href = '/stream';
     } else {
       setScreen(page as Screen);
     }

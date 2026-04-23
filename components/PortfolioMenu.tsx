@@ -17,6 +17,7 @@ const menuItems: MenuItem[] = [
   { id: 'about', label: 'Who am I', description: 'Learn about my story' },
   { id: 'socials', label: 'My Socials', description: 'Connect with me' },
   { id: 'blog', label: 'Blog', description: 'Read my thoughts' },
+  { id: 'stream', label: 'Livestream', description: 'Watch the live Kick stream' },
   { id: 'projects', label: 'Projects', description: 'See my work' },
   { id: 'contact', label: 'Contact', description: 'Get in touch' },
 ];
@@ -73,8 +74,9 @@ export default function PortfolioMenu({ onNavigate, respectMotionPreference }: P
 
   const handleItemClick = (item: MenuItem) => {
     if (item.id === 'blog') {
-      // Redirect to /blog route
       window.location.href = '/blog';
+    } else if (item.id === 'stream') {
+      window.location.href = '/stream';
     } else {
       onNavigate(item.id);
     }
