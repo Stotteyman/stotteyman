@@ -1,263 +1,49 @@
-# Stotteyman - AI-Powered Digital Mentor
+# Stotteyman
 
-An immersive, game-like website featuring an AI-powered wireframe talking head that learns and adapts over time. Built with Next.js, Three.js, and cutting-edge web technologies.
+Multi-page portfolio built with Next.js and Tailwind CSS. The site is focused on public visibility: mindset, achievements, writing, livestream, events, follow links, and direct contact.
 
-## 🚀 Features
+## What is included
 
-- **Fullscreen Intro Video**: Unskippable for first-time visitors, skippable for returning users
-- **AI-Powered Conversation**: Dynamic dialogue with emotion-based responses
-- **3D Wireframe Head**: Procedural wireframe visualization that reacts to AI emotions
-- **Multi-Input Support**: Keyboard, mouse/touch, and gamepad navigation
-- **Mobile-Optimized**: Dedicated mobile layout with lighter assets
-- **Real-time Audio**: WebAudio UI sounds and Text-to-Speech
-- **Learning System**: AI memory that adapts to user interactions
-- **Performance Optimized**: Sub-200KB initial bundle, lazy loading
-- **SEO Ready**: Automated sitemap, robots.txt, and Google ping
+- Static-first pages for Home, Mindset, Achievements, Writing, Follow, Events, Livestream, and Contact.
+- Centralized portfolio content in `lib/site-content.ts` so it can move to Supabase later without changing page structure.
+- SEO basics: metadata, sitemap, robots, Open Graph, and JSON-LD.
+- Netlify-ready deployment configuration.
 
-## 🛠️ Tech Stack
+## Development
 
-- **Framework**: Next.js 14 (App Router, TypeScript)
-- **Database**: Neon serverless Postgres
-- **3D Graphics**: Three.js, @react-three/fiber, @react-three/drei
-- **State Management**: XState for screen flow, Zustand for local state
-- **Styling**: TailwindCSS with custom neon theme
-- **Audio**: WebAudio API, Web Speech API
-- **Testing**: Vitest, Playwright, Lighthouse CI
-- **Deployment**: Netlify with `@netlify/plugin-nextjs`
+1. Install dependencies.
 
-## 📦 Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/stotteyman.git
-   cd stotteyman
-   ```
-
-2. **Install dependencies**
-   ```bash
-   pnpm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp env.example .env.local
-   ```
-   
-   Edit `.env.local` with your configuration:
-   ```env
-   DATABASE_URL=postgresql://username:password@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require
-   NEXT_PUBLIC_SITE_URL=https://stotteyman.com
-   ```
-
-4. **Set up the database**
-   ```bash
-   pnpm db:setup
-   ```
-
-5. **Start the development server**
-   ```bash
-   pnpm dev
-   ```
-
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 🗄️ Database Setup
-
-### Using Neon (Recommended)
-
-1. Create a new project at [Neon Console](https://console.neon.tech)
-2. Copy the connection string to your `.env.local`
-3. Run the setup script:
-   ```bash
-   pnpm db:setup
-   ```
-
-### Manual Setup
-
-1. Create a Postgres database
-2. Run the schema from `lib/schema.sql`
-3. Update your `DATABASE_URL` in `.env.local`
-
-## 🧪 Testing
-
-### Run All Tests
 ```bash
-pnpm quality
+pnpm install
 ```
 
-### Individual Test Suites
+2. Create `.env.local` from `env.example`.
 
-**Type Checking**
+```bash
+cp env.example .env.local
+```
+
+3. Start the dev server.
+
+```bash
+pnpm dev
+```
+
+4. Validate TypeScript when needed.
+
 ```bash
 pnpm type-check
 ```
 
-**Linting**
-```bash
-pnpm lint
-pnpm lint:css
-```
+## Content updates
 
-**Unit Tests**
-```bash
-pnpm test
-```
+- Update shared copy, links, events, writing entries, and contact methods in `lib/site-content.ts`.
+- Adjust shared page chrome in `components/SiteShell.tsx`.
+- Update visual theme in `app/globals.css` and `tailwind.config.js`.
 
-**E2E Tests**
-```bash
-pnpm test:e2e
-```
+## Supabase later
 
-**Lighthouse Performance**
-```bash
-pnpm lighthouse
-```
-
-## 🚀 Deployment
-
-### Netlify (Recommended)
-
-1. **Connect your repository** to Netlify
-2. **Set build settings**:
-   - Build command: `pnpm build`
-   - Publish directory: leave blank
-   - Node version: `20`
-3. **Add environment variables** in Netlify dashboard
-4. **Deploy!**
-
-### Manual Deployment
-
-1. **Build the project**
-   ```bash
-   pnpm build
-   ```
-
-2. **Start production server**
-   ```bash
-   pnpm start
-   ```
-
-## 📊 Performance Targets
-
-- **Lighthouse Performance**: ≥ 95
-- **Lighthouse SEO**: ≥ 100
-- **Lighthouse Accessibility**: ≥ 95
-- **Lighthouse Best Practices**: ≥ 95
-- **LCP**: ≤ 2.5s on 4G
-- **CLS**: ~0
-- **Bundle Size**: ≤ 200KB (desktop), ≤ 140KB (mobile)
-
-## 🎮 Controls
-
-### Keyboard
-- **Arrow Keys / WASD**: Navigate menus
-- **Enter / Space**: Select option
-- **Escape**: Go back
-
-### Gamepad
-- **D-Pad / Left Stick**: Navigate
-- **A Button**: Select
-- **B Button**: Back
-
-### Touch / Mouse
-- **Tap / Click**: Select option
-- **Swipe**: Navigate (mobile)
-
-## 🎨 Customization
-
-### Themes
-Edit `tailwind.config.js` to customize the neon color scheme:
-
-```javascript
-colors: {
-  neon: {
-    cyan: '#00ffff',
-    pink: '#ff00ff',
-    green: '#00ff00',
-    // Add your colors
-  }
-}
-```
-
-### AI Personality
-Modify `lib/persona.ts` to change Stotteyman's personality:
-
-```typescript
-export const STOTTEYMAN_PERSONA = {
-  name: 'Stotteyman',
-  traits: ['playful', 'actionable', 'tech-savvy'],
-  // Customize speech patterns, topics, etc.
-};
-```
-
-### 3D Wireframe
-Replace the procedural wireframe in `components/WireHead.tsx` with your own GLTF model.
-
-## 🔧 Development
-
-### Project Structure
-```
-├── app/                 # Next.js App Router
-│   ├── api/            # API routes
-│   ├── globals.css     # Global styles
-│   ├── layout.tsx      # Root layout
-│   └── page.tsx        # Main page
-├── components/         # React components
-├── hooks/             # Custom hooks
-├── lib/               # Utilities and configurations
-├── public/            # Static assets
-├── scripts/           # Database and build scripts
-└── test/              # Test files
-```
-
-### Adding New Features
-
-1. **New Screen**: Add state to `lib/machine.ts`
-2. **New Component**: Create in `components/`
-3. **New API Endpoint**: Add to `app/api/`
-4. **New Test**: Add to `test/`
-
-## 📈 Analytics
-
-The app includes built-in analytics tracking:
-
-- **User interactions**: Clicks, navigation, choices
-- **Performance metrics**: Load times, errors
-- **AI interactions**: Conversation turns, emotions
-- **Device information**: Type, capabilities
-
-## 🔒 Security
-
-- **CSP Headers**: Strict Content Security Policy
-- **Input Validation**: All API inputs are validated
-- **Rate Limiting**: API endpoints are rate-limited
-- **Environment Variables**: Sensitive data in env vars only
-
-## 🌐 SEO
-
-- **Meta Tags**: Dynamic Open Graph and Twitter cards
-- **Sitemap**: Auto-generated at `/sitemap.xml`
-- **Robots**: Auto-generated at `/robots.txt`
-- **Google Ping**: Automatic sitemap submission
-- **JSON-LD**: Structured data for search engines
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Database Connection Failed**
-- Check your `DATABASE_URL` in `.env.local`
-- Ensure your Neon database is active
-- Run `pnpm db:setup` to initialize schema
-
-**3D Wireframe Not Loading**
-- Check browser WebGL support
-- Verify Three.js dependencies are installed
-- Check console for WebGL errors
-
-**Audio Not Working**
-- Ensure user interaction before audio plays
-- Check browser audio permissions
+The site does not require a database right now. When you are ready, the arrays in `lib/site-content.ts` are the natural place to replace with Supabase-backed content for posts, events, contact submissions, and live updates.
 - Verify WebAudio API support
 
 **Performance Issues**

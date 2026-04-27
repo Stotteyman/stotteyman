@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { socialLinks } from '@/lib/site-content';
 
 export const metadata = {
   title: 'Livestream',
@@ -160,6 +161,24 @@ export default function StreamPage() {
               >
                 Join Discord
               </a>
+            </div>
+
+            <div className="card-neon p-6">
+              <p className="text-sm uppercase tracking-[0.35em] text-neon-green/80">More ways to follow</p>
+              <div className="mt-5 space-y-3">
+                {socialLinks.slice(2).map((link) => (
+                  <a
+                    key={link.platform}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-gray-300 transition-all duration-300 hover:border-neon-cyan/60 hover:text-white"
+                  >
+                    <span>{link.platform}</span>
+                    <span className="text-gray-500">Open</span>
+                  </a>
+                ))}
+              </div>
             </div>
           </aside>
         </div>

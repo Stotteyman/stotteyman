@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Orbitron, Fira_Code } from 'next/font/google';
-import Providers from '@/components/providers';
+import { siteConfig } from '@/lib/site-content';
 import './globals.css';
 
 const orbitron = Orbitron({ 
@@ -19,33 +19,31 @@ const firaCode = Fira_Code({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Stotteyman - Life is what you make it',
+    default: `${siteConfig.name} | Public portfolio`,
     template: '%s | Stotteyman',
   },
-  description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
+  description: siteConfig.description,
   keywords: [
     'portfolio',
-    'creative technologist',
-    'design',
-    'development',
-    'minimal design',
+    'mindset',
+    'achievements',
+    'livestream',
+    'events',
+    'social links',
+    'contact',
     'interactive portfolio',
-    'life is what you make it',
     'stotteyman',
-    'creative work',
-    'digital art',
-    'web development',
-    'design thinking',
+    'Gary Lee McCullouch Jr',
   ],
-  authors: [{ name: 'Gary Lee McCullouch Jr' }],
-  creator: 'Gary Lee McCullouch Jr',
-  publisher: 'Gary Lee McCullouch Jr',
+  authors: [{ name: siteConfig.person }],
+  creator: siteConfig.person,
+  publisher: siteConfig.person,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://stotteyman.com'),
+  metadataBase: new URL(siteConfig.siteUrl),
   alternates: {
     canonical: '/',
   },
@@ -53,24 +51,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: '/',
-    title: 'Stotteyman - Life is what you make it',
-    description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
-    siteName: 'Stotteyman',
+    title: `${siteConfig.name} | Public portfolio`,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
     images: [
       {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'Stotteyman - Life is what you make it',
+        alt: `${siteConfig.name} portfolio`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Stotteyman - Life is what you make it',
-    description: 'Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.',
+    title: `${siteConfig.name} | Public portfolio`,
+    description: siteConfig.description,
     images: ['/og-image.svg'],
-    creator: '@stotteyman',
+    creator: siteConfig.socialHandle,
   },
   robots: {
     index: true,
@@ -111,10 +109,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "WebApplication",
-              "name": "Stotteyman",
-              "description": "Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.",
-              "url": "https://stotteyman.com",
+              "@type": "Person",
+              "name": siteConfig.person,
+              "alternateName": siteConfig.name,
+              "description": siteConfig.description,
+              "url": siteConfig.siteUrl,
               "applicationCategory": "Portfolio",
               "operatingSystem": "Web Browser",
               "offers": {
@@ -122,11 +121,15 @@ export default function RootLayout({
                 "price": "0",
                 "priceCurrency": "USD"
               },
-              "creator": {
-                "@type": "Person",
-                "name": "Gary Lee McCullouch Jr"
-              },
-              "keywords": "portfolio, creative technologist, design, development, minimal design, interactive portfolio, life is what you make it",
+              "sameAs": [
+                "https://kick.com/stotteyman",
+                "https://discord.gg/9zbyfPyp3E",
+                "https://github.com/stotteyman",
+                "https://twitter.com/stotteyman",
+                "https://linkedin.com/in/stotteyman",
+                "https://instagram.com/stotteyman"
+              ],
+              "keywords": "portfolio, mindset, achievements, livestream, events, contact, public work",
               "browserRequirements": "Requires JavaScript. Requires HTML5.",
               "softwareVersion": "1.0.0",
               "datePublished": "2024-01-01",
@@ -134,9 +137,7 @@ export default function RootLayout({
             })
           }}
         />
-        <Providers>
-          {children}
-        </Providers>
+        {children}
       </body>
     </html>
   );

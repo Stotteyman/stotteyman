@@ -99,200 +99,52 @@ ENV HOSTNAME "0.0.0.0"
 
 CMD ["node", "server.js"]
 ```
+# Deployment Guide
 
-### Docker Compose
-```yaml
-version: '3.8'
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL}
-    depends_on:
-      - db
+## Hosting target
 
-  db:
-    image: postgres:15
-    environment:
-      - POSTGRES_DB=stotteyman
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+This project is a static-first Next.js portfolio and is ready to deploy on Netlify.
 
-volumes:
-  postgres_data:
-```
+## Required environment variables
 
-## ☁️ Vercel Deployment
-
-1. **Install Vercel CLI**
-   ```bash
-   npm i -g vercel
-   ```
-
-2. **Deploy**
-   ```bash
-   vercel
-   ```
-
-3. **Environment Variables**
-   Set in Vercel dashboard:
-   ```
-   DATABASE_URL=your-database-url
-   NEXT_PUBLIC_SITE_URL=https://your-app.vercel.app
-   ```
-
-## 🐙 GitHub Pages
-
-1. **Enable GitHub Pages**
-   - Go to repository Settings > Pages
-   - Select "GitHub Actions" as source
-
-2. **Create Workflow**
-   Create `.github/workflows/deploy.yml`:
-   ```yaml
-   name: Deploy to GitHub Pages
-   
-   on:
-     push:
-       branches: [ main ]
-   
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest
-       steps:
-         - uses: actions/checkout@v3
-         - uses: actions/setup-node@v3
-           with:
-             node-version: '18'
-         - run: npm install -g pnpm
-         - run: pnpm install
-         - run: pnpm build
-         - uses: peaceiris/actions-gh-pages@v3
-           with:
-             github_token: ${{ secrets.GITHUB_TOKEN }}
-             publish_dir: ./out
-   ```
-
-## 🔧 Environment Configuration
-
-### Required Variables
-```env
-DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
-```
-
-### Optional Variables
-```env
-# SEO
-GOOGLE_SITE_VERIFICATION=your-verification-code
-
-# AI Providers
-OPENAI_API_KEY=your-openai-key
-ANTHROPIC_API_KEY=your-anthropic-key
-
-# Analytics
-GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
-PLAUSIBLE_DOMAIN=your-domain.com
-
-# Admin
-ADMIN_SECRET_KEY=your-secret-key
-
-# Feature Flags
-ENABLE_ANALYTICS=true
-ENABLE_TTS=true
-ENABLE_GAMEPAD=true
-ENABLE_3D=true
-```
-
-## 📊 Performance Optimization
-
-### Bundle Analysis
 ```bash
-pnpm analyze-bundle
+NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 ```
 
-### Lighthouse Audit
+## Optional future environment variables
+
 ```bash
-pnpm lighthouse
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+GOOGLE_SITE_VERIFICATION=
 ```
 
-### Image Optimization
-- Use WebP format for images
-- Compress videos (target < 6MB total)
-- Use Next.js Image component
+## Netlify
 
-### Code Splitting
-- Lazy load 3D components
-- Dynamic imports for heavy libraries
-- Route-based code splitting
+1. Connect the repository.
+2. Keep the build command as `pnpm build`.
+3. Use Node `20`.
+4. Add `NEXT_PUBLIC_SITE_URL` in the Netlify dashboard.
+5. Deploy.
 
-## 🔒 Security Checklist
+## Local production check
 
-- [ ] Environment variables secured
-- [ ] Database credentials protected
-- [ ] CSP headers configured
-- [ ] Rate limiting enabled
-- [ ] Input validation implemented
-- [ ] HTTPS enforced
-- [ ] Security headers set
+```bash
+pnpm install
+pnpm type-check
+pnpm build
+pnpm start
+```
 
-## 📈 Monitoring
+## Post-deploy checklist
 
-### Health Checks
-- `/api/ai` - AI endpoint health
-- `/api/track` - Analytics endpoint health
-- `/sitemap.xml` - SEO sitemap
+- Confirm the home page and all route pages load.
+- Confirm the livestream page embeds Kick successfully.
+- Confirm `sitemap.xml` and `robots.txt` resolve.
+- Confirm Open Graph assets load.
 
-### Logs
-- Check platform logs for errors
-- Monitor database connections
-- Track performance metrics
+## Supabase later
 
-### Alerts
-- Set up uptime monitoring
-- Configure error alerts
-- Monitor performance budgets
+When you are ready to add Supabase, keep the current route structure and replace the arrays in `lib/site-content.ts` with fetched content. The current site does not require any database setup.
 
-## 🚨 Troubleshooting
-
-### Common Issues
-
-**Build Failures**
-- Check Node.js version (18+)
-- Verify all dependencies installed
-- Check for TypeScript errors
-
-**Database Connection**
-- Verify DATABASE_URL format
-- Check database accessibility
-- Run `pnpm db:setup`
-
-**Performance Issues**
-- Analyze bundle size
-- Check Lighthouse scores
-- Optimize images and videos
-
-**SEO Issues**
-- Verify sitemap generation
-- Check robots.txt
-- Test meta tags
-
-### Debug Mode
-Set `NODE_ENV=development` for:
-- Detailed error messages
-- Hot reloading
-- Debug overlays
-- Source maps
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-username/stotteyman/issues)
-- **Documentation**: [README.md](./README.md)
-- **Community**: [GitHub Discussions](https://github.com/your-username/stotteyman/discussions)
