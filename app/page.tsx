@@ -64,14 +64,18 @@ function DiscordIcon({ className }: { className?: string }) {
 function GatorIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      {/* Body — side profile: snout left, rounded head right */}
-      <path d="M1 10Q2 8 4 8L18 8Q22 8 23 12Q22 16 18 16L4 16Q2 16 1 14Z"/>
-      {/* Eye ridge on top of head */}
-      <ellipse cx="19.5" cy="7" rx="2.5" ry="1.8"/>
-      {/* Nostril near snout tip */}
-      <circle cx="2.5" cy="11" r="0.75" opacity="0.28"/>
-      {/* Teeth bumps along upper jaw */}
-      <path d="M6 8L5.3 5.5H6.7zM9 8L8.3 5.5H9.7zM12 8L11.3 5.5H12.7zM15 8L14.3 5.5H15.7z"/>
+      {/*
+        Side-profile alligator: snout faces left, tail tapers to right.
+        Upper jaw runs at ~y=10, body widens to y=8–16 at head, tail meets at y=12.
+      */}
+      {/* Body silhouette */}
+      <path d="M1 11C5 10 7 10 8 10C10 9 12 8 14 8C17 8 20 9 23 12C20 15 17 16 14 16C11 16 9 15 8 14L1 14Z"/>
+      {/* Upper jaw teeth — three triangular points jutting above the snout */}
+      <path d="M3.5 10L3 7.5H4ZM6 10L5.5 7.5H6.5ZM8.2 10L7.7 7.5H8.7Z"/>
+      {/* Eye boss — oval protrusion on top of head */}
+      <ellipse cx="16.5" cy="8" rx="2" ry="1.4"/>
+      {/* Nostril — subtle dot near snout tip */}
+      <circle cx="2" cy="12.5" r="0.5" fillOpacity={0.3}/>
     </svg>
   );
 }
