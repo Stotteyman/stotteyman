@@ -63,20 +63,7 @@ function DiscordIcon({ className }: { className?: string }) {
 
 function GatorIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-      {/*
-        Side-profile alligator: snout faces left, tail tapers to right.
-        Upper jaw runs at ~y=10, body widens to y=8–16 at head, tail meets at y=12.
-      */}
-      {/* Body silhouette */}
-      <path d="M1 11C5 10 7 10 8 10C10 9 12 8 14 8C17 8 20 9 23 12C20 15 17 16 14 16C11 16 9 15 8 14L1 14Z"/>
-      {/* Upper jaw teeth — three triangular points jutting above the snout */}
-      <path d="M3.5 10L3 7.5H4ZM6 10L5.5 7.5H6.5ZM8.2 10L7.7 7.5H8.7Z"/>
-      {/* Eye boss — oval protrusion on top of head */}
-      <ellipse cx="16.5" cy="8" rx="2" ry="1.4"/>
-      {/* Nostril — subtle dot near snout tip */}
-      <circle cx="2" cy="12.5" r="0.5" fillOpacity={0.3}/>
-    </svg>
+    <img src="/crocodile-twemoji.svg" alt="" className={className} aria-hidden="true" />
   );
 }
 
