@@ -1,6 +1,53 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="4" fill="#000000"/>
-  <path d="M16 6C20.4183 6 24 9.58172 24 14C24 18.4183 20.4183 22 16 22C11.5817 22 8 18.4183 8 14C8 9.58172 11.5817 6 16 6Z" fill="#ffffff"/>
-  <circle cx="16" cy="14" r="4" fill="#000000"/>
-  <path d="M12 20L20 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <defs>
+    <!-- Shiny black gradient for the skull body -->
+    <radialGradient id="skullShine" cx="40%" cy="30%" r="65%" fx="38%" fy="28%">
+      <stop offset="0%"  stop-color="#4a4a4a"/>
+      <stop offset="40%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <!-- Specular highlight on upper-left -->
+    <radialGradient id="specular" cx="35%" cy="25%" r="35%">
+      <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Eye socket gradient — deep hollow look -->
+    <radialGradient id="eyeGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#000000"/>
+      <stop offset="70%" stop-color="#0d0d0d"/>
+      <stop offset="100%" stop-color="#1a1a1a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="5" fill="#0a0a0a"/>
+
+  <!-- Skull cranium -->
+  <path d="M16 4 C9 4 5 9 5 14.5 C5 18.5 7 21.5 10.5 23 L10.5 27 C10.5 27.8 11.2 28.5 12 28.5 L20 28.5 C20.8 28.5 21.5 27.8 21.5 27 L21.5 23 C25 21.5 27 18.5 27 14.5 C27 9 23 4 16 4 Z"
+        fill="url(#skullShine)"/>
+
+  <!-- Shine overlay on cranium -->
+  <path d="M16 4 C9 4 5 9 5 14.5 C5 18.5 7 21.5 10.5 23 L10.5 27 C10.5 27.8 11.2 28.5 12 28.5 L20 28.5 C20.8 28.5 21.5 27.8 21.5 27 L21.5 23 C25 21.5 27 18.5 27 14.5 C27 9 23 4 16 4 Z"
+        fill="url(#specular)"/>
+
+  <!-- Teeth divider line -->
+  <line x1="12" y1="25" x2="20" y2="25" stroke="#222" stroke-width="0.6"/>
+
+  <!-- Teeth gaps (3 teeth visible) -->
+  <line x1="14" y1="23" x2="14" y2="28.5" stroke="#0a0a0a" stroke-width="1.2"/>
+  <line x1="16" y1="23" x2="16" y2="28.5" stroke="#0a0a0a" stroke-width="1.2"/>
+  <line x1="18" y1="23" x2="18" y2="28.5" stroke="#0a0a0a" stroke-width="1.2"/>
+
+  <!-- Left eye socket -->
+  <ellipse cx="12.5" cy="15" rx="3.5" ry="3.8" fill="url(#eyeGrad)"/>
+  <!-- Left eye glint -->
+  <ellipse cx="11.3" cy="13.5" rx="1" ry="0.7" fill="#ffffff" fill-opacity="0.12"/>
+
+  <!-- Right eye socket -->
+  <ellipse cx="19.5" cy="15" rx="3.5" ry="3.8" fill="url(#eyeGrad)"/>
+  <!-- Right eye glint -->
+  <ellipse cx="18.3" cy="13.5" rx="1" ry="0.7" fill="#ffffff" fill-opacity="0.12"/>
+
+  <!-- Nose cavity -->
+  <path d="M15 19.5 L16 18 L17 19.5 Z" fill="#0a0a0a"/>
 </svg>
