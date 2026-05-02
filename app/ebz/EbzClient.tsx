@@ -48,6 +48,16 @@ export default function EbzClient() {
     setVideoOpen(false);
   }, []);
 
+  // AC7ionman video modal
+  const [acVideoOpen, setAcVideoOpen] = useState(false);
+  const acVideoRef = useRef<HTMLVideoElement>(null);
+
+  const openAcVideo = useCallback(() => setAcVideoOpen(true), []);
+  const closeAcVideo = useCallback(() => {
+    acVideoRef.current?.pause();
+    setAcVideoOpen(false);
+  }, []);
+
   // ── Supabase anon session ──────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -234,7 +244,15 @@ export default function EbzClient() {
               >
                 Izi Prime
               </button>{' '}
-              and <span className="text-white">AC7ionman</span> continue to stream freely on the platform despite documented instances of behaviour and statements far more egregious than anything EBZ has ever said or done. The inconsistent enforcement of Kick's own policies raises serious questions about fairness, bias, and accountability.
+              and{' '}
+              <button
+                type="button"
+                onClick={openAcVideo}
+                className="text-white underline decoration-dotted underline-offset-2 hover:text-[#53FC18] transition-colors"
+              >
+                AC7ionman
+              </button>{' '}
+              continue to stream freely on the platform despite documented instances of behaviour and statements far more egregious than anything EBZ has ever said or done. The inconsistent enforcement of Kick's own policies raises serious questions about fairness, bias, and accountability.
             </p>
             <p>
               <span className="text-white">We are calling on Kick to:</span>
@@ -456,6 +474,40 @@ export default function EbzClient() {
         </div>
 
       </main>
+
+      {/* AC7ionman video modal */}
+      {acVideoOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={closeAcVideo}
+        >
+          <div
+            className="relative w-full max-w-3xl rounded-xl border border-white/10 bg-[#0a0a0a] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">
+                AC7ionman — Evidence
+              </span>
+              <button
+                onClick={closeAcVideo}
+                className="font-mono text-sm text-gray-500 hover:text-white transition-colors"
+                aria-label="Close video"
+              >
+                ✕
+              </button>
+            </div>
+            <video
+              ref={acVideoRef}
+              src="/ac7ionman.mp4"
+              controls
+              autoPlay
+              className="w-full rounded-b-xl"
+              style={{ maxHeight: '70vh' }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Video modal */}
       {videoOpen && (
