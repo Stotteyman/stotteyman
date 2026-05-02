@@ -22,6 +22,46 @@ export default function StreamClient() {
   const [showBanner, setShowBanner] = useState(false);
   const [kickUsername, setKickUsername] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [chatWidth, setChatWidth] = useState(340);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [showCookieHint, setShowCookieHint] = useState(false);
+  const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    setIsDesktop(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    if (loginState === 'loggedIn' && !localStorage.getItem('kick_cookie_hint_dismissed')) {
+      setShowCookieHint(true);
+    }
+  }, [loginState]);
+
+  const dismissCookieHint = useCallback(() => {
+    localStorage.setItem('kick_cookie_hint_dismissed', '1');
+    setShowCookieHint(false);
+  }, []);
+
+  const handleResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragRef.current = { startX: e.clientX, startWidth: chatWidth };
+    const onMove = (mv: MouseEvent) => {
+      if (!dragRef.current) return;
+      const delta = dragRef.current.startX - mv.clientX;
+      setChatWidth(Math.min(600, Math.max(220, dragRef.current.startWidth + delta)));
+    };
+    const onUp = () => {
+      dragRef.current = null;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }, [chatWidth]);
 
   useEffect(() => {
     supabase
@@ -89,9 +129,9 @@ export default function StreamClient() {
   const syncFromSession = useCallback(async () => {
     const { data } = await supabase.auth.getSession();
     const user = data.session?.user ?? null;
-    const uname = resolveKickUsernameFromUser(user);
 
-    if (user && uname) {
+    if (user) {
+      const uname = resolveKickUsernameFromUser(user);
       setKickUsername(uname);
       setLoginState('loggedIn');
       setErrorMsg('');
@@ -106,8 +146,8 @@ export default function StreamClient() {
     syncFromSession();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const uname = resolveKickUsernameFromUser(session?.user ?? null);
-      if (session?.user && uname) {
+      if (session?.user) {
+        const uname = resolveKickUsernameFromUser(session.user);
         setKickUsername(uname);
         setLoginState('loggedIn');
         setErrorMsg('');
@@ -307,7 +347,16 @@ export default function StreamClient() {
         </div>
 
         {/* Chat sidebar */}
-        <div className="flex h-[40vh] shrink-0 flex-col border-t border-white/10 lg:h-full lg:w-80 lg:border-l lg:border-t-0 xl:w-96">
+        <div
+          className="relative flex h-[45vh] shrink-0 flex-col border-t border-white/10 lg:h-full lg:border-l lg:border-t-0"
+          style={isDesktop ? { width: chatWidth } : undefined}
+        >
+          {/* Resize handle — desktop only */}
+          <div
+            className="absolute hidden lg:block"
+            style={{ width: 6, top: 0, bottom: 0, left: 0, cursor: 'col-resize', zIndex: 10 }}
+            onMouseDown={handleResizeStart}
+          />
           <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#050505] px-4 py-3">
             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">
               {loginState === 'loggedIn' ? (
@@ -337,15 +386,31 @@ export default function StreamClient() {
               </a>
             </div>
           </div>
-          <div className="relative min-h-0 flex-1 bg-black">
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
             {loginState === 'loggedIn' ? (
-              <iframe
-                key={chatKey}
-                ref={chatIframeRef}
-                src={kickChatPopout}
-                title="Kick live chat"
-                className="h-full w-full border-0"
-              />
+              <>
+                <iframe
+                  key={chatKey}
+                  ref={chatIframeRef}
+                  src={kickChatPopout}
+                  title="Kick live chat"
+                  className="absolute inset-x-0 bottom-0 w-full border-0"
+                  style={{ top: '-52px', height: 'calc(100% + 52px)' }}
+                />
+                {showCookieHint && (
+                  <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 border-t border-white/10 bg-black/95 px-4 py-3 backdrop-blur-sm">
+                    <p className="font-mono text-[10px] leading-relaxed text-gray-400">
+                      Kick may ask you to accept cookies in the chat window below — this only happens once per browser.
+                    </p>
+                    <button
+                      onClick={dismissCookieHint}
+                      className="self-start rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500 transition-colors hover:text-white"
+                    >
+                      Got it
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex h-full items-end justify-center bg-gradient-to-t from-black/90 via-black/40 to-transparent pb-8">
                 <div className="flex flex-col items-center gap-3 px-6 text-center">
