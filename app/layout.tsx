@@ -19,13 +19,20 @@ const firaCode = Fira_Code({
 
 export const metadata: Metadata = {
   title: {
-    default: `${siteConfig.name} | Public portfolio`,
+    default: 'Stotteyman',
     template: '%s | Stotteyman',
   },
-  description: siteConfig.description,
+  description:
+    'Stotteyman — Live streaming on Kick, content on YouTube, community on Discord. The official hub for everything Stotteyman.',
   keywords: [
+    'Stotteyman',
+    'Kick livestream',
+    'YouTube',
+    'Discord',
+    'Facebook',
+    'content creator',
+    'streaming',
     'portfolio',
-    'mindset',
     'achievements',
     'livestream',
     'events',

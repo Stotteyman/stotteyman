@@ -185,6 +185,56 @@ body {
   animation: flicker 0.15s infinite linear;
 }
 
+/* ── Homepage fade-up entry animation ─────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: fadeUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Background drift animation ────────────────────────────── */
+@keyframes bgDrift {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-bg-drift {
+  animation: bgDrift 8s ease-in-out infinite;
+}
+
+/* ── Social card hover styles (uses --card-color CSS var) ──── */
+.social-card,
+.donate-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  cursor: pointer;
+}
+
+.social-card:hover,
+.donate-card:hover {
+  transform: translateY(-6px) scale(1.06);
+  box-shadow: 0 8px 40px var(--card-color, #ff8c00), 0 0 0 1px var(--card-color, #ff8c00);
+  border-color: var(--card-color, #ff8c00) !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.social-icon {
+  transition: transform 0.25s ease;
+}
+
+.social-card:hover .social-icon {
+  transform: scale(1.15);
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -198,8 +248,11 @@ body {
   .animate-glow-pulse,
   .animate-scan-line,
   .animate-breathe,
-  .animate-flicker {
+  .animate-flicker,
+  .animate-fade-up,
+  .animate-bg-drift {
     animation: none;
+    opacity: 1;
   }
 }
 

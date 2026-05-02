@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     'A multi-page portfolio documenting mindset, work, achievements, livestreams, events, and the places where people can follow along.',
   location: 'Based online, building in public',
-  email: 'hello@stotteyman.com',
+  email: 'contact@stotteyman.com',
   phone: '+1 (555) 123-4567',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://stotteyman.com',
   socialHandle: '@stotteyman',
@@ -19,6 +19,7 @@ export const navigationItems = [
   { href: '/follow', label: 'Follow' },
   { href: '/events', label: 'Events' },
   { href: '/stream', label: 'Livestream' },
+  { href: '/donate', label: 'Donate' },
   { href: '/contact', label: 'Contact' },
 ] as const;
 
