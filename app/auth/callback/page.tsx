@@ -7,6 +7,24 @@ export default function AuthCallback() {
   const [status, setStatus] = useState('Completing login…');
 
   useEffect(() => {
+    const finalizeAuth = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const hasCode = params.has('code');
+
+      if (hasCode) {
+        const { error } = await supabase.auth.exchangeCodeForSession(window.location.href);
+        if (error) {
+          setStatus(`Login failed: ${error.message}`);
+          return;
+        }
+      }
+
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        setStatus('Waiting for login confirmation…');
+      }
+    };
+
     // Supabase automatically detects auth code/hash in the URL on client init.
     // Listen for the SIGNED_IN event, then notify the opener and close.
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -14,14 +32,16 @@ export default function AuthCallback() {
         setStatus('Logged in! Closing…');
         if (window.opener && !window.opener.closed) {
           window.opener.postMessage({ type: 'KICK_AUTH_DONE' }, window.location.origin);
+        } else {
+          window.location.replace('/stream/');
+          return;
         }
         // Small delay so Supabase finishes writing the session to localStorage
         setTimeout(() => window.close(), 300);
       }
     });
 
-    // Trigger URL-based session detection (picks up ?code= or #access_token=)
-    supabase.auth.getSession();
+    finalizeAuth();
 
     return () => subscription.unsubscribe();
   }, []);

@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 const kickChannel = 'stotteyman';
-const kickUrl = 'https://kick.com/stotteyman';
-const kickLoginUrl = 'https://kick.com/login';
 const kickChatPopout = `https://kick.com/popout/${kickChannel}/chat`;
 const discordInvite = 'https://discord.gg/9zbyfPyp3E';
+const KICK_PROVIDER = 'custom:kick';
 
 type LoginState = 'idle' | 'pending' | 'loggedIn';
 
@@ -20,6 +20,8 @@ export default function StreamClient() {
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [announcement, setAnnouncement] = useState<string | null>(null);
   const [showBanner, setShowBanner] = useState(false);
+  const [kickUsername, setKickUsername] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     supabase
@@ -44,10 +46,124 @@ export default function StreamClient() {
     }
   }, []);
 
-  const handleLogin = useCallback(() => {
+  const resolveKickUsernameFromUser = useCallback((user: User | null) => {
+    if (!user) return '';
+
+    const fromMeta = user.user_metadata as Record<string, unknown>;
+    const topLevelCandidates = [
+      fromMeta?.preferred_username,
+      fromMeta?.user_name,
+      fromMeta?.username,
+      fromMeta?.display_name,
+      fromMeta?.name,
+      fromMeta?.nick,
+    ];
+
+    for (const candidate of topLevelCandidates) {
+      if (typeof candidate === 'string' && candidate.trim()) {
+        return candidate.trim().replace(/^@/, '');
+      }
+    }
+
+    for (const identity of user.identities || []) {
+      const identityData = identity.identity_data as Record<string, unknown> | null;
+      const identityCandidates = [
+        identityData?.preferred_username,
+        identityData?.user_name,
+        identityData?.username,
+        identityData?.display_name,
+        identityData?.name,
+        identityData?.nick,
+      ];
+
+      for (const candidate of identityCandidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+          return candidate.trim().replace(/^@/, '');
+        }
+      }
+    }
+
+    return '';
+  }, []);
+
+  const syncFromSession = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    const user = data.session?.user ?? null;
+    const uname = resolveKickUsernameFromUser(user);
+
+    if (user && uname) {
+      setKickUsername(uname);
+      setLoginState('loggedIn');
+      setErrorMsg('');
+      return;
+    }
+
+    setKickUsername('');
+    setLoginState('idle');
+  }, [resolveKickUsernameFromUser]);
+
+  useEffect(() => {
+    syncFromSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uname = resolveKickUsernameFromUser(session?.user ?? null);
+      if (session?.user && uname) {
+        setKickUsername(uname);
+        setLoginState('loggedIn');
+        setErrorMsg('');
+      } else {
+        setKickUsername('');
+        setLoginState('idle');
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [resolveKickUsernameFromUser, syncFromSession]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== 'KICK_AUTH_DONE') return;
+      syncFromSession();
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [syncFromSession]);
+
+  const handleLogin = useCallback(async () => {
+    setErrorMsg('');
+
     // If popup is already open, focus it
     if (popupRef.current && !popupRef.current.closed) {
       popupRef.current.focus();
+      return;
+    }
+
+    setLoginState('pending');
+
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const authBase = isLocalhost
+      ? window.location.origin
+      : configuredSiteUrl || window.location.origin;
+    const redirectTo = new URL('/auth/callback', authBase).toString();
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: KICK_PROVIDER,
+      options: {
+        redirectTo,
+        skipBrowserRedirect: true,
+        scopes: 'user:read',
+      },
+    });
+
+    if (error || !data.url) {
+      setLoginState('idle');
+      setErrorMsg(error ? `Kick auth failed: ${error.message}` : 'Kick auth URL was not returned.');
       return;
     }
 
@@ -57,38 +173,36 @@ export default function StreamClient() {
     const top = Math.round(window.screenY + (window.outerHeight - height) / 2);
 
     const popup = window.open(
-      kickLoginUrl,
+      data.url,
       'kick-login',
       `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
     );
 
     if (!popup) {
-      // Popup blocked — fall back to new tab
-      window.open(kickLoginUrl, '_blank', 'noreferrer');
+      setLoginState('idle');
+      setErrorMsg('Popup blocked. Allow popups for this site, then click Login to Kick again.');
       return;
     }
 
     popupRef.current = popup;
-    setLoginState('pending');
 
-    // Poll until the popup closes, then reload chat and mark logged in
     pollRef.current = setInterval(() => {
       if (popup.closed) {
         stopPolling();
-        setLoginState('loggedIn');
-        // Reload the chat iframe so Kick picks up the new session cookie
-        setChatKey((k) => k + 1);
+        syncFromSession();
       }
     }, 500);
-  }, [stopPolling]);
+  }, [stopPolling, syncFromSession]);
 
   // Clean up interval on unmount
   useEffect(() => {
     return () => stopPolling();
   }, [stopPolling]);
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useCallback(async () => {
+    await supabase.auth.signOut();
     setLoginState('idle');
+    setKickUsername('');
   }, []);
 
   const reloadChat = useCallback(() => {
@@ -121,7 +235,7 @@ export default function StreamClient() {
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#53FC18]" />
-                Kick Connected
+                {kickUsername ? `@${kickUsername}` : 'Kick Connected'}
               </span>
               <button
                 onClick={handleLogout}
@@ -144,17 +258,9 @@ export default function StreamClient() {
               onClick={handleLogin}
               className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/60 hover:bg-[#53FC18]/10 hover:text-[#53FC18]"
             >
-              Login to Kick
+              Login
             </button>
           )}
-          <a
-            href={kickUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
-          >
-            kick.com
-          </a>
           <a
             href={discordInvite}
             target="_blank"
@@ -165,6 +271,12 @@ export default function StreamClient() {
           </a>
         </div>
       </header>
+
+      {errorMsg && (
+        <div className="shrink-0 border-b border-red-400/30 bg-red-400/10 px-4 py-2">
+          <p className="font-mono text-[10px] text-red-300">{errorMsg}</p>
+        </div>
+      )}
 
       {/* Announcement banner */}
       {showBanner && announcement && (
@@ -226,25 +338,25 @@ export default function StreamClient() {
             </div>
           </div>
           <div className="relative min-h-0 flex-1 bg-black">
-            <iframe
-              key={chatKey}
-              ref={chatIframeRef}
-              src={kickChatPopout}
-              title="Kick live chat"
-              className="h-full w-full border-0"
-            />
-            {/* Login overlay when not logged in */}
-            {loginState === 'idle' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/90 via-black/40 to-transparent pb-8">
+            {loginState === 'loggedIn' ? (
+              <iframe
+                key={chatKey}
+                ref={chatIframeRef}
+                src={kickChatPopout}
+                title="Kick live chat"
+                className="h-full w-full border-0"
+              />
+            ) : (
+              <div className="flex h-full items-end justify-center bg-gradient-to-t from-black/90 via-black/40 to-transparent pb-8">
                 <div className="flex flex-col items-center gap-3 px-6 text-center">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-400">
-                    Login to join the chat
+                    Chat unlocks after website login
                   </p>
                   <button
                     onClick={handleLogin}
                     className="rounded-full border border-[#53FC18]/60 bg-[#53FC18]/15 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#53FC18] transition-all hover:bg-[#53FC18]/25 hover:shadow-[0_0_16px_#53FC1840]"
                   >
-                    Login with Kick
+                    Login
                   </button>
                 </div>
               </div>
