@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 type Signature = {
   id: string;
@@ -15,14 +16,12 @@ type Signature = {
 type KickState = 'idle' | 'pending' | 'verified';
 type FormState = 'ready' | 'submitting' | 'done' | 'error' | 'already_signed';
 
-const KICK_LOGIN = 'https://kick.com/login';
+const KICK_PROVIDER = 'custom:kick';
 
 export default function EbzClient() {
   // Kick login flow
   const [kickState, setKickState] = useState<KickState>('idle');
   const [kickUsername, setKickUsername] = useState('');
-  const [manualKickUsername, setManualKickUsername] = useState('');
-  const [showManualUsernameInput, setShowManualUsernameInput] = useState(false);
 
   // Petition flow
   const [formState, setFormState] = useState<FormState>('ready');
@@ -62,17 +61,91 @@ export default function EbzClient() {
     signRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
-  // ── Supabase anon session ──────────────────────────────────────────
+  const resolveKickUsernameFromUser = useCallback((user: User | null) => {
+    if (!user) return '';
+
+    const fromMeta = user.user_metadata as Record<string, unknown>;
+    const topLevelCandidates = [
+      fromMeta?.preferred_username,
+      fromMeta?.user_name,
+      fromMeta?.username,
+      fromMeta?.display_name,
+      fromMeta?.name,
+      fromMeta?.nick,
+    ];
+
+    for (const candidate of topLevelCandidates) {
+      if (typeof candidate === 'string' && candidate.trim()) {
+        return candidate.trim().replace(/^@/, '');
+      }
+    }
+
+    for (const identity of user.identities || []) {
+      const identityData = identity.identity_data as Record<string, unknown> | null;
+      const identityCandidates = [
+        identityData?.preferred_username,
+        identityData?.user_name,
+        identityData?.username,
+        identityData?.display_name,
+        identityData?.name,
+        identityData?.nick,
+      ];
+      for (const candidate of identityCandidates) {
+        if (typeof candidate === 'string' && candidate.trim()) {
+          return candidate.trim().replace(/^@/, '');
+        }
+      }
+    }
+
+    return '';
+  }, []);
+
+  // ── Supabase session bootstrap + auth listener ────────────────────
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (data.session?.user) {
-        setUserId(data.session.user.id);
+    const syncFromSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      const session = data.session;
+
+      if (session?.user) {
+        setUserId(session.user.id);
+        const uname = resolveKickUsernameFromUser(session.user);
+        if (uname) {
+          setKickUsername(uname);
+          setKickState('verified');
+          setErrorMsg('');
+        } else {
+          setKickState('idle');
+        }
+        return;
+      }
+
+      const { data: signInData } = await supabase.auth.signInAnonymously();
+      if (signInData.user) setUserId(signInData.user.id);
+      setKickState('idle');
+      setKickUsername('');
+    };
+
+    syncFromSession();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUserId(session.user.id);
+        const uname = resolveKickUsernameFromUser(session.user);
+        if (uname) {
+          setKickUsername(uname);
+          setKickState('verified');
+          setErrorMsg('');
+        }
       } else {
-        const { data: signInData } = await supabase.auth.signInAnonymously();
-        if (signInData.user) setUserId(signInData.user.id);
+        setKickState('idle');
+        setKickUsername('');
       }
     });
-  }, []);
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [resolveKickUsernameFromUser]);
 
   // ── Load signatures ───────────────────────────────────────────────
   const loadSignatures = useCallback(async () => {
@@ -92,62 +165,68 @@ export default function EbzClient() {
     loadSignatures();
   }, [loadSignatures]);
 
-  // Kick username resolver. Reads from sources that can be populated after Kick login.
-  const resolveKickUsername = useCallback(() => {
-    const fromQuery = new URLSearchParams(window.location.search).get('kick_username');
-    const fromStorage = window.localStorage.getItem('kick_username');
-    const fromWindow = (window as Window & { KICK_USERNAME?: string }).KICK_USERNAME;
-
-    const raw = fromQuery || fromStorage || fromWindow || '';
-    return raw.trim().replace(/^@/, '');
-  }, []);
-
-  // ── Kick popup flow ───────────────────────────────────────────────
-  const handleKickLogin = useCallback(() => {
-    // Open Kick login in a new tab — works in all browsers including Brave
-    window.open(KICK_LOGIN, '_blank', 'noreferrer');
-    setShowManualUsernameInput(false);
-    setManualKickUsername('');
+  // ── Supabase Kick OAuth flow ──────────────────────────────────────
+  const handleKickLogin = useCallback(async () => {
     setErrorMsg('');
     setKickState('pending');
+
+    const redirectTo = `${window.location.origin}/ebz`;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: KICK_PROVIDER,
+      options: {
+        redirectTo,
+        skipBrowserRedirect: true,
+      },
+    });
+
+    if (error) {
+      setKickState('idle');
+      setErrorMsg(
+        `Kick auth failed: ${error.message}. Ensure Supabase custom provider ${KICK_PROVIDER} is enabled.`
+      );
+      return;
+    }
+
+    if (!data.url) {
+      setKickState('idle');
+      setErrorMsg('Kick auth URL was not returned.');
+      return;
+    }
+
+    const popup = window.open(data.url, '_blank', 'noopener,noreferrer');
+    if (!popup) {
+      setKickState('idle');
+      setErrorMsg(
+        'Popup blocked. Allow popups for this site, then click Login with Kick again.'
+      );
+    }
   }, []);
 
-  const handleKickLoginConfirm = useCallback(() => {
-    const detected = resolveKickUsername();
-    if (!detected) {
-      setShowManualUsernameInput(true);
-      setErrorMsg('Kick username was not auto-detected. Enter it below to continue.');
+  const handleKickLoginConfirm = useCallback(async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      setErrorMsg(error.message);
       return;
     }
-    setErrorMsg('');
-    setShowManualUsernameInput(false);
-    setKickUsername(detected);
-    setKickState('verified');
-  }, [resolveKickUsername]);
 
-  const handleManualUsernameConfirm = useCallback(() => {
-    const normalized = manualKickUsername.trim().replace(/^@/, '');
-    if (!normalized) {
-      setErrorMsg('Kick username is required to sign the petition.');
+    const uname = resolveKickUsernameFromUser(data.session?.user ?? null);
+    if (!uname) {
+      setErrorMsg('Kick session found but username was not returned by provider metadata.');
       return;
     }
-    setErrorMsg('');
-    setKickUsername(normalized);
-    setKickState('verified');
-    setShowManualUsernameInput(false);
-  }, [manualKickUsername]);
 
-  useEffect(() => {
-    if (kickState !== 'pending') return;
-    const timer = setInterval(() => {
-      const detected = resolveKickUsername();
-      if (detected) {
-        setKickUsername(detected);
-        setKickState('verified');
-      }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [kickState, resolveKickUsername]);
+    setKickUsername(uname);
+    setKickState('verified');
+    setErrorMsg('');
+  }, [resolveKickUsernameFromUser]);
+
+  const handleKickLogout = useCallback(async () => {
+    await supabase.auth.signOut();
+    const { data: signInData } = await supabase.auth.signInAnonymously();
+    if (signInData.user) setUserId(signInData.user.id);
+    setKickState('idle');
+    setKickUsername('');
+  }, []);
 
   // ── Submit signature ──────────────────────────────────────────────
   const handleSubmit = useCallback(async () => {
@@ -336,41 +415,19 @@ export default function EbzClient() {
                   <div className="flex items-center gap-2 rounded-lg border border-[#53FC18]/30 bg-[#53FC18]/10 px-4 py-3">
                     <span className="h-2 w-2 rounded-full bg-[#53FC18]" />
                     <span className="font-mono text-xs text-[#53FC18]">Connected as @{kickUsername}</span>
-                    <button onClick={() => setKickState('idle')} className="ml-auto font-mono text-[10px] text-gray-600 hover:text-red-400">✕</button>
+                    <button onClick={handleKickLogout} className="ml-auto font-mono text-[10px] text-gray-600 hover:text-red-400">Sign out</button>
                   </div>
                 ) : kickState === 'pending' ? (
                   <div className="space-y-3">
                     <p className="rounded-lg border border-[#53FC18]/20 bg-[#53FC18]/5 px-4 py-3 font-mono text-xs text-[#53FC18]/80">
-                      Kick opened in a new tab. Log in there, come back, then confirm.
+                      Kick auth started via Supabase. Complete login, then click below to refresh your session.
                     </p>
                     <button
                       onClick={handleKickLoginConfirm}
                       className="w-full rounded-lg border border-[#53FC18]/40 bg-[#53FC18]/10 px-5 py-3 font-mono text-sm text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
                     >
-                      I am logged in on Kick
+                      Check Kick login
                     </button>
-                    {showManualUsernameInput && (
-                      <div className="space-y-2 rounded-lg border border-white/10 bg-white/5 p-3">
-                        <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                          Kick Username
-                        </label>
-                        <input
-                          type="text"
-                          value={manualKickUsername}
-                          onChange={(e) => setManualKickUsername(e.target.value)}
-                          placeholder="@username"
-                          maxLength={50}
-                          className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 font-mono text-sm text-white placeholder-gray-600 outline-none focus:border-[#53FC18]/40"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleManualUsernameConfirm}
-                          className="w-full rounded-lg border border-[#53FC18]/40 bg-[#53FC18]/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
-                        >
-                          Use this username
-                        </button>
-                      </div>
-                    )}
                     {errorMsg && (
                       <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 font-mono text-xs text-red-400">
                         {errorMsg}
