@@ -320,7 +320,7 @@ export default function EbzClient() {
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-black text-white">
       {/* Nav */}
-      <nav className="shrink-0 z-50 flex items-center gap-4 border-b border-white/10 bg-black/80 px-6 py-4 backdrop-blur-md">
+      <nav className="shrink-0 z-50 flex items-center gap-4 border-b border-white/10 bg-black/80 px-4 py-3 backdrop-blur-md sm:px-6 sm:py-4">
         <Link
           href="/"
           className="font-mono text-[10px] uppercase tracking-[0.35em] text-gray-500 transition-colors hover:text-white"
@@ -339,7 +339,7 @@ export default function EbzClient() {
 
       {/* Scrollable body */}
       <div className="flex-1 overflow-y-auto">
-        <main className="mx-auto max-w-3xl px-6 py-16">
+        <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-16">
 
         {/* Hero */}
         <div className="mb-12 text-center">
@@ -361,7 +361,7 @@ export default function EbzClient() {
         </div>
 
         {/* Signature count banner */}
-        <div className="mb-10 flex items-center justify-center gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-6">
+        <div className="mb-10 flex flex-col items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:flex-row sm:gap-4 sm:p-6">
           <div className="text-center">
             <p className="font-sans text-5xl font-black tabular-nums text-white">
               {loadingSigs ? '—' : sigCount.toLocaleString()}
@@ -370,8 +370,8 @@ export default function EbzClient() {
               Signatures
             </p>
           </div>
-          <div className="h-16 w-px bg-white/10" />
-          <div className="max-w-xs text-left">
+          <div className="hidden h-16 w-px bg-white/10 sm:block" />
+          <div className="max-w-xs text-center sm:text-left">
             <p className="font-mono text-xs leading-relaxed text-gray-400">
               Every name here is a voice demanding justice. Share this page and make it impossible to ignore.
             </p>
@@ -379,7 +379,7 @@ export default function EbzClient() {
         </div>
 
         {/* The case */}
-        <section className="mb-12 space-y-6 rounded-xl border border-white/10 bg-white/[0.02] p-8">
+        <section className="mb-12 space-y-6 rounded-xl border border-white/10 bg-white/[0.02] p-5 sm:p-8">
           <h2 className="font-sans text-xl font-bold uppercase tracking-wide text-white">
             Why This Matters
           </h2>
@@ -413,7 +413,7 @@ export default function EbzClient() {
             <p>
               <span className="text-white">We are calling on Kick to:</span>
             </p>
-            <ul className="ml-4 list-disc space-y-2 text-gray-300">
+            <ul className="ml-3 list-disc space-y-2 text-gray-300 sm:ml-4">
               <li>Immediately reinstate EBZ's Kick account and partner status</li>
               <li>Issue a public statement correcting the record and removing the association of EBZ with these false accusations</li>
               <li>Apply its community guidelines consistently and fairly to all creators on the platform</li>
@@ -426,7 +426,7 @@ export default function EbzClient() {
         </section>
 
         {/* Sign the petition */}
-        <section ref={signRef} className="mb-12 rounded-xl border border-white/10 bg-white/[0.02] p-8">
+        <section ref={signRef} className="mb-12 rounded-xl border border-white/10 bg-white/[0.02] p-5 sm:p-8">
           <h2 className="mb-6 font-sans text-xl font-bold uppercase tracking-wide text-white">
             Sign the Petition
           </h2>
@@ -549,7 +549,7 @@ export default function EbzClient() {
               {signatures.map((sig, i) => (
                 <div
                   key={sig.id}
-                  className="flex gap-4 rounded-lg border border-white/5 bg-white/[0.02] px-5 py-4"
+                  className="flex gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-3 sm:gap-4 sm:px-5 sm:py-4"
                 >
                   <span className="mt-0.5 font-mono text-xs text-gray-600">#{sigCount - i}</span>
                   <div className="min-w-0 flex-1">
@@ -581,7 +581,7 @@ export default function EbzClient() {
         </section>
 
         {/* Share */}
-        <div className="mt-16 rounded-xl border border-white/10 bg-white/[0.02] p-8 text-center">
+        <div className="mt-10 rounded-xl border border-white/10 bg-white/[0.02] p-5 text-center sm:mt-16 sm:p-8">
           <p className="mb-4 font-sans text-lg font-bold text-white">Spread the Word</p>
           <p className="mb-6 font-mono text-sm text-gray-400">Share this petition on social media, in Discord servers, and across the Kick community.</p>
           <div className="flex flex-wrap justify-center gap-3">

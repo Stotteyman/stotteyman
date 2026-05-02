@@ -61,6 +61,21 @@ function DiscordIcon({ className }: { className?: string }) {
   );
 }
 
+function GatorIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      {/* Body — side profile: snout left, rounded head right */}
+      <path d="M1 10Q2 8 4 8L18 8Q22 8 23 12Q22 16 18 16L4 16Q2 16 1 14Z"/>
+      {/* Eye ridge on top of head */}
+      <ellipse cx="19.5" cy="7" rx="2.5" ry="1.8"/>
+      {/* Nostril near snout tip */}
+      <circle cx="2.5" cy="11" r="0.75" opacity="0.28"/>
+      {/* Teeth bumps along upper jaw */}
+      <path d="M6 8L5.3 5.5H6.7zM9 8L8.3 5.5H9.7zM12 8L11.3 5.5H12.7zM15 8L14.3 5.5H15.7z"/>
+    </svg>
+  );
+}
+
 function DonateIcon({ className }: { className?: string }) {
   return (
     <span className={`inline-flex items-center justify-center font-mono font-black tracking-tighter ${className ?? ''}`} aria-hidden="true" style={{ lineHeight: 1 }}>$$</span>
@@ -148,6 +163,15 @@ const socialLinks = [
     color: '#ff8c00',
     delay: '0.85s',
     Icon: MailIcon,
+  },
+  {
+    label: 'EBZ',
+    sublabel: '#FreeEBZ',
+    href: '/ebz',
+    external: false,
+    color: '#53FC18',
+    delay: '0.95s',
+    Icon: GatorIcon,
   },
 ] as const;
 
