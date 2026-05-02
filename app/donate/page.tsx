@@ -121,18 +121,6 @@ export default function DonatePage() {
             </p>
           </div>
 
-          {/* Description */}
-          <div
-            className="animate-fade-up w-full rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left sm:p-6"
-            style={{ animationDelay: '0.15s' }}
-          >
-            <p className="text-sm leading-6 text-gray-400 sm:leading-7">
-              I build and stream in public without paywalls or gated content. If what I create has
-              been useful, entertaining, or worth following — supporting directly helps me keep the
-              momentum going and spend more time creating. Any amount makes a difference.
-            </p>
-          </div>
-
           {/* Donation options */}
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
 
@@ -141,7 +129,7 @@ export default function DonatePage() {
               type="button"
               onClick={openCashAppPopup}
               aria-label="Send money via Cash App to $totteyman"
-              className="donate-card animate-fade-up group flex min-h-[240px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:min-h-[260px] sm:p-7"
+              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
               style={
                 {
                   '--card-color': '#00D632',
@@ -166,7 +154,7 @@ export default function DonatePage() {
 
             {/* Crypto */}
             <div
-              className="donate-card animate-fade-up group flex min-h-[240px] flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:min-h-[260px] sm:p-7"
+              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
               style={
                 {
                   '--card-color': '#F7931A',
