@@ -38,6 +38,16 @@ export default function EbzClient() {
   // Supabase user id (anon session)
   const [userId, setUserId] = useState<string | null>(null);
 
+  // Video modal
+  const [videoOpen, setVideoOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const openVideo = useCallback(() => setVideoOpen(true), []);
+  const closeVideo = useCallback(() => {
+    videoRef.current?.pause();
+    setVideoOpen(false);
+  }, []);
+
   // ── Supabase anon session ──────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -216,7 +226,15 @@ export default function EbzClient() {
               As a direct result of these lies, EBZ has lost <span className="text-white">tens of thousands of dollars</span> in streaming revenue, brand deals, and intellectual property opportunities he had worked years to build.
             </p>
             <p>
-              Meanwhile, Kick platform partners <span className="text-white">Izi Prime</span> and <span className="text-white">AC7ionman</span> continue to stream freely on the platform despite documented instances of behaviour and statements far more egregious than anything EBZ has ever said or done. The inconsistent enforcement of Kick's own policies raises serious questions about fairness, bias, and accountability.
+              Meanwhile, Kick platform partners{' '}
+              <button
+                type="button"
+                onClick={openVideo}
+                className="text-white underline decoration-dotted underline-offset-2 hover:text-[#53FC18] transition-colors"
+              >
+                Izi Prime
+              </button>{' '}
+              and <span className="text-white">AC7ionman</span> continue to stream freely on the platform despite documented instances of behaviour and statements far more egregious than anything EBZ has ever said or done. The inconsistent enforcement of Kick's own policies raises serious questions about fairness, bias, and accountability.
             </p>
             <p>
               <span className="text-white">We are calling on Kick to:</span>
@@ -438,6 +456,40 @@ export default function EbzClient() {
         </div>
 
       </main>
+
+      {/* Video modal */}
+      {videoOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={closeVideo}
+        >
+          <div
+            className="relative w-full max-w-3xl rounded-xl border border-white/10 bg-[#0a0a0a] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+              <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">
+                Izi Prime — Evidence
+              </span>
+              <button
+                onClick={closeVideo}
+                className="font-mono text-sm text-gray-500 hover:text-white transition-colors"
+                aria-label="Close video"
+              >
+                ✕
+              </button>
+            </div>
+            <video
+              ref={videoRef}
+              src="/prime.mp4"
+              controls
+              autoPlay
+              className="w-full rounded-b-xl"
+              style={{ maxHeight: '70vh' }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
