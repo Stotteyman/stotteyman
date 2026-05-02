@@ -21,6 +21,8 @@ export default function EbzClient() {
   // Kick login flow
   const [kickState, setKickState] = useState<KickState>('idle');
   const [kickUsername, setKickUsername] = useState('');
+  const [manualKickUsername, setManualKickUsername] = useState('');
+  const [showManualUsernameInput, setShowManualUsernameInput] = useState(false);
 
   // Petition flow
   const [formState, setFormState] = useState<FormState>('ready');
@@ -104,19 +106,36 @@ export default function EbzClient() {
   const handleKickLogin = useCallback(() => {
     // Open Kick login in a new tab — works in all browsers including Brave
     window.open(KICK_LOGIN, '_blank', 'noreferrer');
+    setShowManualUsernameInput(false);
+    setManualKickUsername('');
+    setErrorMsg('');
     setKickState('pending');
   }, []);
 
   const handleKickLoginConfirm = useCallback(() => {
     const detected = resolveKickUsername();
     if (!detected) {
-      setErrorMsg('Kick username not detected yet. Finish login, then try again.');
+      setShowManualUsernameInput(true);
+      setErrorMsg('Kick username was not auto-detected. Enter it below to continue.');
       return;
     }
     setErrorMsg('');
+    setShowManualUsernameInput(false);
     setKickUsername(detected);
     setKickState('verified');
   }, [resolveKickUsername]);
+
+  const handleManualUsernameConfirm = useCallback(() => {
+    const normalized = manualKickUsername.trim().replace(/^@/, '');
+    if (!normalized) {
+      setErrorMsg('Kick username is required to sign the petition.');
+      return;
+    }
+    setErrorMsg('');
+    setKickUsername(normalized);
+    setKickState('verified');
+    setShowManualUsernameInput(false);
+  }, [manualKickUsername]);
 
   useEffect(() => {
     if (kickState !== 'pending') return;
@@ -245,7 +264,7 @@ export default function EbzClient() {
               <span className="text-white">EBZ</span> — a content creator who built a loyal community on Kick — has been banned from the platform following <span className="text-red-400">false accusations of being a paedophile</span>. These accusations are unsubstantiated, yet they have spread across social media unchecked, causing catastrophic damage to his reputation, livelihood, and mental health.
             </p>
             <p>
-              As a direct result of these lies, EBZ has lost <span className="text-white">tens of thousands of dollars</span> in streaming revenue, brand deals, and intellectual property opportunities he had worked years to build.
+              As a direct result of these lies, EBZ has lost <span className="text-white">tens of thousands of dollars</span> in streaming revenue and brand deals, while also seeing years of work in his intellectual property and future opportunities damaged.
             </p>
             <p>
               Meanwhile, Kick platform partners{' '}
@@ -330,6 +349,33 @@ export default function EbzClient() {
                     >
                       I am logged in on Kick
                     </button>
+                    {showManualUsernameInput && (
+                      <div className="space-y-2 rounded-lg border border-white/10 bg-white/5 p-3">
+                        <label className="block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
+                          Kick Username
+                        </label>
+                        <input
+                          type="text"
+                          value={manualKickUsername}
+                          onChange={(e) => setManualKickUsername(e.target.value)}
+                          placeholder="@username"
+                          maxLength={50}
+                          className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 font-mono text-sm text-white placeholder-gray-600 outline-none focus:border-[#53FC18]/40"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleManualUsernameConfirm}
+                          className="w-full rounded-lg border border-[#53FC18]/40 bg-[#53FC18]/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
+                        >
+                          Use this username
+                        </button>
+                      </div>
+                    )}
+                    {errorMsg && (
+                      <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 font-mono text-xs text-red-400">
+                        {errorMsg}
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <button
