@@ -58,6 +58,12 @@ export default function EbzClient() {
     setAcVideoOpen(false);
   }, []);
 
+  // Scroll-to-sign
+  const signRef = useRef<HTMLElement>(null);
+  const scrollToSign = useCallback(() => {
+    signRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   // ── Supabase anon session ──────────────────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data }) => {
@@ -176,9 +182,9 @@ export default function EbzClient() {
     });
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex h-dvh flex-col overflow-hidden bg-black text-white">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 flex items-center gap-4 border-b border-white/10 bg-black/80 px-6 py-4 backdrop-blur-md">
+      <nav className="shrink-0 z-50 flex items-center gap-4 border-b border-white/10 bg-black/80 px-6 py-4 backdrop-blur-md">
         <Link
           href="/"
           className="font-mono text-[10px] uppercase tracking-[0.35em] text-gray-500 transition-colors hover:text-white"
@@ -187,9 +193,17 @@ export default function EbzClient() {
         </Link>
         <span className="h-3 w-px bg-white/10" />
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#53FC18]">#FreeEBZ</span>
+        <button
+          onClick={scrollToSign}
+          className="ml-auto rounded-full border border-[#53FC18]/60 bg-[#53FC18]/10 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
+        >
+          Sign Petition ↓
+        </button>
       </nav>
 
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      {/* Scrollable body */}
+      <div className="flex-1 overflow-y-auto">
+        <main className="mx-auto max-w-3xl px-6 py-16">
 
         {/* Hero */}
         <div className="mb-12 text-center">
@@ -202,6 +216,12 @@ export default function EbzClient() {
           <p className="mx-auto max-w-xl font-mono text-sm leading-relaxed text-gray-400">
             EBZ has been falsely accused and banned from Kick. Sign this petition to demand his reinstatement and the removal of the slander from his name.
           </p>
+          <button
+            onClick={scrollToSign}
+            className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#53FC18]/60 bg-[#53FC18]/10 px-8 py-3 font-mono text-sm font-bold uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20 hover:shadow-[0_0_30px_#53FC1840]"
+          >
+            ✍ Sign the Petition
+          </button>
         </div>
 
         {/* Signature count banner */}
@@ -270,7 +290,7 @@ export default function EbzClient() {
         </section>
 
         {/* Sign the petition */}
-        <section className="mb-12 rounded-xl border border-white/10 bg-white/[0.02] p-8">
+        <section ref={signRef} className="mb-12 rounded-xl border border-white/10 bg-white/[0.02] p-8">
           <h2 className="mb-6 font-sans text-xl font-bold uppercase tracking-wide text-white">
             Sign the Petition
           </h2>
@@ -474,6 +494,7 @@ export default function EbzClient() {
         </div>
 
       </main>
+      </div>
 
       {/* AC7ionman video modal */}
       {acVideoOpen && (

@@ -110,7 +110,7 @@ export default function RootLayout({
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="font-sans antialiased bg-black text-white">
+      <body className="font-sans antialiased bg-black text-white h-screen overflow-hidden">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
