@@ -9,9 +9,11 @@ const kickLoginUrl = 'https://kick.com/login';
 const kickChatPopout = `https://kick.com/popout/${kickChannel}/chat`;
 const discordInvite = 'https://discord.gg/9zbyfPyp3E';
 
+type LoginState = 'idle' | 'pending' | 'loggedIn';
+
 export default function StreamClient() {
   const chatIframeRef = useRef<HTMLIFrameElement>(null);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loginState, setLoginState] = useState<LoginState>('idle');
   const [chatKey, setChatKey] = useState(0);
   const popupRef = useRef<Window | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -24,7 +26,7 @@ export default function StreamClient() {
   }, []);
 
   const handleLogin = useCallback(() => {
-    // If already have a popup open, focus it
+    // If popup is already open, focus it
     if (popupRef.current && !popupRef.current.closed) {
       popupRef.current.focus();
       return;
@@ -48,13 +50,14 @@ export default function StreamClient() {
     }
 
     popupRef.current = popup;
+    setLoginState('pending');
 
-    // Poll until the popup closes, then reload chat
+    // Poll until the popup closes, then reload chat and mark logged in
     pollRef.current = setInterval(() => {
       if (popup.closed) {
         stopPolling();
-        setLoggedIn(true);
-        // Reload the chat iframe by bumping the key
+        setLoginState('loggedIn');
+        // Reload the chat iframe so Kick picks up the new session cookie
         setChatKey((k) => k + 1);
       }
     }, 500);
@@ -64,6 +67,10 @@ export default function StreamClient() {
   useEffect(() => {
     return () => stopPolling();
   }, [stopPolling]);
+
+  const handleLogout = useCallback(() => {
+    setLoginState('idle');
+  }, []);
 
   const reloadChat = useCallback(() => {
     setChatKey((k) => k + 1);
@@ -91,18 +98,32 @@ export default function StreamClient() {
         <p className="font-sans text-sm font-bold tracking-[0.2em] text-white">STOTTEYMAN</p>
 
         <div className="flex items-center gap-2">
-          {loggedIn ? (
+          {loginState === 'loggedIn' ? (
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#53FC18]" />
+                Kick Connected
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-full border border-white/10 bg-white/5 px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500 transition-all hover:border-red-500/40 hover:text-red-400"
+                title="Clear login state"
+              >
+                ✕
+              </button>
+            </div>
+          ) : loginState === 'pending' ? (
             <button
-              onClick={reloadChat}
-              className="rounded-full border border-[#53FC18]/60 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
-              title="Reload chat to apply your login"
+              onClick={() => { popupRef.current?.focus(); }}
+              className="flex animate-pulse cursor-pointer items-center gap-2 rounded-full border border-[#53FC18]/30 bg-[#53FC18]/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18]/70"
             >
-              Reload Chat
+              <span className="h-1.5 w-1.5 animate-ping rounded-full bg-[#53FC18]" />
+              Logging in…
             </button>
           ) : (
             <button
               onClick={handleLogin}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/60 hover:text-[#53FC18]"
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/60 hover:bg-[#53FC18]/10 hover:text-[#53FC18]"
             >
               Login to Kick
             </button>
@@ -143,17 +164,35 @@ export default function StreamClient() {
         {/* Chat sidebar */}
         <div className="flex h-[40vh] shrink-0 flex-col border-t border-white/10 lg:h-full lg:w-80 lg:border-l lg:border-t-0 xl:w-96">
           <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#050505] px-4 py-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">Live Chat</span>
-            <a
-              href={kickChatPopout}
-              target="_blank"
-              rel="noreferrer"
-              className="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-neon-orange"
-            >
-              Pop out ↗
-            </a>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">
+              {loginState === 'loggedIn' ? (
+                <span className="flex items-center gap-2">
+                  Live Chat
+                  <span className="rounded bg-[#53FC18]/15 px-1.5 py-0.5 text-[9px] text-[#53FC18]">CONNECTED</span>
+                </span>
+              ) : 'Live Chat'}
+            </span>
+            <div className="flex items-center gap-3">
+              {loginState === 'loggedIn' && (
+                <button
+                  onClick={reloadChat}
+                  className="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-[#53FC18]"
+                  title="Refresh chat"
+                >
+                  ↺ Refresh
+                </button>
+              )}
+              <a
+                href={kickChatPopout}
+                target="_blank"
+                rel="noreferrer"
+                className="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-neon-orange"
+              >
+                Pop out ↗
+              </a>
+            </div>
           </div>
-          <div className="min-h-0 flex-1 bg-black">
+          <div className="relative min-h-0 flex-1 bg-black">
             <iframe
               key={chatKey}
               ref={chatIframeRef}
@@ -161,6 +200,22 @@ export default function StreamClient() {
               title="Kick live chat"
               className="h-full w-full border-0"
             />
+            {/* Login overlay when not logged in */}
+            {loginState === 'idle' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/90 via-black/40 to-transparent pb-8">
+                <div className="flex flex-col items-center gap-3 px-6 text-center">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-400">
+                    Login to join the chat
+                  </p>
+                  <button
+                    onClick={handleLogin}
+                    className="rounded-full border border-[#53FC18]/60 bg-[#53FC18]/15 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#53FC18] transition-all hover:bg-[#53FC18]/25 hover:shadow-[0_0_16px_#53FC1840]"
+                  >
+                    Login with Kick
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
