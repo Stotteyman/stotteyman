@@ -20,13 +20,9 @@ const KICK_LOGIN = 'https://kick.com/login';
 export default function EbzClient() {
   // Kick login flow
   const [kickState, setKickState] = useState<KickState>('idle');
-  const popupRef = useRef<Window | null>(null);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Form
-  const [name, setName] = useState('');
   const [kickUsername, setKickUsername] = useState('');
-  const [message, setMessage] = useState('');
+
+  // Petition flow
   const [formState, setFormState] = useState<FormState>('ready');
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -94,67 +90,63 @@ export default function EbzClient() {
     loadSignatures();
   }, [loadSignatures]);
 
-  // ── Kick popup flow ───────────────────────────────────────────────
-  const stopPolling = useCallback(() => {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
-    }
+  // Kick username resolver. Reads from sources that can be populated after Kick login.
+  const resolveKickUsername = useCallback(() => {
+    const fromQuery = new URLSearchParams(window.location.search).get('kick_username');
+    const fromStorage = window.localStorage.getItem('kick_username');
+    const fromWindow = (window as Window & { KICK_USERNAME?: string }).KICK_USERNAME;
+
+    const raw = fromQuery || fromStorage || fromWindow || '';
+    return raw.trim().replace(/^@/, '');
   }, []);
 
+  // ── Kick popup flow ───────────────────────────────────────────────
   const handleKickLogin = useCallback(() => {
-    if (popupRef.current && !popupRef.current.closed) {
-      popupRef.current.focus();
-      return;
-    }
-
-    const w = 480, h = 700;
-    const left = Math.round(window.screenX + (window.outerWidth - w) / 2);
-    const top = Math.round(window.screenY + (window.outerHeight - h) / 2);
-
-    const popup = window.open(
-      KICK_LOGIN,
-      'kick-login',
-      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`
-    );
-
-    if (!popup) {
-      window.open(KICK_LOGIN, '_blank', 'noreferrer');
-      return;
-    }
-
-    popupRef.current = popup;
+    // Open Kick login in a new tab — works in all browsers including Brave
+    window.open(KICK_LOGIN, '_blank', 'noreferrer');
     setKickState('pending');
+  }, []);
 
-    pollRef.current = setInterval(() => {
-      if (popup.closed) {
-        stopPolling();
+  const handleKickLoginConfirm = useCallback(() => {
+    const detected = resolveKickUsername();
+    if (!detected) {
+      setErrorMsg('Kick username not detected yet. Finish login, then try again.');
+      return;
+    }
+    setErrorMsg('');
+    setKickUsername(detected);
+    setKickState('verified');
+  }, [resolveKickUsername]);
+
+  useEffect(() => {
+    if (kickState !== 'pending') return;
+    const timer = setInterval(() => {
+      const detected = resolveKickUsername();
+      if (detected) {
+        setKickUsername(detected);
         setKickState('verified');
       }
-    }, 500);
-  }, [stopPolling]);
-
-  useEffect(() => () => stopPolling(), [stopPolling]);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [kickState, resolveKickUsername]);
 
   // ── Submit signature ──────────────────────────────────────────────
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
+  const handleSubmit = useCallback(async () => {
       if (formState !== 'ready') return;
 
-      const trimName = name.trim();
       const trimKick = kickUsername.trim().replace(/^@/, '');
-      const trimMsg = message.trim();
-
-      if (!trimName || !trimKick) return;
+      if (!trimKick) {
+        setErrorMsg('Kick username is required. Log in with Kick first.');
+        return;
+      }
 
       setFormState('submitting');
       setErrorMsg('');
 
       const payload: Record<string, string | null> = {
-        name: trimName,
+        name: trimKick,
         kick_username: trimKick,
-        message: trimMsg || null,
+        message: null,
         user_id: userId,
       };
 
@@ -171,7 +163,7 @@ export default function EbzClient() {
         setErrorMsg(error.message);
       }
     },
-    [formState, name, kickUsername, message, userId, loadSignatures]
+    [formState, kickUsername, userId, loadSignatures]
   );
 
   const formatted = (iso: string) =>
@@ -324,17 +316,21 @@ export default function EbzClient() {
                 {kickState === 'verified' ? (
                   <div className="flex items-center gap-2 rounded-lg border border-[#53FC18]/30 bg-[#53FC18]/10 px-4 py-3">
                     <span className="h-2 w-2 rounded-full bg-[#53FC18]" />
-                    <span className="font-mono text-xs text-[#53FC18]">Kick account verified — you can now sign below</span>
+                    <span className="font-mono text-xs text-[#53FC18]">Connected as @{kickUsername}</span>
                     <button onClick={() => setKickState('idle')} className="ml-auto font-mono text-[10px] text-gray-600 hover:text-red-400">✕</button>
                   </div>
                 ) : kickState === 'pending' ? (
-                  <button
-                    onClick={() => popupRef.current?.focus()}
-                    className="flex animate-pulse items-center gap-2 rounded-lg border border-[#53FC18]/20 bg-[#53FC18]/5 px-4 py-3 font-mono text-xs text-[#53FC18]/70"
-                  >
-                    <span className="h-2 w-2 animate-ping rounded-full bg-[#53FC18]" />
-                    Kick login in progress — click to refocus window
-                  </button>
+                  <div className="space-y-3">
+                    <p className="rounded-lg border border-[#53FC18]/20 bg-[#53FC18]/5 px-4 py-3 font-mono text-xs text-[#53FC18]/80">
+                      Kick opened in a new tab. Log in there, come back, then confirm.
+                    </p>
+                    <button
+                      onClick={handleKickLoginConfirm}
+                      className="w-full rounded-lg border border-[#53FC18]/40 bg-[#53FC18]/10 px-5 py-3 font-mono text-sm text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
+                    >
+                      I am logged in on Kick
+                    </button>
+                  </div>
                 ) : (
                   <button
                     onClick={handleKickLogin}
@@ -348,81 +344,31 @@ export default function EbzClient() {
                 )}
               </div>
 
-              {/* Step 2 — Sign form */}
+              {/* Step 2 — Sign petition */}
               <div className={kickState !== 'verified' ? 'pointer-events-none opacity-40' : ''}>
                 <div className="mb-4 flex items-center gap-3">
                   <span className="flex h-6 w-6 items-center justify-center rounded-full border border-white/20 font-mono text-[10px] text-gray-400">2</span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gray-400">Add your signature</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-gray-400">Sign with one click</span>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                        Your Name *
-                      </label>
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder="Full name or alias"
-                        maxLength={80}
-                        required
-                        disabled={kickState !== 'verified'}
-                        className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 font-mono text-sm text-white placeholder-gray-600 outline-none transition-colors focus:border-[#53FC18]/40 focus:ring-1 focus:ring-[#53FC18]/20 disabled:cursor-not-allowed"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                        Kick Username *
-                      </label>
-                      <input
-                        type="text"
-                        value={kickUsername}
-                        onChange={(e) => setKickUsername(e.target.value)}
-                        placeholder="@username"
-                        maxLength={50}
-                        required
-                        disabled={kickState !== 'verified'}
-                        className="w-full rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 font-mono text-sm text-white placeholder-gray-600 outline-none transition-colors focus:border-[#53FC18]/40 focus:ring-1 focus:ring-[#53FC18]/20 disabled:cursor-not-allowed"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                      Statement (optional)
-                    </label>
-                    <textarea
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Add a personal statement of support…"
-                      maxLength={500}
-                      rows={3}
-                      disabled={kickState !== 'verified'}
-                      className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-4 py-2.5 font-mono text-sm text-white placeholder-gray-600 outline-none transition-colors focus:border-[#53FC18]/40 focus:ring-1 focus:ring-[#53FC18]/20 disabled:cursor-not-allowed"
-                    />
-                    <p className="mt-1 text-right font-mono text-[10px] text-gray-600">{message.length}/500</p>
-                  </div>
-
-                  {formState === 'error' && (
-                    <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 font-mono text-xs text-red-400">
-                      {errorMsg || 'Something went wrong. Please try again.'}
-                    </p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={kickState !== 'verified' || formState === 'submitting'}
-                    className="w-full rounded-lg border border-[#53FC18]/60 bg-[#53FC18]/15 py-3 font-mono text-sm font-bold uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/25 hover:shadow-[0_0_24px_#53FC1840] disabled:cursor-not-allowed disabled:opacity-40"
-                  >
-                    {formState === 'submitting' ? 'Submitting…' : 'Sign the Petition'}
-                  </button>
-
-                  <p className="text-center font-mono text-[10px] text-gray-600">
-                    Your name and Kick username will be shown publicly on this petition.
+                {formState === 'error' && (
+                  <p className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 font-mono text-xs text-red-400">
+                    {errorMsg || 'Something went wrong. Please try again.'}
                   </p>
-                </form>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={kickState !== 'verified' || formState === 'submitting'}
+                  className="w-full rounded-lg border border-[#53FC18]/60 bg-[#53FC18]/15 py-3 font-mono text-sm font-bold uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/25 hover:shadow-[0_0_24px_#53FC1840] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {formState === 'submitting' ? 'Signing…' : 'Sign the Petition'}
+                </button>
+
+                <p className="mt-3 text-center font-mono text-[10px] text-gray-600">
+                  Uses your detected Kick username and records it in the database.
+                </p>
               </div>
             </>
           )}
