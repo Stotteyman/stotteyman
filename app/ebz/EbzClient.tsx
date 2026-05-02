@@ -501,7 +501,14 @@ export default function EbzClient() {
                   <span className="mt-0.5 font-mono text-xs text-gray-600">#{sigCount - i}</span>
                   <div className="min-w-0 flex-1">
                     <div className="mb-1 flex flex-wrap items-baseline gap-2">
-                      <span className="font-sans text-sm font-bold text-white">{sig.name}</span>
+                      <a
+                        href={`https://kick.com/${sig.kick_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-sans text-sm font-bold text-white underline decoration-transparent transition-colors hover:text-[#53FC18] hover:decoration-[#53FC18]/50"
+                      >
+                        {sig.name}
+                      </a>
                       <span className="font-mono text-[10px] text-[#53FC18]">@{sig.kick_username}</span>
                       <span className="ml-auto font-mono text-[10px] text-gray-600">{formatted(sig.created_at)}</span>
                     </div>
