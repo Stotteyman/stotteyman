@@ -329,12 +329,12 @@ export default function EbzClient() {
         </Link>
         <span className="h-3 w-px bg-white/10" />
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#53FC18]">#FreeEBZ</span>
-        <button
-          onClick={scrollToSign}
+        <Link
+          href="/donate"
           className="ml-auto rounded-full border border-[#53FC18]/60 bg-[#53FC18]/10 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
         >
-          Sign Petition ↓
-        </button>
+          Donate
+        </Link>
       </nav>
 
       {/* Scrollable body */}
