@@ -202,6 +202,7 @@ export default function EbzClient() {
       options: {
         redirectTo,
         skipBrowserRedirect: true,
+        scopes: 'user:read',
       },
     });
 
