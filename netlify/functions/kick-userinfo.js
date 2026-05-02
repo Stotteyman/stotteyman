@@ -56,6 +56,8 @@ exports.handler = async function handler(event) {
         id: String(user.user_id),
         user_id: user.user_id,
         email: typeof user.email === 'string' ? user.email : null,
+        email_verified: true,
+        is_email_verified: true,
         name: username || null,
         preferred_username: username || null,
         username: username || null,

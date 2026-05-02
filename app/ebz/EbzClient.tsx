@@ -197,14 +197,29 @@ export default function EbzClient() {
 
     // Redirect to /auth/callback — that page posts a message back when done
     const redirectTo = `${window.location.origin}/auth/callback`;
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: KICK_PROVIDER,
-      options: {
-        redirectTo,
-        skipBrowserRedirect: true,
-        scopes: 'user:read',
-      },
-    });
+    const { data: sessionData } = await supabase.auth.getSession();
+    const currentUser = sessionData.session?.user;
+    const isAnonymousUser = Boolean(currentUser?.is_anonymous);
+
+    const authResponse = isAnonymousUser
+      ? await supabase.auth.linkIdentity({
+          provider: KICK_PROVIDER,
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+            scopes: 'user:read',
+          },
+        })
+      : await supabase.auth.signInWithOAuth({
+          provider: KICK_PROVIDER,
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+            scopes: 'user:read',
+          },
+        });
+
+    const { data, error } = authResponse;
 
     if (error || !data.url) {
       setKickState('idle');
