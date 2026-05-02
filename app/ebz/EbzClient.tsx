@@ -26,6 +26,7 @@ export default function EbzClient() {
   // Petition flow
   const [formState, setFormState] = useState<FormState>('ready');
   const [errorMsg, setErrorMsg] = useState('');
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   // Signatures list
   const [signatures, setSignatures] = useState<Signature[]>([]);
@@ -289,6 +290,7 @@ export default function EbzClient() {
 
       if (!error) {
         setFormState('done');
+        setShareModalOpen(true);
         await loadSignatures();
       } else if (error.code === '23505') {
         // Unique violation — already signed
@@ -307,6 +309,13 @@ export default function EbzClient() {
       month: 'short',
       year: 'numeric',
     });
+
+  const petitionUrl = 'https://stotteyman.com/ebz';
+  const thankYouShareMessage = `I just signed a petition to get EBZ reinstated on Kick. He was falsely accused and wrongfully banned. Add your name too: ${petitionUrl}`;
+
+  const handleCopyShareMessage = useCallback(async () => {
+    await navigator.clipboard.writeText(thankYouShareMessage);
+  }, [thankYouShareMessage]);
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-black text-white">
@@ -427,6 +436,12 @@ export default function EbzClient() {
               <span className="flex h-14 w-14 items-center justify-center rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 text-2xl text-[#53FC18]">✓</span>
               <p className="font-sans text-lg font-bold text-white">Your signature has been recorded.</p>
               <p className="font-mono text-sm text-gray-400">Thank you for standing with EBZ. Share this page to amplify the message.</p>
+              <button
+                onClick={() => setShareModalOpen(true)}
+                className="rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[#53FC18] transition-all hover:bg-[#53FC18]/20"
+              >
+                Open Share Message
+              </button>
               <button
                 onClick={() => navigator.clipboard.writeText(window.location.href)}
                 className="mt-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/40 hover:text-[#53FC18]"
@@ -676,6 +691,76 @@ export default function EbzClient() {
               className="w-full rounded-b-xl"
               style={{ maxHeight: '70vh' }}
             />
+          </div>
+        </div>
+      )}
+
+      {shareModalOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={() => setShareModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-xl rounded-2xl border border-[#53FC18]/20 bg-[#0a0a0a] p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#53FC18]">Signature Recorded</p>
+                <h3 className="mt-2 font-sans text-2xl font-black uppercase text-white">Thank You For Signing</h3>
+              </div>
+              <button
+                onClick={() => setShareModalOpen(false)}
+                className="font-mono text-sm text-gray-500 transition-colors hover:text-white"
+                aria-label="Close thank you message"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="mb-5 font-mono text-sm leading-relaxed text-gray-400">
+              Your name is now on the petition. Help push it further by sharing this message with your followers and friends.
+            </p>
+
+            <div className="mb-5 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <p className="font-mono text-xs leading-relaxed text-gray-300">{thankYouShareMessage}</p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <a
+                href={`https://x.com/intent/post?text=${encodeURIComponent(thankYouShareMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-white/30 hover:text-white"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.733-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                Share on X
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(petitionUrl)}&quote=${encodeURIComponent(thankYouShareMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-blue-500/40 hover:text-blue-400"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047v-2.66c0-3.025 1.791-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.265h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                Share on Facebook
+              </a>
+              <a
+                href={`https://www.threads.net/intent/post?text=${encodeURIComponent(thankYouShareMessage)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-white/30 hover:text-white"
+              >
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.473 12.01v-.017c.027-3.579.877-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.018 5.043.87 6.826 2.526 1.671 1.56 2.664 3.733 2.951 6.456l-2.987.302c-.249-2.058-1.004-3.652-2.252-4.763-1.134-1.01-2.712-1.528-4.69-1.54-2.537.017-4.482.782-5.786 2.272-1.229 1.41-1.862 3.518-1.884 6.265.022 2.744.655 4.85 1.884 6.263 1.304 1.489 3.249 2.255 5.786 2.27 1.675-.01 3.12-.44 4.296-1.28.966-.692 1.67-1.71 2.088-3.018l2.935.792c-.59 1.96-1.615 3.514-3.057 4.626C16.025 23.346 14.24 24 12.186 24zm5.624-11.304c-.021-.97-.289-1.72-.793-2.23-.567-.572-1.387-.86-2.437-.86l-.066.002c-1.406.04-2.498.48-3.245 1.305-.67.742-1.004 1.76-.99 3.021a4.84 4.84 0 0 0 .023.493c.123 1.46.668 2.554 1.62 3.253.814.594 1.9.891 3.226.891l.17-.003c1.05-.027 1.858-.329 2.4-.9.504-.528.768-1.29.778-2.264l-.003-.134-.013-.274.003-.045c.07-.55.035-1.084-.132-1.554l.459.3zm-2.43 4.135c-.312.31-.786.47-1.41.478l-.12.001c-.845 0-1.51-.209-1.974-.622-.443-.394-.697-.98-.762-1.742l-.01-.165c-.008-.11-.012-.22-.012-.327 0-.822.206-1.462.614-1.9.416-.446 1.033-.68 1.834-.7l.055-.001c.612.003 1.062.168 1.337.49.298.35.454.896.466 1.626v.097l.012.27-.014.068c.13.493.143.979.037 1.41a1.8 1.8 0 0 1-.054.018z"/></svg>
+                Share on Threads
+              </a>
+              <button
+                onClick={handleCopyShareMessage}
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/40 hover:text-[#53FC18]"
+              >
+                Copy Message
+              </button>
+            </div>
           </div>
         </div>
       )}
