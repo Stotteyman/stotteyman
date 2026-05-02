@@ -1,6 +1,57 @@
 'use client';
 
 import Script from 'next/script';
+import { supabase } from '@/lib/supabase';
+import { useEffect, useState } from 'react';
+
+type Goal = {
+  title: string;
+  description: string | null;
+  goal_amount: number;
+  current_amount: number;
+};
+
+function DonationGoal() {
+  const [goal, setGoal] = useState<Goal | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from('donation_goals')
+      .select('title, description, goal_amount, current_amount')
+      .eq('active', true)
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data) setGoal(data as Goal);
+      });
+  }, []);
+
+  if (!goal) return null;
+
+  const pct = Math.min(100, Math.round((goal.current_amount / goal.goal_amount) * 100));
+
+  return (
+    <div className="animate-fade-up w-full rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6" style={{ animationDelay: '0.45s' }}>
+      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-neon-orange/80">Current Goal</p>
+      <h3 className="mt-2 text-base font-semibold text-white">{goal.title}</h3>
+      {goal.description && (
+        <p className="mt-1.5 text-sm leading-6 text-gray-400">{goal.description}</p>
+      )}
+      <div className="mt-4">
+        <div className="mb-1.5 flex items-center justify-between font-mono text-[10px] text-gray-500">
+          <span>${goal.current_amount.toLocaleString()} raised</span>
+          <span>{pct}% of ${goal.goal_amount.toLocaleString()}</span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-[#00D632] transition-all duration-700"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function CashAppIcon({ className }: { className?: string }) {
   return (
@@ -153,6 +204,9 @@ export default function DonatePage() {
               </a>
             </div>
           </div>
+
+          {/* Donation goal */}
+          <DonationGoal />
 
           {/* Thank you note */}
           <p

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const kickChannel = 'stotteyman';
 const kickUrl = 'https://kick.com/stotteyman';
@@ -17,6 +18,24 @@ export default function StreamClient() {
   const [chatKey, setChatKey] = useState(0);
   const popupRef = useRef<Window | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [announcement, setAnnouncement] = useState<string | null>(null);
+  const [showBanner, setShowBanner] = useState(false);
+
+  useEffect(() => {
+    supabase
+      .from('stream_announcements')
+      .select('message')
+      .eq('active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data?.message) {
+          setAnnouncement(data.message);
+          setShowBanner(true);
+        }
+      });
+  }, []);
 
   const stopPolling = useCallback(() => {
     if (pollRef.current) {
@@ -146,6 +165,20 @@ export default function StreamClient() {
           </a>
         </div>
       </header>
+
+      {/* Announcement banner */}
+      {showBanner && announcement && (
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-[#53FC18]/20 bg-[#53FC18]/10 px-4 py-2">
+          <p className="font-mono text-[10px] text-[#53FC18]">{announcement}</p>
+          <button
+            onClick={() => setShowBanner(false)}
+            className="font-mono text-[10px] text-[#53FC18]/60 hover:text-[#53FC18]"
+            aria-label="Dismiss announcement"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Stream + Chat */}
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
