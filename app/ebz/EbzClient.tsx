@@ -27,6 +27,7 @@ export default function EbzClient() {
   const [formState, setFormState] = useState<FormState>('ready');
   const [errorMsg, setErrorMsg] = useState('');
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [safeModalOpen, setSafeModalOpen] = useState(false);
 
   // Signatures list
   const [signatures, setSignatures] = useState<Signature[]>([]);
@@ -194,31 +195,35 @@ export default function EbzClient() {
   // ── Supabase Kick OAuth flow ──────────────────────────────────────
   const handleKickLogin = useCallback(async () => {
     setErrorMsg('');
+
+    // If the current session already has Kick identity data, skip OAuth popup.
+    const { data: existingSession } = await supabase.auth.getSession();
+    const existingUsername = resolveKickUsernameFromUser(existingSession.session?.user ?? null);
+    if (existingUsername) {
+      setKickUsername(existingUsername);
+      setKickState('verified');
+      return;
+    }
+
     setKickState('pending');
 
     // Redirect to /auth/callback — that page posts a message back when done
-    const redirectTo = `${window.location.origin}/auth/callback`;
-    const { data: sessionData } = await supabase.auth.getSession();
-    const currentUser = sessionData.session?.user;
-    const isAnonymousUser = Boolean(currentUser?.is_anonymous);
+    const isLocalhost =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    const authBase = isLocalhost
+      ? window.location.origin
+      : configuredSiteUrl || window.location.origin;
+    const redirectTo = new URL('/auth/callback', authBase).toString();
 
-    const authResponse = isAnonymousUser
-      ? await supabase.auth.linkIdentity({
-          provider: KICK_PROVIDER,
-          options: {
-            redirectTo,
-            skipBrowserRedirect: true,
-            scopes: 'user:read',
-          },
-        })
-      : await supabase.auth.signInWithOAuth({
-          provider: KICK_PROVIDER,
-          options: {
-            redirectTo,
-            skipBrowserRedirect: true,
-            scopes: 'user:read',
-          },
-        });
+    const authResponse = await supabase.auth.signInWithOAuth({
+      provider: KICK_PROVIDER,
+      options: {
+        redirectTo,
+        skipBrowserRedirect: true,
+        scopes: 'user:read',
+      },
+    });
 
     const { data, error } = authResponse;
 
@@ -256,7 +261,7 @@ export default function EbzClient() {
         setKickState(prev => (prev === 'pending' ? 'idle' : prev));
       }
     }, 500);
-  }, []);
+  }, [resolveKickUsernameFromUser]);
 
   const handleKickLogout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -496,6 +501,16 @@ export default function EbzClient() {
                       </svg>
                       Login with Kick
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => setSafeModalOpen(true)}
+                      className="flex items-center gap-1.5 font-mono text-[10px] text-gray-600 transition-colors hover:text-gray-400"
+                    >
+                      <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                      </svg>
+                      Is this safe?
+                    </button>
                     {errorMsg && (
                       <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2.5 font-mono text-xs text-red-400">
                         {errorMsg}
@@ -696,6 +711,81 @@ export default function EbzClient() {
               className="w-full rounded-b-xl"
               style={{ maxHeight: '70vh' }}
             />
+          </div>
+        </div>
+      )}
+
+      {/* Is this safe? modal */}
+      {safeModalOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+          onClick={() => setSafeModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0a0a] p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <svg className="h-5 w-5 shrink-0 text-[#53FC18]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.955 11.955 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+                <h3 className="font-sans text-lg font-bold text-white">Is this safe?</h3>
+              </div>
+              <button
+                onClick={() => setSafeModalOpen(false)}
+                className="font-mono text-sm text-gray-500 transition-colors hover:text-white"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="mb-5 font-mono text-xs leading-relaxed text-gray-400">
+              Clicking &ldquo;Login with Kick&rdquo; opens a Kick OAuth popup. Here&rsquo;s exactly what is and isn&rsquo;t accessed.
+            </p>
+
+            <div className="mb-4 space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#53FC18]">What we read from Kick</p>
+              <ul className="space-y-2">
+                {[
+                  ['Kick username', 'Your public handle — displayed on the petition alongside your signature.'],
+                ].map(([label, desc]) => (
+                  <li key={label} className="flex items-start gap-2">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#53FC18]/15 text-[#53FC18]">
+                      <svg className="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    </span>
+                    <span className="font-mono text-xs text-gray-300"><span className="text-white">{label}</span> — {desc}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mb-5 space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-red-400">What we never access</p>
+              <ul className="space-y-2">
+                {[
+                  'Email address or phone number',
+                  'Password or 2FA codes',
+                  'Chat history or DMs',
+                  'Subscription or billing details',
+                  'Ability to send messages or perform any actions on your behalf',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-400">
+                      <svg className="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </span>
+                    <span className="font-mono text-xs text-gray-400">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="rounded-lg border border-white/5 bg-white/[0.03] px-4 py-3">
+              <p className="font-mono text-[10px] leading-relaxed text-gray-500">
+                <span className="text-gray-300">What gets stored:</span> your Kick username, and an anonymous session ID that prevents duplicate signatures. No personal data beyond your public username is ever saved.
+              </p>
+            </div>
           </div>
         </div>
       )}
