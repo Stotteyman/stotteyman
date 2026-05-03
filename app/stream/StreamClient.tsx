@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
+import KickChatWidget from './KickChatWidget';
 
 const kickChannel = 'stotteyman';
 const kickChatPopout = `https://kick.com/popout/${kickChannel}/chat`;
@@ -13,18 +14,16 @@ const KICK_PROVIDER = 'custom:kick';
 type LoginState = 'idle' | 'pending' | 'loggedIn';
 
 export default function StreamClient() {
-  const chatIframeRef = useRef<HTMLIFrameElement>(null);
   const [loginState, setLoginState] = useState<LoginState>('idle');
-  const [chatKey, setChatKey] = useState(0);
   const popupRef = useRef<Window | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [announcement, setAnnouncement] = useState<string | null>(null);
   const [showBanner, setShowBanner] = useState(false);
   const [kickUsername, setKickUsername] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [providerToken, setProviderToken] = useState<string | null>(null);
   const [chatWidth, setChatWidth] = useState(340);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [showCookieHint, setShowCookieHint] = useState(false);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   useEffect(() => {
@@ -33,17 +32,6 @@ export default function StreamClient() {
     const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
-  }, []);
-
-  useEffect(() => {
-    if (loginState === 'loggedIn' && !localStorage.getItem('kick_cookie_hint_dismissed')) {
-      setShowCookieHint(true);
-    }
-  }, [loginState]);
-
-  const dismissCookieHint = useCallback(() => {
-    localStorage.setItem('kick_cookie_hint_dismissed', '1');
-    setShowCookieHint(false);
   }, []);
 
   const handleResizeStart = useCallback((e: React.MouseEvent) => {
@@ -134,12 +122,14 @@ export default function StreamClient() {
       const uname = resolveKickUsernameFromUser(user);
       setKickUsername(uname);
       setLoginState('loggedIn');
+      setProviderToken(data.session?.provider_token ?? null);
       setErrorMsg('');
       return;
     }
 
     setKickUsername('');
     setLoginState('idle');
+    setProviderToken(null);
   }, [resolveKickUsernameFromUser]);
 
   useEffect(() => {
@@ -150,10 +140,12 @@ export default function StreamClient() {
         const uname = resolveKickUsernameFromUser(session.user);
         setKickUsername(uname);
         setLoginState('loggedIn');
+        setProviderToken(session.provider_token ?? null);
         setErrorMsg('');
       } else {
         setKickUsername('');
         setLoginState('idle');
+        setProviderToken(null);
       }
     });
 
@@ -243,10 +235,6 @@ export default function StreamClient() {
     await supabase.auth.signOut();
     setLoginState('idle');
     setKickUsername('');
-  }, []);
-
-  const reloadChat = useCallback(() => {
-    setChatKey((k) => k + 1);
   }, []);
 
   return (
@@ -367,15 +355,6 @@ export default function StreamClient() {
               ) : 'Live Chat'}
             </span>
             <div className="flex items-center gap-3">
-              {loginState === 'loggedIn' && (
-                <button
-                  onClick={reloadChat}
-                  className="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-[#53FC18]"
-                  title="Refresh chat"
-                >
-                  ↺ Refresh
-                </button>
-              )}
               <a
                 href={kickChatPopout}
                 target="_blank"
@@ -387,45 +366,11 @@ export default function StreamClient() {
             </div>
           </div>
           <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
-            {loginState === 'loggedIn' ? (
-              <>
-                <iframe
-                  key={chatKey}
-                  ref={chatIframeRef}
-                  src={kickChatPopout}
-                  title="Kick live chat"
-                  className="absolute inset-x-0 bottom-0 w-full border-0"
-                  style={{ top: '-52px', height: 'calc(100% + 52px)' }}
-                />
-                {showCookieHint && (
-                  <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col gap-2 border-t border-white/10 bg-black/95 px-4 py-3 backdrop-blur-sm">
-                    <p className="font-mono text-[10px] leading-relaxed text-gray-400">
-                      Kick may ask you to accept cookies in the chat window below — this only happens once per browser.
-                    </p>
-                    <button
-                      onClick={dismissCookieHint}
-                      className="self-start rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500 transition-colors hover:text-white"
-                    >
-                      Got it
-                    </button>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="flex h-full items-end justify-center bg-gradient-to-t from-black/90 via-black/40 to-transparent pb-8">
-                <div className="flex flex-col items-center gap-3 px-6 text-center">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-400">
-                    Chat unlocks after website login
-                  </p>
-                  <button
-                    onClick={handleLogin}
-                    className="rounded-full border border-[#53FC18]/60 bg-[#53FC18]/15 px-5 py-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#53FC18] transition-all hover:bg-[#53FC18]/25 hover:shadow-[0_0_16px_#53FC1840]"
-                  >
-                    Login
-                  </button>
-                </div>
-              </div>
-            )}
+            <KickChatWidget
+              providerToken={providerToken}
+              username={kickUsername}
+              onLoginRequest={handleLogin}
+            />
           </div>
         </div>
       </div>

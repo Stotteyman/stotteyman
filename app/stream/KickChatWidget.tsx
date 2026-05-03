@@ -77,15 +77,14 @@ function parseBadges(badges: KickBadge[] = []): KickBadge[] {
 function renderContent(content: string, emotes: KickEmote[] = []): React.ReactNode[] {
   if (!emotes.length) return [content];
 
-  // Replace emote names with <img> tags
-  let parts: React.ReactNode[] = [content];
+  let parts: (string | React.ReactElement)[] = [content];
 
   for (const emote of emotes) {
-    parts = parts.flatMap((part, partIdx) => {
+    parts = parts.flatMap((part, partIdx): (string | React.ReactElement)[] => {
       if (typeof part !== 'string') return [part];
       const segments = part.split(new RegExp(`\\[${emote.name}\\]`, 'g'));
       if (segments.length === 1) return [part];
-      return segments.flatMap((seg, i) =>
+      return segments.flatMap((seg, i): (string | React.ReactElement)[] =>
         i < segments.length - 1
           ? [
               seg,
