@@ -386,7 +386,12 @@ export default function EbzClient() {
 
           <div className="space-y-4 font-mono text-sm leading-relaxed text-gray-400">
             <p>
-              <span className="text-white">EBZ</span> — a content creator who built a loyal community on Kick — has been banned from the platform following <span className="text-red-400">false accusations of being a paedophile</span>. These accusations are unsubstantiated, yet they have spread across social media unchecked, causing catastrophic damage to his reputation, livelihood, and mental health.
+              <a
+                href="https://www.youtube.com/@EbZ.i/streams"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white underline decoration-dotted underline-offset-2 hover:text-[#53FC18] transition-colors"
+              >EBZ</a> — a content creator who built a loyal community on Kick — has been banned from the platform following <span className="text-red-400">false accusations of being a paedophile</span>. These accusations are unsubstantiated, yet they have spread across social media unchecked, causing catastrophic damage to his reputation, livelihood, and mental health.
             </p>
             <p>
               As a direct result of these lies, EBZ has lost <span className="text-white">tens of thousands of dollars</span> in streaming revenue and brand deals, while also seeing years of work in his intellectual property and future opportunities damaged.

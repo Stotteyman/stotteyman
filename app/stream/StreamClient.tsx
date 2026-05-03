@@ -10,6 +10,7 @@ const kickChannel = 'stotteyman';
 const kickChatPopout = `https://kick.com/popout/${kickChannel}/chat`;
 const discordInvite = 'https://discord.gg/9zbyfPyp3E';
 const KICK_PROVIDER = 'custom:kick';
+const KICK_PROVIDER_TOKEN_KEY = 'kick_provider_token';
 
 type LoginState = 'idle' | 'pending' | 'loggedIn';
 
@@ -120,9 +121,17 @@ export default function StreamClient() {
 
     if (user) {
       const uname = resolveKickUsernameFromUser(user);
+      const sessionToken = data.session?.provider_token ?? null;
+      const storedToken = window.sessionStorage.getItem(KICK_PROVIDER_TOKEN_KEY);
+      const token = sessionToken || storedToken;
+
       setKickUsername(uname);
-      setLoginState('loggedIn');
-      setProviderToken(data.session?.provider_token ?? null);
+      setProviderToken(token);
+      if (sessionToken) {
+        window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, sessionToken);
+      }
+
+      setLoginState(token ? 'loggedIn' : 'idle');
       setErrorMsg('');
       return;
     }
@@ -130,6 +139,7 @@ export default function StreamClient() {
     setKickUsername('');
     setLoginState('idle');
     setProviderToken(null);
+    window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
   }, [resolveKickUsernameFromUser]);
 
   useEffect(() => {
@@ -138,14 +148,21 @@ export default function StreamClient() {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         const uname = resolveKickUsernameFromUser(session.user);
+        const token = session.provider_token ?? window.sessionStorage.getItem(KICK_PROVIDER_TOKEN_KEY);
+
         setKickUsername(uname);
-        setLoginState('loggedIn');
-        setProviderToken(session.provider_token ?? null);
+        setProviderToken(token);
+        if (session.provider_token) {
+          window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, session.provider_token);
+        }
+
+        setLoginState(token ? 'loggedIn' : 'idle');
         setErrorMsg('');
       } else {
         setKickUsername('');
         setLoginState('idle');
         setProviderToken(null);
+        window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
       }
     });
 
@@ -189,7 +206,7 @@ export default function StreamClient() {
       options: {
         redirectTo,
         skipBrowserRedirect: true,
-        scopes: 'user:read',
+        scopes: 'user:read chat:write',
       },
     });
 
@@ -235,6 +252,16 @@ export default function StreamClient() {
     await supabase.auth.signOut();
     setLoginState('idle');
     setKickUsername('');
+    setProviderToken(null);
+    window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
+  }, []);
+
+  const handleKickAuthExpired = useCallback(async () => {
+    await supabase.auth.signOut();
+    setProviderToken(null);
+    setLoginState('idle');
+    window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
+    setErrorMsg('Kick chat session expired. Please login again.');
   }, []);
 
   return (
@@ -370,6 +397,7 @@ export default function StreamClient() {
               providerToken={providerToken}
               username={kickUsername}
               onLoginRequest={handleLogin}
+              onAuthExpired={handleKickAuthExpired}
             />
           </div>
         </div>

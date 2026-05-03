@@ -67,6 +67,7 @@ interface Props {
   providerToken: string | null;
   username: string;
   onLoginRequest: () => void;
+  onAuthExpired: () => void;
 }
 
 // ---------- helpers ----------
@@ -135,7 +136,7 @@ function BadgePill({ badge }: { badge: KickBadge }) {
   );
 }
 
-export default function KickChatWidget({ providerToken, username, onLoginRequest }: Props) {
+export default function KickChatWidget({ providerToken, username, onLoginRequest, onAuthExpired }: Props) {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -240,7 +241,16 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        setSendError(err?.message ?? `Send failed (${res.status})`);
+        const message = err?.message ?? `Send failed (${res.status})`;
+        setSendError(message);
+
+        if (
+          res.status === 401 ||
+          res.status === 403 ||
+          /not authenticated|unauthenticated|expired/i.test(String(message))
+        ) {
+          onAuthExpired();
+        }
       } else {
         setInput('');
       }
@@ -249,7 +259,7 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
     } finally {
       setSending(false);
     }
-  }, [input, providerToken, sending]);
+  }, [input, onAuthExpired, providerToken, sending]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
