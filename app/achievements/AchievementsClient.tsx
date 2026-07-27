@@ -28,8 +28,8 @@ export default function AchievementsClient() {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('achievements').select('*').order('sort_order'),
-      supabase.from('active_projects').select('*').order('sort_order'),
+      supabase.from('public_achievements').select('*').order('sort_order'),
+      supabase.from('public_projects').select('*').order('sort_order'),
     ]).then(([a, p]) => {
       if (a.data) setAchievements(a.data as Achievement[]);
       if (p.data) setProjects(p.data as Project[]);

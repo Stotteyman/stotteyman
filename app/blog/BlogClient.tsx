@@ -28,7 +28,7 @@ export default function BlogClient() {
 
   useEffect(() => {
     supabase
-      .from('posts')
+      .from('public_posts')
       .select('id, slug, title, date, excerpt')
       .order('sort_order', { ascending: true })
       .then(({ data }) => {

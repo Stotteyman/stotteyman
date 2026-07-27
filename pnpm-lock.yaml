@@ -17,6 +17,9 @@ importers:
 
   .:
     dependencies:
+      '@supabase/ssr':
+        specifier: ^0.12.3
+        version: 0.12.3(@supabase/supabase-js@2.105.1)
       '@supabase/supabase-js':
         specifier: ^2.105.1
         version: 2.105.1
@@ -38,10 +41,16 @@ importers:
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       tailwindcss:
         specifier: ^3.4.0
         version: 3.4.17
     devDependencies:
+      '@netlify/plugin-nextjs':
+        specifier: ^5.15.12
+        version: 5.15.12
       '@types/node':
         specifier: ^22.10.2
         version: 22.18.1
@@ -410,6 +419,10 @@ packages:
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
 
+  '@netlify/plugin-nextjs@5.15.12':
+    resolution: {integrity: sha512-eydPd4gtc/OJOx9IbIJ5CRrC5K3rLxfEQS/S/fRNEAAT0qFvPoQVy23VdK3jRXKFJWXdCRl6ZudWLEZECQPSRQ==}
+    engines: {node: '>=18.0.0'}
+
   '@next/env@16.2.4':
     resolution: {integrity: sha512-dKkkOzOSwFYe5RX6y26fZgkSpVAlIOJKQHIiydQcrWH6y/97+RceSOAdjZ14Qa3zLduVUy0TXcn+EiM6t4rPgw==}
 
@@ -514,6 +527,11 @@ packages:
   '@supabase/realtime-js@2.105.1':
     resolution: {integrity: sha512-3X3cUEl5cJ4lRQHr1hXHx0b98OaL97RRO2vrRZ98FD91JV/MquZHhrGJSv/+IkOnjF6E2e0RUOxE8P3Zi035ow==}
     engines: {node: '>=20.0.0'}
+
+  '@supabase/ssr@0.12.3':
+    resolution: {integrity: sha512-qWXJ/dI7CiYDKyTgIPqJ4Qkh8y5edh2LdF/nkN48z47mmEVzAO2OE+YErYeQ/UemVfonn/F4kFz+lhLqoVMdpw==}
+    peerDependencies:
+      '@supabase/supabase-js': ^2.110.5
 
   '@supabase/storage-js@2.105.1':
     resolution: {integrity: sha512-owfdCNH5ikXXDusjzsgU6LavEBqGUoueOnL/9XIucld70/WJ/rbqp89K//c9QPICDNuegsmpoeasydDAiucLKQ==}
@@ -904,6 +922,10 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  cookie@1.1.1:
+    resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
+    engines: {node: '>=18'}
 
   cosmiconfig@9.0.0:
     resolution: {integrity: sha512-itvL5h8RETACmOTFc4UfIyB2RfEHi71Ax6E/PivVxq9NseKbOWpeyHEOIbmAw1rs8Ak0VursQNww7lf7YtUwzg==}
@@ -1997,6 +2019,9 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
+
   set-function-length@1.2.2:
     resolution: {integrity: sha512-pgRc4hJ4/sNjWCSS9AmnS40x3bNMDTknHgL5UaMBTMyJnU90EgWh1Rz+MC9eFu4BuN/UwZjKQuY/1v3rM7HMfg==}
     engines: {node: '>= 0.4'}
@@ -2673,6 +2698,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.0
     optional: true
 
+  '@netlify/plugin-nextjs@5.15.12': {}
+
   '@next/env@16.2.4': {}
 
   '@next/eslint-plugin-next@16.2.4':
@@ -2753,6 +2780,11 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+
+  '@supabase/ssr@0.12.3(@supabase/supabase-js@2.105.1)':
+    dependencies:
+      '@supabase/supabase-js': 2.105.1
+      cookie: 1.1.1
 
   '@supabase/storage-js@2.105.1':
     dependencies:
@@ -3171,6 +3203,8 @@ snapshots:
   commander@4.1.1: {}
 
   convert-source-map@2.0.0: {}
+
+  cookie@1.1.1: {}
 
   cosmiconfig@9.0.0(typescript@5.9.2):
     dependencies:
@@ -4374,6 +4408,8 @@ snapshots:
   semver@7.7.2: {}
 
   semver@7.7.4: {}
+
+  server-only@0.0.1: {}
 
   set-function-length@1.2.2:
     dependencies:

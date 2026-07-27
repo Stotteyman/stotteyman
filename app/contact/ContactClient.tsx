@@ -22,11 +22,13 @@ export default function ContactClient() {
       setFormState('submitting');
       setErrorMsg('');
 
-      const { error } = await supabase.from('contact_submissions').insert({
-        name: name.trim(),
-        email: email.trim(),
-        subject: subject.trim() || null,
-        message: message.trim(),
+      // anon holds no INSERT privilege anywhere in the schema; submissions go
+      // through a security-definer RPC that validates before writing.
+      const { error } = await supabase.rpc('submit_contact_message', {
+        p_name: name.trim(),
+        p_email: email.trim(),
+        p_subject: subject.trim() || null,
+        p_message: message.trim(),
       });
 
       if (error) {
