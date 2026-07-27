@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
 
 /**
@@ -34,7 +35,7 @@ export async function GET(request: NextRequest) {
     }
   );
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     return NextResponse.redirect(
       `${origin}/hq/login?error=${encodeURIComponent(error.message)}`
@@ -47,7 +48,25 @@ export async function GET(request: NextRequest) {
   // already had an account on this shared project — which is most people worth
   // inviting. This RPC is the second door. It reads the email from auth.users, so it
   // cannot be used to grant yourself access to an invite that is not yours.
-  await supabase.rpc('accept_invite');
+  //
+  // The token is passed EXPLICITLY rather than calling supabase.rpc() on the client
+  // above: exchangeCodeForSession writes the new session to `response` cookies, but
+  // that client reads cookies back off `request`, which still has none. It would run
+  // the RPC as anon, get auth.uid() = null, and silently provision nothing.
+  if (data.session?.access_token) {
+    const authed = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        db: { schema: 'stotteyman' },
+        auth: { persistSession: false, autoRefreshToken: false },
+        global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
+      }
+    );
+    const { data: result, error: rpcError } = await authed.rpc('accept_invite');
+    if (rpcError) console.error('[hq/callback] accept_invite failed', rpcError);
+    else console.info('[hq/callback] accept_invite', result);
+  }
 
   // No membership check here — middleware owns that decision, so there is exactly one
   // place where access is granted or refused.
