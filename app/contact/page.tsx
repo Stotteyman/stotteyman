@@ -3,7 +3,7 @@ import ContactClient from './ContactClient';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Direct contact methods and the fastest ways to reach Gary Lee McCullouch Jr. through the Stotteyman portfolio.',
+  description: 'Direct contact methods and the fastest ways to reach Stotteyman.',
 };
 
 export default function ContactPage() {

@@ -40,7 +40,6 @@ export const metadata: Metadata = {
     'contact',
     'interactive portfolio',
     'stotteyman',
-    'Gary Lee McCullouch Jr',
   ],
   authors: [{ name: siteConfig.person }],
   creator: siteConfig.person,

@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     'mindset',
     'portfolio notes',
     'public work',
-    'Gary Lee McCullouch Jr',
     'Stotteyman'
   ],
   openGraph: {

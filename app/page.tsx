@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { navigationItems, siteConfig } from '@/lib/site-content';
+import { loadCopy } from '@/lib/site-copy';
 import { createSupabaseAnonClient } from '@/lib/supabase/client';
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default async function HomePage() {
   const supabase = createSupabaseAnonClient();
+  const copy = await loadCopy();
   const [{ data: projectRows }, { data: serviceRows }] = await Promise.all([
     supabase
       .from('public_projects')
@@ -82,16 +84,19 @@ export default async function HomePage() {
 
         <section className="border-b border-white/10 py-16 md:py-24">
           <p className="text-xs uppercase tracking-[0.35em] text-neon-cyan/80">
-            {siteConfig.person}
+            {copy('home.eyebrow', 'Builder & operator')}
           </p>
           <h1 className="mt-6 max-w-4xl text-4xl font-light leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
-            I build multiplayer worlds, the platforms around them, and the systems that keep
-            them running.
+            {copy(
+              'home.headline',
+              'I build multiplayer worlds, the platforms around them, and the systems that keep them running.'
+            )}
           </h1>
           <p className="mt-7 max-w-2xl text-lg leading-relaxed text-gray-300">
-            Game servers, community platforms, storefronts, and internal tooling — designed,
-            engineered, and operated. Currently running a live Arma Reforger roleplay server and
-            a group of businesses under Stotteyman Enterprises.
+            {copy(
+              'home.intro',
+              'Game servers, community platforms, storefronts, and internal tooling — designed, engineered, and operated.'
+            )}
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3">
@@ -99,19 +104,19 @@ export default async function HomePage() {
               href="/work/"
               className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02]"
             >
-              See the work
+              {copy('home.cta_primary', 'See the work')}
             </Link>
             <Link
               href="/consult/"
               className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3.5 text-sm text-white transition-colors duration-300 hover:border-white/50"
             >
-              Work with me
+              {copy('home.cta_secondary', 'Work with me')}
             </Link>
           </div>
 
           <p className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/25 bg-emerald-400/5 px-4 py-2 text-xs text-emerald-200/90">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            Open to collaborations and new projects
+            {copy('home.availability', 'Open to collaborations and new projects')}
           </p>
         </section>
 
@@ -174,8 +179,10 @@ export default async function HomePage() {
 
         <section className="py-16">
           <h2 className="max-w-3xl text-2xl font-light leading-snug text-white md:text-3xl">
-            If you are building something that needs a technical partner rather than a
-            contractor, that is worth a conversation.
+            {copy(
+              'home.closing',
+              'If you are building something that needs a technical partner rather than a contractor, that is worth a conversation.'
+            )}
           </h2>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link

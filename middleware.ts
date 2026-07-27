@@ -5,9 +5,12 @@ import { NextResponse, type NextRequest } from 'next/server';
  * Host-based routing + the private HQ gate.
  *
  * HQ lives at hq.stotteyman.com. The routes still live under `app/hq/*` on disk, so the
- * subdomain is served by rewriting `/org` -> `/hq/org` internally. The apex redirects
- * `/hq/*` to the subdomain, which means HQ links are written WITHOUT the `/hq` prefix
- * and there is exactly one canonical URL for every HQ page.
+ * subdomain is served by rewriting `/org` -> `/hq/org` internally, and the canonical
+ * public host 308-redirects `/hq/*` across. HQ links carry no `/hq` prefix.
+ *
+ * The redirect is scoped to the CANONICAL public hosts only. Deploy previews
+ * (*.netlify.app) and localhost keep serving `/hq/*` directly — otherwise every preview
+ * build and every local dev session would bounce to production the moment you opened HQ.
  *
  * The gate is layer 2 of 3 (see Build Notes/stotteyman-hub README §4):
  *   1. DB trigger / accept_invite — membership only ever comes from an invite
@@ -18,6 +21,7 @@ import { NextResponse, type NextRequest } from 'next/server';
  * from someone who signed up on a completely different site. A session is not access.
  */
 const HQ_HOST = 'hq.stotteyman.com';
+const CANONICAL_PUBLIC_HOSTS = new Set(['stotteyman.com', 'www.stotteyman.com']);
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY!;
@@ -29,36 +33,39 @@ export async function middleware(request: NextRequest) {
   const host = (request.headers.get('host') ?? '').split(':')[0].toLowerCase();
   const isHqHost = host === HQ_HOST;
   const { pathname, search } = request.nextUrl;
+  const isApi = pathname.startsWith('/api');
+  const hasHqPrefix = pathname === '/hq' || pathname.startsWith('/hq/');
 
-  // Apex/www: HQ has moved. Send it to the subdomain, preserving the deep link.
-  if (!isHqHost && (pathname === '/hq' || pathname.startsWith('/hq/'))) {
+  // Canonical public host: HQ has moved. Preserve the deep link.
+  if (!isHqHost && hasHqPrefix && CANONICAL_PUBLIC_HOSTS.has(host)) {
     const rest = pathname.replace(/^\/hq/, '') || '/';
     return NextResponse.redirect(`https://${HQ_HOST}${rest}${search}`, 308);
   }
 
-  if (!isHqHost) return NextResponse.next({ request });
-
-  // ---- from here down we are on hq.stotteyman.com ----
-
-  // /api is served as-is; only page routes get the /hq prefix.
-  const isApi = pathname.startsWith('/api');
-
-  // Someone hitting hq.stotteyman.com/hq/... — collapse to the canonical form.
-  if (!isApi && (pathname === '/hq' || pathname.startsWith('/hq/'))) {
+  // On the HQ host, collapse an accidental /hq prefix to the canonical form.
+  if (isHqHost && !isApi && hasHqPrefix) {
     const rest = pathname.replace(/^\/hq/, '') || '/';
     return NextResponse.redirect(new URL(`${rest}${search}`, request.url), 308);
   }
 
-  const hqPath = pathname === '/' ? '/hq' : `/hq${pathname}`;
+  /**
+   * The HQ route this request resolves to, or null if it is a public page.
+   * On the HQ host every page is HQ; elsewhere only an explicit /hq/* path is.
+   */
+  const hqPath = isHqHost ? (pathname === '/' ? '/hq' : `/hq${pathname}`) : hasHqPrefix ? pathname : null;
 
-  let response: NextResponse;
+  const isHqApi = pathname.startsWith('/api/hq');
+  if (hqPath === null && !isHqApi) return NextResponse.next({ request });
+
+  const needsRewrite = isHqHost && !isApi;
   const buildResponse = () => {
-    if (isApi) return NextResponse.next({ request });
+    if (!needsRewrite) return NextResponse.next({ request });
     const url = request.nextUrl.clone();
-    url.pathname = hqPath;
+    url.pathname = hqPath!;
     return NextResponse.rewrite(url);
   };
-  response = buildResponse();
+
+  let response = buildResponse();
 
   const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
@@ -81,17 +88,22 @@ export async function middleware(request: NextRequest) {
 
   response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 
-  // API routes do their own permission checks and must return JSON, not a redirect.
+  // API routes run their own permission checks and must return JSON, not a redirect.
   if (isApi) return response;
 
-  if (PUBLIC_HQ_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+  // Compare against the HQ-relative path so this works on both host shapes.
+  const relative = hqPath!.replace(/^\/hq/, '') || '/';
+  if (PUBLIC_HQ_PATHS.some((p) => relative === p || relative.startsWith(`${p}/`))) {
     return response;
   }
 
+  const loginPath = isHqHost ? '/login' : '/hq/login';
+  const noAccessPath = isHqHost ? '/no-access' : '/hq/no-access';
+
   if (!user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    url.search = `?next=${encodeURIComponent(pathname)}`;
+    url.pathname = loginPath;
+    url.search = `?next=${encodeURIComponent(relative)}`;
     return NextResponse.redirect(url);
   }
 
@@ -112,7 +124,7 @@ export async function middleware(request: NextRequest) {
 
   if (rows.length === 0) {
     const url = request.nextUrl.clone();
-    url.pathname = '/no-access';
+    url.pathname = noAccessPath;
     url.search = '';
     return NextResponse.redirect(url);
   }

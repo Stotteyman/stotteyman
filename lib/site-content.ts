@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: 'Stotteyman',
-  person: 'Gary Lee McCullouch Jr.',
+  person: 'Stotteyman',
   title: 'Builder and operator — games, web platforms, and communities',
   description:
     'A multi-page portfolio documenting mindset, work, achievements, livestreams, events, and the places where people can follow along.',

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import SiteShell from '@/components/SiteShell';
+import { loadCopy } from '@/lib/site-copy';
 import { createSupabaseAnonClient } from '@/lib/supabase/client';
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ type Service = {
 
 export default async function ServicesPage() {
   const supabase = createSupabaseAnonClient();
+  const copy = await loadCopy();
   const { data } = await supabase
     .from('public_services')
     .select('id, slug, title, summary, detail, deliverables, starting_at, cta_label, sort_order')
@@ -36,9 +38,9 @@ export default async function ServicesPage() {
 
   return (
     <SiteShell
-      eyebrow="Services"
-      title="What I build, and what it looks like to hire me for it."
-      intro="Four things I do well. If your problem sits across two of them, that is usually a good sign rather than a complication."
+      eyebrow={copy('services.eyebrow', 'Services')}
+      title={copy('services.title', 'What I build, and what it looks like to hire me for it.')}
+      intro={copy('services.intro', 'Four things I do well.')}
     >
       <div className="grid gap-5">
         {services.map((s) => (
@@ -90,12 +92,12 @@ export default async function ServicesPage() {
       </div>
 
       <section className="mt-12 rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="text-xl font-semibold text-white">Open to collaborations</h2>
+        <h2 className="text-xl font-semibold text-white">{copy('services.collab_title', 'Open to collaborations')}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">
-          Beyond client work I am actively interested in building things with other people —
-          co-founding, revenue shares, joint projects across games, communities, and software.
-          If you have something in motion and want a technical partner rather than a vendor,
-          that is worth a conversation.
+          {copy(
+            'services.collab_body',
+            'Beyond client work I am actively interested in building things with other people — co-founding, revenue shares, and joint projects.'
+          )}
         </p>
         <Link
           href="/consult/"

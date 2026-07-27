@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import SiteShell from '@/components/SiteShell';
+import { loadCopy } from '@/lib/site-copy';
 import { createSupabaseAnonClient } from '@/lib/supabase/client';
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ const STATUS_LABEL: Record<string, string> = {
 
 export default async function WorkPage() {
   const supabase = createSupabaseAnonClient();
+  const copy = await loadCopy();
   const { data } = await supabase
     .from('public_projects')
     .select(
@@ -49,9 +51,9 @@ export default async function WorkPage() {
 
   return (
     <SiteShell
-      eyebrow="Work"
-      title="Things I have designed, built, and kept running."
-      intro="Multiplayer game servers, community platforms, storefronts, and the internal tooling that keeps them all manageable. Most of these are live and still being worked on."
+      eyebrow={copy('work.eyebrow', 'Work')}
+      title={copy('work.title', 'Things I have designed, built, and kept running.')}
+      intro={copy('work.intro', 'Multiplayer game servers, community platforms, storefronts, and the internal tooling that keeps them all manageable.')}
     >
       {featured.length ? (
         <section>
@@ -148,10 +150,12 @@ export default async function WorkPage() {
       ) : null}
 
       <section className="mt-14 rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="text-xl font-semibold text-white">Want something like this built?</h2>
+        <h2 className="text-xl font-semibold text-white">{copy('work.cta_title', 'Want something like this built?')}</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">
-          I take on consulting, contract builds, and collaborations. If you have a project
-          that needs the same treatment, tell me about it.
+          {copy(
+            'work.cta_body',
+            'I take on consulting, contract builds, and collaborations. If you have a project that needs the same treatment, tell me about it.'
+          )}
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link

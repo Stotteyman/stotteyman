@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import SiteShell from '@/components/SiteShell';
+import { loadCopy } from '@/lib/site-copy';
 
 import ConsultClient from './ConsultClient';
 
@@ -10,12 +11,13 @@ export const metadata: Metadata = {
     'Request a consultation, a meeting, or a collaboration. Game and server development, web platforms, Discord systems, and brand work.',
 };
 
-export default function ConsultPage() {
+export default async function ConsultPage() {
+  const copy = await loadCopy();
   return (
     <SiteShell
-      eyebrow="Work with me"
-      title="Open to consultations, collaborations, and interesting problems."
-      intro="Tell me what you are building and where it is stuck. I read every request personally — there is no form-filling gauntlet and no sales sequence on the other side of this."
+      eyebrow={copy('consult.eyebrow', 'Work with me')}
+      title={copy('consult.title', 'Open to consultations, collaborations, and interesting problems.')}
+      intro={copy('consult.intro', 'Tell me what you are building and where it is stuck. I read every request personally.')}
     >
       <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
         <ConsultClient />
@@ -52,8 +54,10 @@ export default function ConsultPage() {
           <div className="rounded-[1.5rem] border border-dashed border-white/10 p-6">
             <h2 className="text-sm font-semibold text-white">Straight answer</h2>
             <p className="mt-3 text-sm leading-relaxed text-white/50">
-              If it is not something I can do well, I will tell you that rather than take the
-              work. A bad fit costs us both more than a short email does.
+              {copy(
+                'consult.straight_answer',
+                'If it is not something I can do well, I will tell you that rather than take the work.'
+              )}
             </p>
           </div>
         </aside>
