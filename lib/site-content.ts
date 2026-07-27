@@ -5,7 +5,7 @@ export const siteConfig = {
   description:
     'A multi-page portfolio documenting mindset, work, achievements, livestreams, events, and the places where people can follow along.',
   location: 'Based online, building in public',
-  email: 'stotteyman@stotteyman.com',
+  email: 'contact@stotteyman.com',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://stotteyman.com',
   socialHandle: '@stotteyman',
 } as const;
@@ -230,8 +230,8 @@ export const upcomingEvents = [
 export const contactMethods = [
   {
     label: 'Email',
-    value: 'stotteyman@stotteyman.com',
-    href: 'mailto:stotteyman@stotteyman.com',
+    value: 'contact@stotteyman.com',
+    href: 'mailto:contact@stotteyman.com',
   },
   {
     label: 'Discord',

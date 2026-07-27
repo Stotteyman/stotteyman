@@ -171,7 +171,7 @@ export default function ContactClient() {
             <p className="text-sm uppercase tracking-[0.35em] text-neon-pink/80">Direct channels</p>
             <div className="mt-5 space-y-3">
               {[
-                { label: 'Email', value: 'stotteyman@stotteyman.com', href: 'mailto:stotteyman@stotteyman.com' },
+                { label: 'Email', value: 'contact@stotteyman.com', href: 'mailto:contact@stotteyman.com' },
                 { label: 'Discord', value: 'Community server', href: 'https://discord.gg/9zbyfPyp3E' },
                 { label: 'Kick', value: 'kick.com/stotteyman', href: 'https://kick.com/stotteyman' },
               ].map((m) => (

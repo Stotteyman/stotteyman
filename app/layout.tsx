@@ -110,7 +110,13 @@ export default function RootLayout({
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
-      <body className="font-sans antialiased bg-black text-white h-screen overflow-hidden">
+      {/*
+        No `h-screen overflow-hidden` here. A body with hidden overflow propagates to
+        the viewport, which made every page taller than the screen unscrollable — HQ
+        worst of all. The homepage pins itself to the viewport on its own <main>, so it
+        keeps its full-screen look without imposing that on the rest of the site.
+      */}
+      <body className="font-sans antialiased bg-black text-white">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
