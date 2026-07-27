@@ -13,6 +13,7 @@ export const siteConfig = {
 export const navigationItems = [
   { href: '/', label: 'Home' },
   { href: '/work', label: 'Work' },
+  { href: '/about', label: 'About' },
   { href: '/services', label: 'Services' },
   { href: '/mindset', label: 'Mindset' },
   { href: '/blog', label: 'Writing' },

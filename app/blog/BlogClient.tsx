@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import SiteShell from '@/components/SiteShell';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
@@ -51,14 +53,18 @@ export default function BlogClient() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           {posts.map((post) => (
-            <article
+            <Link
               key={post.id}
-              className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:border-neon-orange/60 hover:bg-white/10"
+              href={`/blog/${post.slug}/`}
+              className="block rounded-[1.75rem] border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:border-neon-orange/60 hover:bg-white/10"
             >
               <p className="text-xs uppercase tracking-[0.35em] text-neon-cyan/80">{fmt(post.date)}</p>
               <h2 className="mt-4 text-2xl font-light text-white">{post.title}</h2>
               <p className="mt-4 text-sm leading-7 text-gray-400">{post.excerpt}</p>
-            </article>
+              <span className="mt-5 inline-block text-xs uppercase tracking-[0.2em] text-white/40">
+                Read →
+              </span>
+            </Link>
           ))}
         </div>
       )}

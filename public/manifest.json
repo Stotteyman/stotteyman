@@ -7,7 +7,11 @@
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "any",
-  "categories": ["portfolio", "creative", "technology"],
+  "categories": [
+    "portfolio",
+    "creative",
+    "technology"
+  ],
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -33,20 +37,6 @@
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "375x667",
-      "type": "image/png",
-      "form_factor": "narrow"
     }
   ]
 }
