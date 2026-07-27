@@ -41,7 +41,15 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Deliberately no membership check here — middleware owns that decision, so there is
-  // exactly one place where access is granted or refused.
+  // Claim a pending invite, if there is one.
+  //
+  // The auth.users trigger only fires on INSERT, so it cannot provision anyone who
+  // already had an account on this shared project — which is most people worth
+  // inviting. This RPC is the second door. It reads the email from auth.users, so it
+  // cannot be used to grant yourself access to an invite that is not yours.
+  await supabase.rpc('accept_invite');
+
+  // No membership check here — middleware owns that decision, so there is exactly one
+  // place where access is granted or refused.
   return response;
 }

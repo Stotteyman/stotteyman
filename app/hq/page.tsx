@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { createSupabaseServiceClient, getHqMember } from '@/lib/supabase/server';
@@ -55,6 +56,15 @@ export default async function HqHomePage() {
             </>
           ) : null}
         </p>
+
+        <nav className="mt-6 flex flex-wrap gap-3">
+          <Link
+            href="/hq/people"
+            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
+          >
+            People
+          </Link>
+        </nav>
       </header>
 
       <section className="mt-12">
