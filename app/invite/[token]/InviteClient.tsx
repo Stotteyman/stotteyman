@@ -30,11 +30,14 @@ export default function InviteClient({
   email,
   role,
   note,
+  hqCallback,
 }: {
   state: State;
   email: string | null;
   role: string | null;
   note: string | null;
+  /** Absolute HQ callback URL, resolved server-side from the request host. */
+  hqCallback: string;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -46,12 +49,10 @@ export default function InviteClient({
       const supabase = createSupabaseBrowserClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        // The invite page is public (apex), but HQ lives on its own host — send the
-        // OAuth callback straight there rather than bouncing through a redirect,
-        // which would put the single-use code through an extra hop.
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_HQ_URL ?? 'https://hq.stotteyman.com'}/auth/callback?next=/`,
-        },
+        // The invite page is public, but HQ lives elsewhere — send the OAuth callback
+        // straight there rather than bouncing a single-use code through a redirect.
+        // Resolved from the request host so local dev stays on localhost.
+        options: { redirectTo: `${hqCallback}?next=/` },
       });
       if (error) {
         setError(error.message);
@@ -61,7 +62,7 @@ export default function InviteClient({
       setError(e instanceof Error ? e.message : 'Sign-in failed.');
       setBusy(null);
     }
-  }, []);
+  }, [hqCallback]);
 
   if (state !== 'valid') {
     const m = MESSAGES[state];

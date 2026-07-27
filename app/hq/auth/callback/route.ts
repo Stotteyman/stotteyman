@@ -1,3 +1,4 @@
+import { hqBaseFromHost } from '@/lib/hq/paths';
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -13,10 +14,14 @@ export async function GET(request: NextRequest) {
   const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/login?error=missing_code`);
+    return NextResponse.redirect(`${origin}${hqBaseFromHost(request.headers.get('host'))}/login?error=missing_code`);
   }
 
-  let response = NextResponse.redirect(`${origin}${next}`);
+  // On localhost/previews HQ sits under /hq, so a bare `next` of '/' would land on
+  // the PUBLIC homepage instead of HQ.
+  const hqBase = hqBaseFromHost(request.headers.get('host'));
+  const target = `${origin}${hqBase}${next === '/' ? '' : next}` || `${origin}${hqBase}/`;
+  let response = NextResponse.redirect(target);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -38,7 +43,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     return NextResponse.redirect(
-      `${origin}/login?error=${encodeURIComponent(error.message)}`
+      `${origin}${hqBase}/login?error=${encodeURIComponent(error.message)}`
     );
   }
 

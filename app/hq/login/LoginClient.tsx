@@ -9,9 +9,18 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
  * anywhere in this app — accounts exist only by invite, and the invite is what
  * provisions membership when the OAuth account is first created.
  */
-export default function LoginClient({ next }: { next: string }) {
+export default function LoginClient({
+  next,
+  hqBase,
+  initialError = '',
+}: {
+  next: string;
+  /** '' on hq.stotteyman.com, '/hq' on previews and localhost. */
+  hqBase: string;
+  initialError?: string;
+}) {
   const [busy, setBusy] = useState<string | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(initialError);
 
   const signIn = useCallback(
     async (provider: 'google' | 'discord') => {
@@ -19,7 +28,9 @@ export default function LoginClient({ next }: { next: string }) {
       setError('');
       try {
         const supabase = createSupabaseBrowserClient();
-        const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+        // Must carry the host's HQ prefix: on localhost `/auth/callback` is the
+        // PUBLIC callback page, which never exchanges the code.
+        const redirectTo = `${window.location.origin}${hqBase}/auth/callback?next=${encodeURIComponent(next)}`;
         const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
         if (error) {
           setError(error.message);
@@ -30,7 +41,7 @@ export default function LoginClient({ next }: { next: string }) {
         setBusy(null);
       }
     },
-    [next]
+    [next, hqBase]
   );
 
   return (

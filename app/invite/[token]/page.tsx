@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { createHash } from 'node:crypto';
+
+import { CANONICAL_PUBLIC_HOSTS, hqBaseFromHost } from '@/lib/hq/paths';
 
 import { createSupabaseServiceClient } from '@/lib/supabase/server';
 
@@ -18,6 +21,14 @@ export default async function InvitePage({
 }) {
   const { token } = await params;
   const tokenHash = createHash('sha256').update(token).digest('hex');
+
+  // Production sends people to the HQ subdomain; localhost and previews must stay put,
+  // or signing in locally would bounce to the live site.
+  const host = (await headers()).get('host') ?? '';
+  const bare = host.split(':')[0].toLowerCase();
+  const hqCallback = CANONICAL_PUBLIC_HOSTS.has(bare)
+    ? `${process.env.NEXT_PUBLIC_HQ_URL ?? 'https://hq.stotteyman.com'}/auth/callback`
+    : `${host.startsWith('localhost') ? 'http' : 'https'}://${host}${hqBaseFromHost(host)}/auth/callback`;
 
   const admin = createSupabaseServiceClient();
   const { data: invite } = await admin
@@ -41,6 +52,7 @@ export default async function InvitePage({
         email={invite?.email ?? null}
         role={invite?.role_slug ?? null}
         note={invite?.note ?? null}
+        hqCallback={hqCallback}
       />
     </main>
   );

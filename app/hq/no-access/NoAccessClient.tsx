@@ -17,7 +17,7 @@ type Phase = 'checking' | 'granted' | 'denied';
  *
  * Only if there is genuinely no invite do we sign out.
  */
-export default function NoAccessClient() {
+export default function NoAccessClient({ hqBase }: { hqBase: string }) {
   const [phase, setPhase] = useState<Phase>('checking');
   const [email, setEmail] = useState<string | null>(null);
 
@@ -41,7 +41,7 @@ export default function NoAccessClient() {
       if (result && typeof result === 'object' && (result as { ok?: boolean }).ok) {
         setPhase('granted');
         // Full reload so middleware re-evaluates with the new membership.
-        window.location.replace('/');
+        window.location.replace(`${hqBase}/` || '/');
         return;
       }
 
@@ -52,7 +52,7 @@ export default function NoAccessClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [hqBase]);
 
   if (phase === 'checking' || phase === 'granted') {
     return (
@@ -87,7 +87,7 @@ export default function NoAccessClient() {
 
         <div className="mt-8 flex flex-col gap-3">
           <a
-            href="/login/"
+            href={`${hqBase}/login/`}
             className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/40"
           >
             Try a different account
