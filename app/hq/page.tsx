@@ -123,6 +123,12 @@ export default async function HqHomePage() {
             Organisation
           </Link>
           <Link
+            href="/hq/consults"
+            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
+          >
+            Requests
+          </Link>
+          <Link
             href="/hq/people"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >

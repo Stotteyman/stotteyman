@@ -1,18 +1,18 @@
 export const siteConfig = {
   name: 'Stotteyman',
   person: 'Gary Lee McCullouch Jr.',
-  title: 'Builder, creator, and public record keeper',
+  title: 'Builder and operator — games, web platforms, and communities',
   description:
     'A multi-page portfolio documenting mindset, work, achievements, livestreams, events, and the places where people can follow along.',
   location: 'Based online, building in public',
-  email: 'contact@stotteyman.com',
-  phone: '+1 (555) 123-4567',
+  email: 'stotteyman@stotteyman.com',
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://stotteyman.com',
   socialHandle: '@stotteyman',
 } as const;
 
 export const navigationItems = [
   { href: '/', label: 'Home' },
+  { href: '/services', label: 'Services' },
   { href: '/mindset', label: 'Mindset' },
   { href: '/achievements', label: 'Achievements' },
   { href: '/blog', label: 'Writing' },
@@ -21,6 +21,7 @@ export const navigationItems = [
   { href: '/stream', label: 'Livestream' },
   { href: '/donate', label: 'Donate' },
   { href: '/contact', label: 'Contact' },
+  { href: '/consult', label: 'Work with me' },
 ] as const;
 
 export const homepageSections = [
@@ -229,13 +230,8 @@ export const upcomingEvents = [
 export const contactMethods = [
   {
     label: 'Email',
-    value: 'hello@stotteyman.com',
-    href: 'mailto:hello@stotteyman.com',
-  },
-  {
-    label: 'Phone',
-    value: '+1 (555) 123-4567',
-    href: 'tel:+15551234567',
+    value: 'stotteyman@stotteyman.com',
+    href: 'mailto:stotteyman@stotteyman.com',
   },
   {
     label: 'Discord',

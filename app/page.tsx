@@ -148,8 +148,8 @@ const socialLinks = [
   },
   {
     label: 'Email',
-    sublabel: 'contact@stotteyman.com',
-    href: 'mailto:contact@stotteyman.com',
+    sublabel: 'stotteyman@stotteyman.com',
+    href: 'mailto:stotteyman@stotteyman.com',
     external: false,
     color: '#ff8c00',
     delay: '0.85s',
