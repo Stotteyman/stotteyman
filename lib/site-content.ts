@@ -12,9 +12,9 @@ export const siteConfig = {
 
 export const navigationItems = [
   { href: '/', label: 'Home' },
+  { href: '/work', label: 'Work' },
   { href: '/services', label: 'Services' },
   { href: '/mindset', label: 'Mindset' },
-  { href: '/achievements', label: 'Achievements' },
   { href: '/blog', label: 'Writing' },
   { href: '/follow', label: 'Follow' },
   { href: '/events', label: 'Events' },

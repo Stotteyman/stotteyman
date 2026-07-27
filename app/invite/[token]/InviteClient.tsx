@@ -46,7 +46,12 @@ export default function InviteClient({
       const supabase = createSupabaseBrowserClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/hq/auth/callback?next=/hq` },
+        // The invite page is public (apex), but HQ lives on its own host — send the
+        // OAuth callback straight there rather than bouncing through a redirect,
+        // which would put the single-use code through an extra hop.
+        options: {
+          redirectTo: `${process.env.NEXT_PUBLIC_HQ_URL ?? 'https://hq.stotteyman.com'}/auth/callback?next=/`,
+        },
       });
       if (error) {
         setError(error.message);

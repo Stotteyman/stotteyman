@@ -12,12 +12,12 @@ export const dynamic = 'force-dynamic';
 
 export default async function ConsultsPage() {
   const actor = await getActor();
-  if (!actor) redirect('/hq/no-access');
+  if (!actor) redirect('/no-access');
   if (!actor.permissions.has('consults.manage')) {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-24">
         <p className="text-sm text-white/60">You do not have permission to manage requests.</p>
-        <Link href="/hq" className="mt-4 inline-block text-sm text-white/40 underline">
+        <Link href="/" className="mt-4 inline-block text-sm text-white/40 underline">
           Back to HQ
         </Link>
       </main>
@@ -37,7 +37,7 @@ export default async function ConsultsPage() {
     <main className="mx-auto w-full max-w-5xl px-6 py-16">
       <header className="border-b border-white/10 pb-8">
         <Link
-          href="/hq"
+          href="/"
           className="text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white/70"
         >
           ← HQ

@@ -12,14 +12,14 @@ export const dynamic = 'force-dynamic';
 
 export default async function PeoplePage() {
   const actor = await getActor();
-  if (!actor) redirect('/hq/no-access');
+  if (!actor) redirect('/no-access');
   if (!actor.permissions.has('members.invite')) {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-24">
         <p className="text-sm text-white/60">
           You do not have permission to manage people.
         </p>
-        <Link href="/hq" className="mt-4 inline-block text-sm text-white/40 underline">
+        <Link href="/" className="mt-4 inline-block text-sm text-white/40 underline">
           Back to HQ
         </Link>
       </main>
@@ -45,7 +45,7 @@ export default async function PeoplePage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-16">
       <header className="border-b border-white/10 pb-8">
-        <Link href="/hq" className="text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white/70">
+        <Link href="/" className="text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white/70">
           ← HQ
         </Link>
         <h1 className="mt-3 text-3xl font-semibold text-white">People</h1>

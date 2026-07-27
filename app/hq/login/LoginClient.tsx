@@ -19,7 +19,7 @@ export default function LoginClient({ next }: { next: string }) {
       setError('');
       try {
         const supabase = createSupabaseBrowserClient();
-        const redirectTo = `${window.location.origin}/hq/auth/callback?next=${encodeURIComponent(next)}`;
+        const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
         const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo } });
         if (error) {
           setError(error.message);

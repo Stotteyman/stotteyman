@@ -9,11 +9,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get('code');
-  const rawNext = searchParams.get('next') ?? '/hq';
-  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/hq';
+  const rawNext = searchParams.get('next') ?? '/';
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/hq/login?error=missing_code`);
+    return NextResponse.redirect(`${origin}/login?error=missing_code`);
   }
 
   let response = NextResponse.redirect(`${origin}${next}`);
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
     return NextResponse.redirect(
-      `${origin}/hq/login?error=${encodeURIComponent(error.message)}`
+      `${origin}/login?error=${encodeURIComponent(error.message)}`
     );
   }
 

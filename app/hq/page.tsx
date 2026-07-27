@@ -30,7 +30,7 @@ export default async function HqHomePage() {
   const member = await getHqMember();
   // Belt and braces: middleware already gates this, but a server component rendering
   // business data should never rely solely on an upstream check.
-  if (!member) redirect('/hq/no-access');
+  if (!member) redirect('/no-access');
 
   const admin = createSupabaseServiceClient();
   const [{ data }, cache] = await Promise.all([
@@ -117,19 +117,19 @@ export default async function HqHomePage() {
 
         <nav className="mt-6 flex flex-wrap gap-3">
           <Link
-            href="/hq/org"
+            href="/org"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >
             Organisation
           </Link>
           <Link
-            href="/hq/consults"
+            href="/consults"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >
             Requests
           </Link>
           <Link
-            href="/hq/people"
+            href="/people"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >
             People
