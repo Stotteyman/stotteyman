@@ -18,6 +18,11 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
+  other: {
+    'copyright': '(c) 2026 Stotteyman. All rights reserved.',
+    'rights': 'Proprietary. All rights reserved. No licence granted for reuse, redistribution, or AI training.',
+    'tdm-reservation': '1',
+  },
   title: {
     default: 'Stotteyman',
     template: '%s | Stotteyman',
