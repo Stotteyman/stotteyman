@@ -16,7 +16,7 @@ export default function MindsetClient() {
 
   useEffect(() => {
     supabase
-      .from('mindset_principles')
+      .from('public_mindset_principles')
       .select('id, title, body')
       .order('sort_order')
       .then(({ data }) => {

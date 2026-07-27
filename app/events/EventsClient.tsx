@@ -24,7 +24,7 @@ export default function EventsClient() {
 
   useEffect(() => {
     supabase
-      .from('events')
+      .from('public_events')
       .select('*')
       .order('sort_order')
       .then(({ data }) => {

@@ -17,7 +17,7 @@ export default function FollowClient() {
 
   useEffect(() => {
     supabase
-      .from('social_links')
+      .from('public_links')
       .select('id, platform, url, description')
       .order('sort_order')
       .then(({ data }) => {

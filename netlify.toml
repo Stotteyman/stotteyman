@@ -1,14 +1,16 @@
 [build]
   command = "pnpm build"
-  publish = "out"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 [build.environment]
   NODE_VERSION = "20"
   PNPM_VERSION = "9.0.0"
-  NETLIFY_NEXT_PLUGIN_SKIP = "true"
-  NEXT_PUBLIC_SUPABASE_URL = "https://drpowbmmyxwmedaxcjdy.supabase.co"
-  NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRycG93Ym1teXh3bWVkYXhjamR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2OTQ4NjgsImV4cCI6MjA5MzI3MDg2OH0.8nw4ofLo-WpWpgZYfKmNFT3hNncH6kwV4QzjlUO2qQU"
-  NEXT_PUBLIC_SITE_URL = "https://stotteyman.com"
+  # Supabase config lives in Netlify env vars, not here. The previous hard-coded
+  # values pointed at drpowbmmyxwmedaxcjdy, a project that no longer exists.
+  # Current: W.A.G.E. Society project pqngaffhjqadrsntsvlp, schema `stotteyman`.
 
 # Headers for security and performance
 [[headers]]
@@ -20,7 +22,7 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     X-DNS-Prefetch-Control = "off"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cwallet.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' blob: https:; connect-src 'self' https://cwallet.com https://api.cwallet.com https://drpowbmmyxwmedaxcjdy.supabase.co wss://drpowbmmyxwmedaxcjdy.supabase.co https://kick.com wss://ws-us2.pusher.com wss://ws.pusherapp.com https://sockjs-us2.pusher.com; frame-src 'self' https://kick.com https://*.kick.com https://player.kick.com https://cwallet.com; frame-ancestors 'none';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cwallet.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; media-src 'self' blob: https:; connect-src 'self' https://cwallet.com https://api.cwallet.com https://pqngaffhjqadrsntsvlp.supabase.co wss://pqngaffhjqadrsntsvlp.supabase.co https://kick.com wss://ws-us2.pusher.com wss://ws.pusherapp.com https://sockjs-us2.pusher.com; frame-src 'self' https://kick.com https://*.kick.com https://player.kick.com https://cwallet.com; frame-ancestors 'none';"
 
 [[redirects]]
   from = "/api/kick-chat"
