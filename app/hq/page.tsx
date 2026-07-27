@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { readConnectorCache } from '@/lib/connectors';
+import { ENTITY_FIELDS } from '@/lib/hq/entities';
 import { createSupabaseServiceClient, getHqMember } from '@/lib/supabase/server';
+
+import DashboardClient, { type ConnectorView, type EntityCard } from './DashboardClient';
 
 export const metadata: Metadata = {
   title: 'HQ',
@@ -12,50 +16,6 @@ export const metadata: Metadata = {
 // Live business data — never cache this page.
 export const dynamic = 'force-dynamic';
 
-function Branch({
-  nodes,
-  childrenOf,
-  depth = 0,
-}: {
-  nodes: EntityRow[];
-  childrenOf: (id: string) => EntityRow[];
-  depth?: number;
-}) {
-  if (!nodes.length) return null;
-  return (
-    <ul className={depth === 0 ? 'grid gap-2' : 'mt-2 grid gap-2 border-l border-white/10 pl-4'}>
-      {nodes.map((n) => {
-        const kids = childrenOf(n.id);
-        return (
-          <li key={n.id}>
-            <div className="flex flex-wrap items-baseline gap-3">
-              <span
-                className={
-                  depth === 0
-                    ? 'text-base font-semibold text-white'
-                    : 'text-sm font-medium text-white/90'
-                }
-              >
-                {n.name}
-              </span>
-              <span className="text-[0.6rem] uppercase tracking-[0.18em] text-white/30">
-                {n.kind}
-              </span>
-              {n.status !== 'active' ? (
-                <span className="text-[0.6rem] uppercase tracking-[0.18em] text-amber-300/70">
-                  {n.status}
-                </span>
-              ) : null}
-              {n.domain ? <span className="text-xs text-white/30">{n.domain}</span> : null}
-            </div>
-            <Branch nodes={kids} childrenOf={childrenOf} depth={depth + 1} />
-          </li>
-        );
-      })}
-    </ul>
-  );
-}
-
 type EntityRow = {
   id: string;
   parent_id: string | null;
@@ -63,26 +23,80 @@ type EntityRow = {
   name: string;
   kind: string;
   status: string;
-  tagline: string | null;
   domain: string | null;
-  sort_order: number;
 };
 
 export default async function HqHomePage() {
   const member = await getHqMember();
-  // Belt and braces: middleware already gates this, but a server component that
-  // renders business data should never rely solely on an upstream check.
+  // Belt and braces: middleware already gates this, but a server component rendering
+  // business data should never rely solely on an upstream check.
   if (!member) redirect('/hq/no-access');
 
   const admin = createSupabaseServiceClient();
-  const { data } = await admin
-    .from('entities')
-    .select('id, parent_id, slug, name, kind, status, tagline, domain, sort_order')
-    .order('sort_order');
+  const [{ data }, cache] = await Promise.all([
+    admin.from('entities').select(ENTITY_FIELDS).order('sort_order'),
+    readConnectorCache(),
+  ]);
 
-  const entities = (data ?? []) as EntityRow[];
-  const roots = entities.filter((e) => e.parent_id === null);
-  const childrenOf = (id: string) => entities.filter((e) => e.parent_id === id);
+  const entities = (data ?? []) as unknown as EntityRow[];
+  const bySource = new Map(cache.map((c) => [c.source, c]));
+
+  const metricsOf = (source: string, slug: string): Record<string, unknown> => {
+    const payload = bySource.get(source)?.payload ?? {};
+    const all = (payload.entityMetrics ?? {}) as Record<string, Record<string, unknown>>;
+    return all[slug] ?? {};
+  };
+
+  const num = (v: unknown): number | null => (typeof v === 'number' ? v : null);
+
+  const cards: EntityCard[] = entities
+    .filter((e) => e.kind !== 'product' || metricsOf('supabase', e.slug).people !== undefined)
+    .map((e) => {
+      const sb = metricsOf('supabase', e.slug);
+      const st = metricsOf('stripe', e.slug);
+      const nf = metricsOf('netlify', e.slug);
+      const gd = metricsOf('godaddy', e.slug);
+      return {
+        slug: e.slug,
+        name: e.name,
+        kind: e.kind,
+        status: e.status,
+        domain: e.domain,
+        people: num(sb.people),
+        revenue30: num(st.last30Gross),
+        currency: typeof st.currency === 'string' ? st.currency : null,
+        deployState: typeof nf.deployState === 'string' ? nf.deployState : null,
+        restricted: nf.restricted === true,
+        daysUntilExpiry: num(gd.daysUntilExpiry),
+      };
+    })
+    .sort((a, b) => (b.revenue30 ?? 0) - (a.revenue30 ?? 0) || (b.people ?? 0) - (a.people ?? 0));
+
+  const sbSummary = (bySource.get('supabase')?.payload.summary ?? {}) as Record<string, unknown>;
+  const stSummary = (bySource.get('stripe')?.payload.summary ?? {}) as Record<string, unknown>;
+  const gdSummary = (bySource.get('godaddy')?.payload.summary ?? {}) as Record<string, unknown>;
+  const nfSummary = (bySource.get('netlify')?.payload.summary ?? {}) as Record<string, unknown>;
+
+  const totals = {
+    people: Number(sbSummary.totalPeople ?? 0),
+    revenue30: Number(stSummary.last30Gross ?? 0),
+    currency: String(stSummary.currency ?? 'usd'),
+    domains: Number(gdSummary.totalDomains ?? 0),
+    sites: Number(nfSummary.totalSites ?? 0),
+  };
+
+  const connectors: ConnectorView[] = ['stripe', 'netlify', 'godaddy', 'supabase'].map((source) => {
+    const c = bySource.get(source);
+    return {
+      source,
+      ok: c?.ok ?? false,
+      error: c?.error ?? (c ? null : 'Never refreshed'),
+      fetchedAt: c?.fetched_at ?? null,
+      lastOkAt: c?.last_ok_at ?? null,
+      durationMs: c?.duration_ms ?? null,
+      summary: (c?.payload.summary ?? {}) as Record<string, unknown>,
+    };
+  });
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-16">
@@ -117,35 +131,14 @@ export default async function HqHomePage() {
         </nav>
       </header>
 
-      <section className="mt-12">
-        <div className="flex items-baseline justify-between gap-4">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
-            Business hierarchy · {entities.length} entities
-          </h2>
-          <Link href="/hq/org" className="text-xs text-white/40 underline hover:text-white/70">
-            Edit tree
-          </Link>
-        </div>
-
-        {/* Recursive, so it does not silently truncate as the tree deepens. */}
-        <div className="mt-6 rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-          <Branch nodes={roots.filter((r) => r.kind !== 'external')} childrenOf={childrenOf} />
-        </div>
-
-        {roots.some((r) => r.kind === 'external') ? (
-          <>
-            <h2 className="mt-10 text-xs uppercase tracking-[0.3em] text-white/40">
-              External relationships
-            </h2>
-            <div className="mt-6 rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
-              <Branch
-                nodes={roots.filter((r) => r.kind === 'external')}
-                childrenOf={childrenOf}
-              />
-            </div>
-          </>
-        ) : null}
-      </section>
+      <div className="mt-12">
+        <DashboardClient
+          connectors={connectors}
+          cards={cards}
+          totals={totals}
+          canRefresh={member.roles.length > 0}
+        />
+      </div>
     </main>
   );
 }
