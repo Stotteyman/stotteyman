@@ -12,6 +12,50 @@ export const metadata: Metadata = {
 // Live business data — never cache this page.
 export const dynamic = 'force-dynamic';
 
+function Branch({
+  nodes,
+  childrenOf,
+  depth = 0,
+}: {
+  nodes: EntityRow[];
+  childrenOf: (id: string) => EntityRow[];
+  depth?: number;
+}) {
+  if (!nodes.length) return null;
+  return (
+    <ul className={depth === 0 ? 'grid gap-2' : 'mt-2 grid gap-2 border-l border-white/10 pl-4'}>
+      {nodes.map((n) => {
+        const kids = childrenOf(n.id);
+        return (
+          <li key={n.id}>
+            <div className="flex flex-wrap items-baseline gap-3">
+              <span
+                className={
+                  depth === 0
+                    ? 'text-base font-semibold text-white'
+                    : 'text-sm font-medium text-white/90'
+                }
+              >
+                {n.name}
+              </span>
+              <span className="text-[0.6rem] uppercase tracking-[0.18em] text-white/30">
+                {n.kind}
+              </span>
+              {n.status !== 'active' ? (
+                <span className="text-[0.6rem] uppercase tracking-[0.18em] text-amber-300/70">
+                  {n.status}
+                </span>
+              ) : null}
+              {n.domain ? <span className="text-xs text-white/30">{n.domain}</span> : null}
+            </div>
+            <Branch nodes={kids} childrenOf={childrenOf} depth={depth + 1} />
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 type EntityRow = {
   id: string;
   parent_id: string | null;
@@ -59,6 +103,12 @@ export default async function HqHomePage() {
 
         <nav className="mt-6 flex flex-wrap gap-3">
           <Link
+            href="/hq/org"
+            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
+          >
+            Organisation
+          </Link>
+          <Link
             href="/hq/people"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >
@@ -68,59 +118,33 @@ export default async function HqHomePage() {
       </header>
 
       <section className="mt-12">
-        <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
-          Business hierarchy · {entities.length} entities
-        </h2>
-
-        <div className="mt-6 grid gap-4">
-          {roots.map((root) => (
-            <div
-              key={root.id}
-              className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6"
-            >
-              <div className="flex flex-wrap items-baseline gap-3">
-                <h3 className="text-lg font-semibold text-white">{root.name}</h3>
-                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/35">
-                  {root.kind}
-                </span>
-              </div>
-              {root.tagline ? (
-                <p className="mt-2 text-sm text-white/50">{root.tagline}</p>
-              ) : null}
-
-              <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                {childrenOf(root.id).map((child) => {
-                  const grandchildren = childrenOf(child.id);
-                  return (
-                    <div
-                      key={child.id}
-                      className="rounded-2xl border border-white/10 bg-black/20 p-4"
-                    >
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="font-medium text-white">{child.name}</span>
-                        <span className="text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
-                          {child.status}
-                        </span>
-                      </div>
-                      {child.domain ? (
-                        <p className="mt-1 text-xs text-white/40">{child.domain}</p>
-                      ) : null}
-                      {grandchildren.length ? (
-                        <ul className="mt-3 space-y-1 border-t border-white/10 pt-3">
-                          {grandchildren.map((g) => (
-                            <li key={g.id} className="text-xs text-white/50">
-                              {g.name}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
+            Business hierarchy · {entities.length} entities
+          </h2>
+          <Link href="/hq/org" className="text-xs text-white/40 underline hover:text-white/70">
+            Edit tree
+          </Link>
         </div>
+
+        {/* Recursive, so it does not silently truncate as the tree deepens. */}
+        <div className="mt-6 rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
+          <Branch nodes={roots.filter((r) => r.kind !== 'external')} childrenOf={childrenOf} />
+        </div>
+
+        {roots.some((r) => r.kind === 'external') ? (
+          <>
+            <h2 className="mt-10 text-xs uppercase tracking-[0.3em] text-white/40">
+              External relationships
+            </h2>
+            <div className="mt-6 rounded-[1.75rem] border border-white/10 bg-white/5 p-6">
+              <Branch
+                nodes={roots.filter((r) => r.kind === 'external')}
+                childrenOf={childrenOf}
+              />
+            </div>
+          </>
+        ) : null}
       </section>
     </main>
   );
