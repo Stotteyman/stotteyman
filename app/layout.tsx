@@ -113,6 +113,10 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#000000" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        {/* Orange Duck analytics beacon. Cookieless and storage-free, so it
+            carries no consent obligation. Plain tag rather than next/script:
+            the beacon reads its own tag to find data-key. */}
+        <script defer src="https://orangeduckstudios.com/b.js" data-key="ods_4b05bd9fbcfcbd35a6dba1cd" />
       </head>
       {/*
         No `h-screen overflow-hidden` here. A body with hidden overflow propagates to
