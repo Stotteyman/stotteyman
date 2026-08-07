@@ -141,6 +141,12 @@ export default async function HqHomePage() {
             People
           </Link>
           <Link
+            href="/live"
+            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
+          >
+            Live
+          </Link>
+          <Link
             href="/stream"
             className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
           >
