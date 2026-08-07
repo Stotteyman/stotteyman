@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    // ES2020 for BigInt literals: the Edge TTS auth token is computed from a
+    // Windows file-time tick count that overflows Number.MAX_SAFE_INTEGER.
+    // Next emits via SWC and browser targets come from browserslist, so raising
+    // this affects type checking only.
+    "target": "ES2020",
     "lib": [
       "dom",
       "dom.iterable",
-      "es2017"
+      "es2020"
     ],
     "allowJs": true,
     "skipLibCheck": true,

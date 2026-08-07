@@ -1,4 +1,5 @@
 import { hqBaseFromHost } from '@/lib/hq/paths';
+import { realtimeTransport } from '@/lib/supabase/realtime-transport';
 import { createServerClient } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -27,6 +28,8 @@ export async function GET(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // Required on Netlify's nodejs20 runtime — see lib/supabase/realtime-transport.ts.
+      realtime: { transport: realtimeTransport },
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -65,6 +68,7 @@ export async function GET(request: NextRequest) {
       {
         db: { schema: 'stotteyman' },
         auth: { persistSession: false, autoRefreshToken: false },
+        realtime: { transport: realtimeTransport },
         global: { headers: { Authorization: `Bearer ${data.session.access_token}` } },
       }
     );

@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
 import { SUPABASE_SCHEMA } from './client';
+import { realtimeTransport } from './realtime-transport';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -26,6 +27,8 @@ export function createSupabaseServiceClient() {
   return createClient(url, serviceKey, {
     db: { schema: SUPABASE_SCHEMA },
     auth: { persistSession: false, autoRefreshToken: false },
+    // Required on Netlify's nodejs20 runtime — see realtime-transport.ts.
+    realtime: { transport: realtimeTransport },
   });
 }
 
@@ -41,6 +44,7 @@ export async function createSupabaseServerClient() {
 
   return createServerClient(url, anonKey, {
     db: { schema: SUPABASE_SCHEMA },
+    realtime: { transport: realtimeTransport },
     cookies: {
       getAll() {
         return cookieStore.getAll();

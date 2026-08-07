@@ -2,6 +2,8 @@
 
 import Script from 'next/script';
 
+import DonateForm from './DonateForm';
+
 function CashAppIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -70,7 +72,10 @@ export default function DonatePage() {
             </p>
           </div>
 
-          {/* Donation options */}
+          {/* On-stream donation: amount, message, optional song request */}
+          <DonateForm />
+
+          {/* Direct rails — no form, no alert, just send money */}
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
 
             {/* CashApp */}

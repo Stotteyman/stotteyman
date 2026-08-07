@@ -7,6 +7,8 @@
  */
 import { createClient } from '@supabase/supabase-js';
 
+import { realtimeTransport } from '../supabase/realtime-transport';
+
 export const STUDIO_SCHEMA = 'stotteyman';
 export const MEDIA_BUCKET = 'stotteyman-media';
 
@@ -23,6 +25,8 @@ export function studioClient() {
   return createClient(url, key, {
     db: { schema: STUDIO_SCHEMA },
     auth: { persistSession: false, autoRefreshToken: false },
+    // Required on Netlify's nodejs20 runtime — see supabase/realtime-transport.ts.
+    realtime: { transport: realtimeTransport },
   });
 }
 
@@ -37,6 +41,7 @@ export function storageClient() {
   }
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    realtime: { transport: realtimeTransport },
   });
 }
 
