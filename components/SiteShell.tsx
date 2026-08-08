@@ -1,53 +1,68 @@
-import Link from 'next/link';
-import { navigationItems, siteConfig } from '@/lib/site-content';
+import type { ReactNode } from 'react';
 
-interface SiteShellProps {
+import SiteFooter from '@/components/SiteFooter';
+import SiteHeader from '@/components/SiteHeader';
+import { Container } from '@/components/ui/Section';
+
+/**
+ * Standard page frame for every public page below the homepage.
+ *
+ * The `title` / `eyebrow` / `intro` API is unchanged, so the eleven pages that already
+ * use it needed no edits — what changed is everything underneath: the header and footer
+ * are now the shared components rather than a second, divergent chrome, and the page
+ * title block is a normal masthead instead of a full-height hero with the nav wedged
+ * into its right-hand side.
+ */
+
+type SiteShellProps = {
   title: string;
   eyebrow?: string;
-  intro: string;
-  children: React.ReactNode;
-}
+  intro?: string;
+  children: ReactNode;
+  /** Optional right-hand slot in the masthead, e.g. a primary action. */
+  action?: ReactNode;
+};
 
-export default function SiteShell({ title, eyebrow, intro, children }: SiteShellProps) {
+export default function SiteShell({ title, eyebrow, intro, children, action }: SiteShellProps) {
   return (
-    <main className="min-h-screen bg-black text-white">
-      <div className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,140,0,0.18),_transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(0,255,255,0.12),_transparent_32%),linear-gradient(180deg,_#090909_0%,_#030303_100%)]" />
-        <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-10" />
-        <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-8 lg:px-12 lg:py-10">
-          <header className="flex flex-col gap-6 border-b border-white/10 pb-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <Link href="/" className="text-sm uppercase tracking-[0.45em] text-neon-orange/80">
-                {siteConfig.name}
-              </Link>
-              {eyebrow ? <p className="mt-6 text-sm uppercase tracking-[0.35em] text-neon-cyan/80">{eyebrow}</p> : null}
-              <h1 className="mt-4 text-4xl font-light tracking-tight text-white md:text-6xl">{title}</h1>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-gray-300 md:text-lg">{intro}</p>
-            </div>
+    <>
+      <a
+        href="#content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-body-sm focus:text-accent-ink"
+      >
+        Skip to content
+      </a>
 
-            <nav aria-label="Primary" className="flex max-w-2xl flex-wrap gap-3 lg:justify-end">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.24em] text-gray-200 transition-all duration-300 hover:border-neon-orange/60 hover:bg-neon-orange/10 hover:text-white"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+      <SiteHeader />
+
+      <main id="content" className="relative">
+        {/* Hairline grid, hero only. Fixed so it does not scroll as a second layer. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-grid-hairline [mask-image:linear-gradient(to_bottom,black,transparent)]"
+        />
+
+        <Container>
+          <header className="relative border-b border-line py-14 md:py-20">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                {eyebrow ? (
+                  <p className="font-mono text-label uppercase text-accent">{eyebrow}</p>
+                ) : null}
+                <h1 className="mt-5 text-display-lg font-medium text-fg">{title}</h1>
+                {intro ? (
+                  <p className="mt-5 max-w-prose text-body-lg text-fg-muted">{intro}</p>
+                ) : null}
+              </div>
+              {action ? <div className="shrink-0">{action}</div> : null}
+            </div>
           </header>
 
-          <section className="flex-1 py-10">{children}</section>
+          <div className="py-14 md:py-16">{children}</div>
+        </Container>
+      </main>
 
-          <footer className="border-t border-white/10 pt-6 text-sm text-gray-500">
-            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <p>{siteConfig.person}.</p>
-              <p>{siteConfig.location}.</p>
-            </div>
-          </footer>
-        </div>
-      </div>
-    </main>
+      <SiteFooter />
+    </>
   );
 }

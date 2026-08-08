@@ -1,17 +1,13 @@
 {
-  "name": "Stotteyman - Life is what you make it",
+  "name": "Stotteyman — builder & operator",
   "short_name": "Stotteyman",
-  "description": "Life is what you make it. A minimal, interactive portfolio showcasing creative work, thoughts, and projects.",
+  "description": "Game servers, community platforms, storefronts, and internal tooling — designed, engineered, and operated.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#0A0B0D",
+  "theme_color": "#0A0B0D",
   "orientation": "any",
-  "categories": [
-    "portfolio",
-    "creative",
-    "technology"
-  ],
+  "categories": ["business", "productivity", "technology"],
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -31,12 +27,14 @@
     {
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

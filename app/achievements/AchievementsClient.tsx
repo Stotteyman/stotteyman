@@ -47,42 +47,42 @@ export default function AchievementsClient() {
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-52 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+              <div key={i} className="h-52 animate-pulse rounded-xl border border-line bg-surface" />
             ))}
           </div>
-          <div className="h-80 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+          <div className="h-80 animate-pulse rounded-xl border border-line bg-surface" />
         </div>
       ) : (
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <section className="space-y-6">
             {achievements.map((a) => (
-              <article key={a.id} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-7">
-                <p className="text-sm uppercase tracking-[0.35em] text-neon-cyan/80">Documented contribution</p>
-                <h2 className="mt-4 text-3xl font-light text-white">{a.title}</h2>
-                <p className="mt-4 text-sm leading-7 text-gray-300">{a.summary}</p>
-                <div className="mt-5 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm leading-7 text-gray-400">
-                  <span className="text-white">Why it matters:</span> {a.impact}
+              <article key={a.id} className="rounded-xl border border-line bg-surface p-7">
+                <p className="text-label uppercase text-accent">Documented contribution</p>
+                <h2 className="mt-4 text-3xl font-light text-fg">{a.title}</h2>
+                <p className="mt-4 text-sm leading-7 text-fg-muted">{a.summary}</p>
+                <div className="mt-5 rounded-lg border border-line bg-bg-raised p-4 text-sm leading-7 text-fg-subtle">
+                  <span className="text-fg">Why it matters:</span> {a.impact}
                 </div>
               </article>
             ))}
           </section>
 
-          <aside className="card-neon h-fit">
-            <p className="text-sm uppercase tracking-[0.35em] text-neon-orange/80">Active surfaces</p>
+          <aside className="rounded-lg border border-line bg-surface p-6 h-fit">
+            <p className="text-label uppercase text-accent">Active surfaces</p>
             <div className="mt-5 space-y-4">
               {projects.map((p) => (
-                <div key={p.id} className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                <div key={p.id} className="rounded-lg border border-line bg-bg-raised p-4">
                   <div className="flex items-center justify-between gap-4">
-                    <h3 className="text-lg font-light text-white">{p.title}</h3>
-                    <span className="text-xs uppercase tracking-[0.3em] text-neon-green/80">{p.status}</span>
+                    <h3 className="text-lg font-light text-fg">{p.title}</h3>
+                    <span className="text-label uppercase text-ok">{p.status}</span>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-gray-400">{p.description}</p>
+                  <p className="mt-3 text-sm leading-6 text-fg-subtle">{p.description}</p>
                   {p.external ? (
-                    <a href={p.link} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-neon-orange">
+                    <a href={p.link} target="_blank" rel="noreferrer" className="mt-3 inline-block font-mono text-label uppercase text-fg-subtle transition-colors hover:text-accent">
                       Visit →
                     </a>
                   ) : (
-                    <Link href={p.link} className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-neon-orange">
+                    <Link href={p.link} className="mt-3 inline-block font-mono text-label uppercase text-fg-subtle transition-colors hover:text-accent">
                       Visit →
                     </Link>
                   )}

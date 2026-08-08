@@ -265,36 +265,36 @@ export default function StreamClient() {
   }, []);
 
   return (
-    <main className="flex h-dvh w-full flex-col overflow-hidden bg-black text-white">
+    <main className="flex h-dvh w-full flex-col overflow-hidden bg-bg text-fg">
 
       {/* Top bar */}
-      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-white/10 bg-black/60 px-4 py-3 backdrop-blur-sm">
+      <header className="flex shrink-0 items-center justify-between gap-4 border-b border-line bg-black/60 px-4 py-3 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <Link
             href="/"
-            className="font-mono text-[10px] uppercase tracking-[0.35em] text-gray-500 transition-colors hover:text-neon-orange"
+            className="font-mono text-label uppercase text-fg-subtle transition-colors hover:text-accent"
           >
             ← Home
           </Link>
-          <span className="hidden h-3 w-px bg-white/10 sm:block" />
+          <span className="hidden h-3 w-px bg-surface-hover sm:block" />
           <div className="hidden items-center gap-2 sm:flex">
             <span className="h-2 w-2 animate-pulse rounded-full bg-[#53FC18] shadow-[0_0_8px_#53FC18]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#53FC18]">Live on Kick</span>
+            <span className="font-mono text-label uppercase text-[#53FC18]">Live on Kick</span>
           </div>
         </div>
 
-        <p className="font-sans text-sm font-bold tracking-[0.2em] text-white">STOTTEYMAN</p>
+        <p className="font-sans text-sm font-bold tracking-[0.2em] text-fg">STOTTEYMAN</p>
 
         <div className="flex items-center gap-2">
           {loginState === 'loggedIn' ? (
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18]">
+              <span className="flex items-center gap-1.5 rounded-full border border-[#53FC18]/40 bg-[#53FC18]/10 px-3 py-1.5 font-mono text-label uppercase text-[#53FC18]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#53FC18]" />
                 {kickUsername ? `@${kickUsername}` : 'Kick Connected'}
               </span>
               <button
                 onClick={handleLogout}
-                className="rounded-full border border-white/10 bg-white/5 px-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-gray-500 transition-all hover:border-red-500/40 hover:text-red-400"
+                className="rounded-full border border-line bg-surface px-2 py-1.5 font-mono text-label uppercase text-fg-subtle transition-all hover:border-red-500/40 hover:text-red-400"
                 title="Clear login state"
               >
                 ✕
@@ -303,7 +303,7 @@ export default function StreamClient() {
           ) : loginState === 'pending' ? (
             <button
               onClick={() => { popupRef.current?.focus(); }}
-              className="flex animate-pulse cursor-pointer items-center gap-2 rounded-full border border-[#53FC18]/30 bg-[#53FC18]/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-[#53FC18]/70"
+              className="flex animate-pulse cursor-pointer items-center gap-2 rounded-full border border-[#53FC18]/30 bg-[#53FC18]/5 px-3 py-1.5 font-mono text-label uppercase text-[#53FC18]/70"
             >
               <span className="h-1.5 w-1.5 animate-ping rounded-full bg-[#53FC18]" />
               Logging in…
@@ -311,7 +311,7 @@ export default function StreamClient() {
           ) : (
             <button
               onClick={handleLogin}
-              className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#53FC18]/60 hover:bg-[#53FC18]/10 hover:text-[#53FC18]"
+              className="rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-label uppercase text-fg-muted transition-all hover:border-[#53FC18]/60 hover:bg-[#53FC18]/10 hover:text-[#53FC18]"
             >
               Login
             </button>
@@ -320,7 +320,7 @@ export default function StreamClient() {
             href={discordInvite}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-300 transition-all hover:border-[#5865F2]/60 hover:text-[#5865F2]"
+            className="rounded-full border border-line bg-surface px-3 py-1.5 font-mono text-label uppercase text-fg-muted transition-all hover:border-[#5865F2]/60 hover:text-[#5865F2]"
           >
             Discord
           </a>
@@ -351,7 +351,7 @@ export default function StreamClient() {
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
 
         {/* Video player */}
-        <div className="relative min-h-0 flex-1 bg-black">
+        <div className="relative min-h-0 flex-1 bg-bg">
           <iframe
             src={`https://player.kick.com/${kickChannel}`}
             title="Stotteyman Kick livestream"
@@ -363,7 +363,7 @@ export default function StreamClient() {
 
         {/* Chat sidebar */}
         <div
-          className="relative flex h-[45vh] shrink-0 flex-col border-t border-white/10 lg:h-full lg:border-l lg:border-t-0"
+          className="relative flex h-[45vh] shrink-0 flex-col border-t border-line lg:h-full lg:border-l lg:border-t-0"
           style={isDesktop ? { width: chatWidth } : undefined}
         >
           {/* Resize handle — desktop only */}
@@ -372,8 +372,8 @@ export default function StreamClient() {
             style={{ width: 6, top: 0, bottom: 0, left: 0, cursor: 'col-resize', zIndex: 10 }}
             onMouseDown={handleResizeStart}
           />
-          <div className="flex shrink-0 items-center justify-between border-b border-white/10 bg-[#050505] px-4 py-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-gray-400">
+          <div className="flex shrink-0 items-center justify-between border-b border-line bg-[#050505] px-4 py-3">
+            <span className="font-mono text-label uppercase text-fg-subtle">
               {loginState === 'loggedIn' ? (
                 <span className="flex items-center gap-2">
                   Live Chat
@@ -386,13 +386,13 @@ export default function StreamClient() {
                 href={kickChatPopout}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-600 transition-colors hover:text-neon-orange"
+                className="font-mono text-label uppercase text-fg-subtle transition-colors hover:text-accent"
               >
                 Pop out ↗
               </a>
             </div>
           </div>
-          <div className="relative min-h-0 flex-1 overflow-hidden bg-black">
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-bg">
             <KickChatWidget
               providerToken={providerToken}
               username={kickUsername}

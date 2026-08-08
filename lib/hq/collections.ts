@@ -91,6 +91,7 @@ export const COLLECTIONS: Collection[] = [
       { name: 'body', label: 'Body', type: 'markdown' },
       { name: 'tags', label: 'Tags', type: 'tags' },
       { name: 'cover_url', label: 'Cover image', type: 'text' },
+      { name: 'youtube_id', label: 'YouTube ID (11 chars, not a URL)', type: 'text' },
       { name: 'published_at', label: 'Publish date', type: 'date' },
       PUBLISHED,
       SORT,

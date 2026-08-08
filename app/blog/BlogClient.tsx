@@ -12,13 +12,14 @@ type Post = {
   title: string;
   date: string;
   excerpt: string;
+  youtube_id: string | null;
 };
 
 function Skeleton() {
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="h-48 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+        <div key={i} className="h-48 animate-pulse rounded-xl border border-line bg-surface" />
       ))}
     </div>
   );
@@ -31,7 +32,7 @@ export default function BlogClient() {
   useEffect(() => {
     supabase
       .from('public_posts')
-      .select('id, slug, title, date, excerpt')
+      .select('id, slug, title, date, excerpt, youtube_id')
       .order('sort_order', { ascending: true })
       .then(({ data }) => {
         if (data) setPosts(data as Post[]);
@@ -56,12 +57,19 @@ export default function BlogClient() {
             <Link
               key={post.id}
               href={`/blog/${post.slug}/`}
-              className="block rounded-[1.75rem] border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:border-neon-orange/60 hover:bg-white/10"
+              className="block rounded-xl border border-line bg-surface p-6 transition-all duration-300 hover:border-accent-line hover:bg-surface-hover"
             >
-              <p className="text-xs uppercase tracking-[0.35em] text-neon-cyan/80">{fmt(post.date)}</p>
-              <h2 className="mt-4 text-2xl font-light text-white">{post.title}</h2>
-              <p className="mt-4 text-sm leading-7 text-gray-400">{post.excerpt}</p>
-              <span className="mt-5 inline-block text-xs uppercase tracking-[0.2em] text-white/40">
+              <p className="flex items-center gap-3 text-label uppercase text-accent">
+                {fmt(post.date)}
+                {post.youtube_id ? (
+                  <span className="rounded-full border border-line px-2 py-0.5 text-fg-subtle">
+                    ▶ Video
+                  </span>
+                ) : null}
+              </p>
+              <h2 className="mt-4 text-2xl font-light text-fg">{post.title}</h2>
+              <p className="mt-4 text-sm leading-7 text-fg-subtle">{post.excerpt}</p>
+              <span className="mt-5 inline-block text-label uppercase text-fg-subtle">
                 Read →
               </span>
             </Link>

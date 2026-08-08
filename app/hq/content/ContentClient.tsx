@@ -125,7 +125,7 @@ export default function ContentClient({
       </div>
 
       {error ? (
-        <p className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
           {error}
         </p>
       ) : null}
@@ -135,22 +135,22 @@ export default function ContentClient({
       ) : active ? (
         <section>
           <div className="flex items-center justify-between gap-4">
-            <p className="text-sm text-white/45">{active.description}</p>
+            <p className="text-sm text-fg-subtle">{active.description}</p>
             <button
               type="button"
               onClick={create}
-              className="shrink-0 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 hover:border-white/40 hover:text-white"
+              className="shrink-0 rounded-full border border-line bg-surface px-5 py-2 text-label uppercase text-fg-muted hover:border-line-strong hover:text-fg"
             >
               + New
             </button>
           </div>
 
           {loading ? (
-            <p className="mt-6 text-sm text-white/35">Loading…</p>
+            <p className="mt-6 text-sm text-fg-faint">Loading…</p>
           ) : (
             <div className="mt-6 grid gap-3">
               {rows.length === 0 ? (
-                <p className="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-white/35">
+                <p className="rounded-lg border border-dashed border-line p-8 text-center text-sm text-fg-faint">
                   Nothing here yet.
                 </p>
               ) : null}
@@ -187,10 +187,10 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-full border px-4 py-1.5 text-xs uppercase tracking-[0.15em] transition-colors ${
+      className={`rounded-full border px-4 py-1.5 text-label uppercase transition-colors ${
         active
-          ? 'border-white/40 bg-white/10 text-white'
-          : 'border-white/10 text-white/45 hover:border-white/25'
+          ? 'border-line-strong bg-surface-hover text-fg'
+          : 'border-line text-fg-subtle hover:border-line-strong'
       }`}
     >
       {children}
@@ -233,20 +233,20 @@ function CopyEditor({
 
   return (
     <div className="grid gap-8">
-      <p className="text-sm text-white/45">
+      <p className="text-sm text-fg-subtle">
         Headlines and body copy across the public site. Changes go live within five minutes.
       </p>
 
       {sections.map((section) => (
         <section key={section}>
-          <h3 className="text-xs uppercase tracking-[0.3em] text-white/40">/{section}</h3>
+          <h3 className="text-label uppercase text-fg-subtle">/{section}</h3>
           <div className="mt-4 grid gap-4">
             {copy
               .filter((c) => c.section === section)
               .sort((a, b) => a.sort_order - b.sort_order)
               .map((c) => (
                 <label key={c.key} className="grid gap-1.5">
-                  <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/40">
+                  <span className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">
                     {c.label}
                   </span>
                   {c.multiline ? (
@@ -254,13 +254,13 @@ function CopyEditor({
                       rows={3}
                       value={values[c.key] ?? ''}
                       onChange={(e) => setValues((v) => ({ ...v, [c.key]: e.target.value }))}
-                      className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm leading-relaxed text-white outline-none focus:border-white/40"
+                      className="rounded-xl border border-line bg-bg-raised px-4 py-3 text-sm leading-relaxed text-fg outline-none focus:border-line-strong"
                     />
                   ) : (
                     <input
                       value={values[c.key] ?? ''}
                       onChange={(e) => setValues((v) => ({ ...v, [c.key]: e.target.value }))}
-                      className="rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white outline-none focus:border-white/40"
+                      className="rounded-xl border border-line bg-bg-raised px-4 py-2.5 text-sm text-fg outline-none focus:border-line-strong"
                     />
                   )}
                 </label>
@@ -274,7 +274,7 @@ function CopyEditor({
           type="button"
           onClick={submit}
           disabled={busy || !dirty}
-          className="rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm text-white hover:border-white/40 disabled:opacity-40"
+          className="rounded-full border border-line bg-surface-hover px-6 py-3 text-sm text-fg hover:border-line-strong disabled:opacity-40"
         >
           {busy ? 'Saving…' : dirty ? 'Save copy' : 'No changes'}
         </button>
@@ -321,7 +321,7 @@ function RowEditor({
   const published = row.published !== false;
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/5">
+    <article className="rounded-lg border border-line bg-surface">
       <button
         type="button"
         onClick={onToggle}
@@ -329,25 +329,25 @@ function RowEditor({
       >
         <span
           className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[0.6rem] uppercase tracking-[0.15em] ${
-            published ? 'border-emerald-400/40 text-emerald-200' : 'border-white/15 text-white/35'
+            published ? 'border-emerald-400/40 text-emerald-200' : 'border-line text-fg-faint'
           }`}
         >
           {published ? 'live' : 'draft'}
         </span>
-        <span className="font-medium text-white">{title}</span>
+        <span className="font-medium text-fg">{title}</span>
         {primary
           .filter((f) => f.name !== collection.titleField)
           .slice(0, 1)
           .map((f) => (
-            <span key={f.name} className="min-w-0 flex-1 truncate text-sm text-white/40">
+            <span key={f.name} className="min-w-0 flex-1 truncate text-sm text-fg-subtle">
               {String(row[f.name] ?? '')}
             </span>
           ))}
-        <span className="shrink-0 text-xs text-white/25">{open ? 'close' : 'edit'}</span>
+        <span className="shrink-0 text-xs text-fg-faint">{open ? 'close' : 'edit'}</span>
       </button>
 
       {open ? (
-        <div className="border-t border-white/10 px-5 py-5">
+        <div className="border-t border-line px-5 py-5">
           <div className="grid gap-4">
             {collection.fields.map((f) => (
               <FieldInput key={f.name} field={f} value={value(f)} onChange={(v) => set(f.name, v)} />
@@ -359,14 +359,14 @@ function RowEditor({
               type="button"
               onClick={submit}
               disabled={busy || !dirty}
-              className="rounded-full border border-white/15 bg-white/10 px-6 py-2.5 text-sm text-white hover:border-white/40 disabled:opacity-40"
+              className="rounded-full border border-line bg-surface-hover px-6 py-2.5 text-sm text-fg hover:border-line-strong disabled:opacity-40"
             >
               {busy ? 'Saving…' : dirty ? 'Save changes' : 'No changes'}
             </button>
             <button
               type="button"
               onClick={onDelete}
-              className="rounded-full border border-white/10 px-5 py-2.5 text-xs text-white/45 hover:border-red-400/50 hover:text-red-200"
+              className="rounded-full border border-line px-5 py-2.5 text-xs text-fg-subtle hover:border-red-400/50 hover:text-red-200"
             >
               Delete
             </button>
@@ -387,10 +387,10 @@ function FieldInput({
   onChange: (v: unknown) => void;
 }) {
   const label = (
-    <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/40">{field.label}</span>
+    <span className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">{field.label}</span>
   );
   const base =
-    'rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white outline-none focus:border-white/40';
+    'rounded-xl border border-line bg-bg-raised px-4 py-2.5 text-sm text-fg outline-none focus:border-line-strong';
 
   if (field.type === 'bool') {
     return (
@@ -399,7 +399,7 @@ function FieldInput({
           type="checkbox"
           checked={Boolean(value)}
           onChange={(e) => onChange(e.target.checked)}
-          className="h-4 w-4 rounded border-white/20 bg-black/40"
+          className="h-4 w-4 rounded border-line-strong bg-bg-raised"
         />
         {label}
       </label>

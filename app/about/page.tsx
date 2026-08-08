@@ -36,27 +36,27 @@ export default async function AboutPage() {
     >
       <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
         <div className="max-w-3xl">
-          <p className="text-base leading-8 text-gray-300">
+          <p className="text-base leading-8 text-fg-muted">
             {copy(
               'about.story',
               'I started building because I wanted things that did not exist yet.'
             )}
           </p>
 
-          <h2 className="mt-12 text-2xl font-light text-white">
+          <h2 className="mt-12 text-2xl font-light text-fg">
             {copy('about.approach_title', 'How I work')}
           </h2>
-          <p className="mt-4 text-base leading-8 text-gray-300">
+          <p className="mt-4 text-base leading-8 text-fg-muted">
             {copy(
               'about.approach',
               'I care about the unglamorous parts: persistence that does not lose data, auth that cannot be talked around, admin tools that make the day-to-day survivable.'
             )}
           </p>
 
-          <h2 className="mt-12 text-2xl font-light text-white">
+          <h2 className="mt-12 text-2xl font-light text-fg">
             {copy('about.now_title', 'What I am doing now')}
           </h2>
-          <p className="mt-4 text-base leading-8 text-gray-300">
+          <p className="mt-4 text-base leading-8 text-fg-muted">
             {copy(
               'about.now',
               'Running a live Arma Reforger roleplay server, building out the platforms across the group, and taking on selected consulting and collaboration work.'
@@ -66,13 +66,13 @@ export default async function AboutPage() {
           <div className="mt-12 flex flex-wrap gap-3">
             <Link
               href="/work/"
-              className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm text-white transition-all duration-300 hover:border-white/40"
+              className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm text-fg transition-all duration-300 hover:border-line-strong"
             >
               See the work
             </Link>
             <Link
               href="/consult/"
-              className="inline-flex items-center justify-center rounded-full border border-white/10 px-6 py-3 text-sm text-white/70 transition-all duration-300 hover:border-white/30 hover:text-white"
+              className="inline-flex items-center justify-center rounded-full border border-line px-6 py-3 text-sm text-fg-muted transition-all duration-300 hover:border-line-strong hover:text-fg"
             >
               Work with me
             </Link>
@@ -81,12 +81,12 @@ export default async function AboutPage() {
 
         {principles.length ? (
           <aside className="self-start">
-            <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">How I think</h2>
+            <h2 className="text-label uppercase text-fg-subtle">How I think</h2>
             <div className="mt-5 grid gap-3">
               {principles.map((p) => (
-                <div key={p.id} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <h3 className="text-sm font-medium text-white">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/55">{p.body}</p>
+                <div key={p.id} className="rounded-lg border border-line bg-surface p-5">
+                  <h3 className="text-sm font-medium text-fg">{p.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{p.body}</p>
                 </div>
               ))}
             </div>

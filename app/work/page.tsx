@@ -57,35 +57,35 @@ export default async function WorkPage() {
     >
       {featured.length ? (
         <section>
-          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">Selected</h2>
+          <h2 className="text-label uppercase text-fg-subtle">Selected</h2>
           <div className="mt-6 grid gap-5">
             {featured.map((p) => (
               <article
                 key={p.id}
-                className="group rounded-[1.75rem] border border-white/10 bg-white/5 p-6 transition-colors hover:border-white/25 md:p-8"
+                className="group rounded-xl border border-line bg-surface p-6 transition-colors hover:border-line-strong md:p-8"
               >
                 <div className="flex flex-wrap items-baseline gap-3">
-                  <h3 className="text-2xl font-semibold text-white">{p.title}</h3>
-                  <span className="rounded-full border border-white/15 px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em] text-white/50">
+                  <h3 className="text-2xl font-semibold text-fg">{p.title}</h3>
+                  <span className="rounded-full border border-line px-3 py-1 text-[0.6rem] uppercase tracking-[0.18em] text-fg-subtle">
                     {STATUS_LABEL[p.status] ?? p.status}
                   </span>
                   {p.entity_name ? (
-                    <span className="text-xs text-white/30">{p.entity_name}</span>
+                    <span className="text-xs text-fg-faint">{p.entity_name}</span>
                   ) : null}
                 </div>
 
                 {p.summary ? (
-                  <p className="mt-3 max-w-3xl text-base leading-relaxed text-white/70">
+                  <p className="mt-3 max-w-3xl text-base leading-relaxed text-fg-muted">
                     {p.summary}
                   </p>
                 ) : null}
                 {p.body ? (
-                  <p className="mt-4 max-w-3xl text-sm leading-relaxed text-white/45">{p.body}</p>
+                  <p className="mt-4 max-w-3xl text-sm leading-relaxed text-fg-subtle">{p.body}</p>
                 ) : null}
 
                 <div className="mt-6 flex flex-wrap items-center gap-4">
                   {p.role ? (
-                    <span className="text-xs uppercase tracking-[0.18em] text-white/35">
+                    <span className="text-label uppercase text-fg-faint">
                       {p.role}
                     </span>
                   ) : null}
@@ -94,10 +94,10 @@ export default async function WorkPage() {
                       href={p.link}
                       target={p.external ? '_blank' : undefined}
                       rel={p.external ? 'noreferrer noopener' : undefined}
-                      className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-sm text-white transition-colors hover:border-white/40"
+                      className="inline-flex items-center gap-2 rounded-full border border-line bg-surface px-5 py-2 text-sm text-fg transition-colors hover:border-line-strong"
                     >
                       Visit
-                      <span aria-hidden="true" className="text-white/40">
+                      <span aria-hidden="true" className="text-fg-subtle">
                         ↗
                       </span>
                     </a>
@@ -111,28 +111,28 @@ export default async function WorkPage() {
 
       {rest.length ? (
         <section className="mt-14">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">Also built</h2>
+          <h2 className="text-label uppercase text-fg-subtle">Also built</h2>
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {rest.map((p) => (
               <article
                 key={p.id}
-                className="rounded-2xl border border-white/10 bg-white/5 p-5 transition-colors hover:border-white/25"
+                className="rounded-lg border border-line bg-surface p-5 transition-colors hover:border-line-strong"
               >
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <h3 className="text-lg font-medium text-white">{p.title}</h3>
-                  <span className="text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
+                  <h3 className="text-lg font-medium text-fg">{p.title}</h3>
+                  <span className="text-[0.6rem] uppercase tracking-[0.18em] text-fg-faint">
                     {STATUS_LABEL[p.status] ?? p.status}
                   </span>
                 </div>
                 {p.summary ? (
-                  <p className="mt-2 text-sm leading-relaxed text-white/55">{p.summary}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-fg-muted">{p.summary}</p>
                 ) : null}
                 {p.link ? (
                   <a
                     href={p.link}
                     target={p.external ? '_blank' : undefined}
                     rel={p.external ? 'noreferrer noopener' : undefined}
-                    className="mt-4 inline-block text-xs uppercase tracking-[0.18em] text-white/45 underline-offset-4 hover:text-white hover:underline"
+                    className="mt-4 inline-block text-label uppercase text-fg-subtle underline-offset-4 hover:text-fg hover:underline"
                   >
                     Visit ↗
                   </a>
@@ -144,14 +144,14 @@ export default async function WorkPage() {
       ) : null}
 
       {projects.length === 0 ? (
-        <p className="rounded-[1.5rem] border border-dashed border-white/10 p-10 text-center text-sm text-white/35">
+        <p className="rounded-lg border border-dashed border-line p-10 text-center text-sm text-fg-faint">
           Portfolio is being updated.
         </p>
       ) : null}
 
-      <section className="mt-14 rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="text-xl font-semibold text-white">{copy('work.cta_title', 'Want something like this built?')}</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">
+      <section className="mt-14 rounded-xl border border-line bg-surface p-8">
+        <h2 className="text-xl font-semibold text-fg">{copy('work.cta_title', 'Want something like this built?')}</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fg-muted">
           {copy(
             'work.cta_body',
             'I take on consulting, contract builds, and collaborations. If you have a project that needs the same treatment, tell me about it.'
@@ -160,13 +160,13 @@ export default async function WorkPage() {
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/consult/"
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm text-white transition-all duration-300 hover:border-white/40"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm text-fg transition-all duration-300 hover:border-line-strong"
           >
             Start a conversation
           </Link>
           <Link
             href="/services/"
-            className="inline-flex items-center justify-center rounded-full border border-white/10 px-6 py-3 text-sm text-white/70 transition-all duration-300 hover:border-white/30 hover:text-white"
+            className="inline-flex items-center justify-center rounded-full border border-line px-6 py-3 text-sm text-fg-muted transition-all duration-300 hover:border-line-strong hover:text-fg"
           >
             See services
           </Link>

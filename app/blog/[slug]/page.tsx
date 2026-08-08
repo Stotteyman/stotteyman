@@ -15,16 +15,27 @@ type Post = {
   tags: string[];
   cover_url: string | null;
   date: string;
+  youtube_id: string | null;
 };
 
 async function getPost(slug: string): Promise<Post | null> {
   const supabase = createSupabaseAnonClient();
   const { data } = await supabase
     .from('public_posts')
-    .select('slug, title, excerpt, body, tags, cover_url, date')
+    .select('slug, title, excerpt, body, tags, cover_url, date, youtube_id')
     .eq('slug', slug)
     .maybeSingle();
   return (data as unknown as Post) ?? null;
+}
+
+/**
+ * Only ever an ID, never a URL — the value is interpolated into a src, so anything
+ * outside YouTube's ID alphabet is dropped rather than embedded.
+ */
+function youtubeId(raw: string | null): string | null {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  return /^[A-Za-z0-9_-]{11}$/.test(trimmed) ? trimmed : null;
 }
 
 export async function generateMetadata({
@@ -62,14 +73,14 @@ function renderBody(body: string) {
 
     if (trimmed.startsWith('### ')) {
       return (
-        <h3 key={i} className="mt-10 text-xl font-medium text-white">
+        <h3 key={i} className="mt-10 text-xl font-medium text-fg">
           {trimmed.slice(4)}
         </h3>
       );
     }
     if (trimmed.startsWith('## ')) {
       return (
-        <h2 key={i} className="mt-12 text-2xl font-medium text-white">
+        <h2 key={i} className="mt-12 text-2xl font-medium text-fg">
           {trimmed.slice(3)}
         </h2>
       );
@@ -78,7 +89,7 @@ function renderBody(body: string) {
       return (
         <ul key={i} className="mt-6 grid gap-2 pl-5">
           {trimmed.split('\n').map((line, j) => (
-            <li key={j} className="list-disc text-base leading-8 text-gray-300">
+            <li key={j} className="list-disc text-base leading-8 text-fg-muted">
               {line.trim().replace(/^[-*]\s/, '')}
             </li>
           ))}
@@ -86,7 +97,7 @@ function renderBody(body: string) {
       );
     }
     return (
-      <p key={i} className="mt-6 text-base leading-8 text-gray-300">
+      <p key={i} className="mt-6 text-base leading-8 text-fg-muted">
         {trimmed}
       </p>
     );
@@ -97,6 +108,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) notFound();
+
+  const videoId = youtubeId(post.youtube_id);
 
   const date = new Date(post.date).toLocaleDateString('en-GB', {
     day: 'numeric',
@@ -112,7 +125,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {post.tags.map((t) => (
               <li
                 key={t}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/50"
+                className="rounded-full border border-line bg-surface px-3 py-1 text-xs text-fg-subtle"
               >
                 {t}
               </li>
@@ -120,17 +133,44 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </ul>
         ) : null}
 
+        {videoId ? (
+          <figure className="mt-8">
+            <div className="relative overflow-hidden rounded-xl border border-line bg-black pb-[56.25%]">
+              <iframe
+                className="absolute inset-0 h-full w-full"
+                src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                title={`${post.title} — video`}
+                loading="lazy"
+                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              />
+            </div>
+            <figcaption className="mt-3 text-label uppercase text-fg-subtle">
+              Watch this one instead ·{' '}
+              <a
+                className="hover:text-fg"
+                href={`https://www.youtube.com/watch?v=${videoId}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open on YouTube ↗
+              </a>
+            </figcaption>
+          </figure>
+        ) : null}
+
         {post.body ? (
           renderBody(post.body)
         ) : (
-          <p className="mt-6 text-base leading-8 text-gray-400">
+          <p className="mt-6 text-base leading-8 text-fg-subtle">
             This entry has no body yet.
           </p>
         )}
 
         <Link
           href="/blog/"
-          className="mt-14 inline-block text-xs uppercase tracking-[0.2em] text-white/40 hover:text-white"
+          className="mt-14 inline-block text-label uppercase text-fg-subtle hover:text-fg"
         >
           ← All writing
         </Link>

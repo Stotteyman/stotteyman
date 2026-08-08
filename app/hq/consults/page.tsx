@@ -16,8 +16,8 @@ export default async function ConsultsPage() {
   if (!actor.permissions.has('consults.manage')) {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-24">
-        <p className="text-sm text-white/60">You do not have permission to manage requests.</p>
-        <Link href="/" className="mt-4 inline-block text-sm text-white/40 underline">
+        <p className="text-sm text-fg-muted">You do not have permission to manage requests.</p>
+        <Link href="/" className="mt-4 inline-block text-sm text-fg-subtle underline">
           Back to HQ
         </Link>
       </main>
@@ -35,15 +35,15 @@ export default async function ConsultsPage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-16">
-      <header className="border-b border-white/10 pb-8">
+      <header className="border-b border-line pb-8">
         <Link
           href="/"
-          className="text-xs uppercase tracking-[0.3em] text-white/40 hover:text-white/70"
+          className="text-label uppercase text-fg-subtle hover:text-fg-muted"
         >
           ← HQ
         </Link>
-        <h1 className="mt-3 text-3xl font-semibold text-white">Requests</h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/55">
+        <h1 className="mt-3 text-3xl font-semibold text-fg">Requests</h1>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-fg-muted">
           Consultations, meetings, help, and collaboration pitches from the public site. Email
           notifications are not wired yet — check here, or watch this page until Zoho is
           connected.

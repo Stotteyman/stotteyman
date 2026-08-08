@@ -47,10 +47,10 @@ export default function AuthCallback() {
   }, []);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black">
+    <div className="flex min-h-screen items-center justify-center bg-bg">
       <div className="flex flex-col items-center gap-4">
         <span className="h-2 w-2 animate-ping rounded-full bg-[#53FC18]" />
-        <p className="font-mono text-sm text-gray-400">{status}</p>
+        <p className="font-mono text-sm text-fg-subtle">{status}</p>
       </div>
     </div>
   );

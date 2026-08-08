@@ -25,7 +25,7 @@ const ROLES = ['owner', 'admin', 'operator', 'collaborator', 'client', 'viewer']
 
 function statusOf(i: Invite): { label: string; tone: string } {
   if (i.accepted_at) return { label: 'Accepted', tone: 'text-emerald-300' };
-  if (i.revoked_at) return { label: 'Revoked', tone: 'text-white/30' };
+  if (i.revoked_at) return { label: 'Revoked', tone: 'text-fg-faint' };
   if (new Date(i.expires_at) < new Date()) return { label: 'Expired', tone: 'text-amber-300' };
   return { label: 'Pending', tone: 'text-sky-300' };
 }
@@ -92,30 +92,30 @@ export default function PeopleClient({ members }: { members: Member[] }) {
   return (
     <div className="grid gap-10">
       <section>
-        <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">Invite someone</h2>
+        <h2 className="text-label uppercase text-fg-subtle">Invite someone</h2>
 
         <form
           onSubmit={create}
-          className="mt-5 rounded-[1.75rem] border border-white/10 bg-white/5 p-6"
+          className="mt-5 rounded-xl border border-line bg-surface p-6"
         >
           <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
             <label className="grid gap-2">
-              <span className="text-xs text-white/50">Email address</span>
+              <span className="text-xs text-fg-subtle">Email address</span>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="them@example.com"
-                className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-white/40"
+                className="rounded-xl border border-line bg-bg-raised px-4 py-3 text-sm text-fg outline-none focus:border-line-strong"
               />
             </label>
             <label className="grid gap-2">
-              <span className="text-xs text-white/50">Role</span>
+              <span className="text-xs text-fg-subtle">Role</span>
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-white/40"
+                className="rounded-xl border border-line bg-bg-raised px-4 py-3 text-sm text-fg outline-none focus:border-line-strong"
               >
                 {ROLES.map((r) => (
                   <option key={r} value={r} className="bg-[#07070a]">
@@ -127,32 +127,32 @@ export default function PeopleClient({ members }: { members: Member[] }) {
           </div>
 
           <label className="mt-4 grid gap-2">
-            <span className="text-xs text-white/50">Note (optional)</span>
+            <span className="text-xs text-fg-subtle">Note (optional)</span>
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="What are they here for?"
-              className="rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-white/40"
+              className="rounded-xl border border-line bg-bg-raised px-4 py-3 text-sm text-fg outline-none focus:border-line-strong"
             />
           </label>
 
           <button
             type="submit"
             disabled={busy}
-            className="mt-5 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/40 disabled:opacity-50"
+            className="mt-5 inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg transition-all duration-300 hover:border-line-strong disabled:opacity-50"
           >
             {busy ? 'Creating…' : 'Create invite'}
           </button>
 
           {error ? (
-            <p className="mt-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
               {error}
             </p>
           ) : null}
 
           {lastLink ? (
-            <div className="mt-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/80">
+            <div className="mt-5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4">
+              <p className="text-label uppercase text-emerald-200/80">
                 Invite link — shown once
               </p>
               <p className="mt-2 break-all font-mono text-xs text-emerald-100">{lastLink}</p>
@@ -177,27 +177,27 @@ export default function PeopleClient({ members }: { members: Member[] }) {
       </section>
 
       <section>
-        <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
+        <h2 className="text-label uppercase text-fg-subtle">
           Members · {members.length}
         </h2>
         <div className="mt-5 grid gap-3">
           {members.length === 0 ? (
-            <p className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/40">
+            <p className="rounded-lg border border-line bg-surface px-5 py-4 text-sm text-fg-subtle">
               No members yet.
             </p>
           ) : (
             members.map((m) => (
               <div
                 key={m.user_id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface px-5 py-4"
               >
                 <div>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-fg">
                     {m.display_name ?? m.email ?? m.user_id}
                   </p>
-                  <p className="text-xs text-white/40">{m.email}</p>
+                  <p className="text-xs text-fg-subtle">{m.email}</p>
                 </div>
-                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/45">
+                <span className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">
                   {m.roles.join(', ') || 'no role'}
                 </span>
               </div>
@@ -207,12 +207,12 @@ export default function PeopleClient({ members }: { members: Member[] }) {
       </section>
 
       <section>
-        <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
+        <h2 className="text-label uppercase text-fg-subtle">
           Invites · {invites.length}
         </h2>
         <div className="mt-5 grid gap-3">
           {invites.length === 0 ? (
-            <p className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-sm text-white/40">
+            <p className="rounded-lg border border-line bg-surface px-5 py-4 text-sm text-fg-subtle">
               No invites yet.
             </p>
           ) : (
@@ -222,11 +222,11 @@ export default function PeopleClient({ members }: { members: Member[] }) {
               return (
                 <div
                   key={i.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface px-5 py-4"
                 >
                   <div>
-                    <p className="text-sm text-white">{i.email}</p>
-                    <p className="text-xs text-white/40">
+                    <p className="text-sm text-fg">{i.email}</p>
+                    <p className="text-xs text-fg-subtle">
                       {i.role_slug}
                       {i.note ? ` · ${i.note}` : ''}
                     </p>
@@ -237,7 +237,7 @@ export default function PeopleClient({ members }: { members: Member[] }) {
                       <button
                         type="button"
                         onClick={() => revoke(i.id)}
-                        className="rounded-full border border-white/15 px-4 py-2 text-xs text-white/70 hover:border-red-400/50 hover:text-red-200"
+                        className="rounded-full border border-line px-4 py-2 text-xs text-fg-muted hover:border-red-400/50 hover:text-red-200"
                       >
                         Revoke
                       </button>

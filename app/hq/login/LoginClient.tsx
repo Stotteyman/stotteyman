@@ -46,10 +46,10 @@ export default function LoginClient({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8 backdrop-blur">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/40">Stotteyman</p>
-        <h1 className="mt-3 text-2xl font-semibold text-white">HQ sign in</h1>
-        <p className="mt-3 text-sm leading-relaxed text-white/60">
+      <div className="rounded-xl border border-line bg-surface p-8 backdrop-blur">
+        <p className="text-label uppercase text-fg-subtle">Stotteyman</p>
+        <h1 className="mt-3 text-2xl font-semibold text-fg">HQ sign in</h1>
+        <p className="mt-3 text-sm leading-relaxed text-fg-muted">
           This area is invite-only. Sign in with the account your invite was sent to.
         </p>
 
@@ -58,7 +58,7 @@ export default function LoginClient({
             type="button"
             onClick={() => signIn('google')}
             disabled={busy !== null}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/40 hover:bg-white/15 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg transition-all duration-300 hover:border-line-strong hover:bg-surface-hover disabled:opacity-50"
           >
             {busy === 'google' ? 'Redirecting…' : 'Continue with Google'}
           </button>
@@ -66,21 +66,21 @@ export default function LoginClient({
             type="button"
             onClick={() => signIn('discord')}
             disabled={busy !== null}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/40 hover:bg-white/15 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg transition-all duration-300 hover:border-line-strong hover:bg-surface-hover disabled:opacity-50"
           >
             {busy === 'discord' ? 'Redirecting…' : 'Continue with Discord'}
           </button>
         </div>
 
         {error ? (
-          <p className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <p className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </p>
         ) : null}
 
-        <p className="mt-8 text-xs leading-relaxed text-white/35">
+        <p className="mt-8 text-xs leading-relaxed text-fg-faint">
           Not invited? Signing in will not create access. Use the{' '}
-          <a href="/contact/" className="underline hover:text-white/60">
+          <a href="/contact/" className="underline hover:text-fg-muted">
             contact page
           </a>{' '}
           to get in touch.

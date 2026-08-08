@@ -125,7 +125,7 @@ function BadgePill({ badge }: { badge: KickBadge }) {
       case 'subscriber':  return 'text-purple-400';
       case 'og':          return 'text-orange-400';
       case 'verified':    return 'text-blue-400';
-      default:            return 'text-gray-400';
+      default:            return 'text-fg-subtle';
     }
   })();
 
@@ -278,7 +278,7 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
       >
         {messages.length === 0 && (
           <div className="flex h-full items-center justify-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-gray-600">
+            <p className="font-mono text-label uppercase text-fg-subtle">
               {connected ? 'Waiting for messages…' : 'Connecting…'}
             </p>
           </div>
@@ -287,7 +287,7 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
         {messages.map(msg => (
           <div key={msg.id} className="mb-1 break-words leading-snug">
             {msg.isReply && msg.replyTo && (
-              <div className="mb-0.5 flex items-center gap-1 pl-2 text-[10px] text-gray-500">
+              <div className="mb-0.5 flex items-center gap-1 pl-2 text-[10px] text-fg-subtle">
                 <span className="opacity-60">↩</span>
                 <span className="font-semibold">{msg.replyTo}:</span>
                 <span className="truncate opacity-60">{msg.replyContent}</span>
@@ -303,9 +303,9 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
               >
                 {msg.username}
               </span>
-              <span className="text-gray-400 text-[13px]">:</span>
+              <span className="text-fg-subtle text-[13px]">:</span>
             </span>
-            <span className="text-[13px] text-gray-200">
+            <span className="text-[13px] text-fg">
               {renderContent(msg.content, msg.emotes)}
             </span>
           </div>
@@ -321,14 +321,14 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
             setAutoScroll(true);
             bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="mx-3 mb-1 rounded border border-white/10 bg-black/80 py-1 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-400 hover:text-white"
+          className="mx-3 mb-1 rounded border border-line bg-black/80 py-1 font-mono text-label uppercase text-fg-subtle hover:text-fg"
         >
           ↓ New messages
         </button>
       )}
 
       {/* Input area */}
-      <div className="shrink-0 border-t border-white/10 bg-[#050505] px-3 py-2">
+      <div className="shrink-0 border-t border-line bg-[#050505] px-3 py-2">
         {providerToken ? (
           <>
             {sendError && (
@@ -342,7 +342,7 @@ export default function KickChatWidget({ providerToken, username, onLoginRequest
                 onKeyDown={handleKeyDown}
                 maxLength={500}
                 placeholder={`Chat as @${username || 'you'}…`}
-                className="min-w-0 flex-1 rounded border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[12px] text-white placeholder-gray-600 outline-none focus:border-[#53FC18]/40 focus:bg-[#53FC18]/5"
+                className="min-w-0 flex-1 rounded border border-line bg-surface px-3 py-1.5 font-mono text-[12px] text-fg placeholder:text-fg-faint outline-none focus:border-[#53FC18]/40 focus:bg-[#53FC18]/5"
               />
               <button
                 onClick={sendMessage}

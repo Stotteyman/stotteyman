@@ -41,9 +41,9 @@ const PRIVACY_OPTIONS: { value: Privacy; label: string; hint: string }[] = [
 ];
 
 const btn =
-  'rounded border border-white/15 px-3 py-1.5 text-sm text-white/80 transition hover:border-white/40 hover:text-white disabled:opacity-40';
+  'rounded border border-line px-3 py-1.5 text-sm text-fg transition hover:border-line-strong hover:text-fg disabled:opacity-40';
 const input =
-  'w-full rounded border border-white/15 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/40 focus:outline-none';
+  'w-full rounded border border-line bg-bg-raised px-3 py-2 text-sm text-fg placeholder-white/30 focus:border-line-strong focus:outline-none';
 
 export default function LiveControlClient({ initialSettings }: { initialSettings: Settings | null }) {
   const [settings, setSettings] = useState<Settings | null>(initialSettings);
@@ -176,15 +176,15 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
     }
   }, []);
 
-  if (!settings) return <p className="text-sm text-white/60">Live settings row is missing.</p>;
+  if (!settings) return <p className="text-sm text-fg-muted">Live settings row is missing.</p>;
 
   return (
     <div className="space-y-12">
-      {notice ? <p className="rounded border border-white/15 px-3 py-2 text-sm text-white/70">{notice}</p> : null}
+      {notice ? <p className="rounded border border-line px-3 py-2 text-sm text-fg-muted">{notice}</p> : null}
 
       {/* ---- privacy ---- */}
       <section>
-        <h2 className="text-lg font-medium text-white">Privacy</h2>
+        <h2 className="text-lg font-medium text-fg">Privacy</h2>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
           {PRIVACY_OPTIONS.map((opt) => (
             <button
@@ -194,16 +194,16 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
               onClick={() => void patchSettings({ privacy: opt.value })}
               className={`rounded border px-4 py-3 text-left transition ${
                 settings.privacy === opt.value
-                  ? 'border-white/60 bg-white/5'
-                  : 'border-white/10 hover:border-white/30'
+                  ? 'border-line-strong bg-surface'
+                  : 'border-line hover:border-line-strong'
               }`}
             >
-              <span className="block text-sm text-white">{opt.label}</span>
-              <span className="mt-1 block text-xs text-white/50">{opt.hint}</span>
+              <span className="block text-sm text-fg">{opt.label}</span>
+              <span className="mt-1 block text-xs text-fg-subtle">{opt.hint}</span>
             </button>
           ))}
         </div>
-        <p className="mt-3 text-xs text-white/40">
+        <p className="mt-3 text-xs text-fg-subtle">
           Tightening privacy revokes viewers who joined without an invite, so it takes effect for
           people already watching — not just new arrivals.
         </p>
@@ -211,7 +211,7 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
 
       {/* ---- metadata ---- */}
       <section>
-        <h2 className="text-lg font-medium text-white">Details</h2>
+        <h2 className="text-lg font-medium text-fg">Details</h2>
         <div className="mt-4 space-y-3">
           <input
             className={input}
@@ -228,7 +228,7 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
             onBlur={() => void patchSettings({ description: settings.description })}
             placeholder="Description"
           />
-          <div className="flex flex-wrap gap-4 text-sm text-white/70">
+          <div className="flex flex-wrap gap-4 text-sm text-fg-muted">
             <label className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -251,7 +251,7 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
 
       {/* ---- invites ---- */}
       <section>
-        <h2 className="text-lg font-medium text-white">Invite links</h2>
+        <h2 className="text-lg font-medium text-fg">Invite links</h2>
         <div className="mt-4 grid gap-2 sm:grid-cols-4">
           <input className={input} placeholder="Label (who it is for)" value={inviteLabel} onChange={(e) => setInviteLabel(e.target.value)} />
           <input className={input} placeholder="Max uses (blank = ∞)" value={inviteMaxUses} onChange={(e) => setInviteMaxUses(e.target.value)} inputMode="numeric" />
@@ -262,9 +262,9 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
         </div>
 
         {freshLink ? (
-          <div className="mt-4 rounded border border-white/30 bg-white/5 p-3">
-            <p className="text-xs text-white/50">Copy this now — it is shown once and cannot be recovered.</p>
-            <code className="mt-2 block break-all text-xs text-white">{freshLink}</code>
+          <div className="mt-4 rounded border border-line-strong bg-surface p-3">
+            <p className="text-xs text-fg-subtle">Copy this now — it is shown once and cannot be recovered.</p>
+            <code className="mt-2 block break-all text-xs text-fg">{freshLink}</code>
             <button
               type="button"
               className={`${btn} mt-2`}
@@ -279,10 +279,10 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
           {invites.map((inv) => {
             const dead = Boolean(inv.revoked_at) || (inv.expires_at != null && new Date(inv.expires_at) < new Date());
             return (
-              <li key={inv.id} className="flex items-center justify-between rounded border border-white/10 px-3 py-2 text-sm">
-                <span className={dead ? 'text-white/30 line-through' : 'text-white/80'}>
+              <li key={inv.id} className="flex items-center justify-between rounded border border-line px-3 py-2 text-sm">
+                <span className={dead ? 'text-fg-faint line-through' : 'text-fg'}>
                   {inv.label ?? 'Untitled'}
-                  <span className="ml-2 text-xs text-white/40">
+                  <span className="ml-2 text-xs text-fg-subtle">
                     {inv.use_count}
                     {inv.max_uses ? `/${inv.max_uses}` : ''} uses
                     {inv.expires_at ? ` · expires ${new Date(inv.expires_at).toLocaleString()}` : ''}
@@ -296,14 +296,14 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
               </li>
             );
           })}
-          {invites.length === 0 ? <li className="text-sm text-white/40">No invite links yet.</li> : null}
+          {invites.length === 0 ? <li className="text-sm text-fg-subtle">No invite links yet.</li> : null}
         </ul>
       </section>
 
       {/* ---- viewers ---- */}
       <section>
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium text-white">Watching now ({viewers.length})</h2>
+          <h2 className="text-lg font-medium text-fg">Watching now ({viewers.length})</h2>
           {viewers.length > 0 ? (
             <button type="button" className={btn} onClick={() => void kickViewer(undefined, true)}>
               Kick everyone
@@ -312,10 +312,10 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
         </div>
         <ul className="mt-4 space-y-2">
           {viewers.map((v) => (
-            <li key={v.id} className="flex items-center justify-between rounded border border-white/10 px-3 py-2 text-sm">
-              <span className="text-white/80">
+            <li key={v.id} className="flex items-center justify-between rounded border border-line px-3 py-2 text-sm">
+              <span className="text-fg">
                 {v.display_name}
-                <span className="ml-2 text-xs text-white/40">
+                <span className="ml-2 text-xs text-fg-subtle">
                   since {new Date(v.started_at).toLocaleTimeString()}
                   {v.user_id ? ' · member' : v.invite_id ? ' · invite' : ''}
                 </span>
@@ -325,14 +325,14 @@ export default function LiveControlClient({ initialSettings }: { initialSettings
               </button>
             </li>
           ))}
-          {viewers.length === 0 ? <li className="text-sm text-white/40">Nobody watching.</li> : null}
+          {viewers.length === 0 ? <li className="text-sm text-fg-subtle">Nobody watching.</li> : null}
         </ul>
       </section>
 
       {/* ---- OBS ---- */}
       <section>
-        <h2 className="text-lg font-medium text-white">OBS</h2>
-        <p className="mt-2 text-xs text-white/40">
+        <h2 className="text-lg font-medium text-fg">OBS</h2>
+        <p className="mt-2 text-xs text-fg-subtle">
           Commands are queued for the agent running beside OBS. Nothing connects into your PC from
           here, so this works without exposing obs-websocket.
         </p>

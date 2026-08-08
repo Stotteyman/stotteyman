@@ -69,12 +69,12 @@ type Broadcast = {
 const TABS = ['Overlays', 'Chat & TTS', 'Donations', 'Songs', 'Promote'] as const;
 type Tab = (typeof TABS)[number];
 
-const card = 'rounded-xl border border-white/10 bg-white/[0.03] p-5';
-const label = 'block font-mono text-[10px] uppercase tracking-[0.2em] text-white/40';
+const card = 'rounded-xl border border-line bg-surface] p-5';
+const label = 'block font-mono text-label uppercase text-fg-subtle';
 const input =
-  'mt-1 w-full rounded-lg border border-white/10 bg-black/50 px-3 py-2 font-mono text-sm text-white focus:border-white/40 focus:outline-none';
+  'mt-1 w-full rounded-lg border border-line bg-black/50 px-3 py-2 font-mono text-sm text-fg focus:border-line-strong focus:outline-none';
 const button =
-  'rounded-full border border-white/15 bg-white/5 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-white/70 transition-colors hover:border-white/40 hover:text-white disabled:opacity-40';
+  'rounded-full border border-line bg-surface px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted transition-colors hover:border-line-strong hover:text-fg disabled:opacity-40';
 const primary =
   'rounded-full border border-[#53fc18]/40 bg-[#53fc18]/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[#53fc18] transition-colors hover:bg-[#53fc18]/20 disabled:opacity-40';
 const danger =
@@ -139,15 +139,15 @@ export default function StreamControlClient({
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-16">
-      <header className="border-b border-white/10 pb-6">
+      <header className="border-b border-line pb-6">
         <Link
           href="/"
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/40 hover:text-white"
+          className="font-mono text-label uppercase text-fg-subtle hover:text-fg"
         >
           ← HQ
         </Link>
-        <h1 className="mt-3 text-3xl font-semibold text-white">Stream</h1>
-        <p className="mt-2 text-sm text-white/50">
+        <h1 className="mt-3 text-3xl font-semibold text-fg">Stream</h1>
+        <p className="mt-2 text-sm text-fg-subtle">
           Overlays, text-to-speech access, donations, song queue and promotion.
         </p>
 
@@ -159,8 +159,8 @@ export default function StreamControlClient({
               onClick={() => setTab(t)}
               className={`rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors ${
                 tab === t
-                  ? 'border-white/50 bg-white/10 text-white'
-                  : 'border-white/10 bg-white/[0.02] text-white/50 hover:text-white'
+                  ? 'border-line-strong bg-surface-hover text-fg'
+                  : 'border-line bg-surface] text-fg-subtle hover:text-fg'
               }`}
             >
               {t}
@@ -309,21 +309,21 @@ function OverlaysTab({
   return (
     <div className="space-y-6">
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Browser source URLs
         </h2>
-        <p className="mt-2 text-sm text-white/50">
+        <p className="mt-2 text-sm text-fg-subtle">
           Paste these into OBS (Sources → Browser) and Moblin (Widgets → Browser). They
           carry the overlay key, so treat them like a password.
         </p>
 
         <div className="mt-5 space-y-4">
           {urls.map((u) => (
-            <div key={u.name} className="rounded-lg border border-white/10 bg-black/40 p-4">
-              <p className="font-sans text-sm font-semibold text-white">{u.name}</p>
-              <p className="mt-1 text-[12px] text-white/45">{u.note}</p>
+            <div key={u.name} className="rounded-lg border border-line bg-bg-raised p-4">
+              <p className="font-sans text-sm font-semibold text-fg">{u.name}</p>
+              <p className="mt-1 text-[12px] text-fg-subtle">{u.note}</p>
               <div className="mt-3 flex items-center gap-2">
-                <code className="flex-1 overflow-x-auto whitespace-nowrap rounded bg-black/60 px-3 py-2 font-mono text-[11px] text-white/70">
+                <code className="flex-1 overflow-x-auto whitespace-nowrap rounded bg-black/60 px-3 py-2 font-mono text-[11px] text-fg-muted">
                   {u.url}
                 </code>
                 <button type="button" className={button} onClick={() => copy(u.url)}>
@@ -335,11 +335,11 @@ function OverlaysTab({
         </div>
 
         {canManage && (
-          <div className="mt-5 border-t border-white/10 pt-4">
+          <div className="mt-5 border-t border-line pt-4">
             <button type="button" className={danger} disabled={busy} onClick={rotate}>
               Rotate overlay key
             </button>
-            <p className="mt-2 text-[12px] text-white/40">
+            <p className="mt-2 text-[12px] text-fg-subtle">
               The only way to revoke a leaked overlay URL.
             </p>
           </div>
@@ -347,10 +347,10 @@ function OverlaysTab({
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Chat sources
         </h2>
-        <p className="mt-2 text-sm text-white/50">
+        <p className="mt-2 text-sm text-fg-subtle">
           Every enabled platform is merged into the one on-screen chat.
         </p>
 
@@ -361,14 +361,14 @@ function OverlaysTab({
             return (
               <div
                 key={s.id}
-                className="flex flex-wrap items-center gap-3 rounded-lg border border-white/10 bg-black/40 p-3"
+                className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-bg-raised p-3"
               >
-                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/60">
+                <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-fg-muted">
                   {s.platform}
                 </span>
-                <span className="font-sans text-sm text-white">{s.channel}</span>
+                <span className="font-sans text-sm text-fg">{s.channel}</span>
                 {s.external_id && (
-                  <code className="font-mono text-[11px] text-white/35">{s.external_id}</code>
+                  <code className="font-mono text-[11px] text-fg-faint">{s.external_id}</code>
                 )}
                 <span className="flex-1" />
                 {needsId && (
@@ -464,7 +464,7 @@ function ChatTtsTab({
     if (data?.ok) await loadAccounts();
   };
 
-  if (!settings) return <p className="text-white/50">Settings unavailable.</p>;
+  if (!settings) return <p className="text-fg-subtle">Settings unavailable.</p>;
 
   const num = (k: string) => Number(settings[k] ?? 0);
   const bool = (k: string) => Boolean(settings[k]);
@@ -476,7 +476,7 @@ function ChatTtsTab({
     <div className="space-y-6">
       <section className={card}>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+          <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
             Text to speech
           </h2>
           <button
@@ -505,15 +505,15 @@ function ChatTtsTab({
                 className={`rounded-lg border px-4 py-3 text-left transition-colors ${
                   settings.tts_mode === mode.id
                     ? 'border-[#53fc18]/50 bg-[#53fc18]/10'
-                    : 'border-white/10 bg-black/40 hover:border-white/30'
+                    : 'border-line bg-bg-raised hover:border-line-strong'
                 }`}
               >
-                <span className="block font-sans text-sm font-semibold text-white">{mode.name}</span>
-                <span className="mt-0.5 block font-mono text-[10px] text-white/40">{mode.hint}</span>
+                <span className="block font-sans text-sm font-semibold text-fg">{mode.name}</span>
+                <span className="mt-0.5 block font-mono text-[10px] text-fg-subtle">{mode.hint}</span>
               </button>
             ))}
           </div>
-          <p className="mt-3 text-[12px] text-white/40">
+          <p className="mt-3 text-[12px] text-fg-subtle">
             A denied account stays silent in every mode — deny always wins.
           </p>
         </div>
@@ -609,7 +609,7 @@ function ChatTtsTab({
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           TTS access by account
         </h2>
 
@@ -659,58 +659,58 @@ function ChatTtsTab({
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#53fc18]">
+            <p className="font-mono text-label uppercase text-[#53fc18]">
               Allowed ({allowed.length})
             </p>
             <ul className="mt-2 space-y-1">
               {allowed.map((a) => (
                 <li
                   key={a.id}
-                  className="flex items-center gap-2 rounded border border-white/10 bg-black/40 px-3 py-2"
+                  className="flex items-center gap-2 rounded border border-line bg-bg-raised px-3 py-2"
                 >
-                  <span className="font-mono text-[10px] uppercase text-white/35">{a.platform}</span>
-                  <span className="text-sm text-white">{a.username}</span>
+                  <span className="font-mono text-[10px] uppercase text-fg-faint">{a.platform}</span>
+                  <span className="text-sm text-fg">{a.username}</span>
                   <span className="flex-1" />
                   {canManage && (
                     <button
                       type="button"
                       onClick={() => remove(a.id)}
-                      className="font-mono text-[11px] text-white/35 hover:text-red-300"
+                      className="font-mono text-[11px] text-fg-faint hover:text-red-300"
                     >
                       remove
                     </button>
                   )}
                 </li>
               ))}
-              {!allowed.length && <li className="text-[12px] text-white/35">Nobody yet.</li>}
+              {!allowed.length && <li className="text-[12px] text-fg-faint">Nobody yet.</li>}
             </ul>
           </div>
 
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-red-400">
+            <p className="font-mono text-label uppercase text-red-400">
               Denied ({denied.length})
             </p>
             <ul className="mt-2 space-y-1">
               {denied.map((a) => (
                 <li
                   key={a.id}
-                  className="flex items-center gap-2 rounded border border-white/10 bg-black/40 px-3 py-2"
+                  className="flex items-center gap-2 rounded border border-line bg-bg-raised px-3 py-2"
                 >
-                  <span className="font-mono text-[10px] uppercase text-white/35">{a.platform}</span>
-                  <span className="text-sm text-white">{a.username}</span>
+                  <span className="font-mono text-[10px] uppercase text-fg-faint">{a.platform}</span>
+                  <span className="text-sm text-fg">{a.username}</span>
                   <span className="flex-1" />
                   {canManage && (
                     <button
                       type="button"
                       onClick={() => remove(a.id)}
-                      className="font-mono text-[11px] text-white/35 hover:text-white"
+                      className="font-mono text-[11px] text-fg-faint hover:text-fg"
                     >
                       remove
                     </button>
                   )}
                 </li>
               ))}
-              {!denied.length && <li className="text-[12px] text-white/35">Nobody denied.</li>}
+              {!denied.length && <li className="text-[12px] text-fg-faint">Nobody denied.</li>}
             </ul>
           </div>
         </div>
@@ -776,7 +776,7 @@ function DonationsTab({
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className={label}>Confirmed all time</p>
-            <p className="mt-1 text-2xl font-semibold text-white">{money(total)}</p>
+            <p className="mt-1 text-2xl font-semibold text-fg">{money(total)}</p>
           </div>
           <button type="button" className={button} disabled={busy} onClick={test}>
             Fire test alert
@@ -785,27 +785,27 @@ function DonationsTab({
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Awaiting confirmation ({pending.length})
         </h2>
-        <p className="mt-2 text-sm text-white/50">
+        <p className="mt-2 text-sm text-fg-subtle">
           Cash App and crypto have no webhook, so these are claims. Check the money landed,
           then approve — that is what fires the alert and queues the song.
         </p>
 
         <div className="mt-4 space-y-2">
           {pending.map((d) => (
-            <div key={d.id} className="rounded-lg border border-white/10 bg-black/40 p-4">
+            <div key={d.id} className="rounded-lg border border-line bg-bg-raised p-4">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#ff8c00]">
+                <span className="font-mono text-label uppercase text-[#ff8c00]">
                   {d.source}
                 </span>
-                <span className="font-sans text-base font-semibold text-white">
+                <span className="font-sans text-base font-semibold text-fg">
                   {money(d.amount_cents, d.currency)}
                 </span>
-                <span className="text-sm text-white/70">{d.donor_name ?? 'Anonymous'}</span>
+                <span className="text-sm text-fg-muted">{d.donor_name ?? 'Anonymous'}</span>
                 {d.is_song_request && (
-                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#ff4444]">
+                  <span className="font-mono text-label uppercase text-[#ff4444]">
                     song
                   </span>
                 )}
@@ -827,33 +827,33 @@ function DonationsTab({
                   Reject
                 </button>
               </div>
-              {d.message && <p className="mt-2 text-sm text-white/60">“{d.message}”</p>}
+              {d.message && <p className="mt-2 text-sm text-fg-muted">“{d.message}”</p>}
               {d.youtube_title && (
-                <p className="mt-1 font-mono text-[11px] text-white/40">♪ {d.youtube_title}</p>
+                <p className="mt-1 font-mono text-[11px] text-fg-subtle">♪ {d.youtube_title}</p>
               )}
             </div>
           ))}
-          {!pending.length && <p className="text-[12px] text-white/35">Nothing waiting.</p>}
+          {!pending.length && <p className="text-[12px] text-fg-faint">Nothing waiting.</p>}
         </div>
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">Recent</h2>
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">Recent</h2>
         <div className="mt-3 space-y-1">
           {recent.map((d) => (
             <div
               key={d.id}
-              className="flex flex-wrap items-center gap-3 rounded border border-white/10 bg-black/30 px-3 py-2"
+              className="flex flex-wrap items-center gap-3 rounded border border-line bg-bg-raised px-3 py-2"
             >
-              <span className="font-mono text-[10px] uppercase text-white/30">{d.source}</span>
-              <span className="text-sm font-semibold text-white">
+              <span className="font-mono text-[10px] uppercase text-fg-faint">{d.source}</span>
+              <span className="text-sm font-semibold text-fg">
                 {money(d.amount_cents, d.currency)}
               </span>
-              <span className="text-sm text-white/60">{d.donor_name ?? 'Anonymous'}</span>
-              {d.message && <span className="text-[12px] text-white/40">“{d.message}”</span>}
+              <span className="text-sm text-fg-muted">{d.donor_name ?? 'Anonymous'}</span>
+              {d.message && <span className="text-[12px] text-fg-subtle">“{d.message}”</span>}
             </div>
           ))}
-          {!recent.length && <p className="text-[12px] text-white/35">No donations yet.</p>}
+          {!recent.length && <p className="text-[12px] text-fg-faint">No donations yet.</p>}
         </div>
       </section>
     </div>
@@ -904,18 +904,18 @@ function SongsTab({
   const row = (s: Song, actions: { name: string; action: string; style: string }[]) => (
     <div
       key={s.id}
-      className="flex flex-wrap items-center gap-3 rounded-lg border border-white/10 bg-black/40 p-3"
+      className="flex flex-wrap items-center gap-3 rounded-lg border border-line bg-bg-raised p-3"
     >
       <span className="font-mono text-[11px] text-[#53fc18]">{money(s.amount_cents)}</span>
       <a
         href={`https://www.youtube.com/watch?v=${s.video_id}`}
         target="_blank"
         rel="noreferrer"
-        className="text-sm text-white hover:text-[#ff4444]"
+        className="text-sm text-fg hover:text-[#ff4444]"
       >
         {s.title ?? s.video_id}
       </a>
-      {s.requested_by && <span className="text-[12px] text-white/40">by {s.requested_by}</span>}
+      {s.requested_by && <span className="text-[12px] text-fg-subtle">by {s.requested_by}</span>}
       <span className="flex-1" />
       {actions.map((a) => (
         <button
@@ -934,7 +934,7 @@ function SongsTab({
   return (
     <div className="space-y-6">
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Now playing
         </h2>
         {playing ? (
@@ -942,15 +942,15 @@ function SongsTab({
             {row(playing, [{ name: 'Finish', action: 'finish', style: button }])}
           </div>
         ) : (
-          <p className="mt-3 text-[12px] text-white/35">Nothing playing.</p>
+          <p className="mt-3 text-[12px] text-fg-faint">Nothing playing.</p>
         )}
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Awaiting approval ({awaiting.length})
         </h2>
-        <p className="mt-2 text-sm text-white/50">
+        <p className="mt-2 text-sm text-fg-subtle">
           Paid requests that have not been vetted. Check the link before approving.
         </p>
         <div className="mt-3 space-y-2">
@@ -960,12 +960,12 @@ function SongsTab({
               { name: 'Skip', action: 'skip', style: danger },
             ])
           )}
-          {!awaiting.length && <p className="text-[12px] text-white/35">Nothing waiting.</p>}
+          {!awaiting.length && <p className="text-[12px] text-fg-faint">Nothing waiting.</p>}
         </div>
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Queue ({queue.length}) — highest payer first
         </h2>
         <div className="mt-3 space-y-2">
@@ -975,7 +975,7 @@ function SongsTab({
               { name: 'Skip', action: 'skip', style: danger },
             ])
           )}
-          {!queue.length && <p className="text-[12px] text-white/35">Queue is empty.</p>}
+          {!queue.length && <p className="text-[12px] text-fg-faint">Queue is empty.</p>}
         </div>
       </section>
     </div>
@@ -1046,7 +1046,7 @@ function PromoteTab({
   return (
     <div className="space-y-6">
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Plan a broadcast
         </h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -1093,10 +1093,10 @@ function PromoteTab({
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Announce to
         </h2>
-        <p className="mt-2 text-sm text-white/50">
+        <p className="mt-2 text-sm text-fg-subtle">
           Goes out through Studio, so it uses the same adapters, retries and audit trail as
           every other post.
         </p>
@@ -1119,19 +1119,19 @@ function PromoteTab({
       </section>
 
       <section className={card}>
-        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/50">
+        <h2 className="font-mono text-[11px] uppercase tracking-[0.2em] text-fg-subtle">
           Broadcasts
         </h2>
         <div className="mt-3 space-y-2">
           {broadcasts.map((b) => (
-            <div key={b.id} className="rounded-lg border border-white/10 bg-black/40 p-4">
+            <div key={b.id} className="rounded-lg border border-line bg-bg-raised p-4">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+                <span className="font-mono text-label uppercase text-fg-subtle">
                   {b.status}
                 </span>
-                <span className="font-sans text-sm font-semibold text-white">{b.title}</span>
+                <span className="font-sans text-sm font-semibold text-fg">{b.title}</span>
                 {b.scheduled_for && (
-                  <span className="font-mono text-[11px] text-white/35">
+                  <span className="font-mono text-[11px] text-fg-faint">
                     {new Date(b.scheduled_for).toLocaleString()}
                   </span>
                 )}
@@ -1151,10 +1151,10 @@ function PromoteTab({
                   End
                 </button>
               </div>
-              {b.description && <p className="mt-2 text-sm text-white/55">{b.description}</p>}
+              {b.description && <p className="mt-2 text-sm text-fg-muted">{b.description}</p>}
             </div>
           ))}
-          {!broadcasts.length && <p className="text-[12px] text-white/35">Nothing planned yet.</p>}
+          {!broadcasts.length && <p className="text-[12px] text-fg-faint">Nothing planned yet.</p>}
         </div>
       </section>
     </div>

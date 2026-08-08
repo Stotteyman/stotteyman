@@ -91,15 +91,15 @@ export default function DashboardClient({
 
       <section>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">Data sources</h2>
+          <h2 className="text-label uppercase text-fg-subtle">Data sources</h2>
           {canRefresh ? (
             <div className="flex items-center gap-3">
-              {message ? <span className="text-xs text-white/40">{message}</span> : null}
+              {message ? <span className="text-xs text-fg-subtle">{message}</span> : null}
               <button
                 type="button"
                 onClick={refresh}
                 disabled={busy}
-                className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 hover:border-white/40 hover:text-white disabled:opacity-50"
+                className="rounded-full border border-line bg-surface px-5 py-2 text-label uppercase text-fg-muted hover:border-line-strong hover:text-fg disabled:opacity-50"
               >
                 {busy ? 'Refreshing…' : 'Refresh now'}
               </button>
@@ -113,16 +113,16 @@ export default function DashboardClient({
             return (
               <div
                 key={c.source}
-                className={`rounded-2xl border p-4 ${
+                className={`rounded-lg border p-4 ${
                   c.ok
-                    ? 'border-white/10 bg-white/5'
+                    ? 'border-line bg-surface'
                     : unconfigured
                       ? 'border-amber-400/30 bg-amber-400/5'
                       : 'border-red-500/30 bg-red-500/5'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium capitalize text-white">{c.source}</span>
+                  <span className="text-sm font-medium capitalize text-fg">{c.source}</span>
                   <span
                     className={`text-[0.6rem] uppercase tracking-[0.15em] ${
                       c.ok ? 'text-emerald-300' : unconfigured ? 'text-amber-300' : 'text-red-300'
@@ -131,7 +131,7 @@ export default function DashboardClient({
                     {c.ok ? 'ok' : unconfigured ? 'not configured' : 'error'}
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-white/35">
+                <p className="mt-2 text-xs text-fg-faint">
                   {c.ok
                     ? `updated ${ago(c.fetchedAt)}${c.durationMs ? ` · ${c.durationMs}ms` : ''}`
                     : c.lastOkAt
@@ -139,7 +139,7 @@ export default function DashboardClient({
                       : 'no data yet'}
                 </p>
                 {!c.ok && c.error ? (
-                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-white/45">
+                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-fg-subtle">
                     {c.error}
                   </p>
                 ) : null}
@@ -150,13 +150,13 @@ export default function DashboardClient({
       </section>
 
       <section>
-        <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
+        <h2 className="text-label uppercase text-fg-subtle">
           Businesses · {cards.length}
         </h2>
-        <div className="mt-5 overflow-x-auto rounded-[1.5rem] border border-white/10">
+        <div className="mt-5 overflow-x-auto rounded-lg border border-line">
           <table className="w-full min-w-[46rem] border-collapse text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5 text-left">
+              <tr className="border-b border-line bg-surface text-left">
                 <Th>Business</Th>
                 <Th align="right">Revenue 30d</Th>
                 <Th align="right">People</Th>
@@ -166,11 +166,11 @@ export default function DashboardClient({
             </thead>
             <tbody>
               {cards.map((c) => (
-                <tr key={c.slug} className="border-b border-white/5 last:border-0">
+                <tr key={c.slug} className="border-b border-line last:border-0">
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap items-baseline gap-2">
-                      <span className="font-medium text-white">{c.name}</span>
-                      <span className="text-[0.6rem] uppercase tracking-[0.15em] text-white/30">
+                      <span className="font-medium text-fg">{c.name}</span>
+                      <span className="text-[0.6rem] uppercase tracking-[0.15em] text-fg-faint">
                         {c.kind}
                       </span>
                       {c.restricted ? (
@@ -180,19 +180,19 @@ export default function DashboardClient({
                       ) : null}
                     </div>
                     {c.domain ? (
-                      <span className="text-xs text-white/30">{c.domain}</span>
+                      <span className="text-xs text-fg-faint">{c.domain}</span>
                     ) : null}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-white/80">
+                  <td className="px-4 py-3 text-right tabular-nums text-fg">
                     {c.revenue30 === null ? (
-                      <span className="text-white/20">—</span>
+                      <span className="text-fg-faint">—</span>
                     ) : (
                       money(c.revenue30, c.currency ?? 'usd')
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-white/80">
+                  <td className="px-4 py-3 text-right tabular-nums text-fg">
                     {c.people === null ? (
-                      <span className="text-white/20">—</span>
+                      <span className="text-fg-faint">—</span>
                     ) : (
                       c.people.toLocaleString()
                     )}
@@ -205,18 +205,18 @@ export default function DashboardClient({
                             ? 'text-emerald-300'
                             : c.deployState === 'error'
                               ? 'text-red-300'
-                              : 'text-white/50'
+                              : 'text-fg-subtle'
                         }
                       >
                         {c.deployState}
                       </span>
                     ) : (
-                      <span className="text-white/20">—</span>
+                      <span className="text-fg-faint">—</span>
                     )}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
                     {c.daysUntilExpiry === null ? (
-                      <span className="text-white/20">—</span>
+                      <span className="text-fg-faint">—</span>
                     ) : (
                       <span
                         className={
@@ -224,7 +224,7 @@ export default function DashboardClient({
                             ? 'text-red-300'
                             : c.daysUntilExpiry <= 60
                               ? 'text-amber-300'
-                              : 'text-white/60'
+                              : 'text-fg-muted'
                         }
                       >
                         {c.daysUntilExpiry}d
@@ -243,9 +243,9 @@ export default function DashboardClient({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-      <p className="text-[0.65rem] uppercase tracking-[0.2em] text-white/40">{label}</p>
-      <p className="mt-2 text-2xl font-semibold tabular-nums text-white">{value}</p>
+    <div className="rounded-lg border border-line bg-surface p-5">
+      <p className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">{label}</p>
+      <p className="mt-2 text-2xl font-semibold tabular-nums text-fg">{value}</p>
     </div>
   );
 }
@@ -253,7 +253,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' }) {
   return (
     <th
-      className={`px-4 py-3 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-white/40 ${
+      className={`px-4 py-3 text-[0.65rem] font-medium uppercase tracking-[0.2em] text-fg-subtle ${
         align === 'right' ? 'text-right' : ''
       }`}
     >

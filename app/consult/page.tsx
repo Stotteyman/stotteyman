@@ -23,27 +23,27 @@ export default async function ConsultPage() {
         <ConsultClient />
 
         <aside className="grid gap-5 self-start">
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-6">
-            <h2 className="text-sm font-semibold text-white">What happens next</h2>
-            <ol className="mt-4 grid gap-3 text-sm leading-relaxed text-white/55">
+          <div className="rounded-lg border border-line bg-surface p-6">
+            <h2 className="text-sm font-semibold text-fg">What happens next</h2>
+            <ol className="mt-4 grid gap-3 text-sm leading-relaxed text-fg-muted">
               <li>
-                <span className="text-white/80">1.</span> I read it and reply — usually within a
+                <span className="text-fg">1.</span> I read it and reply — usually within a
                 couple of days.
               </li>
               <li>
-                <span className="text-white/80">2.</span> If it looks like a fit, we get on a
+                <span className="text-fg">2.</span> If it looks like a fit, we get on a
                 call and work out the shape of it.
               </li>
               <li>
-                <span className="text-white/80">3.</span> You get a written scope and a price
+                <span className="text-fg">3.</span> You get a written scope and a price
                 before anyone commits to anything.
               </li>
             </ol>
           </div>
 
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-6">
-            <h2 className="text-sm font-semibold text-white">Good fits</h2>
-            <ul className="mt-4 grid gap-2 text-sm leading-relaxed text-white/55">
+          <div className="rounded-lg border border-line bg-surface p-6">
+            <h2 className="text-sm font-semibold text-fg">Good fits</h2>
+            <ul className="mt-4 grid gap-2 text-sm leading-relaxed text-fg-muted">
               <li>Multiplayer game servers and custom gameplay systems</li>
               <li>Web platforms that need real auth, billing, and admin tooling</li>
               <li>Communities that have outgrown manual Discord management</li>
@@ -51,9 +51,9 @@ export default async function ConsultPage() {
             </ul>
           </div>
 
-          <div className="rounded-[1.5rem] border border-dashed border-white/10 p-6">
-            <h2 className="text-sm font-semibold text-white">Straight answer</h2>
-            <p className="mt-3 text-sm leading-relaxed text-white/50">
+          <div className="rounded-lg border border-dashed border-line p-6">
+            <h2 className="text-sm font-semibold text-fg">Straight answer</h2>
+            <p className="mt-3 text-sm leading-relaxed text-fg-subtle">
               {copy(
                 'consult.straight_answer',
                 'If it is not something I can do well, I will tell you that rather than take the work.'

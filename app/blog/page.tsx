@@ -17,20 +17,13 @@ export const metadata: Metadata = {
     description: 'Short public notes on mindset, proof of work, visibility, and the projects currently moving forward.',
     type: 'website',
     url: '/blog',
-    images: [
-      {
-        url: '/og-blog.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Stotteyman writing page',
-      },
-    ],
+    // Image comes from app/opengraph-image.tsx. The previous `/og-blog.svg` was never
+    // rendered by any social platform — SVG Open Graph images are not supported.
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Writing | Stotteyman',
     description: 'Short public notes on mindset, proof of work, visibility, and the projects currently moving forward.',
-    images: ['/og-blog.svg'],
   },
   alternates: {
     canonical: '/blog',

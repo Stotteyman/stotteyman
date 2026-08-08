@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { readConnectorCache } from '@/lib/connectors';
+import { attentionCount } from '@/lib/hq/documents';
+import { buildRenewals } from '@/lib/hq/documents.server';
 import { ENTITY_FIELDS } from '@/lib/hq/entities';
 import { createSupabaseServiceClient, getHqMember } from '@/lib/supabase/server';
 
@@ -40,6 +42,11 @@ export default async function HqHomePage() {
 
   const entities = (data ?? []) as unknown as EntityRow[];
   const bySource = new Map(cache.map((c) => [c.source, c]));
+
+  // Overdue filings and non-auto-renewing deadlines inside 30 days. Read here rather
+  // than only on /legal so a missed renewal is visible without going looking for it.
+  const renewals = await buildRenewals();
+  const needsAttention = attentionCount(renewals);
 
   const metricsOf = (source: string, slug: string): Record<string, unknown> => {
     const payload = bySource.get(source)?.payload ?? {};
@@ -100,59 +107,53 @@ export default async function HqHomePage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-16">
-      <header className="border-b border-white/10 pb-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/40">Private</p>
-        <h1 className="mt-3 text-3xl font-semibold text-white">HQ</h1>
-        <p className="mt-3 text-sm text-white/60">
+      <header className="border-b border-line pb-8">
+        <p className="text-label uppercase text-fg-subtle">Private</p>
+        <h1 className="mt-3 text-3xl font-semibold text-fg">HQ</h1>
+        <p className="mt-3 text-sm text-fg-muted">
           Signed in as {member.display_name ?? member.email}
           {member.roles.length ? (
             <>
               {' · '}
-              <span className="uppercase tracking-[0.2em] text-white/40">
+              <span className="uppercase tracking-[0.2em] text-fg-subtle">
                 {member.roles.join(', ')}
               </span>
             </>
           ) : null}
         </p>
 
-        <nav className="mt-6 flex flex-wrap gap-3">
-          <Link
-            href="/org"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            Organisation
-          </Link>
-          <Link
-            href="/content"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            Content
-          </Link>
-          <Link
-            href="/consults"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            Requests
-          </Link>
-          <Link
-            href="/people"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            People
-          </Link>
-          <Link
-            href="/live"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            Live
-          </Link>
-          <Link
-            href="/stream"
-            className="rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-white/40 hover:text-white"
-          >
-            Stream
-          </Link>
+        <nav className="mt-6 flex flex-wrap gap-2">
+          {[
+            { href: '/org', label: 'Organisation' },
+            { href: '/legal', label: 'Legal' },
+            { href: '/content', label: 'Content' },
+            { href: '/consults', label: 'Requests' },
+            { href: '/people', label: 'People' },
+            { href: '/live', label: 'Live' },
+            { href: '/stream', label: 'Stream' },
+          ].map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-full border border-line bg-surface px-5 py-2 font-mono text-label uppercase text-fg-muted transition-colors hover:border-line-strong hover:text-fg"
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
+
+        {needsAttention > 0 ? (
+          <Link
+            href="/legal"
+            className="mt-6 flex items-center gap-3 rounded-lg border border-accent-line bg-accent-soft px-4 py-3 transition-colors hover:border-accent/60"
+          >
+            <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+            <span className="text-body-sm text-fg">
+              {needsAttention} {needsAttention === 1 ? 'renewal needs' : 'renewals need'} attention
+            </span>
+            <span className="ml-auto font-mono text-label uppercase text-accent">Review →</span>
+          </Link>
+        ) : null}
       </header>
 
       <div className="mt-12">

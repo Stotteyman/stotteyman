@@ -74,3 +74,7 @@ Desktop.ini
 *.temp
 tall*
 /generated/prisma
+
+# local build state and editor rescue files
+*.bak
+*.prerepair

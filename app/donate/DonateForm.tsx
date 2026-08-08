@@ -102,17 +102,17 @@ export default function DonateForm() {
   };
 
   const field =
-    'w-full rounded-lg border border-white/10 bg-black/40 px-4 py-3 font-mono text-sm text-white placeholder:text-gray-600 focus:border-neon-orange/60 focus:outline-none';
+    'w-full rounded-lg border border-line bg-bg-raised px-4 py-3 font-mono text-sm text-fg placeholder:text-fg-subtle focus:border-accent-line focus:outline-none';
 
   return (
     <div
-      className="animate-fade-up w-full rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-left sm:p-8"
+      className="animate-fade-up w-full rounded-lg border border-line bg-surface] p-6 text-left sm:p-8"
       style={{ animationDelay: '0.15s' }}
     >
-      <h2 className="text-center font-sans text-lg font-bold tracking-wider text-white">
+      <h2 className="text-center font-sans text-lg font-bold tracking-wider text-fg">
         SEND A MESSAGE TO THE STREAM
       </h2>
-      <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-gray-500">
+      <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-fg-subtle">
         Your name and message appear on screen live.
       </p>
 
@@ -125,8 +125,8 @@ export default function DonateForm() {
             onClick={() => setAmount(String(preset))}
             className={`flex-1 rounded-lg border px-3 py-2 font-mono text-sm transition-colors ${
               amount === String(preset)
-                ? 'border-neon-orange/70 bg-neon-orange/10 text-neon-orange'
-                : 'border-white/10 bg-black/40 text-gray-400 hover:border-white/30'
+                ? 'border-accent-line bg-accent-soft text-accent'
+                : 'border-line bg-bg-raised text-fg-subtle hover:border-line-strong'
             }`}
           >
             ${preset}
@@ -174,7 +174,7 @@ export default function DonateForm() {
 
       {/* song request */}
       {options?.songsEnabled && (
-        <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-4">
+        <div className="mt-4 rounded-lg border border-line bg-bg-raised p-4">
           <label className="flex cursor-pointer items-start gap-3">
             <input
               type="checkbox"
@@ -183,10 +183,10 @@ export default function DonateForm() {
               className="mt-1 h-4 w-4 accent-[#ff4444]"
             />
             <span>
-              <span className="font-sans text-sm font-semibold text-white">
+              <span className="font-sans text-sm font-semibold text-fg">
                 Add my song to the request queue
               </span>
-              <span className="mt-1 block font-mono text-[11px] text-gray-500">
+              <span className="mt-1 block font-mono text-[11px] text-fg-subtle">
                 ${songMin.toFixed(2)} minimum · paste a YouTube link below
               </span>
             </span>
@@ -231,21 +231,21 @@ export default function DonateForm() {
           type="button"
           disabled={busy !== null}
           onClick={() => submit('card')}
-          className="mt-5 w-full rounded-lg border border-neon-orange/50 bg-neon-orange/15 px-5 py-3.5 font-sans text-sm font-bold tracking-wider text-neon-orange transition-colors hover:bg-neon-orange/25 disabled:opacity-50"
+          className="mt-5 w-full rounded-lg border border-accent-line bg-accent-soft px-5 py-3.5 font-sans text-sm font-bold tracking-wider text-accent transition-colors hover:bg-accent-soft disabled:opacity-50"
         >
           {busy === 'card' ? 'OPENING CHECKOUT…' : 'DONATE BY CARD →'}
         </button>
       ) : (
-        <p className="mt-5 rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-center font-mono text-[11px] text-gray-500">
+        <p className="mt-5 rounded-lg border border-line bg-bg-raised px-4 py-3 text-center font-mono text-[11px] text-fg-subtle">
           Card donations are not switched on yet — use Cash App or crypto below.
         </p>
       )}
 
-      <div className="mt-5 border-t border-white/10 pt-4">
-        <p className="text-center font-mono text-[10px] uppercase tracking-[0.2em] text-gray-600">
+      <div className="mt-5 border-t border-line pt-4">
+        <p className="text-center font-mono text-label uppercase text-fg-subtle">
           Already sent by Cash App or crypto?
         </p>
-        <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-gray-500">
+        <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-fg-subtle">
           Tell us here so your message reaches the stream. It shows once Stotteyman
           confirms the payment landed.
         </p>

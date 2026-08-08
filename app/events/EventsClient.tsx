@@ -16,7 +16,7 @@ type Event = {
 };
 
 const ctaClass =
-  'mt-6 inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-medium uppercase tracking-[0.22em] text-white transition-all duration-300 hover:border-neon-orange/60 hover:bg-neon-orange/10';
+  'mt-6 inline-flex items-center justify-center rounded-full border border-line bg-surface px-5 py-3 text-sm font-medium uppercase tracking-[0.22em] text-fg transition-all duration-300 hover:border-accent-line hover:bg-accent-soft';
 
 export default function EventsClient() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -42,18 +42,18 @@ export default function EventsClient() {
       {loading ? (
         <div className="space-y-6">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-44 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+            <div key={i} className="h-44 animate-pulse rounded-xl border border-line bg-surface" />
           ))}
         </div>
       ) : (
         <div className="space-y-6">
           {events.map((event) => (
-            <article key={event.id} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-7">
+            <article key={event.id} className="rounded-xl border border-line bg-surface p-7">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-3xl">
-                  <p className="text-sm uppercase tracking-[0.35em] text-neon-green/80">{event.time_window}</p>
-                  <h2 className="mt-4 text-3xl font-light text-white">{event.title}</h2>
-                  <p className="mt-4 text-sm leading-7 text-gray-400">{event.description}</p>
+                  <p className="text-label uppercase text-ok">{event.time_window}</p>
+                  <h2 className="mt-4 text-3xl font-light text-fg">{event.title}</h2>
+                  <p className="mt-4 text-sm leading-7 text-fg-subtle">{event.description}</p>
                 </div>
 
                 {event.cta_external ? (

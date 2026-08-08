@@ -68,12 +68,12 @@ export default function InviteClient({
     const m = MESSAGES[state];
     return (
       <div className="mx-auto w-full max-w-md text-center">
-        <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-          <h1 className="text-2xl font-semibold text-white">{m.title}</h1>
-          <p className="mt-4 text-sm leading-relaxed text-white/60">{m.body}</p>
+        <div className="rounded-xl border border-line bg-surface p-8">
+          <h1 className="text-2xl font-semibold text-fg">{m.title}</h1>
+          <p className="mt-4 text-sm leading-relaxed text-fg-muted">{m.body}</p>
           <a
             href="/"
-            className="mt-8 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm text-white hover:border-white/40"
+            className="mt-8 inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm text-fg hover:border-line-strong"
           >
             Back to stotteyman.com
           </a>
@@ -84,29 +84,29 @@ export default function InviteClient({
 
   return (
     <div className="mx-auto w-full max-w-md">
-      <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/40">You are invited</p>
-        <h1 className="mt-3 text-2xl font-semibold text-white">Join Stotteyman HQ</h1>
+      <div className="rounded-xl border border-line bg-surface p-8">
+        <p className="text-label uppercase text-fg-subtle">You are invited</p>
+        <h1 className="mt-3 text-2xl font-semibold text-fg">Join Stotteyman HQ</h1>
 
-        <dl className="mt-6 grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-5 text-sm">
+        <dl className="mt-6 grid gap-3 rounded-lg border border-line bg-bg-raised p-5 text-sm">
           <div className="flex justify-between gap-4">
-            <dt className="text-white/40">Invited address</dt>
-            <dd className="text-right text-white">{email}</dd>
+            <dt className="text-fg-subtle">Invited address</dt>
+            <dd className="text-right text-fg">{email}</dd>
           </div>
           <div className="flex justify-between gap-4">
-            <dt className="text-white/40">Role</dt>
-            <dd className="text-right uppercase tracking-[0.15em] text-white/80">{role}</dd>
+            <dt className="text-fg-subtle">Role</dt>
+            <dd className="text-right uppercase tracking-[0.15em] text-fg">{role}</dd>
           </div>
           {note ? (
             <div className="flex justify-between gap-4">
-              <dt className="text-white/40">Note</dt>
-              <dd className="text-right text-white/70">{note}</dd>
+              <dt className="text-fg-subtle">Note</dt>
+              <dd className="text-right text-fg-muted">{note}</dd>
             </div>
           ) : null}
         </dl>
 
-        <p className="mt-6 text-sm leading-relaxed text-white/55">
-          Sign in with <span className="text-white/80">{email}</span>. The invitation is matched
+        <p className="mt-6 text-sm leading-relaxed text-fg-muted">
+          Sign in with <span className="text-fg">{email}</span>. The invitation is matched
           on that address — signing in with a different account will not grant access.
         </p>
 
@@ -115,7 +115,7 @@ export default function InviteClient({
             type="button"
             onClick={() => accept('google')}
             disabled={busy !== null}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white hover:border-white/40 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg hover:border-line-strong disabled:opacity-50"
           >
             {busy === 'google' ? 'Redirecting…' : 'Accept with Google'}
           </button>
@@ -123,14 +123,14 @@ export default function InviteClient({
             type="button"
             onClick={() => accept('discord')}
             disabled={busy !== null}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white hover:border-white/40 disabled:opacity-50"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg hover:border-line-strong disabled:opacity-50"
           >
             {busy === 'discord' ? 'Redirecting…' : 'Accept with Discord'}
           </button>
         </div>
 
         {error ? (
-          <p className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <p className="mt-6 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </p>
         ) : null}

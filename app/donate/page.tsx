@@ -40,7 +40,7 @@ export default function DonatePage() {
 
   return (
     <>
-      <main className="relative flex min-h-dvh w-full flex-col items-center overflow-x-hidden overflow-y-auto bg-black px-4 py-6 sm:py-10 lg:py-14">
+      <main className="relative flex min-h-dvh w-full flex-col items-center overflow-x-hidden overflow-y-auto bg-bg px-4 py-6 sm:py-10 lg:py-14">
         {/* Background */}
         <div
           className="pointer-events-none absolute inset-0"
@@ -57,17 +57,17 @@ export default function DonatePage() {
           <div className="animate-fade-up w-full" style={{ animationDelay: '0.05s' }}>
             <a
               href="/"
-              className="font-mono text-[10px] uppercase tracking-[0.32em] text-gray-600 transition-colors hover:text-neon-orange sm:text-xs sm:tracking-[0.45em]"
+              className="font-mono text-label uppercase text-fg-subtle transition-colors hover:text-accent sm:text-xs sm:tracking-[0.45em]"
             >
               ← Stotteyman
             </a>
             <h1
-              className="mt-4 font-sans text-3xl font-black tracking-[0.1em] text-white sm:mt-6 sm:text-5xl md:text-6xl"
+              className="mt-4 font-sans text-3xl font-black tracking-[0.1em] text-fg sm:mt-6 sm:text-5xl md:text-6xl"
               style={{ textShadow: '0 0 60px rgba(255,140,0,0.2)' }}
             >
               SUPPORT
             </h1>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.24em] text-gray-500 sm:mt-3 sm:text-sm sm:tracking-[0.4em]">
+            <p className="mt-2 font-mono text-label uppercase text-fg-subtle sm:mt-3 sm:text-sm sm:tracking-[0.4em]">
               Every contribution keeps the work moving.
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function DonatePage() {
               type="button"
               onClick={openCashAppPopup}
               aria-label="Send money via Cash App to $totteyman"
-              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
+              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-lg border border-line bg-surface] p-6 sm:p-8"
               style={
                 {
                   '--card-color': '#00D632',
@@ -92,23 +92,23 @@ export default function DonatePage() {
               }
             >
               <span
-                className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 transition-all duration-300 group-hover:border-[#00D632]/60"
+                className="flex h-14 w-14 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:border-[#00D632]/60"
                 style={{ background: 'rgba(0,214,50,0.08)' }}
               >
                 <CashAppIcon className="h-7 w-7 text-[#00D632]" />
               </span>
               <div>
-                <p className="font-sans text-base font-semibold tracking-wider text-white">Cash App</p>
-                <p className="mt-1 font-mono text-xs text-gray-500">$totteyman</p>
+                <p className="font-sans text-base font-semibold tracking-wider text-fg">Cash App</p>
+                <p className="mt-1 font-mono text-xs text-fg-subtle">$totteyman</p>
               </div>
-              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#00D632] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <span className="font-mono text-label uppercase text-[#00D632] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 Send →
               </span>
             </button>
 
             {/* Crypto */}
             <div
-              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
+              className="donate-card animate-fade-up group flex flex-col items-center justify-center gap-4 rounded-lg border border-line bg-surface] p-6 sm:p-8"
               style={
                 {
                   '--card-color': '#F7931A',
@@ -117,14 +117,14 @@ export default function DonatePage() {
               }
             >
               <span
-                className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 transition-all duration-300 group-hover:border-[#F7931A]/60"
+                className="flex h-14 w-14 items-center justify-center rounded-full border border-line transition-all duration-300 group-hover:border-[#F7931A]/60"
                 style={{ background: 'rgba(247,147,26,0.08)' }}
               >
                 <CryptoIcon className="h-7 w-7 text-[#F7931A]" />
               </span>
               <div>
-                <p className="font-sans text-base font-semibold tracking-wider text-white">Crypto</p>
-                <p className="mt-1 font-mono text-xs text-gray-500">BTC, ETH &amp; more</p>
+                <p className="font-sans text-base font-semibold tracking-wider text-fg">Crypto</p>
+                <p className="mt-1 font-mono text-xs text-fg-subtle">BTC, ETH &amp; more</p>
               </div>
 
               {/* CWallet widget rendered inline */}
@@ -140,7 +140,7 @@ export default function DonatePage() {
                 href={cryptoDonateUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="font-mono text-[10px] uppercase tracking-[0.18em] text-gray-500 transition-colors hover:text-[#F7931A] sm:tracking-[0.22em]"
+                className="font-mono text-label uppercase text-fg-subtle transition-colors hover:text-[#F7931A] sm:tracking-[0.22em]"
               >
                 Open crypto donate page
               </a>
@@ -149,7 +149,7 @@ export default function DonatePage() {
 
           {/* Thank you note */}
           <p
-            className="animate-fade-up font-mono text-sm text-gray-400"
+            className="animate-fade-up font-mono text-sm text-fg-subtle"
             style={{ animationDelay: '0.45s' }}
           >
             Thank you. Every bit of support means the world — it keeps the content coming and the community growing.

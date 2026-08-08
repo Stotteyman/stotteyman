@@ -46,20 +46,20 @@ export default async function ServicesPage() {
         {services.map((s) => (
           <article
             key={s.id}
-            className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 md:p-8"
+            className="rounded-xl border border-line bg-surface p-6 md:p-8"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 className="text-xl font-semibold text-white">{s.title}</h2>
+              <h2 className="text-xl font-semibold text-fg">{s.title}</h2>
               {s.starting_at ? (
-                <span className="text-xs uppercase tracking-[0.2em] text-white/40">
+                <span className="text-label uppercase text-fg-subtle">
                   {s.starting_at}
                 </span>
               ) : null}
             </div>
 
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/65">{s.summary}</p>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fg-muted">{s.summary}</p>
             {s.detail ? (
-              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/45">{s.detail}</p>
+              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fg-subtle">{s.detail}</p>
             ) : null}
 
             {s.deliverables.length ? (
@@ -67,7 +67,7 @@ export default async function ServicesPage() {
                 {s.deliverables.map((d) => (
                   <li
                     key={d}
-                    className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-xs text-white/55"
+                    className="rounded-full border border-line bg-bg-raised px-3 py-1.5 text-xs text-fg-muted"
                   >
                     {d}
                   </li>
@@ -77,7 +77,7 @@ export default async function ServicesPage() {
 
             <Link
               href="/consult/"
-              className="mt-6 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 py-2.5 text-sm text-white transition-all duration-300 hover:border-white/40"
+              className="mt-6 inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-5 py-2.5 text-sm text-fg transition-all duration-300 hover:border-line-strong"
             >
               {s.cta_label ?? 'Start a conversation'}
             </Link>
@@ -85,15 +85,15 @@ export default async function ServicesPage() {
         ))}
 
         {services.length === 0 ? (
-          <p className="rounded-[1.5rem] border border-dashed border-white/10 p-8 text-center text-sm text-white/35">
+          <p className="rounded-lg border border-dashed border-line p-8 text-center text-sm text-fg-faint">
             Services are being updated. Get in touch and ask.
           </p>
         ) : null}
       </div>
 
-      <section className="mt-12 rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <h2 className="text-xl font-semibold text-white">{copy('services.collab_title', 'Open to collaborations')}</h2>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-white/60">
+      <section className="mt-12 rounded-xl border border-line bg-surface p-8">
+        <h2 className="text-xl font-semibold text-fg">{copy('services.collab_title', 'Open to collaborations')}</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-fg-muted">
           {copy(
             'services.collab_body',
             'Beyond client work I am actively interested in building things with other people — co-founding, revenue shares, and joint projects.'
@@ -101,7 +101,7 @@ export default async function ServicesPage() {
         </p>
         <Link
           href="/consult/"
-          className="mt-6 inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm text-white transition-all duration-300 hover:border-white/40"
+          className="mt-6 inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm text-fg transition-all duration-300 hover:border-line-strong"
         >
           Pitch a collaboration
         </Link>

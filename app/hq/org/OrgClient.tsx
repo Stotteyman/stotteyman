@@ -44,7 +44,7 @@ const STATUS_TONE: Record<string, string> = {
   active: 'text-emerald-300',
   building: 'text-sky-300',
   paused: 'text-amber-300',
-  archived: 'text-white/30',
+  archived: 'text-fg-faint',
 };
 
 /** Where a drop will land relative to the hovered node. */
@@ -261,9 +261,9 @@ export default function OrgClient({
             'relative rounded-xl border transition-all',
             target === 'inside' && !illegal
               ? 'border-emerald-400/70 bg-emerald-400/10'
-              : 'border-white/10 bg-white/5',
+              : 'border-line bg-surface',
             isDragging ? 'opacity-40' : '',
-            selectedId === entity.id ? 'ring-1 ring-white/40' : '',
+            selectedId === entity.id ? 'ring-1 ring-line-strong' : '',
           ].join(' ')}
           draggable={canWrite}
           onDragStart={(ev) => {
@@ -306,7 +306,7 @@ export default function OrgClient({
                 type="button"
                 onClick={() => toggle(entity.id)}
                 aria-label={isCollapsed ? 'Expand' : 'Collapse'}
-                className="h-5 w-5 shrink-0 rounded text-xs text-white/50 hover:bg-white/10 hover:text-white"
+                className="h-5 w-5 shrink-0 rounded text-xs text-fg-subtle hover:bg-surface-hover hover:text-fg"
               >
                 {isCollapsed ? '▸' : '▾'}
               </button>
@@ -315,7 +315,7 @@ export default function OrgClient({
             )}
 
             {canWrite ? (
-              <span className="cursor-grab select-none text-white/25" title="Drag to move">
+              <span className="cursor-grab select-none text-fg-faint" title="Drag to move">
                 ⠿
               </span>
             ) : null}
@@ -325,28 +325,28 @@ export default function OrgClient({
               onClick={() => setSelectedId(entity.id)}
               className="flex min-w-0 flex-1 items-center gap-3 text-left"
             >
-              <span className="truncate text-sm font-medium text-white">{entity.name}</span>
+              <span className="truncate text-sm font-medium text-fg">{entity.name}</span>
               <span
                 className={`shrink-0 rounded-full border px-2 py-0.5 text-[0.6rem] uppercase tracking-[0.15em] ${
-                  KIND_TONE[entity.kind] ?? 'border-white/20 text-white/50'
+                  KIND_TONE[entity.kind] ?? 'border-line-strong text-fg-subtle'
                 }`}
               >
                 {entity.kind}
               </span>
               <span
                 className={`shrink-0 text-[0.6rem] uppercase tracking-[0.15em] ${
-                  STATUS_TONE[entity.status] ?? 'text-white/40'
+                  STATUS_TONE[entity.status] ?? 'text-fg-subtle'
                 }`}
               >
                 {entity.status}
               </span>
               {entity.domain ? (
-                <span className="hidden truncate text-xs text-white/35 md:inline">
+                <span className="hidden truncate text-xs text-fg-faint md:inline">
                   {entity.domain}
                 </span>
               ) : null}
               {children.length ? (
-                <span className="shrink-0 text-[0.6rem] text-white/25">{children.length}</span>
+                <span className="shrink-0 text-[0.6rem] text-fg-faint">{children.length}</span>
               ) : null}
             </button>
 
@@ -355,7 +355,7 @@ export default function OrgClient({
                 type="button"
                 onClick={() => addEntity(entity.id)}
                 title="Add child"
-                className="shrink-0 rounded px-2 py-1 text-xs text-white/40 hover:bg-white/10 hover:text-white"
+                className="shrink-0 rounded px-2 py-1 text-xs text-fg-subtle hover:bg-surface-hover hover:text-fg"
               >
                 +
               </button>
@@ -364,7 +364,7 @@ export default function OrgClient({
         </div>
 
         {children.length && !isCollapsed ? (
-          <ul className="ml-6 mt-2 grid gap-2 border-l border-white/10 pl-4">
+          <ul className="ml-6 mt-2 grid gap-2 border-l border-line pl-4">
             {children.map((c) => renderNode(c, depth + 1))}
           </ul>
         ) : null}
@@ -389,23 +389,23 @@ export default function OrgClient({
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
       <div>
         {error ? (
-          <p className="mb-4 rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+          <p className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
             {error}
           </p>
         ) : null}
 
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">
+          <h2 className="text-label uppercase text-fg-subtle">
             Ownership · {entities.filter((e) => e.kind !== 'external').length}
           </h2>
-          <span className="text-xs text-white/30">{saving ? 'Saving…' : 'Saved'}</span>
+          <span className="text-xs text-fg-faint">{saving ? 'Saving…' : 'Saved'}</span>
         </div>
 
         <ul className="grid gap-2">{owned.map((r) => renderNode(r, 0))}</ul>
 
         {external.length ? (
           <>
-            <h2 className="mb-4 mt-10 text-xs uppercase tracking-[0.3em] text-white/40">
+            <h2 className="mb-4 mt-10 text-label uppercase text-fg-subtle">
               External · not owned by the group
             </h2>
             <ul className="grid gap-2">{external.map((r) => renderNode(r, 0))}</ul>
@@ -416,14 +416,14 @@ export default function OrgClient({
           <button
             type="button"
             onClick={() => addEntity(null)}
-            className="mt-6 rounded-full border border-white/15 bg-white/5 px-5 py-2 text-xs uppercase tracking-[0.2em] text-white/60 hover:border-white/40 hover:text-white"
+            className="mt-6 rounded-full border border-line bg-surface px-5 py-2 text-label uppercase text-fg-muted hover:border-line-strong hover:text-fg"
           >
             + Add top-level
           </button>
         ) : null}
 
         {canWrite ? (
-          <p className="mt-6 text-xs leading-relaxed text-white/30">
+          <p className="mt-6 text-xs leading-relaxed text-fg-faint">
             Drag a row onto another to nest it. Drop near the top or bottom edge to reorder as a
             sibling instead. Changes save immediately.
           </p>
@@ -432,16 +432,16 @@ export default function OrgClient({
 
       <aside className="lg:sticky lg:top-8 lg:self-start">
         {selected ? (
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-5">
+          <div className="rounded-lg border border-line bg-surface p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h3 className="truncate text-lg font-semibold text-white">{selected.name}</h3>
-                <p className="mt-1 font-mono text-[0.65rem] text-white/30">{selected.slug}</p>
+                <h3 className="truncate text-lg font-semibold text-fg">{selected.name}</h3>
+                <p className="mt-1 font-mono text-[0.65rem] text-fg-faint">{selected.slug}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedId(null)}
-                className="shrink-0 text-white/40 hover:text-white"
+                className="shrink-0 text-fg-subtle hover:text-fg"
                 aria-label="Close"
               >
                 ✕
@@ -478,8 +478,8 @@ export default function OrgClient({
                   onSave={(v) => patch(selected.id, { domain: v })}
                 />
 
-                <details className="rounded-xl border border-white/10 bg-black/20 p-3">
-                  <summary className="cursor-pointer text-xs uppercase tracking-[0.2em] text-white/40">
+                <details className="rounded-xl border border-line bg-bg-raised p-3">
+                  <summary className="cursor-pointer text-label uppercase text-fg-subtle">
                     Connector wiring
                   </summary>
                   <div className="mt-4 grid gap-4">
@@ -509,7 +509,7 @@ export default function OrgClient({
                 <button
                   type="button"
                   onClick={() => removeEntity(selected)}
-                  className="mt-2 rounded-full border border-white/10 px-4 py-2 text-xs text-white/45 hover:border-red-400/50 hover:text-red-200"
+                  className="mt-2 rounded-full border border-line px-4 py-2 text-xs text-fg-subtle hover:border-red-400/50 hover:text-red-200"
                 >
                   Delete entity
                 </button>
@@ -524,17 +524,17 @@ export default function OrgClient({
             )}
 
             {relationsFor(selected.id).length ? (
-              <div className="mt-6 border-t border-white/10 pt-4">
-                <p className="text-xs uppercase tracking-[0.2em] text-white/40">Relationships</p>
+              <div className="mt-6 border-t border-line pt-4">
+                <p className="text-label uppercase text-fg-subtle">Relationships</p>
                 <ul className="mt-3 grid gap-2">
                   {relationsFor(selected.id).map((r) => (
-                    <li key={r.id} className="text-xs text-white/60">
-                      <span className="text-white/85">{r.other?.name ?? 'Unknown'}</span>{' '}
-                      <span className="text-white/35">
+                    <li key={r.id} className="text-xs text-fg-muted">
+                      <span className="text-fg">{r.other?.name ?? 'Unknown'}</span>{' '}
+                      <span className="text-fg-faint">
                         — {r.outgoing ? `is ${r.kind} of this` : `this is ${r.kind} of them`}
                         {r.status !== 'active' ? ` (${r.status})` : ''}
                       </span>
-                      {r.note ? <p className="mt-0.5 text-white/30">{r.note}</p> : null}
+                      {r.note ? <p className="mt-0.5 text-fg-faint">{r.note}</p> : null}
                     </li>
                   ))}
                 </ul>
@@ -542,8 +542,8 @@ export default function OrgClient({
             ) : null}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-dashed border-white/10 p-8 text-center">
-            <p className="text-sm text-white/35">Select an entity to view and edit it.</p>
+          <div className="rounded-lg border border-dashed border-line p-8 text-center">
+            <p className="text-sm text-fg-faint">Select an entity to view and edit it.</p>
           </div>
         )}
       </aside>
@@ -554,8 +554,8 @@ export default function OrgClient({
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-white/40">{label}</dt>
-      <dd className="text-right text-white/80">{value}</dd>
+      <dt className="text-fg-subtle">{label}</dt>
+      <dd className="text-right text-fg">{value}</dd>
     </div>
   );
 }
@@ -579,7 +579,7 @@ function Field({
 
   return (
     <label className="grid gap-1.5">
-      <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/40">{label}</span>
+      <span className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">{label}</span>
       <input
         value={local}
         onChange={(e) => setLocal(e.target.value)}
@@ -588,7 +588,7 @@ function Field({
           if (e.key === 'Enter') e.currentTarget.blur();
           if (e.key === 'Escape') setLocal(value);
         }}
-        className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+        className="rounded-lg border border-line bg-bg-raised px-3 py-2 text-sm text-fg outline-none focus:border-line-strong"
       />
     </label>
   );
@@ -607,11 +607,11 @@ function Select({
 }) {
   return (
     <label className="grid gap-1.5">
-      <span className="text-[0.65rem] uppercase tracking-[0.2em] text-white/40">{label}</span>
+      <span className="text-[0.65rem] uppercase tracking-[0.2em] text-fg-subtle">{label}</span>
       <select
         value={value}
         onChange={(e) => onSave(e.target.value)}
-        className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white outline-none focus:border-white/40"
+        className="rounded-lg border border-line bg-bg-raised px-3 py-2 text-sm text-fg outline-none focus:border-line-strong"
       >
         {options.map((o) => (
           <option key={o} value={o} className="bg-[#07070a]">

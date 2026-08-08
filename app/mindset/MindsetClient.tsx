@@ -34,16 +34,16 @@ export default function MindsetClient() {
       {loading ? (
         <div className="grid gap-6 lg:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-48 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+            <div key={i} className="h-48 animate-pulse rounded-xl border border-line bg-surface" />
           ))}
         </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
           {principles.map((p) => (
-            <article key={p.id} className="rounded-[1.75rem] border border-white/10 bg-white/5 p-7">
-              <p className="text-sm uppercase tracking-[0.35em] text-neon-orange/80">Principle</p>
-              <h2 className="mt-4 text-3xl font-light text-white">{p.title}</h2>
-              <p className="mt-4 text-sm leading-7 text-gray-400">{p.body}</p>
+            <article key={p.id} className="rounded-xl border border-line bg-surface p-7">
+              <p className="text-label uppercase text-accent">Principle</p>
+              <h2 className="mt-4 text-3xl font-light text-fg">{p.title}</h2>
+              <p className="mt-4 text-sm leading-7 text-fg-subtle">{p.body}</p>
             </article>
           ))}
         </div>

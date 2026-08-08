@@ -35,7 +35,7 @@ export default function FollowClient() {
       {loading ? (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-36 animate-pulse rounded-[1.75rem] border border-white/10 bg-white/5" />
+            <div key={i} className="h-36 animate-pulse rounded-xl border border-line bg-surface" />
           ))}
         </div>
       ) : (
@@ -46,11 +46,11 @@ export default function FollowClient() {
               href={link.url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-[1.75rem] border border-white/10 bg-white/5 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-neon-cyan/60 hover:bg-white/10"
+              className="rounded-xl border border-line bg-surface p-6 transition-all duration-300 hover:border-line-strong hover:bg-surface-hover"
             >
-              <p className="text-sm uppercase tracking-[0.35em] text-neon-orange/80">{link.platform}</p>
-              <p className="mt-4 text-sm leading-7 text-gray-400">{link.description}</p>
-              <span className="mt-6 inline-flex text-sm uppercase tracking-[0.2em] text-white">Open link</span>
+              <p className="text-label uppercase text-accent">{link.platform}</p>
+              <p className="mt-4 text-sm leading-7 text-fg-subtle">{link.description}</p>
+              <span className="mt-6 inline-flex text-label uppercase text-fg">Open link</span>
             </a>
           ))}
         </div>

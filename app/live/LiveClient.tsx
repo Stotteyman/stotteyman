@@ -31,9 +31,9 @@ const DENIAL_COPY: Record<string, string> = {
 };
 
 const inputCls =
-  'w-full rounded border border-white/15 bg-black/50 px-3 py-2 text-sm text-white placeholder-white/30 focus:border-white/40 focus:outline-none';
+  'w-full rounded border border-line bg-black/50 px-3 py-2 text-sm text-fg placeholder-white/30 focus:border-line-strong focus:outline-none';
 const btnCls =
-  'rounded border border-white/20 px-4 py-2 text-sm text-white/90 transition hover:border-white/50 hover:text-white disabled:opacity-40';
+  'rounded border border-line-strong px-4 py-2 text-sm text-fg transition hover:border-line-strong hover:text-fg disabled:opacity-40';
 
 /**
  * WHEP (WebRTC-HTTP Egress Protocol) playback against MediaMTX.
@@ -213,40 +213,40 @@ export default function LiveClient({
   if (privacy === 'off') {
     return (
       <main className="mx-auto w-full max-w-3xl px-6 py-24">
-        <h1 className="text-3xl font-semibold text-white">{initialTitle}</h1>
-        <p className="mt-4 text-sm text-white/60">The stream is currently off. Check back soon.</p>
+        <h1 className="text-3xl font-semibold text-fg">{initialTitle}</h1>
+        <p className="mt-4 text-sm text-fg-muted">The stream is currently off. Check back soon.</p>
       </main>
     );
   }
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-16">
-      <header className="border-b border-white/10 pb-6">
+      <header className="border-b border-line pb-6">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-semibold text-white">{initialTitle}</h1>
+          <h1 className="text-3xl font-semibold text-fg">{initialTitle}</h1>
           <span
             className={
               isLive
                 ? 'rounded-full bg-red-500/15 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-red-300'
-                : 'rounded-full bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-white/40'
+                : 'rounded-full bg-surface px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle'
             }
           >
             {isLive ? 'Live' : 'Offline'}
           </span>
         </div>
         {initialDescription ? (
-          <p className="mt-3 max-w-2xl text-sm text-white/60">{initialDescription}</p>
+          <p className="mt-3 max-w-2xl text-sm text-fg-muted">{initialDescription}</p>
         ) : null}
       </header>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="relative overflow-hidden rounded-lg border border-white/10 bg-black">
+        <div className="relative overflow-hidden rounded-lg border border-line bg-bg">
           <video
             ref={videoRef}
             autoPlay
             playsInline
             controls
-            className="aspect-video w-full bg-black"
+            className="aspect-video w-full bg-bg"
           />
 
           {phase !== 'playing' ? (
@@ -259,7 +259,7 @@ export default function LiveClient({
                   }}
                   className="w-full max-w-xs space-y-3 text-center"
                 >
-                  <label htmlFor="live-name" className="block text-xs uppercase tracking-[0.2em] text-white/40">
+                  <label htmlFor="live-name" className="block text-label uppercase text-fg-subtle">
                     Display name
                   </label>
                   <input
@@ -277,14 +277,14 @@ export default function LiveClient({
               ) : null}
 
               {phase === 'joining' || phase === 'connecting' ? (
-                <p className="text-sm text-white/60">
+                <p className="text-sm text-fg-muted">
                   {phase === 'joining' ? 'Checking access…' : 'Connecting…'}
                 </p>
               ) : null}
 
               {phase === 'denied' || phase === 'offline' ? (
                 <div className="space-y-4 text-center">
-                  <p className="text-sm text-white/70">{message}</p>
+                  <p className="text-sm text-fg-muted">{message}</p>
                   <button type="button" className={btnCls} onClick={() => void join()}>
                     Try again
                   </button>
@@ -295,23 +295,23 @@ export default function LiveClient({
         </div>
 
         {phase === 'playing' && chatOn ? (
-          <section className="flex h-[60vh] flex-col rounded-lg border border-white/10 lg:h-auto">
-            <h2 className="border-b border-white/10 px-4 py-3 text-xs uppercase tracking-[0.2em] text-white/40">
+          <section className="flex h-[60vh] flex-col rounded-lg border border-line lg:h-auto">
+            <h2 className="border-b border-line px-4 py-3 text-label uppercase text-fg-subtle">
               Chat
             </h2>
             <div className="flex-1 space-y-2 overflow-y-auto px-4 py-3">
               {messages.map((m) => (
                 <p key={m.id} className="text-sm leading-relaxed">
-                  <span className="font-medium text-white/90">{m.display_name}</span>{' '}
-                  <span className="text-white/60">{m.body}</span>
+                  <span className="font-medium text-fg">{m.display_name}</span>{' '}
+                  <span className="text-fg-muted">{m.body}</span>
                 </p>
               ))}
               {messages.length === 0 ? (
-                <p className="text-sm text-white/30">No messages yet.</p>
+                <p className="text-sm text-fg-faint">No messages yet.</p>
               ) : null}
               <div ref={chatEndRef} />
             </div>
-            <form onSubmit={sendMessage} className="flex gap-2 border-t border-white/10 p-3">
+            <form onSubmit={sendMessage} className="flex gap-2 border-t border-line p-3">
               <input
                 className={inputCls}
                 value={draft}

@@ -57,8 +57,8 @@ export default function NoAccessClient({ hqBase }: { hqBase: string }) {
   if (phase === 'checking' || phase === 'granted') {
     return (
       <div className="mx-auto w-full max-w-md text-center">
-        <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-          <p className="text-sm text-white/60">
+        <div className="rounded-xl border border-line bg-surface p-8">
+          <p className="text-sm text-fg-muted">
             {phase === 'granted' ? 'Access granted — opening HQ…' : 'Checking your access…'}
           </p>
         </div>
@@ -68,31 +68,31 @@ export default function NoAccessClient({ hqBase }: { hqBase: string }) {
 
   return (
     <div className="mx-auto w-full max-w-md text-center">
-      <div className="rounded-[1.75rem] border border-white/10 bg-white/5 p-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-white/40">Restricted</p>
-        <h1 className="mt-3 text-2xl font-semibold text-white">This area is invite-only</h1>
-        <p className="mt-4 text-sm leading-relaxed text-white/60">
+      <div className="rounded-xl border border-line bg-surface p-8">
+        <p className="text-label uppercase text-fg-subtle">Restricted</p>
+        <h1 className="mt-3 text-2xl font-semibold text-fg">This area is invite-only</h1>
+        <p className="mt-4 text-sm leading-relaxed text-fg-muted">
           {email ? (
             <>
-              <span className="text-white/80">{email}</span> signed in successfully, but it has
+              <span className="text-fg">{email}</span> signed in successfully, but it has
               no access to HQ.
             </>
           ) : (
             <>That account has no access to HQ.</>
           )}
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-white/50">
+        <p className="mt-3 text-sm leading-relaxed text-fg-subtle">
           Accounts here are created by invitation only. You have been signed out.
         </p>
 
         <div className="mt-8 flex flex-col gap-3">
           <a
             href={`${hqBase}/login/`}
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:border-white/40"
+            className="inline-flex items-center justify-center rounded-full border border-line bg-surface-hover px-6 py-3 text-sm font-medium text-fg transition-all duration-300 hover:border-line-strong"
           >
             Try a different account
           </a>
-          <a href="/" className="text-xs text-white/40 underline hover:text-white/70">
+          <a href="/" className="text-xs text-fg-subtle underline hover:text-fg-muted">
             Back to stotteyman.com
           </a>
         </div>

@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
-import { navigationItems, siteConfig } from '@/lib/site-content';
+import SiteFooter from '@/components/SiteFooter';
+import SiteHeader from '@/components/SiteHeader';
+import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Section, { Container, SectionHeader } from '@/components/ui/Section';
+import { siteConfig } from '@/lib/site-content';
 import { loadCopy } from '@/lib/site-copy';
 import { createSupabaseAnonClient } from '@/lib/supabase/client';
 
@@ -33,12 +38,6 @@ type Project = {
 
 type Service = { id: string; slug: string; title: string; summary: string; sort_order: number };
 
-const STATUS_LABEL: Record<string, string> = {
-  active: 'Live',
-  shipped: 'Shipped',
-  in_progress: 'In development',
-};
-
 export default async function HomePage() {
   const supabase = createSupabaseAnonClient();
   const copy = await loadCopy();
@@ -58,155 +57,113 @@ export default async function HomePage() {
   const featured = projects.filter((p) => p.featured).slice(0, 4);
 
   return (
-    <main className="relative min-h-screen bg-black text-white">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(255,140,0,0.13),transparent),radial-gradient(ellipse_60%_40%_at_85%_110%,rgba(0,255,255,0.06),transparent)]" />
-      <div className="pointer-events-none fixed inset-0 bg-grid-pattern bg-grid opacity-[0.04]" />
+    <>
+      <a
+        href="#content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-body-sm focus:text-accent-ink"
+      >
+        Skip to content
+      </a>
 
-      <div className="relative mx-auto w-full max-w-6xl px-6 lg:px-10">
-        <header className="flex flex-wrap items-center justify-between gap-6 py-8">
-          <span className="text-sm uppercase tracking-[0.45em] text-neon-orange/80">
-            {siteConfig.name}
-          </span>
-          <nav aria-label="Primary" className="flex flex-wrap gap-2">
-            {navigationItems
-              .filter((i) => i.href !== '/')
-              .map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.2em] text-gray-300 transition-all duration-300 hover:border-neon-orange/60 hover:text-white"
-                >
-                  {item.label}
-                </Link>
-              ))}
-          </nav>
-        </header>
+      <SiteHeader />
 
-        <section className="border-b border-white/10 py-16 md:py-24">
-          <p className="text-xs uppercase tracking-[0.35em] text-neon-cyan/80">
-            {copy('home.eyebrow', 'Builder & operator')}
-          </p>
-          <h1 className="mt-6 max-w-4xl text-4xl font-light leading-[1.1] tracking-tight md:text-6xl lg:text-7xl">
-            {copy(
-              'home.headline',
-              'I build multiplayer worlds, the platforms around them, and the systems that keep them running.'
-            )}
-          </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-relaxed text-gray-300">
-            {copy(
-              'home.intro',
-              'Game servers, community platforms, storefronts, and internal tooling — designed, engineered, and operated.'
-            )}
-          </p>
+      <main id="content" className="relative">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[36rem] bg-grid-hairline [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,black,transparent)]"
+        />
 
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Link
-              href="/work/"
-              className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02]"
-            >
-              {copy('home.cta_primary', 'See the work')}
-            </Link>
-            <Link
-              href="/consult/"
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3.5 text-sm text-white transition-colors duration-300 hover:border-white/50"
-            >
-              {copy('home.cta_secondary', 'Work with me')}
-            </Link>
-          </div>
+        <Container>
+          <Section size="lg">
+            <p className="font-mono text-label uppercase text-accent">
+              {copy('home.eyebrow', 'Builder & operator')}
+            </p>
+            <h1 className="mt-6 max-w-4xl text-display-xl font-medium text-fg">
+              {copy(
+                'home.headline',
+                'I build multiplayer worlds, the platforms around them, and the systems that keep them running.'
+              )}
+            </h1>
+            <p className="mt-7 max-w-prose text-body-lg text-fg-muted">
+              {copy(
+                'home.intro',
+                'Game servers, community platforms, storefronts, and internal tooling — designed, engineered, and operated.'
+              )}
+            </p>
 
-          <p className="mt-8 inline-flex items-center gap-2.5 rounded-full border border-emerald-400/25 bg-emerald-400/5 px-4 py-2 text-xs text-emerald-200/90">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            {copy('home.availability', 'Open to collaborations and new projects')}
-          </p>
-        </section>
-
-        {featured.length ? (
-          <section className="border-b border-white/10 py-16">
-            <div className="flex items-baseline justify-between gap-4">
-              <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">Selected work</h2>
-              <Link href="/work/" className="text-xs text-white/40 underline hover:text-white/70">
-                All projects
-              </Link>
+            <div className="mt-10 flex flex-wrap gap-3">
+              <Button href="/work/" variant="primary" size="lg">
+                {copy('home.cta_primary', 'See the work')}
+              </Button>
+              <Button href="/consult/" variant="secondary" size="lg">
+                {copy('home.cta_secondary', 'Work with me')}
+              </Button>
             </div>
 
-            <div className="mt-8 grid gap-4 md:grid-cols-2">
-              {featured.map((p) => (
-                <article
-                  key={p.id}
-                  className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-6 transition-colors hover:border-white/25"
-                >
-                  <div className="flex flex-wrap items-baseline gap-2.5">
-                    <h3 className="text-xl font-medium text-white">{p.title}</h3>
-                    <span className="text-[0.6rem] uppercase tracking-[0.18em] text-white/35">
-                      {STATUS_LABEL[p.status] ?? p.status}
-                    </span>
-                  </div>
-                  {p.summary ? (
-                    <p className="mt-3 text-sm leading-relaxed text-white/60">{p.summary}</p>
-                  ) : null}
-                  {p.role ? (
-                    <p className="mt-4 text-[0.65rem] uppercase tracking-[0.18em] text-white/30">
-                      {p.role}
-                    </p>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          </section>
-        ) : null}
+            {/* Not a Badge: this string is a sentence, and an 11px uppercase mono pill
+                breaks its border apart the moment it wraps on a narrow screen. */}
+            <p className="mt-9 flex items-center gap-2.5 text-body-sm text-fg-muted">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-ok" />
+              {copy('home.availability', 'Open to collaborations and new projects')}
+            </p>
+          </Section>
 
-        {services.length ? (
-          <section className="border-b border-white/10 py-16">
-            <div className="flex items-baseline justify-between gap-4">
-              <h2 className="text-xs uppercase tracking-[0.3em] text-white/40">What I do</h2>
-              <Link
-                href="/services/"
-                className="text-xs text-white/40 underline hover:text-white/70"
-              >
-                Details
-              </Link>
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {services.map((s) => (
-                <div key={s.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                  <h3 className="text-base font-medium text-white">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-white/55">{s.summary}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
+          {featured.length ? (
+            <Section>
+              <SectionHeader eyebrow="Selected work" action={{ href: '/work/', label: 'All projects' }} />
+              <div className="mt-8 grid gap-4 md:grid-cols-2">
+                {featured.map((p) => (
+                  <Card key={p.id}>
+                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                      <h3 className="text-title font-medium text-fg">{p.title}</h3>
+                      <Badge status={p.status} />
+                    </div>
+                    {p.summary ? (
+                      <p className="mt-3 text-body-sm text-fg-muted">{p.summary}</p>
+                    ) : null}
+                    {p.role ? (
+                      <p className="mt-4 font-mono text-label uppercase text-fg-subtle">{p.role}</p>
+                    ) : null}
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          ) : null}
 
-        <section className="py-16">
-          <h2 className="max-w-3xl text-2xl font-light leading-snug text-white md:text-3xl">
-            {copy(
-              'home.closing',
-              'If you are building something that needs a technical partner rather than a contractor, that is worth a conversation.'
-            )}
-          </h2>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/consult/"
-              className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-medium text-black transition-transform duration-300 hover:scale-[1.02]"
-            >
-              Start a conversation
-            </Link>
-            <a
-              href={`mailto:${siteConfig.email}`}
-              className="inline-flex items-center justify-center rounded-full border border-white/20 px-7 py-3.5 text-sm text-white transition-colors duration-300 hover:border-white/50"
-            >
-              {siteConfig.email}
-            </a>
-          </div>
-        </section>
+          {services.length ? (
+            <Section>
+              <SectionHeader eyebrow="What I do" action={{ href: '/services/', label: 'Details' }} />
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                {services.map((s) => (
+                  <Card key={s.id} padding="sm">
+                    <h3 className="text-body font-medium text-fg">{s.title}</h3>
+                    <p className="mt-2 text-body-sm text-fg-muted">{s.summary}</p>
+                  </Card>
+                ))}
+              </div>
+            </Section>
+          ) : null}
 
-        <footer className="border-t border-white/10 py-8 text-sm text-gray-500">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <p>{siteConfig.person}</p>
-            <p>{siteConfig.location}</p>
-          </div>
-        </footer>
-      </div>
-    </main>
+          <Section size="lg" divide={false}>
+            <h2 className="max-w-3xl text-display-md font-medium text-fg">
+              {copy(
+                'home.closing',
+                'If you are building something that needs a technical partner rather than a contractor, that is worth a conversation.'
+              )}
+            </h2>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button href="/consult/" variant="primary" size="lg">
+                Start a conversation
+              </Button>
+              <Button href={`mailto:${siteConfig.email}`} variant="secondary" size="lg">
+                {siteConfig.email}
+              </Button>
+            </div>
+          </Section>
+        </Container>
+      </main>
+
+      <SiteFooter />
+    </>
   );
 }
