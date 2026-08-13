@@ -11,6 +11,20 @@ const kickChatPopout = `https://kick.com/popout/${kickChannel}/chat`;
 const discordInvite = 'https://discord.gg/9zbyfPyp3E';
 const KICK_PROVIDER = 'custom:kick';
 const KICK_PROVIDER_TOKEN_KEY = 'kick_provider_token';
+/**
+ * A token Kick has already rejected. Supabase keeps handing the same dead
+ * `provider_token` back on every `getSession()` — without remembering which one
+ * died, every reload silently re-adopts it and the first message of the session
+ * fails all over again.
+ */
+const KICK_DEAD_TOKEN_KEY = 'kick_provider_token_dead';
+
+/**
+ * `chat:write` posts the message; `channel:read` is what lets the send route look up
+ * the channel's `broadcaster_user_id`, which Kick's public chat API requires and
+ * which cannot be derived from the chatroom id the overlay uses.
+ */
+const KICK_SCOPES = 'user:read channel:read chat:write';
 
 type LoginState = 'idle' | 'pending' | 'loggedIn';
 
@@ -23,6 +37,7 @@ export default function StreamClient() {
   const [kickUsername, setKickUsername] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [providerToken, setProviderToken] = useState<string | null>(null);
+  const [isLive, setIsLive] = useState<boolean | null>(null);
   const [chatWidth, setChatWidth] = useState(340);
   const [isDesktop, setIsDesktop] = useState(false);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
@@ -51,6 +66,41 @@ export default function StreamClient() {
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onUp);
   }, [chatWidth]);
+
+  /**
+   * Real live/offline state.
+   *
+   * The header used to render an always-green pulsing "LIVE ON KICK" dot regardless of
+   * whether anything was broadcasting — so the page claimed to be live while the player
+   * underneath it said "stotteyman is offline". Same edge function the rest of the
+   * stream stack uses, because kick.com/api 403s Cloudflare-flagged origins directly.
+   */
+  useEffect(() => {
+    const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    if (!base) return;
+
+    let cancelled = false;
+    const check = async () => {
+      try {
+        const res = await fetch(`${base}/functions/v1/kick-chatroom?slug=${kickChannel}`, {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(8000),
+        });
+        if (!res.ok) return;
+        const body = (await res.json()) as { isLive?: boolean };
+        if (!cancelled) setIsLive(Boolean(body.isLive));
+      } catch {
+        /* a failed poll leaves the last known state rather than claiming offline */
+      }
+    };
+
+    check();
+    const id = setInterval(check, 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
 
   useEffect(() => {
     supabase
@@ -121,14 +171,17 @@ export default function StreamClient() {
 
     if (user) {
       const uname = resolveKickUsernameFromUser(user);
+      const dead = window.sessionStorage.getItem(KICK_DEAD_TOKEN_KEY);
       const sessionToken = data.session?.provider_token ?? null;
       const storedToken = window.sessionStorage.getItem(KICK_PROVIDER_TOKEN_KEY);
-      const token = sessionToken || storedToken;
+      const candidate = sessionToken || storedToken;
+      const token = candidate && candidate !== dead ? candidate : null;
 
       setKickUsername(uname);
       setProviderToken(token);
-      if (sessionToken) {
-        window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, sessionToken);
+      if (token) {
+        window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, token);
+        window.sessionStorage.removeItem(KICK_DEAD_TOKEN_KEY);
       }
 
       setLoginState(token ? 'loggedIn' : 'idle');
@@ -148,12 +201,16 @@ export default function StreamClient() {
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         const uname = resolveKickUsernameFromUser(session.user);
-        const token = session.provider_token ?? window.sessionStorage.getItem(KICK_PROVIDER_TOKEN_KEY);
+        const dead = window.sessionStorage.getItem(KICK_DEAD_TOKEN_KEY);
+        const candidate =
+          session.provider_token ?? window.sessionStorage.getItem(KICK_PROVIDER_TOKEN_KEY);
+        const token = candidate && candidate !== dead ? candidate : null;
 
         setKickUsername(uname);
         setProviderToken(token);
-        if (session.provider_token) {
-          window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, session.provider_token);
+        if (token) {
+          window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, token);
+          window.sessionStorage.removeItem(KICK_DEAD_TOKEN_KEY);
         }
 
         setLoginState(token ? 'loggedIn' : 'idle');
@@ -206,7 +263,7 @@ export default function StreamClient() {
       options: {
         redirectTo,
         skipBrowserRedirect: true,
-        scopes: 'user:read chat:write',
+        scopes: KICK_SCOPES,
       },
     });
 
@@ -256,13 +313,23 @@ export default function StreamClient() {
     window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
   }, []);
 
+  /**
+   * A dead Kick token is not a dead site session.
+   *
+   * This used to call `supabase.auth.signOut()`, so one rejected message threw away
+   * the whole identity — and because the old send endpoint rejected *every* message,
+   * that fired on the very first thing anyone typed. Only the Kick credential is
+   * dropped now; the viewer stays signed in and reconnects with one click.
+   */
   const handleKickAuthExpired = useCallback(async () => {
-    await supabase.auth.signOut();
+    if (providerToken) {
+      window.sessionStorage.setItem(KICK_DEAD_TOKEN_KEY, providerToken);
+    }
+    window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
     setProviderToken(null);
     setLoginState('idle');
-    window.sessionStorage.removeItem(KICK_PROVIDER_TOKEN_KEY);
-    setErrorMsg('Kick chat session expired. Please login again.');
-  }, []);
+    setErrorMsg('Your Kick connection expired — reconnect to keep chatting.');
+  }, [providerToken]);
 
   return (
     <main className="flex h-dvh w-full flex-col overflow-hidden bg-bg text-fg">
@@ -278,8 +345,22 @@ export default function StreamClient() {
           </Link>
           <span className="hidden h-3 w-px bg-surface-hover sm:block" />
           <div className="hidden items-center gap-2 sm:flex">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#53FC18] shadow-[0_0_8px_#53FC18]" />
-            <span className="font-mono text-label uppercase text-[#53FC18]">Live on Kick</span>
+            <span
+              className={`h-2 w-2 rounded-full ${
+                isLive
+                  ? 'animate-pulse bg-[#53FC18] shadow-[0_0_8px_#53FC18]'
+                  : isLive === false
+                    ? 'bg-fg-faint'
+                    : 'bg-fg-faint/50'
+              }`}
+            />
+            <span
+              className={`font-mono text-label uppercase ${
+                isLive ? 'text-[#53FC18]' : 'text-fg-subtle'
+              }`}
+            >
+              {isLive === null ? 'Checking…' : isLive ? 'Live on Kick' : 'Offline'}
+            </span>
           </div>
         </div>
 
@@ -327,9 +408,28 @@ export default function StreamClient() {
         </div>
       </header>
 
+      {/* A dropped Kick connection is a prompt, not a stack trace: it offers the one
+          action that fixes it instead of leaving a red bar with no way forward. */}
       {errorMsg && (
-        <div className="shrink-0 border-b border-red-400/30 bg-red-400/10 px-4 py-2">
-          <p className="font-mono text-[10px] text-red-300">{errorMsg}</p>
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-warn/25 bg-warn/10 px-4 py-2.5">
+          <p className="font-mono text-[11px] text-warn">{errorMsg}</p>
+          <div className="flex items-center gap-2">
+            {!providerToken && (
+              <button
+                onClick={handleLogin}
+                className="rounded-full border border-warn/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-warn transition-colors hover:bg-warn/15"
+              >
+                Reconnect Kick
+              </button>
+            )}
+            <button
+              onClick={() => setErrorMsg('')}
+              aria-label="Dismiss"
+              className="font-mono text-[11px] text-warn/60 hover:text-warn"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
 
@@ -373,13 +473,20 @@ export default function StreamClient() {
             onMouseDown={handleResizeStart}
           />
           <div className="flex shrink-0 items-center justify-between border-b border-line bg-[#050505] px-4 py-3">
+            {/* This badge used to read CONNECTED off `loginState`, which says nothing
+                about the chat socket — it stayed green while chat was down. It names
+                the signed-in account now, which is the thing loginState actually knows. */}
             <span className="font-mono text-label uppercase text-fg-subtle">
               {loginState === 'loggedIn' ? (
                 <span className="flex items-center gap-2">
                   Live Chat
-                  <span className="rounded bg-[#53FC18]/15 px-1.5 py-0.5 text-[9px] text-[#53FC18]">CONNECTED</span>
+                  <span className="rounded bg-[#53FC18]/15 px-1.5 py-0.5 text-[9px] text-[#53FC18]">
+                    {kickUsername ? `@${kickUsername}` : 'Kick linked'}
+                  </span>
                 </span>
-              ) : 'Live Chat'}
+              ) : (
+                'Live Chat'
+              )}
             </span>
             <div className="flex items-center gap-3">
               <a
