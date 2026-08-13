@@ -92,6 +92,12 @@ export const COLLECTIONS: Collection[] = [
       { name: 'tags', label: 'Tags', type: 'tags' },
       { name: 'cover_url', label: 'Cover image', type: 'text' },
       { name: 'youtube_id', label: 'YouTube ID (11 chars, not a URL)', type: 'text' },
+      // The daily publisher (public.daily_blog_publish_tick, pg_cron 13:05 UTC) takes the
+      // lowest queue_position with status 'queued' and kind 'evergreen' — but only on a day
+      // with no post already published, so a hand-published timely post never spends one.
+      { name: 'kind', label: 'Kind (evergreen | timely)', type: 'text' },
+      { name: 'status', label: 'Status (draft | queued | scheduled | published)', type: 'text' },
+      { name: 'queue_position', label: 'Queue position (lowest goes next)', type: 'text' },
       { name: 'published_at', label: 'Publish date', type: 'date' },
       PUBLISHED,
       SORT,
