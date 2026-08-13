@@ -19,10 +19,12 @@ export default async function ConsultPage() {
       title={copy('consult.title', 'Open to consultations, collaborations, and interesting problems.')}
       intro={copy('consult.intro', 'Tell me what you are building and where it is stuck. I read every request personally.')}
     >
-      <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr]">
-        <ConsultClient />
+      {/* The wizard owns its own two-column rail, so it gets the full width here —
+          nesting it inside another sidebar layout crushed the step panel. */}
+      <ConsultClient />
 
-        <aside className="grid gap-5 self-start">
+      <div className="mt-16 border-t border-line pt-12">
+        <aside className="grid gap-5 md:grid-cols-3">
           <div className="rounded-lg border border-line bg-surface p-6">
             <h2 className="text-sm font-semibold text-fg">What happens next</h2>
             <ol className="mt-4 grid gap-3 text-sm leading-relaxed text-fg-muted">

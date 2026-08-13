@@ -1,15 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import Wizard, { Choice, ReviewRow, type WizardStep } from '@/components/wizard/Wizard';
 
 /**
- * On-stream donation form.
+ * On-stream support flow.
  *
- * Two rails behind one form. Card goes through Stripe Checkout and confirms
- * itself, so the alert fires without anyone touching anything. CashApp and crypto
- * have no webhook at all, so those submissions are a *claim* — recorded as pending
- * and shown on stream only after Stotteyman confirms the money landed. The copy
- * says so plainly rather than implying the alert is instant.
+ * Two rails behind one flow. Card goes through Stripe Checkout and confirms itself, so
+ * the alert fires without anyone touching anything. Cash App and crypto have no webhook
+ * at all, so those submissions are a *claim* — recorded as pending and shown on stream
+ * only after Stotteyman confirms the money landed. The copy says so plainly rather than
+ * implying the alert is instant.
+ *
+ * Rebuilt as a wizard from a single stacked form. The old form showed the song-request
+ * minimum, the card rail and the "I already sent it" rail all at once, so the most
+ * common mistake was paying by Cash App and then also clicking Donate by card. Picking
+ * the rail is now its own step and the review screen names it before anything happens.
  */
 
 type Options = {
@@ -21,6 +28,8 @@ type Options = {
 
 const PRESETS = [5, 10, 25, 50];
 
+type Rail = 'card' | 'cashapp' | 'crypto';
+
 export default function DonateForm() {
   const [options, setOptions] = useState<Options | null>(null);
   const [amount, setAmount] = useState('10');
@@ -28,11 +37,13 @@ export default function DonateForm() {
   const [message, setMessage] = useState('');
   const [songRequest, setSongRequest] = useState(false);
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [busy, setBusy] = useState<'card' | 'manual' | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [rail, setRail] = useState<Rail>('card');
+  const [state, setState] = useState<'idle' | 'sending' | 'error'>('idle');
+  const [error, setError] = useState('');
   const [done, setDone] = useState<string | null>(null);
 
   useEffect(() => {
+    // Note the trailing slash: `trailingSlash: true` turns a bare /api/... into a 308.
     fetch('/api/donate/options/')
       .then((r) => r.json())
       .then(setOptions)
@@ -41,31 +52,192 @@ export default function DonateForm() {
     // Stripe sends the donor back here with ?thanks=1.
     const params = new URLSearchParams(window.location.search);
     if (params.get('thanks')) setDone('Thank you — your donation is on its way to the stream.');
-    if (params.get('cancelled')) setError('Checkout was cancelled. Nothing was charged.');
+    if (params.get('cancelled')) {
+      setError('Checkout was cancelled. Nothing was charged.');
+      setState('error');
+    }
   }, []);
 
   const songMin = (options?.songsMinCents ?? 300) / 100;
   const amountNumber = Number(amount);
-  const songTooCheap = songRequest && amountNumber < songMin;
+  const songsOff = options ? !options.songsEnabled : false;
+  const cardOff = options ? !options.cardEnabled : false;
 
-  const submit = async (rail: 'card' | 'manual', method?: 'cashapp' | 'crypto') => {
-    setError(null);
-    setDone(null);
+  const RAILS = useMemo(
+    () =>
+      [
+        {
+          value: 'card' as const,
+          label: cardOff ? 'Card — not switched on' : 'Pay by card',
+          hint: cardOff
+            ? 'Card donations are off right now. Use one of the options below.'
+            : 'Stripe Checkout. Confirms itself, so the alert fires immediately.',
+        },
+        {
+          value: 'cashapp' as const,
+          label: 'I already sent Cash App',
+          hint: 'Recorded as a claim — it reaches the stream once payment is confirmed.',
+        },
+        {
+          value: 'crypto' as const,
+          label: 'I already sent crypto',
+          hint: 'Same as above: confirmed by hand before it shows on screen.',
+        },
+      ] as const,
+    [cardOff]
+  );
 
-    if (!Number.isFinite(amountNumber) || amountNumber < 1) {
-      setError('Enter an amount of $1 or more.');
-      return;
-    }
-    if (songTooCheap) {
-      setError(`Song requests start at $${songMin.toFixed(2)}.`);
-      return;
-    }
-    if (songRequest && !youtubeUrl.trim()) {
-      setError('Paste the YouTube link for your song.');
-      return;
-    }
+  const steps: WizardStep[] = useMemo(
+    () => [
+      {
+        title: 'Amount',
+        heading: 'How much?',
+        hint: 'Whatever you like — the amount is never shown as a leaderboard.',
+        body: (
+          <div className="grid gap-5">
+            <div className="flex flex-wrap gap-2">
+              {PRESETS.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setAmount(String(preset))}
+                  className={`flex-1 rounded-lg border px-4 py-3 font-mono text-body-sm transition-colors duration-fast ${
+                    amount === String(preset)
+                      ? 'border-accent-line bg-accent-soft text-accent'
+                      : 'border-line bg-bg text-fg-subtle hover:border-line-strong'
+                  }`}
+                >
+                  ${preset}
+                </button>
+              ))}
+            </div>
+            <label className="grid gap-2">
+              <span className="font-mono text-label uppercase text-fg-subtle">
+                Or an exact amount (USD)
+              </span>
+              <input
+                type="number"
+                min="1"
+                step="1"
+                inputMode="decimal"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="rounded-lg border border-line bg-bg px-4 py-3 font-mono text-body-sm text-fg outline-none focus:border-accent-line"
+              />
+            </label>
+          </div>
+        ),
+        validate: () =>
+          Number.isFinite(amountNumber) && amountNumber >= 1 ? null : 'Enter $1 or more.',
+      },
+      {
+        title: 'Message',
+        heading: 'What should the stream see?',
+        hint: 'Your name and message appear on screen live, and the message is read aloud.',
+        body: (
+          <div className="grid gap-5">
+            <label className="grid gap-2">
+              <span className="font-mono text-label uppercase text-fg-subtle">
+                Name shown on stream
+              </span>
+              <input
+                type="text"
+                maxLength={60}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Anonymous if you leave it blank"
+                className="rounded-lg border border-line bg-bg px-4 py-3 text-body-sm text-fg outline-none placeholder:text-fg-faint focus:border-accent-line"
+              />
+            </label>
+            <label className="grid gap-2">
+              <span className="font-mono text-label uppercase text-fg-subtle">Message</span>
+              <textarea
+                maxLength={300}
+                rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Read aloud on stream. 300 characters."
+                className="resize-none rounded-lg border border-line bg-bg px-4 py-3 text-body-sm text-fg outline-none placeholder:text-fg-faint focus:border-accent-line"
+              />
+              <span className="text-body-sm text-fg-faint">{message.length} / 300</span>
+            </label>
+          </div>
+        ),
+      },
+      {
+        title: 'Song',
+        heading: 'Want a song in the queue?',
+        hint: songsOff
+          ? undefined
+          : `Requests start at $${songMin.toFixed(2)} and play in the order they land.`,
+        body: songsOff ? (
+          <p className="rounded-lg border border-line bg-bg px-4 py-3 text-body-sm text-fg-muted">
+            Song requests are switched off at the moment. Skip this step.
+          </p>
+        ) : (
+          <div className="grid gap-5">
+            <Choice
+              options={[
+                { value: 'no', label: 'No thanks', hint: 'Just the message' },
+                {
+                  value: 'yes',
+                  label: 'Add a song',
+                  hint: `$${songMin.toFixed(2)} minimum`,
+                },
+              ]}
+              value={songRequest ? 'yes' : 'no'}
+              onChange={(v) => setSongRequest(v === 'yes')}
+            />
+            {songRequest ? (
+              <label className="grid gap-2">
+                <span className="font-mono text-label uppercase text-fg-subtle">YouTube link</span>
+                <input
+                  type="url"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=…"
+                  className="rounded-lg border border-line bg-bg px-4 py-3 font-mono text-body-sm text-fg outline-none placeholder:text-fg-faint focus:border-accent-line"
+                />
+              </label>
+            ) : null}
+          </div>
+        ),
+        validate: () => {
+          if (songsOff || !songRequest) return null;
+          if (amountNumber < songMin) return `Song requests start at $${songMin.toFixed(2)}.`;
+          if (!youtubeUrl.trim()) return 'Paste the YouTube link for your song.';
+          return null;
+        },
+      },
+      {
+        title: 'Payment',
+        heading: 'How are you sending it?',
+        body: <Choice options={RAILS} value={rail} onChange={setRail} columns={1} />,
+        validate: () =>
+          rail === 'card' && cardOff
+            ? 'Card donations are off right now — pick Cash App or crypto.'
+            : null,
+      },
+    ],
+    [
+      RAILS,
+      amount,
+      amountNumber,
+      cardOff,
+      message,
+      name,
+      rail,
+      songMin,
+      songRequest,
+      songsOff,
+      youtubeUrl,
+    ]
+  );
 
-    setBusy(rail);
+  const submit = useCallback(async () => {
+    setError('');
+    setState('sending');
+
     try {
       const endpoint = rail === 'card' ? '/api/donate/checkout/' : '/api/donate/manual/';
       const res = await fetch(endpoint, {
@@ -75,15 +247,16 @@ export default function DonateForm() {
           amount: amountNumber,
           name: name.trim(),
           message: message.trim(),
-          songRequest,
+          songRequest: songRequest && !songsOff,
           youtubeUrl: youtubeUrl.trim(),
-          method,
+          method: rail === 'card' ? undefined : rail,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as { error?: string; url?: string; message?: string };
 
       if (!res.ok) {
         setError(data.error ?? 'Something went wrong. Try again.');
+        setState('error');
         return;
       }
       if (rail === 'card' && data.url) {
@@ -91,183 +264,62 @@ export default function DonateForm() {
         return;
       }
       setDone(data.message ?? 'Recorded — thank you.');
-      setMessage('');
-      setYoutubeUrl('');
-      setSongRequest(false);
+      setState('idle');
     } catch {
       setError('Network error. Try again.');
-    } finally {
-      setBusy(null);
+      setState('error');
     }
-  };
+  }, [amountNumber, message, name, rail, songRequest, songsOff, youtubeUrl]);
 
-  const field =
-    'w-full rounded-lg border border-line bg-bg-raised px-4 py-3 font-mono text-sm text-fg placeholder:text-fg-subtle focus:border-accent-line focus:outline-none';
+  if (done) {
+    return (
+      <div className="rounded-xl border border-ok/30 bg-ok/10 p-8 md:p-10">
+        <p className="font-mono text-label uppercase text-ok">Thank you</p>
+        <h2 className="mt-4 text-display-md font-medium text-fg">{done}</h2>
+        {rail !== 'card' ? (
+          <p className="mt-4 max-w-prose text-body text-fg-muted">
+            Because Cash App and crypto have no automatic confirmation, this shows on stream
+            once Stotteyman has checked the payment landed — usually the same session.
+          </p>
+        ) : null}
+      </div>
+    );
+  }
 
   return (
-    <div
-      className="animate-fade-up w-full rounded-lg border border-line bg-surface] p-6 text-left sm:p-8"
-      style={{ animationDelay: '0.15s' }}
-    >
-      <h2 className="text-center font-sans text-lg font-bold tracking-wider text-fg">
-        SEND A MESSAGE TO THE STREAM
-      </h2>
-      <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-fg-subtle">
-        Your name and message appear on screen live.
-      </p>
-
-      {/* amount */}
-      <div className="mt-6 flex flex-wrap gap-2">
-        {PRESETS.map((preset) => (
-          <button
-            key={preset}
-            type="button"
-            onClick={() => setAmount(String(preset))}
-            className={`flex-1 rounded-lg border px-3 py-2 font-mono text-sm transition-colors ${
-              amount === String(preset)
-                ? 'border-accent-line bg-accent-soft text-accent'
-                : 'border-line bg-bg-raised text-fg-subtle hover:border-line-strong'
-            }`}
-          >
-            ${preset}
-          </button>
-        ))}
-      </div>
-
-      <label className="mt-3 block">
-        <span className="sr-only">Amount in US dollars</span>
-        <input
-          type="number"
-          min="1"
-          step="1"
-          inputMode="decimal"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className={field}
-          placeholder="Amount (USD)"
-        />
-      </label>
-
-      <label className="mt-3 block">
-        <span className="sr-only">Your name</span>
-        <input
-          type="text"
-          maxLength={60}
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={field}
-          placeholder="Your name (shown on stream)"
-        />
-      </label>
-
-      <label className="mt-3 block">
-        <span className="sr-only">Message</span>
-        <textarea
-          maxLength={300}
-          rows={3}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className={`${field} resize-none`}
-          placeholder="Message (read aloud on stream)"
-        />
-      </label>
-
-      {/* song request */}
-      {options?.songsEnabled && (
-        <div className="mt-4 rounded-lg border border-line bg-bg-raised p-4">
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={songRequest}
-              onChange={(e) => setSongRequest(e.target.checked)}
-              className="mt-1 h-4 w-4 accent-[#ff4444]"
-            />
-            <span>
-              <span className="font-sans text-sm font-semibold text-fg">
-                Add my song to the request queue
-              </span>
-              <span className="mt-1 block font-mono text-[11px] text-fg-subtle">
-                ${songMin.toFixed(2)} minimum · paste a YouTube link below
-              </span>
-            </span>
-          </label>
-
-          {songRequest && (
-            <div className="mt-3">
-              <label className="block">
-                <span className="sr-only">YouTube link</span>
-                <input
-                  type="url"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  className={field}
-                  placeholder="https://www.youtube.com/watch?v=..."
-                />
-              </label>
-              {songTooCheap && (
-                <p className="mt-2 font-mono text-[11px] text-[#ff8c00]">
-                  Raise your amount to ${songMin.toFixed(2)} to request a song.
-                </p>
-              )}
-            </div>
-          )}
+    <Wizard
+      steps={steps}
+      state={state}
+      error={error}
+      onSubmit={submit}
+      submitLabel={rail === 'card' ? 'Continue to checkout' : 'Send it to the stream'}
+      submittingLabel={rail === 'card' ? 'Opening checkout…' : 'Sending…'}
+      aside={
+        <div className="rounded-lg border border-line bg-bg-raised p-4">
+          <p className="font-mono text-label uppercase text-fg-subtle">Your donation</p>
+          <p className="mt-3 font-mono text-display-md text-fg">
+            ${Number.isFinite(amountNumber) ? amountNumber.toFixed(2) : '—'}
+          </p>
+          <p className="mt-2 text-body-sm text-fg-subtle">
+            {songRequest && !songsOff ? 'With a song request' : 'Message only'}
+          </p>
         </div>
-      )}
-
-      {error && (
-        <p className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 font-mono text-[12px] text-red-300">
-          {error}
-        </p>
-      )}
-      {done && (
-        <p className="mt-4 rounded-lg border border-[#53fc18]/30 bg-[#53fc18]/10 px-4 py-3 font-mono text-[12px] text-[#53fc18]">
-          {done}
-        </p>
-      )}
-
-      {/* rails */}
-      {options?.cardEnabled ? (
-        <button
-          type="button"
-          disabled={busy !== null}
-          onClick={() => submit('card')}
-          className="mt-5 w-full rounded-lg border border-accent-line bg-accent-soft px-5 py-3.5 font-sans text-sm font-bold tracking-wider text-accent transition-colors hover:bg-accent-soft disabled:opacity-50"
-        >
-          {busy === 'card' ? 'OPENING CHECKOUT…' : 'DONATE BY CARD →'}
-        </button>
-      ) : (
-        <p className="mt-5 rounded-lg border border-line bg-bg-raised px-4 py-3 text-center font-mono text-[11px] text-fg-subtle">
-          Card donations are not switched on yet — use Cash App or crypto below.
-        </p>
-      )}
-
-      <div className="mt-5 border-t border-line pt-4">
-        <p className="text-center font-mono text-label uppercase text-fg-subtle">
-          Already sent by Cash App or crypto?
-        </p>
-        <p className="mt-2 text-center font-mono text-[11px] leading-relaxed text-fg-subtle">
-          Tell us here so your message reaches the stream. It shows once Stotteyman
-          confirms the payment landed.
-        </p>
-        <div className="mt-3 flex gap-2">
-          <button
-            type="button"
-            disabled={busy !== null}
-            onClick={() => submit('manual', 'cashapp')}
-            className="flex-1 rounded-lg border border-[#00D632]/40 bg-[#00D632]/10 px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-[#00D632] transition-colors hover:bg-[#00D632]/20 disabled:opacity-50"
-          >
-            {busy === 'manual' ? 'SENDING…' : 'I sent Cash App'}
-          </button>
-          <button
-            type="button"
-            disabled={busy !== null}
-            onClick={() => submit('manual', 'crypto')}
-            className="flex-1 rounded-lg border border-[#F7931A]/40 bg-[#F7931A]/10 px-4 py-2.5 font-mono text-[11px] uppercase tracking-wider text-[#F7931A] transition-colors hover:bg-[#F7931A]/20 disabled:opacity-50"
-          >
-            {busy === 'manual' ? 'SENDING…' : 'I sent crypto'}
-          </button>
-        </div>
-      </div>
-    </div>
+      }
+      review={
+        <dl>
+          <ReviewRow
+            label="Amount"
+            value={`$${Number.isFinite(amountNumber) ? amountNumber.toFixed(2) : '0.00'}`}
+          />
+          <ReviewRow label="Name on stream" value={name.trim() || 'Anonymous'} />
+          <ReviewRow label="Message" value={message.trim()} />
+          <ReviewRow
+            label="Song request"
+            value={songRequest && !songsOff ? youtubeUrl.trim() : 'None'}
+          />
+          <ReviewRow label="Paying by" value={RAILS.find((r) => r.value === rail)?.label} />
+        </dl>
+      }
+    />
   );
 }

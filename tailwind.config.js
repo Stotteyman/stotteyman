@@ -74,6 +74,9 @@ module.exports = {
        * between the mobile and desktop ends, so there is no breakpoint step.
        */
       fontSize: {
+        // Editorial scale. Only ever one per page — it is the page's headline, and a
+        // second one turns the hierarchy back into a flat wall of large text.
+        'display-2xl': ['clamp(3.25rem, 10vw, 7.5rem)', { lineHeight: '0.94', letterSpacing: '-0.045em' }],
         'display-xl': ['clamp(2.75rem, 6.5vw, 4.5rem)', { lineHeight: '1.02', letterSpacing: '-0.03em' }],
         'display-lg': ['clamp(2.25rem, 4.5vw, 3.25rem)', { lineHeight: '1.06', letterSpacing: '-0.025em' }],
         'display-md': ['clamp(1.75rem, 3vw, 2.25rem)', { lineHeight: '1.12', letterSpacing: '-0.02em' }],
