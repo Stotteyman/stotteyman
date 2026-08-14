@@ -5,7 +5,10 @@ import { createSupabaseAnonClient } from '@/lib/supabase/client';
 /**
  * Sitemap.
  *
- * Two things were wrong with the previous version. It omitted `/donate`, `/company` and
+ * `/company` is absent on purpose — the group structure is back-office only now, and
+ * the route 301s to `/`.
+ *
+ * Two things were wrong with the previous version. It omitted `/donate` and
  * **every blog post**, so the only pages with real editorial content were invisible to
  * crawlers. And every entry carried `lastModified: new Date()` under `force-static`,
  * which froze all twelve URLs to the build timestamp and told search engines the whole
@@ -30,7 +33,6 @@ const ROUTES: StaticRoute[] = [
   { path: '/services', priority: 0.95, changeFrequency: 'monthly' },
   { path: '/consult', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/build', priority: 0.9, changeFrequency: 'monthly' },
-  { path: '/company', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/about', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/blog', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/mindset', priority: 0.7, changeFrequency: 'monthly' },

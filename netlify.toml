@@ -39,6 +39,23 @@
     # gone from style-src and font-src.
     Content-Security-Policy = "default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' 'unsafe-inline' https://cwallet.com https://orangeduckstudios.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: data: https:; connect-src 'self' https://cwallet.com https://api.cwallet.com https://pqngaffhjqadrsntsvlp.supabase.co wss://pqngaffhjqadrsntsvlp.supabase.co https://kick.com wss://ws-us2.pusher.com wss://ws.pusherapp.com https://sockjs-us2.pusher.com wss://irc-ws.chat.twitch.tv https://orangeduckstudios.com; frame-src 'self' https://kick.com https://*.kick.com https://player.kick.com https://cwallet.com; form-action 'self' https://checkout.stripe.com; frame-ancestors 'none';"
 
+# The group structure page was published and is now back-office only. Deleting the
+# route would leave a 404 on a URL search engines have already indexed; a 301 both
+# retires it properly and stops it being re-crawled. The data behind it is separately
+# revoked from anon on stotteyman.public_entities — removing the page is not what
+# makes it private, since the anon key ships in the browser bundle.
+[[redirects]]
+  from = "/company"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/company/*"
+  to = "/"
+  status = 301
+  force = true
+
 # The #FreeEBZ petition page was removed. It was indexed and shared, so send its
 # traffic home rather than serving a 404 to every existing link.
 [[redirects]]

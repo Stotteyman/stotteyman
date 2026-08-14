@@ -44,7 +44,6 @@ export const siteConfig = {
 export const primaryNav = [
   { href: '/work', label: 'Work' },
   { href: '/services', label: 'Services' },
-  { href: '/company', label: 'Company' },
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Writing' },
 ] as const;
@@ -84,10 +83,12 @@ export const menuNav: readonly MenuItem[] = [
   {
     label: 'Work',
     href: '/work',
+    // The group structure is deliberately NOT here. It is back-office information and
+    // lives only in /hq/org — see the revoke on stotteyman.public_entities.
     items: [
       { href: '/work', label: 'All projects', hint: 'Everything shipped and running' },
-      { href: '/company', label: 'Group structure', hint: 'The businesses behind the work' },
       { href: '/achievements', label: 'Track record', hint: 'Milestones worth pointing at' },
+      { href: '/services', label: 'How I work', hint: 'What hiring me looks like' },
     ],
   },
   {
@@ -151,9 +152,8 @@ export const footerNav = [
     ],
   },
   {
-    heading: 'Company',
+    heading: 'Work with me',
     links: [
-      { href: '/company', label: 'Group structure' },
       { href: '/build', label: 'Server builder' },
       { href: '/consult', label: 'Start a project' },
       { href: '/contact', label: 'Contact' },
