@@ -232,6 +232,17 @@ export default function StreamClient() {
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       if (event.data?.type !== 'KICK_AUTH_DONE') return;
+
+      // The popup carries the provider_token, because it is the only context Supabase
+      // ever gives it to. Take it from the message and store it before syncing, or the
+      // sync below finds no token and concludes we are signed out.
+      const fromPopup = event.data?.providerToken;
+      if (typeof fromPopup === 'string' && fromPopup) {
+        window.sessionStorage.setItem(KICK_PROVIDER_TOKEN_KEY, fromPopup);
+        window.sessionStorage.removeItem(KICK_DEAD_TOKEN_KEY);
+        setProviderToken(fromPopup);
+      }
+
       syncFromSession();
     };
 
@@ -241,6 +252,11 @@ export default function StreamClient() {
 
   const handleLogin = useCallback(async () => {
     setErrorMsg('');
+
+    // An explicit reconnect clears the dead-token marker. Kick can hand back the same
+    // access token when the existing grant is still valid, and without this the guard
+    // rejects it on arrival — so pressing Reconnect appeared to do nothing at all.
+    window.sessionStorage.removeItem(KICK_DEAD_TOKEN_KEY);
 
     // If popup is already open, focus it
     if (popupRef.current && !popupRef.current.closed) {

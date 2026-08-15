@@ -112,6 +112,29 @@ async function resolveBroadcasterUserId(token: string): Promise<number | null> {
   }
 }
 
+/**
+ * Ask Kick what a token is actually allowed to do.
+ *
+ * Returns the granted scopes, or null if introspection itself failed — in which case
+ * the caller must not infer anything, since "no answer" is not "no scopes".
+ */
+async function introspectScopes(token: string): Promise<string[] | null> {
+  try {
+    const res = await fetch(`${KICK_API}/token/introspect`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+
+    const body = (await res.json()) as { data?: { active?: boolean; scope?: string } };
+    if (!body.data?.active) return [];
+    return (body.data.scope ?? '').split(/[\s,]+/).filter(Boolean);
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(req: NextRequest) {
   let body: KickChatRequest;
 
@@ -176,20 +199,33 @@ export async function POST(req: NextRequest) {
     message?: string;
   };
 
-  if (kickRes.status === 401) {
-    return NextResponse.json(
-      { code: 'kick_token_expired', message: 'Your Kick session expired. Reconnect to keep chatting.' },
-      { status: 401 }
-    );
-  }
+  // A rejected token has two very different causes that look identical from here:
+  // genuinely expired, or alive but missing chat:write. Kick will say which if asked,
+  // so ask rather than guess — the difference decides whether the user should press
+  // reconnect or whether the OAuth provider config is wrong.
+  if (kickRes.status === 401 || kickRes.status === 403) {
+    const scopes = await introspectScopes(token);
+    const hasWrite = scopes?.includes('chat:write');
 
-  if (kickRes.status === 403) {
+    if (scopes && !hasWrite) {
+      return NextResponse.json(
+        {
+          code: 'kick_scope_missing',
+          message:
+            'Your Kick login predates chat permission being enabled. Reconnect and approve chat access.',
+          grantedScopes: scopes,
+        },
+        { status: 403 }
+      );
+    }
+
     return NextResponse.json(
       {
-        code: 'kick_scope_missing',
-        message: 'Kick did not grant permission to post. Reconnect and approve chat access.',
+        code: 'kick_token_expired',
+        message: 'Your Kick session expired. Reconnect to keep chatting.',
+        ...(scopes ? { grantedScopes: scopes } : {}),
       },
-      { status: 403 }
+      { status: 401 }
     );
   }
 

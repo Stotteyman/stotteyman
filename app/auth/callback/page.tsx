@@ -31,7 +31,24 @@ export default function AuthCallback() {
       if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
         setStatus('Logged in! Closing…');
         if (window.opener && !window.opener.closed) {
-          window.opener.postMessage({ type: 'KICK_AUTH_DONE' }, window.location.origin);
+          /**
+           * The token has to travel in this message, because this popup is the only
+           * context that will ever see it.
+           *
+           * Supabase does not persist `provider_token` into the stored session — it is
+           * handed once, to whichever browsing context completed the code exchange, and
+           * that is this window. The opener calling `getSession()` afterwards gets a
+           * perfectly valid session with `provider_token: null`, and sessionStorage is
+           * per-tab so it cannot see anything written here either. That is exactly how
+           * "logged in, then immediately logged out again" happened: the opener had an
+           * identity and no Kick credential, which it reasonably read as signed out.
+           *
+           * Same-origin target, and the opener verifies `event.origin` on receipt.
+           */
+          window.opener.postMessage(
+            { type: 'KICK_AUTH_DONE', providerToken: session.provider_token ?? null },
+            window.location.origin
+          );
         } else {
           window.location.replace('/stream/');
           return;
