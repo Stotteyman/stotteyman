@@ -1,5 +1,18 @@
 name: CI
 
+# This job failed on every single push for months, in about 13 seconds, and the only
+# thing it ever produced was a failure email.
+#
+# It was written for an npm repo. This one uses pnpm and has no package-lock.json, so
+# `actions/setup-node` with `cache: npm` died at "Dependencies lock file is not found"
+# before a single line of the project was checked. Behind that, `npm ci` had no lockfile
+# to install from either, and `npm test` invoked a `test` script that does not exist —
+# there are no tests in this repo. Three failures deep, none of them about the code.
+#
+# It now runs the checks that actually gate this repo, on the same toolchain Netlify
+# builds with (see netlify.toml: NODE_VERSION 20, PNPM_VERSION 9), so a green run here
+# means something about the deploy that follows it.
+
 on:
   push:
     branches: [main]
@@ -11,13 +24,33 @@ on:
       - 'legacy/**'
 
 jobs:
-  test:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Must come before setup-node: `cache: pnpm` needs the pnpm binary to already
+      # exist so it can ask it where the store lives. Reversed, it fails the same way
+      # the old npm cache step did. Version comes from packageManager in package.json.
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: npm
-      - run: npm ci
-      - run: npm test -- --coverage
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # The real gate. `tsc --noEmit` needs no secrets and no network, which is why it
+      # is here and `pnpm build` is not — the build prerenders pages that read Supabase,
+      # so it would need production credentials in CI to tell us anything, and Netlify
+      # already runs it on every deploy.
+      - run: pnpm type-check
+
+      # Non-blocking on purpose. Lint currently reports 22 errors, nearly all
+      # react-hooks/set-state-in-effect from the newer React Compiler rules, across
+      # files that predate this workflow being fixed. That backlog is worth clearing,
+      # but failing the build on it would just recreate the thing this commit removes:
+      # a permanently red CI that everyone learns to ignore.
+      - run: pnpm lint
+        continue-on-error: true
