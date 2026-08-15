@@ -42,10 +42,22 @@ let cachedBroadcasterId: number | null = null;
 /**
  * `broadcaster_user_id` is a Kick USER id. It is neither the chatroom id (1062846)
  * nor the channel id (1069731) that the rest of the stream stack passes around, and
- * substituting either one silently addresses somebody else's chat.
+ * substituting either one silently addresses somebody else's chat. For stotteyman it
+ * is 1108886.
  *
- * Resolved with the viewer's own token — hence `channel:read` in the sign-in scopes.
- * `KICK_BROADCASTER_USER_ID` short-circuits the lookup if it is ever set.
+ * Three sources, in order, and NONE of them depend on the viewer's granted scopes:
+ *
+ *  1. `KICK_BROADCASTER_USER_ID` — the pinned value. One constant, zero requests.
+ *  2. The `kick-chatroom` edge function, which reads it from Kick's internal channel
+ *     payload out of Supabase's egress. No token, no scope.
+ *  3. The public channels endpoint using the caller's token, which needs
+ *     `channel:read`.
+ *
+ * It used to be (3) alone, and that failed in production: the `custom:kick` provider
+ * on GoTrue was configured with `scopes: ['user:read']`, so no viewer token carried
+ * `channel:read` no matter what `signInWithOAuth` requested — the provider's own
+ * config wins. Anything that makes sending depend on a scope grant is a thing that
+ * silently breaks the moment that config drifts.
  */
 async function resolveBroadcasterUserId(token: string): Promise<number | null> {
   if (cachedBroadcasterId) return cachedBroadcasterId;
@@ -54,6 +66,26 @@ async function resolveBroadcasterUserId(token: string): Promise<number | null> {
   if (Number.isInteger(fromEnv) && fromEnv > 0) {
     cachedBroadcasterId = fromEnv;
     return fromEnv;
+  }
+
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (base) {
+    try {
+      const res = await fetch(
+        `${base}/functions/v1/kick-chatroom?slug=${CHANNEL_SLUG}`,
+        { signal: AbortSignal.timeout(10_000), cache: 'no-store' }
+      );
+      if (res.ok) {
+        const body = (await res.json()) as { userId?: string };
+        const id = Number(body.userId);
+        if (Number.isInteger(id) && id > 0) {
+          cachedBroadcasterId = id;
+          return id;
+        }
+      }
+    } catch {
+      /* fall through to the token-scoped lookup */
+    }
   }
 
   try {
