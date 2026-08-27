@@ -4,25 +4,33 @@ import 'server-only';
  * "A question just came in" alerts.
  *
  * The requirement was a phone buzz that costs nothing and is reliable. SMS is neither:
- * every route to a real US number goes through a paid carrier gateway (Twilio and
- * friends), and the free carrier email-to-SMS addresses need a working SMTP sender,
- * need the carrier to be known in advance, and are being switched off one network at a
- * time. So the two channels here are the ones that genuinely are free *and* land as a
- * push notification on a phone:
+ * every route to a real US number goes through a metered carrier gateway, and the free
+ * carrier email-to-SMS addresses need a working SMTP sender, need the carrier known in
+ * advance, and are being switched off one network at a time. Discord is free forever
+ * and its mobile app pushes a mention like a text message, which is the same outcome.
  *
- *  1. **Discord webhook** — posts into a private channel. Free forever, no account
- *     beyond the one that already exists, and the Discord mobile app pushes it.
- *  2. **ntfy.sh topic** — free, no signup, no key. Install ntfy, subscribe to the
- *     topic, and it behaves exactly like a text message.
+ * Two Discord transports, in preference order:
  *
- * Both are configured by env and both are optional; a third generic webhook is there
- * for anything else (Slack, Make, a phone automation). Nothing here is allowed to
- * throw — a failed notification must never roll back a payment that already happened,
- * so failures are logged and surfaced as an un-notified row in the HQ queue instead.
+ *  1. **Webhook** (`AMA_DISCORD_WEBHOOK_URL`) — the narrow credential. A webhook URL can
+ *     only post to the one channel it was made for, so a leak costs nothing else.
+ *     Preferred whenever it exists.
+ *  2. **Bot token** (`AMA_DISCORD_BOT_TOKEN` + `AMA_DISCORD_CHANNEL_ID`) — used because
+ *     the Stotteyman bot holds MANAGE_CHANNELS but *not* MANAGE_WEBHOOKS, so it can
+ *     create the channel and post in it but cannot mint a webhook for it. Tick "Manage
+ *     Webhooks" on the bot's role and the webhook path takes over on its own.
+ *
+ * `AMA_DISCORD_MENTION_ID` is what makes it an actual ping rather than a message in a
+ * channel nobody opens. `allowed_mentions` is set explicitly so exactly that one user
+ * is pinged and nothing in a question's text can ever trigger an @everyone.
+ *
+ * Nothing here throws. A failed notification must never roll back a payment that has
+ * already happened, so failures are logged and surface as an un-notified row in HQ.
  */
 
 const TIMEOUT_MS = 8000;
-const UA = 'stotteyman.com AMA notifier (+https://stotteyman.com)';
+// Discord sits behind Cloudflare, which answers a missing User-Agent with a bodyless
+// 403 that reads exactly like a permissions error.
+const UA = 'DiscordBot (https://stotteyman.com, 1.0)';
 
 export type NotifyPayload = {
   question: string;
@@ -40,91 +48,90 @@ function truncate(text: string, max: number): string {
   return clean.length > max ? `${clean.slice(0, max - 1)}…` : clean;
 }
 
-async function postDiscord(url: string, p: NotifyPayload): Promise<void> {
+/** The message body, shared by both Discord transports. */
+function discordMessage(p: NotifyPayload) {
+  const mention = process.env.AMA_DISCORD_MENTION_ID;
+  const price = `$${(p.amountCents / 100).toFixed(2)}`;
+
+  return {
+    content: mention
+      ? `<@${mention}> new ${price} question — the clock is running.`
+      : `New ${price} question — the clock is running.`,
+    // Ping only the one configured user. Without this, a question containing "@everyone"
+    // would ping the whole guild, since the text is written by a stranger.
+    allowed_mentions: mention ? { parse: [], users: [mention] } : { parse: [] },
+    embeds: [
+      {
+        title: truncate(p.question, 250),
+        url: p.hqUrl,
+        color: 0xe8291a,
+        description: truncate(p.question, 1800),
+        fields: [
+          {
+            name: 'From',
+            value: `${p.askerName || 'Anonymous'}${p.askerEmail ? ` · ${p.askerEmail}` : ''}`,
+            inline: true,
+          },
+          { name: 'Paid', value: price, inline: true },
+        ],
+        timestamp: new Date().toISOString(),
+        footer: { text: 'Answer in HQ → /hq/ama' },
+      },
+    ],
+  };
+}
+
+async function postJson(url: string, body: unknown, authHeader?: string): Promise<void> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'User-Agent': UA,
+  };
+  if (authHeader) headers.Authorization = authHeader;
+
   const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      // Discord sits behind Cloudflare, which answers a missing User-Agent with a
-      // bodyless 403 that reads exactly like a permissions error. Always send one.
-      'User-Agent': UA,
-    },
-    body: JSON.stringify({
-      content: '**New paid question** — the clock is running.',
-      embeds: [
-        {
-          title: truncate(p.question, 250),
-          url: p.hqUrl,
-          color: 0xe8291a,
-          description: truncate(p.question, 1800),
-          fields: [
-            {
-              name: 'From',
-              value: `${p.askerName || 'Anonymous'}${p.askerEmail ? ` · ${p.askerEmail}` : ''}`,
-              inline: true,
-            },
-            {
-              name: 'Paid',
-              value: `$${(p.amountCents / 100).toFixed(2)}`,
-              inline: true,
-            },
-          ],
-          timestamp: new Date().toISOString(),
-          footer: { text: 'Answer in HQ → /hq/ama' },
-        },
-      ],
-    }),
+    headers,
+    body: JSON.stringify(body),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
-  if (!res.ok) throw new Error(`discord ${res.status}`);
+  if (!res.ok) {
+    throw new Error(`${res.status} ${(await res.text()).slice(0, 200)}`);
+  }
 }
 
-async function postNtfy(topic: string, p: NotifyPayload): Promise<void> {
-  const server = (process.env.AMA_NTFY_SERVER ?? 'https://ntfy.sh').replace(/\/$/, '');
-  const res = await fetch(`${server}/${encodeURIComponent(topic)}`, {
-    method: 'POST',
-    headers: {
-      'User-Agent': UA,
-      // ntfy reads its options out of headers, and they must be latin-1 clean —
-      // a smart quote in a question title throws before the request is even sent.
-      Title: 'New $' + (p.amountCents / 100).toFixed(2) + ' question',
-      Priority: 'high',
-      Tags: 'question',
-      Click: p.hqUrl,
-    },
-    body: truncate(p.question, 900).replace(/[^\x20-\x7E\n]/g, ''),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`ntfy ${res.status}`);
-}
-
-async function postGeneric(url: string, p: NotifyPayload): Promise<void> {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'User-Agent': UA },
-    body: JSON.stringify({ event: 'ama.paid', ...p }),
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-  });
-  if (!res.ok) throw new Error(`webhook ${res.status}`);
-}
-
-/** Fires every configured channel in parallel. Never throws. */
+/** Fires whichever Discord transport is configured. Never throws. */
 export async function notifyNewQuestion(p: NotifyPayload): Promise<NotifyResult> {
   const jobs: { name: string; run: () => Promise<void> }[] = [];
 
-  const discord = process.env.AMA_DISCORD_WEBHOOK_URL;
-  if (discord) jobs.push({ name: 'discord', run: () => postDiscord(discord, p) });
+  const webhook = process.env.AMA_DISCORD_WEBHOOK_URL;
+  const botToken = process.env.AMA_DISCORD_BOT_TOKEN;
+  const channelId = process.env.AMA_DISCORD_CHANNEL_ID;
 
-  const ntfy = process.env.AMA_NTFY_TOPIC;
-  if (ntfy) jobs.push({ name: 'ntfy', run: () => postNtfy(ntfy, p) });
+  if (webhook) {
+    jobs.push({ name: 'discord-webhook', run: () => postJson(webhook, discordMessage(p)) });
+  } else if (botToken && channelId) {
+    jobs.push({
+      name: 'discord-bot',
+      run: () =>
+        postJson(
+          `https://discord.com/api/v10/channels/${channelId}/messages`,
+          discordMessage(p),
+          `Bot ${botToken}`
+        ),
+    });
+  }
 
+  // Anything else that accepts a JSON POST — Slack, Make, a phone automation.
   const generic = process.env.AMA_NOTIFY_WEBHOOK_URL;
-  if (generic) jobs.push({ name: 'webhook', run: () => postGeneric(generic, p) });
+  if (generic) {
+    jobs.push({ name: 'webhook', run: () => postJson(generic, { event: 'ama.paid', ...p }) });
+  }
 
   if (jobs.length === 0) {
     console.warn(
-      '[ama/notify] no channel configured — set AMA_DISCORD_WEBHOOK_URL or AMA_NTFY_TOPIC. ' +
-        'The question is recorded and visible in HQ, but nothing was pushed.'
+      '[ama/notify] no channel configured — set AMA_DISCORD_WEBHOOK_URL, or ' +
+        'AMA_DISCORD_BOT_TOKEN + AMA_DISCORD_CHANNEL_ID. The question is recorded and ' +
+        'visible in HQ, but nothing was pushed.'
     );
     return { delivered: [], failed: [] };
   }
@@ -144,11 +151,11 @@ export async function notifyNewQuestion(p: NotifyPayload): Promise<NotifyResult>
   return { delivered, failed };
 }
 
-/** True when at least one push channel is wired up. Surfaced in HQ, never to the public. */
+/** True when at least one alert transport is wired up. Surfaced in HQ only. */
 export function notifyConfigured(): boolean {
   return Boolean(
     process.env.AMA_DISCORD_WEBHOOK_URL ||
-      process.env.AMA_NTFY_TOPIC ||
+      (process.env.AMA_DISCORD_BOT_TOKEN && process.env.AMA_DISCORD_CHANNEL_ID) ||
       process.env.AMA_NOTIFY_WEBHOOK_URL
   );
 }

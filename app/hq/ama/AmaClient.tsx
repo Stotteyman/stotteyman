@@ -110,8 +110,9 @@ export default function AmaClient({
       {!notifyConfigured ? (
         <p className="rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
           No alert channel is configured, so paid questions land here silently. Set
-          <code className="mx-1 font-mono text-xs">AMA_DISCORD_WEBHOOK_URL</code> or
-          <code className="mx-1 font-mono text-xs">AMA_NTFY_TOPIC</code> in Netlify env.
+          <code className="mx-1 font-mono text-xs">AMA_DISCORD_WEBHOOK_URL</code>, or
+          <code className="mx-1 font-mono text-xs">AMA_DISCORD_BOT_TOKEN</code> plus
+          <code className="mx-1 font-mono text-xs">AMA_DISCORD_CHANNEL_ID</code>, in Netlify env.
         </p>
       ) : null}
 
