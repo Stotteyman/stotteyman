@@ -1,5 +1,13 @@
 import { MetadataRoute } from 'next';
 
+/**
+ * NOTE: this route does not serve robots.txt. `public/robots.txt` exists and a static
+ * file in `public/` always wins over an app-router route of the same path, so this file
+ * is inert — verified against the live site, which serves the public/ version.
+ *
+ * Edit `public/robots.txt`. This is kept only so the two do not disagree if the static
+ * file is ever deleted.
+ */
 export const dynamic = 'force-static';
 
 export default function robots(): MetadataRoute.Robots {

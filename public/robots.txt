@@ -17,6 +17,13 @@ Disallow: /api/
 Disallow: /admin/
 Disallow: /private/
 Disallow: /_next/
+# The private business console.
+Disallow: /hq
+Disallow: /hq/
+# One private page per paid question, addressed by a token that travels through
+# Stripe's success URL. The pages are already noindex; this stops a crawler
+# fetching one at all.
+Disallow: /ama/q/
 
 # --- AI training crawlers: not permitted ------------------------------------
 
