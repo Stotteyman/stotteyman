@@ -128,6 +128,7 @@ export default async function HqHomePage() {
             { href: '/legal', label: 'Legal' },
             { href: '/content', label: 'Content' },
             { href: '/consults', label: 'Requests' },
+            { href: '/ama', label: 'Questions' },
             { href: '/people', label: 'People' },
             { href: '/live', label: 'Live' },
             { href: '/stream', label: 'Stream' },

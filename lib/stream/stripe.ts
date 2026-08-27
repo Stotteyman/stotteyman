@@ -90,14 +90,21 @@ export async function stripePost<T>(path: string, payload: Record<string, unknow
  * FAILS CLOSED: no secret configured means every event is rejected. Accepting
  * unsigned events "until the secret is set" is exactly how a donation endpoint
  * ends up firing alerts for payments that never happened.
+ *
+ * `secretOverride` exists because Stripe issues a **separate signing secret per
+ * endpoint**, not per account. The site has two endpoints — donations and Ask Me
+ * Anything — so a single STRIPE_WEBHOOK_SECRET would silently reject every event on
+ * whichever one was added second, with a signature mismatch that looks identical to
+ * an attack.
  */
 export function verifyStripeSignature(
   rawBody: string,
   signatureHeader: string | null,
-  toleranceSeconds = 300
+  toleranceSeconds = 300,
+  secretOverride?: string
 ): { ok: true } | { ok: false; reason: string } {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) return { ok: false, reason: 'STRIPE_WEBHOOK_SECRET is not set' };
+  const secret = secretOverride || process.env.STRIPE_WEBHOOK_SECRET;
+  if (!secret) return { ok: false, reason: 'no webhook signing secret is set' };
   if (!signatureHeader) return { ok: false, reason: 'missing stripe-signature header' };
 
   const parts = Object.fromEntries(

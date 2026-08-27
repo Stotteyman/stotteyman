@@ -34,6 +34,9 @@ const ROUTES: StaticRoute[] = [
   { path: '/consult', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/build', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/about', priority: 0.9, changeFrequency: 'monthly' },
+  // /ama only. The per-question pages under /ama/q/<token> are noindex and must never
+  // appear here — the token is the only thing protecting someone's question.
+  { path: '/ama', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/blog', priority: 0.9, changeFrequency: 'weekly' },
   { path: '/mindset', priority: 0.7, changeFrequency: 'monthly' },
   { path: '/achievements', priority: 0.7, changeFrequency: 'monthly' },

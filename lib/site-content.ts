@@ -120,9 +120,15 @@ export const menuNav: readonly MenuItem[] = [
     href: '/about',
     items: [
       { href: '/about', label: 'Who I am', hint: 'Background and how I work' },
+      { href: '/ama', label: 'Ask me anything', hint: '$5 a question, answered personally' },
       { href: '/mindset', label: 'How I think', hint: 'The principles behind the decisions' },
       { href: '/contact', label: 'Contact', hint: 'Direct line, no form gymnastics' },
     ],
+    feature: {
+      href: '/ama',
+      label: 'Ask me anything',
+      hint: 'Any question you like, $5. Usually answered in five to ten minutes.',
+    },
   },
   { label: 'Writing', href: '/blog' },
 ];
@@ -156,6 +162,7 @@ export const footerNav = [
     links: [
       { href: '/build', label: 'Server builder' },
       { href: '/consult', label: 'Start a project' },
+      { href: '/ama', label: 'Ask me anything' },
       { href: '/contact', label: 'Contact' },
     ],
   },
